@@ -1,11 +1,19 @@
 {
   imports = [
     ./nvim/options.nix
+    ./nvim/ui.nix
     ./nvim/lsp.nix
     ./nvim/completion.nix
-    ./nvim/copilot.nix
     ./nvim/formatting.nix
     ./nvim/treesitter.nix
+    ./nvim/navigation.nix
+    ./nvim/editing.nix
+    ./nvim/git.nix
+    ./nvim/diagnostics.nix
+    ./nvim/ide.nix
+    ./nvim/testing.nix
+    ./nvim/debugging.nix
+    ./nvim/keymaps.nix
     ./nvim/packages.nix
   ];
 }
