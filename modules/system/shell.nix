@@ -6,17 +6,24 @@
   programs.fish = {
     enable = true;
     shellAbbrs = {
+      tree = "eza --icons --tree --colors=auto";
+      trel = "eza --icons --tree -a -I \".git\" --colors=auto --level=2";
       icat = "kitty +kitten icat";
       rebuild = "sudo nixos-rebuild switch --flake .#";
       "." = "cd ..";
       ".." = "cd ../../";
     };
     shellAliases = {
+      vim = "nvim";
       nano = "nvim";
       ls = "eza --icons --color=auto";
       grep = "rg --color=auto";
     };
     generateCompletions = true;
+
+    shellInit = ''
+      set -gx GPG_TTY (tty)
+    '';
     interactiveShellInit = ''
       function __prepend_sudo
         set -l cmd (commandline)
