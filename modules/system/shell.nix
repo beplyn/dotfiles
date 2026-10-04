@@ -160,7 +160,7 @@
         style = "crust bg:mauve";
         symbols = {
           Arch = "";
-          NixOS = ""; # Corrected to the standard NixOS Nerd Font glyph
+          NixOS = "";
         };
       };
 

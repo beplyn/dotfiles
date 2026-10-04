@@ -12,6 +12,9 @@
         email = "me@beplyn.dev";
       };
       init.defaultBranch = "master";
+      safe = {
+        directory = [ "/etc/nixos" ];
+      };
     };
     signing = {
       key = "${config.home.homeDirectory}/.ssh/git-signing-key.pub";
