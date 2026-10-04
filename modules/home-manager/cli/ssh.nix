@@ -9,7 +9,7 @@
     settings = {
       "codeberg.org" = {
         hostname = "codeberg.org";
-        user = "beplyn";
+        user = "git";
         identityFile = "/home/beplyn/.ssh/codeberg-auth";
         identitiesOnly = true;
       };
