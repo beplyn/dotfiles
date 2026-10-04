@@ -15,5 +15,7 @@
     ./yazi.nix
     ./tools.nix
     ./forgejo.nix
+    ./kitty.nix
+    ./fastfetch.nix
   ];
 }
