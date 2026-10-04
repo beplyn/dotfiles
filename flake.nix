@@ -14,6 +14,8 @@
     nixvim = {
       url = "github:nix-community/nixvim";
     };
+
+    millennium.url = "github:SteamClientHomebrew/Millennium?dir=packages/nix";
   };
 
   outputs =
@@ -23,6 +25,7 @@
       home-manager,
       forgejo-cli,
       nixvim,
+      millennium,
       ...
     }:
     {
@@ -30,6 +33,7 @@
         specialArgs = { inherit inputs; };
         modules = [
           { nixpkgs.hostPlatform = "x86_64-linux"; }
+          { nixpkgs.overlays = [ millennium.overlays.default ]; }
           ./configuration.nix
           home-manager.nixosModules.home-manager
           {
