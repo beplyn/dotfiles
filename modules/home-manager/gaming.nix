@@ -1,4 +1,10 @@
-{ config, lib, osConfig, pkgs, ... }:
+{
+  config,
+  lib,
+  osConfig,
+  pkgs,
+  ...
+}:
 
 let
   enabled = lib.toLower osConfig.networking.hostName != "larptop";
@@ -39,11 +45,10 @@ in
       };
     };
 
-    home.activation.prismlauncherUpdateConfig =
-      lib.hm.dag.entryAfter [ "linkGeneration" ] ''
-        ${lib.getExe pkgs.crudini} --set \
-          "$HOME/${config.xdg.dataHome}/PrismLauncher/prismlauncher_update.cfg" \
-          "" auto_check false
-      '';
+    home.activation.prismlauncherUpdateConfig = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+      ${lib.getExe pkgs.crudini} --set \
+        "${config.xdg.dataHome}/PrismLauncher/prismlauncher_update.cfg" \
+        "" auto_check false
+    '';
   };
 }
