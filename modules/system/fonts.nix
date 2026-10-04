@@ -1,0 +1,53 @@
+{ config, pkgs, ... }:
+
+{
+  fonts.packages = with pkgs;
+  [
+    maple-mono.variable
+    maple-mono.truetype-autohint
+    maple-mono.truetype
+    maple-mono.opentype
+    maple-mono.woff2
+    maple-mono.NF
+    maple-mono.NF-unhinted
+    maple-mono.CN
+    maple-mono.CN-unhinted
+    maple-mono.NF-CN
+    maple-mono.NF-CN-unhinted
+    maple-mono.NL-Variable
+    maple-mono.NL-TTF-AutoHint
+    maple-mono.NL-TTF
+    maple-mono.NL-OTF
+    maple-mono.NL-Woff2
+    maple-mono.NL-NF
+    maple-mono.NL-NF-unhinted
+    maple-mono.NL-CN
+    maple-mono.NL-CN-unhinted
+    maple-mono.NL-NF-CN
+    maple-mono.NL-NF-CN-unhinted
+    maple-mono.Normal-Variable
+    maple-mono.Normal-TTF-AutoHint
+    maple-mono.Normal-TTF
+    maple-mono.Normal-OTF
+    maple-mono.Normal-Woff2
+    maple-mono.Normal-NF
+    maple-mono.Normal-NF-unhinted
+    maple-mono.Normal-CN
+    maple-mono.Normal-CN-unhinted
+    maple-mono.Normal-NF-CN
+    maple-mono.Normal-NF-CN-unhinted
+    maple-mono.NormalNL-Variable
+    maple-mono.NormalNL-TTF-AutoHint
+    maple-mono.NormalNL-TTF
+    maple-mono.NormalNL-OTF
+    maple-mono.NormalNL-Woff2
+    maple-mono.NormalNL-NF
+    maple-mono.NormalNL-NF-unhinted
+    maple-mono.NormalNL-CN
+    maple-mono.NormalNL-CN-unhinted
+    maple-mono.NormalNL-NF-CN
+    maple-mono.NormalNL-NF-CN-unhinted
+
+    jetbrains-mono
+    nerd-fonts.jetbrains-mono
+  ];
