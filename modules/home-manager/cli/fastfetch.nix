@@ -23,10 +23,10 @@
       display = {
         separator = " ";
         color = {
-          title = "#179299";
-          keys = "#179299";
-          separator = "#179299";
-          output = "#179299";
+          title = "#8839ef";
+          keys = "";
+          separator = "";
+          output = "#9ca0b0";
         };
       };
 
@@ -34,53 +34,53 @@
         {
           type = "host";
           key = "╭─󰌢";
-          keyColor = "#179299";
+          keyColor = "#fe640b";
         }
         {
           type = "cpu";
           key = "├─󰻠";
-          keyColor = "#179299";
+          keyColor = "#fe640b";
         }
         {
           type = "gpu";
           key = "├─󰍛";
-          keyColor = "#179299";
+          keyColor = "#fe640b";
         }
         {
           type = "disk";
           key = "├─";
-          keyColor = "#179299";
+          keyColor = "#fe640b";
         }
         {
           type = "memory";
           key = "╰─󰑭";
-          keyColor = "#179299";
+          keyColor = "#fe640b";
         }
         "break"
         {
           type = "shell";
           key = "╭─";
-          keyColor = "#179299";
+          keyColor = "#df8e1d";
         }
         {
           type = "terminal";
           key = "├─";
-          keyColor = "#179299";
+          keyColor = "#df8e1d";
         }
         {
           type = "terminalfont";
           key = "├─";
-          keyColor = "#179299";
+          keyColor = "#df8e1d";
         }
         {
           type = "lm";
           key = "├─󰧨";
-          keyColor = "#179299";
+          keyColor = "#df8e1d";
         }
         {
           type = "wm";
           key = "╰─";
-          keyColor = "#179299";
+          keyColor = "#df8e1d";
         }
         "break"
         {
