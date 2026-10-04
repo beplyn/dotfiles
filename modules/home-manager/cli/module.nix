@@ -4,6 +4,7 @@
 
 {
   imports = [
+    ./ssh.nix
     ./bat.nix
     ./fd.nix
     ./eza.nix
