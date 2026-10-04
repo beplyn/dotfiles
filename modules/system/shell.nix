@@ -1,7 +1,4 @@
 {
-  inputs,
-  config,
-  pkgs,
   ...
 }:
 
@@ -9,17 +6,41 @@
   programs.fish = {
     enable = true;
     shellAbbrs = {
-      nano = "nvim";
-      ls = "eza --icons --color=auto -la";
-      grep = "rg --color=auto";
+      icat = "kitty +kitten icat";
       rebuild = "sudo nixos-rebuild switch --flake .#";
+      "." = "cd ..";
+      ".." = "cd ../../";
+    };
+    shellAliases = {
+      nano = "nvim";
+      ls = "eza --icons --color=auto";
+      grep = "rg --color=auto";
     };
     generateCompletions = true;
     interactiveShellInit = ''
+      function __prepend_sudo
+        set -l cmd (commandline)
+        if test -z "$cmd"
+          set cmd $history[1]
+        end
+        if test -z "$cmd"
+          return
+        end
+        if string match -q "sudo -E *" "$cmd"
+          commandline -r (string sub -s 9 "$cmd")
+        else if string match -q "sudo *" "$cmd"
+          commandline -r (string replace -r '^sudo ' 'sudo -E ' "$cmd")
+        else
+          commandline -r "sudo -E $cmd"
+        end
+      end
+      bind \es __prepend_sudo
+      fish_add_path --prepend --move \
+        $HOME/.nix-profile/bin \
+        /nix/var/nix/profiles/default/bin
+
       set -g fish_greeting ""
       fastfetch
-
-      bind \es 'fish_commandline_pretend "sudo -E"'
     '';
   };
   programs.zoxide = {

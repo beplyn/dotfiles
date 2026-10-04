@@ -42,14 +42,18 @@
             ];
             home-manager.users.root = {
               imports = [
-                ./modules/home-manager/nvim/main.nix
+                ./modules/home-manager/home.nix
               ];
+              home.username = "root";
               home.stateVersion = "26.11";
             };
             home-manager.users.beplyn = {
               imports = [
                 ./modules/home-manager/home.nix
               ];
+              home.username = "beplyn";
+              home.homeDirectory = "/home/beplyn";
+              home.stateVersion = "26.11";
             };
           }
         ];
