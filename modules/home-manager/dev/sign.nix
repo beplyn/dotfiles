@@ -10,4 +10,8 @@
     enable = true;
     pinentry.package = pkgs.pinentry-curses;
   };
+
+  home.packages = with pkgs; [
+    gpg-tui
+  ];
 }

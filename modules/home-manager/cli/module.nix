@@ -21,5 +21,6 @@
     ./fastfetch.nix
     ./bottom.nix
     ./btop.nix
+    ./netspd.nix
   ];
 }
