@@ -10,6 +10,7 @@
     ./fd.nix
     ./eza.nix
     ./ripgrep.nix
+    ./lazyclis.nix
     ./fetch.nix
     ./gitui.nix
     ./tmux.nix
