@@ -6,10 +6,11 @@
   imports = [
     ./ssh.nix
     ./bat.nix
+    ./fzf.nix
     ./fd.nix
     ./eza.nix
     ./ripgrep.nix
-    ./lazygit.nix
+    ./fetch.nix
     ./gitui.nix
     ./tmux.nix
     ./yazi.nix
