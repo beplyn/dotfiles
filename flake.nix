@@ -18,6 +18,8 @@
     areofyl-fetch.url = "github:areofyl/fetch";
 
     millennium.url = "github:SteamClientHomebrew/Millennium?dir=packages/nix";
+
+    netspd.url = "github:TarunVishwakarma1/netspd";
   };
 
   outputs =
@@ -29,6 +31,7 @@
       nixvim,
       areofyl-fetch,
       millennium,
+      netspd,
       ...
     }:
     {
