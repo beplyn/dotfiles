@@ -15,6 +15,8 @@
       url = "github:nix-community/nixvim";
     };
 
+    areofyl-fetch.url = "github:areofyl/fetch";
+
     millennium.url = "github:SteamClientHomebrew/Millennium?dir=packages/nix";
   };
 
@@ -25,6 +27,7 @@
       home-manager,
       forgejo-cli,
       nixvim,
+      areofyl-fetch,
       millennium,
       ...
     }:
@@ -43,6 +46,7 @@
 
             home-manager.sharedModules = [
               nixvim.homeModules.nixvim
+              areofyl-fetch.homeManagerModules.default
             ];
             home-manager.users.beplyn = {
               imports = [
