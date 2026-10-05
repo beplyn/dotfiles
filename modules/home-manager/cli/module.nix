@@ -17,5 +17,7 @@
     ./forgejo.nix
     ./kitty.nix
     ./fastfetch.nix
+    ./bottom.nix
+    ./btop.nix
   ];
 }
