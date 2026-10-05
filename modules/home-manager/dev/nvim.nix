@@ -1,4 +1,9 @@
 {
+  home.sessionVariables = {
+    EDITOR = "nvim";
+    VISUAL = "nvim";
+  };
+
   imports = [
     ./nvim/options.nix
     ./nvim/ui.nix

@@ -12,6 +12,7 @@
         email = "me@beplyn.dev";
       };
       init.defaultBranch = "master";
+      core.editor = "nvim";
       safe = {
         directory = [ "/etc/nixos" ];
       };
