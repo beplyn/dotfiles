@@ -1,4 +1,8 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
+
+let
+  p = config.themes.palette;
+in
 
 {
   home.packages = [
@@ -7,31 +11,31 @@
 
   xdg.configFile."gitui/theme.ron".text = ''
     (
-      selection_fg: Some("#11111b"),
-      selection_bg: Some("#cba6f7"),
-      cmd_fg: Some("#cdd6f4"),
-      cmd_bg: Some("#1e1e2e"),
-      diff_fg: Some("#cdd6f4"),
-      diff_add: Some("#a6e3a1"),
-      diff_remove: Some("#f38ba8"),
-      diff_context: Some("#6c7086"),
-      commit_fg: Some("#cdd6f4"),
-      commit_bg: Some("#1e1e2e"),
-      branch_fg: Some("#cba6f7"),
-      branch_bg: Some("#313244"),
-      tag_fg: Some("#f9e2af"),
-      tag_bg: Some("#313244"),
-      line_number_fg: Some("#6c7086"),
-      line_number_bg: Some("#1e1e2e"),
-      title_fg: Some("#cba6f7"),
-      title_bg: Some("#1e1e2e"),
-      hint_fg: Some("#89b4fa"),
-      hint_bg: Some("#1e1e2e"),
-      active_border_fg: Some("#cba6f7"),
-      inactive_border_fg: Some("#45475a"),
-      searching_border_fg: Some("#89dceb"),
-      scrollbar_fg: Some("#6c7086"),
-      scrollbar_bg: Some("#313244"),
+      selection_fg: Some("${p.background}"),
+      selection_bg: Some("${p.accent}"),
+      cmd_fg: Some("${p.foreground}"),
+      cmd_bg: Some("${p.background}"),
+      diff_fg: Some("${p.foreground}"),
+      diff_add: Some("${p.success}"),
+      diff_remove: Some("${p.error}"),
+      diff_context: Some("${p.muted}"),
+      commit_fg: Some("${p.foreground}"),
+      commit_bg: Some("${p.background}"),
+      branch_fg: Some("${p.accent}"),
+      branch_bg: Some("${p.surface}"),
+      tag_fg: Some("${p.warning}"),
+      tag_bg: Some("${p.surface}"),
+      line_number_fg: Some("${p.muted}"),
+      line_number_bg: Some("${p.background}"),
+      title_fg: Some("${p.accent}"),
+      title_bg: Some("${p.background}"),
+      hint_fg: Some("${p.blue}"),
+      hint_bg: Some("${p.background}"),
+      active_border_fg: Some("${p.accent}"),
+      inactive_border_fg: Some("${p.surfaceBright}"),
+      searching_border_fg: Some("${p.aqua}"),
+      scrollbar_fg: Some("${p.muted}"),
+      scrollbar_bg: Some("${p.surface}"),
     )
   '';
 }

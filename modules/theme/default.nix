@@ -22,5 +22,12 @@ in
     };
   };
 
-  config.themes.palette = palettes.${config.themes.active};
+  config.themes.palette = palettes.${config.themes.active} // {
+    text = palettes.${config.themes.active}.foreground;
+    muted = palettes.${config.themes.active}.surfaceBright;
+    accent = palettes.${config.themes.active}.purple;
+    error = palettes.${config.themes.active}.red;
+    success = palettes.${config.themes.active}.green;
+    warning = palettes.${config.themes.active}.yellow;
+  };
 }

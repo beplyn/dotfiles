@@ -10,7 +10,6 @@
   ];
 
   xdg.configFile."netspd/config.toml".text = ''
-    theme = "catppuccin"
     refresh_rate = 60
     provider = "librespeed"
     animation_speed = 1.0

@@ -1,3 +1,8 @@
+{ config, ... }:
+
+let
+  p = config.themes.palette;
+in
 {
   programs.yazi = {
     enable = true;
@@ -17,40 +22,40 @@
 
   xdg.configFile."yazi/theme.toml".text = ''
     [mgr]
-    cwd = { fg = "#cba6f7" }
-    hovered = { fg = "#11111b", bg = "#cba6f7" }
+    cwd = { fg = "${p.accent}" }
+    hovered = { fg = "${p.background}", bg = "${p.accent}" }
     preview_hovered = { underline = true }
-    find_keyword = { fg = "#f9e2af", italic = true }
-    find_position = { fg = "#f38ba8", italic = true }
-    marker_copied = { fg = "#a6e3a1", bg = "#a6e3a1" }
-    marker_cut = { fg = "#f38ba8", bg = "#f38ba8" }
-    marker_marked = { fg = "#f9e2af", bg = "#f9e2af" }
-    marker_selected = { fg = "#cba6f7", bg = "#cba6f7" }
-    tab_active = { fg = "#11111b", bg = "#cba6f7" }
-    tab_inactive = { fg = "#cdd6f4", bg = "#313244" }
-    border_style = { fg = "#6c7086" }
+    find_keyword = { fg = "${p.warning}", italic = true }
+    find_position = { fg = "${p.error}", italic = true }
+    marker_copied = { fg = "${p.success}", bg = "${p.success}" }
+    marker_cut = { fg = "${p.error}", bg = "${p.error}" }
+    marker_marked = { fg = "${p.warning}", bg = "${p.warning}" }
+    marker_selected = { fg = "${p.accent}", bg = "${p.accent}" }
+    tab_active = { fg = "${p.background}", bg = "${p.accent}" }
+    tab_inactive = { fg = "${p.foreground}", bg = "${p.surface}" }
+    border_style = { fg = "${p.muted}" }
 
     [mode]
-    normal_main = { fg = "#11111b", bg = "#cba6f7", bold = true }
-    select_main = { fg = "#11111b", bg = "#a6e3a1", bold = true }
-    unset_main = { fg = "#11111b", bg = "#f38ba8", bold = true }
+    normal_main = { fg = "${p.background}", bg = "${p.accent}", bold = true }
+    select_main = { fg = "${p.background}", bg = "${p.success}", bold = true }
+    unset_main = { fg = "${p.background}", bg = "${p.error}", bold = true }
 
     [status]
-    overall = { fg = "#cdd6f4", bg = "#313244" }
+    overall = { fg = "${p.foreground}", bg = "${p.surface}" }
 
     [which]
-    mask = { bg = "#181825" }
-    cand = { fg = "#89b4fa" }
-    rest = { fg = "#6c7086" }
-    desc = { fg = "#cba6f7" }
+    mask = { bg = "${p.background}" }
+    cand = { fg = "${p.blue}" }
+    rest = { fg = "${p.muted}" }
+    desc = { fg = "${p.accent}" }
     separator = "  "
 
     [confirm]
-    border = { fg = "#cba6f7" }
-    title = { fg = "#cba6f7" }
-    body = { fg = "#cdd6f4" }
-    list = { fg = "#cdd6f4" }
-    btn_yes = { fg = "#11111b", bg = "#a6e3a1" }
-    btn_no = { fg = "#11111b", bg = "#f38ba8" }
+    border = { fg = "${p.accent}" }
+    title = { fg = "${p.accent}" }
+    body = { fg = "${p.foreground}" }
+    list = { fg = "${p.foreground}" }
+    btn_yes = { fg = "${p.background}", bg = "${p.success}" }
+    btn_no = { fg = "${p.background}", bg = "${p.error}" }
   '';
 }

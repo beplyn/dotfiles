@@ -8,6 +8,7 @@
 
 let
   enabled = lib.toLower osConfig.networking.hostName != "larptop";
+  p = config.themes.palette;
 in
 
 {
@@ -15,31 +16,30 @@ in
     programs.prismlauncher = {
       enable = true;
       settings = {
-        ApplicationTheme = "Catppuccin-Mocha-Mauve";
         IconTheme = "flat";
         MaxMemAlloc = 18432;
         MenuBarInsteadOfToolBar = false;
       };
-      themes."Catppuccin-Mocha-Mauve" = {
+      themes.theme = {
         theme = {
-          name = "Catppuccin Mocha Mauve";
+          name = "theme";
           widgets = "Fusion";
           colors = {
-            AlternateBase = "#1e1e2e";
-            Base = "#181825";
-            BrightText = "#bac2de";
-            Button = "#313244";
-            ButtonText = "#cdd6f4";
-            Highlight = "#cba6f7";
-            HighlightedText = "#1e1e2e";
-            Link = "#b4befe";
-            Text = "#cdd6f4";
-            ToolTipBase = "#11111b";
-            ToolTipText = "#cdd6f4";
-            Window = "#1e1e2e";
-            WindowText = "#bac2de";
+            AlternateBase = p.surfaceBright;
+            Base = p.background;
+            BrightText = p.text;
+            Button = p.surface;
+            ButtonText = p.foreground;
+            Highlight = p.accent;
+            HighlightedText = p.background;
+            Link = p.blue;
+            Text = p.foreground;
+            ToolTipBase = p.background;
+            ToolTipText = p.foreground;
+            Window = p.background;
+            WindowText = p.text;
             fadeAmount = 0.5;
-            fadeColor = "#6c7086";
+            fadeColor = p.muted;
           };
         };
       };

@@ -53,6 +53,7 @@
               username
               email
               forgejoHost
+              themeName
               ;
           };
           modules = [
