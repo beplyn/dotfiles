@@ -1,13 +1,15 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
+let
+  p = config.themes.palette;
+in
 {
   home.packages = [
     pkgs.btop
   ];
 
   xdg.configFile."btop/btop.conf".text = ''
-    # Catppuccin Mocha with Mauve accents
-    color_theme = "catppuccin_mocha.theme"
+    color_theme = "theme.theme"
     theme_background = False
     truecolor = True
     rounded_corners = True
@@ -34,48 +36,48 @@
     proc_mem_bytes = True
   '';
 
-  xdg.configFile."btop/themes/catppuccin_mocha.theme".text = ''
+  xdg.configFile."btop/themes/theme.theme".text = ''
     theme[main_bg]=""
-    theme[main_fg]="#cdd6f4"
-    theme[title]="#cba6f7"
-    theme[hi_fg]="#cba6f7"
-    theme[selected_bg]="#45475a"
-    theme[selected_fg]="#cba6f7"
-    theme[inactive_fg]="#6c7086"
-    theme[graph_text]="#cdd6f4"
-    theme[meter_bg]="#313244"
-    theme[proc_misc]="#f5e0dc"
-    theme[cpu_box]="#cba6f7"
-    theme[mem_box]="#89b4fa"
-    theme[net_box]="#94e2d5"
-    theme[proc_box]="#f5c2e7"
-    theme[div_line]="#6c7086"
-    theme[temp_start]="#a6e3a1"
-    theme[temp_mid]="#f9e2af"
-    theme[temp_end]="#f38ba8"
-    theme[cpu_start]="#94e2d5"
-    theme[cpu_mid]="#74c7ec"
-    theme[cpu_end]="#b4befe"
-    theme[free_start]="#cba6f7"
-    theme[free_mid]="#b4befe"
-    theme[free_end]="#89b4fa"
-    theme[cached_start]="#74c7ec"
-    theme[cached_mid]="#89b4fa"
-    theme[cached_end]="#b4befe"
-    theme[available_start]="#fab387"
-    theme[available_mid]="#eba0ac"
-    theme[available_end]="#f38ba8"
-    theme[used_start]="#a6e3a1"
-    theme[used_mid]="#94e2d5"
-    theme[used_end]="#89dceb"
-    theme[download_start]="#fab387"
-    theme[download_mid]="#eba0ac"
-    theme[download_end]="#f38ba8"
-    theme[upload_start]="#a6e3a1"
-    theme[upload_mid]="#94e2d5"
-    theme[upload_end]="#89dceb"
-    theme[process_start]="#89b4fa"
-    theme[process_mid]="#b4befe"
-    theme[process_end]="#cba6f7"
+    theme[main_fg]="${p.foreground}"
+    theme[title]="${p.accent}"
+    theme[hi_fg]="${p.accent}"
+    theme[selected_bg]="${p.surfaceBright}"
+    theme[selected_fg]="${p.accent}"
+    theme[inactive_fg]="${p.muted}"
+    theme[graph_text]="${p.foreground}"
+    theme[meter_bg]="${p.surface}"
+    theme[proc_misc]="${p.purple}"
+    theme[cpu_box]="${p.accent}"
+    theme[mem_box]="${p.blue}"
+    theme[net_box]="${p.aqua}"
+    theme[proc_box]="${p.purple}"
+    theme[div_line]="${p.muted}"
+    theme[temp_start]="${p.success}"
+    theme[temp_mid]="${p.warning}"
+    theme[temp_end]="${p.error}"
+    theme[cpu_start]="${p.aqua}"
+    theme[cpu_mid]="${p.blue}"
+    theme[cpu_end]="${p.purple}"
+    theme[free_start]="${p.accent}"
+    theme[free_mid]="${p.purple}"
+    theme[free_end]="${p.blue}"
+    theme[cached_start]="${p.blue}"
+    theme[cached_mid]="${p.blue}"
+    theme[cached_end]="${p.purple}"
+    theme[available_start]="${p.orange}"
+    theme[available_mid]="${p.red}"
+    theme[available_end]="${p.error}"
+    theme[used_start]="${p.success}"
+    theme[used_mid]="${p.aqua}"
+    theme[used_end]="${p.aqua}"
+    theme[download_start]="${p.orange}"
+    theme[download_mid]="${p.red}"
+    theme[download_end]="${p.error}"
+    theme[upload_start]="${p.success}"
+    theme[upload_mid]="${p.aqua}"
+    theme[upload_end]="${p.aqua}"
+    theme[process_start]="${p.blue}"
+    theme[process_mid]="${p.purple}"
+    theme[process_end]="${p.accent}"
   '';
 }

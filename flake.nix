@@ -19,8 +19,6 @@
 
     millennium.url = "github:SteamClientHomebrew/Millennium?dir=packages/nix";
 
-    catppuccin.url = "github:catppuccin/nix";
-
     netspd.url = "github:TarunVishwakarma1/netspd";
 
     sops-nix.url = "github:Mic92/sops-nix";
@@ -35,7 +33,6 @@
       nixvim,
       areofyl-fetch,
       millennium,
-      catppuccin,
       netspd,
       sops-nix,
       ...
@@ -76,7 +73,6 @@
               home-manager.useUserPackages = true;
 
               home-manager.sharedModules = [
-                catppuccin.homeModules.catppuccin
                 nixvim.homeModules.nixvim
                 areofyl-fetch.homeManagerModules.default
                 sops-nix.homeManagerModules.sops
