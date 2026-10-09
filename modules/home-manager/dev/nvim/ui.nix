@@ -22,7 +22,7 @@
         settings = {
           options = {
             globalstatus = true;
-            theme = "catppuccin";
+            theme = "auto";
             component_separators = "";
             section_separators = "";
           };
