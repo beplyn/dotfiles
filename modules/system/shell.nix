@@ -9,7 +9,7 @@
       tree = "eza --icons --tree --color=auto";
       trel = "eza --icons --tree -a -I \".git\" --color=auto --level=2";
       icat = "kitty +kitten icat";
-      nrbs = "sudo nixos-rebuild switch --flake .#";
+      nrbs = "sudo nixos-rebuild switch --flake /etc/nixos#nixos";
       "." = "cd ..";
       ".." = "cd ../../";
     };
