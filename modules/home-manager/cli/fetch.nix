@@ -1,37 +1,126 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
+}:
 
 let
-  stylixBlue = config.lib.stylix.colors.base0D;
-  stylixBlueRgb = lib.concatStringsSep ";" (
-    builtins.map (part: toString (lib.fromHexString part)) [
-      (builtins.substring 0 2 stylixBlue)
-      (builtins.substring 2 2 stylixBlue)
-      (builtins.substring 4 2 stylixBlue)
-    ]
-  );
+  stylixColors = config.lib.stylix.colors;
+
+  # Converts 6-char hex to "R;G;B"
+  toRgb =
+    color:
+    lib.concatStringsSep ";" (
+      builtins.map (part: toString (lib.fromHexString part)) [
+        (builtins.substring 0 2 color)
+        (builtins.substring 2 2 color)
+        (builtins.substring 4 2 color)
+      ]
+    );
+
+  ansi = color: "\\x1b[38;2;${toRgb color}m";
+  reset = "\\x1b[0m";
+  coloredKey = color: glyph: "${ansi color}${glyph}${reset}";
+
+  system = pkgs.stdenv.hostPlatform.system;
+  upstreamFetch = inputs.areofyl-fetch.packages.${system}.default;
+
+  patchedFetch = upstreamFetch.overrideAttrs (oldAttrs: {
+    postPatch = (oldAttrs.postPatch or "") + ''
+      # 1. Strip the trailing colon and forced magenta escape from all labels
+      # "%.0s" consumes label_color (prints 0 chars), followed by label and value with a clean 2-space gap
+      sed -i 's/"\\033\[1;%sm%s\\033\[0m: %s"/"%.0s%s  %s"/g' fetch.c
+
+      # 2. Suppress the default top title & separator
+      substituteInPlace fetch.c \
+        --replace 'static void gather_title(void) {' \
+                  'static void gather_title(void) { return;'
+
+      # 3. Inject "╭─ user@host" into Block 3 right above OS
+      substituteInPlace fetch.c \
+        --replace 'add_info("OS", "%s %s", pretty, u.machine);' \
+                  'char u_n[64] = ""; char *l = getlogin(); if (l) strncpy(u_n, l, 63); else { char *e = getenv("USER"); if (e) strncpy(u_n, e, 63); } char h_n[64] = ""; gethostname(h_n, sizeof(h_n)); add_info("${coloredKey stylixColors.base0E "╭─"}", "%s@%s", u_n, h_n); add_info("OS", "%s %s", pretty, u.machine);'
+
+      # 4. Patch Disk to show clean tree bracket without "Disk (/)" text
+      substituteInPlace fetch.c \
+        --replace 'snprintf(label, sizeof(label), "Disk (%s)", path);' \
+                  'snprintf(label, sizeof(label), "%s", "${coloredKey stylixColors.base0A "├─"}");'
+
+      # 5. Substitute add_info labels with colored Nerd Font tree brackets
+      substituteInPlace fetch.c \
+        --replace 'add_info("Host"'      'add_info("${coloredKey stylixColors.base0D "╭─󰌢"}"' \
+        --replace 'add_info("CPU"'       'add_info("${coloredKey stylixColors.base0C "├─󰻠"}"' \
+        --replace 'add_info("GPU"'       'add_info("${coloredKey stylixColors.base0B "├─󰍛"}"' \
+        --replace 'add_info("Memory"'    'add_info("${coloredKey stylixColors.base09 "╰─󰑭"}"' \
+        --replace 'add_info("Shell"'     'add_info("${coloredKey stylixColors.base0B "╭─"}"' \
+        --replace 'add_info("Terminal"'  'add_info("${coloredKey stylixColors.base0C "├─"}"' \
+        --replace 'add_info("WM"'        'add_info("${coloredKey stylixColors.base0F "╰─"}"' \
+        --replace 'add_info("OS"'        'add_info("${coloredKey stylixColors.base0D "├─"}"' \
+        --replace 'add_info("Kernel"'    'add_info("${coloredKey stylixColors.base0C "├─"}"' \
+        --replace 'add_info("Packages"'  'add_info("${coloredKey stylixColors.base0B "├─󰏖"}"' \
+        --replace 'add_info("Uptime"'    'add_info("${coloredKey stylixColors.base09 "╰─󰅐"}"'
+    '';
+  });
 in
 {
-  programs.fetch = {
-    enable = true;
-    info = [
-      "host"
-      "cpu"
-      "gpu"
-      "disk"
-      "memory"
-      "shell"
-      "terminal"
-      "font"
-      "display"
-      "wm"
-      "os"
-      "kernel"
-      "packages"
-      "uptime"
-    ];
-    labelColor = "white";
-    extraConfig = "label_color=38;2;${stylixBlueRgb}";
-    separator = " ";
-    height = 20;
-  };
+  programs.fetch.enable = lib.mkForce false;
+  home.packages = [ patchedFetch ];
+
+  xdg.configFile."fetch/config".text = ''
+    # Block 1: Hardware
+    host
+    cpu
+    gpu
+    disk
+    memory
+    ---
+    # Block 2: Environment (Streamlined to Shell, Terminal, WM)
+    shell
+    terminal
+    wm
+    ---
+    # Block 3: System
+    os
+    kernel
+    packages
+    uptime
+    ---
+    # Color palette
+    colors
+
+    # 3D Animation Settings
+    spin=xy
+    speed=1.0
+    size=1.2
+    depth=0.5
+    shading_mode=blocks
+    height=18
+    separator=
+  '';
+
+  home.file.".config/fetch/logo.txt".text = ''
+    # distro: nixos
+              ▗▄▄▄       ▗▄▄▄▄    ▄▄▄▖
+              ▜███▙       ▜███▙  ▟███▛
+               ▜███▙       ▜███▙▟███▛
+                ▜███▙       ▜██████▛
+          ▟█████████████████▙ ▜████▛     ▟▙
+        ▟███████████████████▙ ▜███▙    ▟██▙
+               ▄▄▄▄▖           ▜███▙  ▟███▛
+              ▟███▛             ▜██▛ ▟███▛
+             ▟███▛               ▜▛ ▟███▛
+    ▟███████████▛                  ▟██████████▙
+    ▜██████████▛                  ▟███████████▛
+          ▟███▛ ▟▙                ▟███▛
+         ▟███▛ ▟██▙              ▟███▛
+        ▟███▛  ▜███▙            ▝▀▀▀▀
+        ▜██▛   ▜███▙ ▜██████████████████▛
+         ▜▛     ▟████▙ ▜████████████████▛
+               ▟██████▙          ▜███▙
+              ▟███▛▜███▙          ▜███▙
+             ▟███▛  ▜███▙          ▜███▙
+             ▝▀▀▀   ▀▀▀▀▘          ▀▀▀▘
+  '';
 }
