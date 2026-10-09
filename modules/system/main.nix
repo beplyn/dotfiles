@@ -3,6 +3,8 @@
 {
   imports = [
     ./shell.nix
+    ./fonts.nix
+    ./tools.nix
     ./pkgs.nix
     ./gaming.nix
   ];
