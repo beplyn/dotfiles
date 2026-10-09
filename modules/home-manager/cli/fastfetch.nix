@@ -106,6 +106,8 @@ in
           key = "╰─󰅐";
           keyColor = c.base09;
         }
+        "break"
+        "break"
         {
           type = "colors";
           symbol = "circle";
