@@ -1,3 +1,5 @@
+{ config, lib, ... }:
+
 {
   programs.nixvim = {
     extraFiles = {
@@ -6,7 +8,7 @@
       "lua/alpha.lua".source = ./lua/alpha.lua;
     };
 
-    colorschemes.catppuccin = {
+    colorschemes.catppuccin = lib.mkIf (config.themes.active == "catppuccin") {
       enable = true;
       settings = {
         flavour = "mocha";
@@ -16,11 +18,12 @@
           comments = [ "italic" ];
           functions = [ "bold" ];
         };
-        integrations = {
-          lualine = true;
-        };
+        integrations.lualine = true;
       };
     };
+
+    colorschemes.gruvbox.enable = config.themes.active == "gruvbox";
+    colorschemes.nord.enable = config.themes.active == "nord";
 
     plugins = {
       alpha = {

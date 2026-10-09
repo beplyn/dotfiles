@@ -9,7 +9,6 @@
       tree = "eza --icons --tree --color=auto";
       trel = "eza --icons --tree -a -I \".git\" --color=auto --level=2";
       icat = "kitty +kitten icat";
-      nrbs = "sudo nixos-rebuild switch --flake /etc/nixos#nixos";
       "." = "cd ..";
       ".." = "cd ../../";
     };
@@ -20,6 +19,14 @@
       grep = "rg --color=auto";
     };
     generateCompletions = true;
+
+    shellFunctions.nrbs = ''
+      set -l theme catppuccin
+      if test (count $argv) -gt 0
+        set theme $argv[1]
+      end
+      sudo nixos-rebuild switch --flake /etc/nixos#nixos-$theme
+    '';
 
     shellInit = ''
       set -gx GPG_TTY (tty)

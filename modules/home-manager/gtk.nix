@@ -1,9 +1,9 @@
-{ pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   gtk = {
     enable = true;
-    theme = {
+    theme = lib.mkIf (config.themes.active == "catppuccin") {
       name = "catppuccin-mocha-mauve-standard";
       package = pkgs.catppuccin-gtk.override {
         accents = [ "mauve" ];
