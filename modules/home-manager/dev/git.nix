@@ -1,5 +1,4 @@
 {
-  config,
   ...
 }:
 
@@ -18,9 +17,8 @@
       };
     };
     signing = {
-      key = "${config.home.homeDirectory}/.ssh/git-signing-key.pub";
+      key = "me@beplyn.dev";
       signByDefault = true;
-      format = "ssh";
     };
   };
 }
