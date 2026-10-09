@@ -22,6 +22,8 @@
     netspd.url = "github:TarunVishwakarma1/netspd";
 
     sops-nix.url = "github:Mic92/sops-nix";
+
+    stylix.url = "github:danth/stylix";
   };
 
   outputs =
@@ -35,6 +37,7 @@
       millennium,
       netspd,
       sops-nix,
+      stylix,
       ...
     }:
     let
@@ -58,6 +61,7 @@
             { nixpkgs.overlays = [ millennium.overlays.default ]; }
             ./hosts/common
             ./hosts/${hostname}
+            stylix.nixosModules.stylix
             home-manager.nixosModules.home-manager
             {
               home-manager.extraSpecialArgs = {
@@ -89,10 +93,10 @@
     in
     {
       nixosConfigurations = {
-        "nixos-catppuccin" = hostModule "nixos" "catppuccin";
-        "nixos-gruvbox" = hostModule "nixos" "gruvbox";
-        "nixos-nord" = hostModule "nixos" "nord";
-        default = hostModule "nixos" "catppuccin";
+        "virtM-catppuccin" = hostModule "virtM" "catppuccin";
+        "virtM-gruvbox" = hostModule "virtM" "gruvbox";
+        "virtM-nord" = hostModule "virtM" "nord";
+        default = hostModule "virtM" "catppuccin";
       };
     };
 }

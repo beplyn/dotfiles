@@ -1,21 +1,60 @@
 { config, lib, ... }:
 
+let
+  c = config.lib.stylix.colors.withHashtag;
+  logoColors = ''
+    {
+      "${c.base08}",
+      "${c.base09}",
+      "${c.base0A}",
+      "${c.base0B}",
+      "${c.base0C}",
+      "${c.base0D}",
+    }
+  '';
+in
+
 {
+  stylix.targets.nixvim = {
+    enable = true;
+    transparentBackground.main = true;
+  };
+
   programs.nixvim = {
     extraFiles = {
       "logos".source = ./logos;
-      "lua/random_logo.lua".source = ./lua/random_logo.lua;
-      "lua/alpha.lua".source = ./lua/alpha.lua;
-    };
+      "lua/random_logo.lua".text = ''
+        local M = {}
 
-    colorschemes.catppuccin.enable = config.themes.active == "catppuccin";
-    colorschemes.catppuccin.settings = {
-      transparent_background = true;
-    };
-    colorschemes.gruvbox.enable = config.themes.active == "gruvbox";
-    colorschemes.nord.enable = config.themes.active == "nord";
-    colorschemes.nord.settings = {
-      disable_background = true;
+        local theme_accents = ${logoColors}
+
+        math.randomseed(os.time())
+
+        function M.get_header()
+          local logo_pattern = vim.fn.stdpath("config") .. "/logos/*.ascii"
+          local logos = vim.fn.glob(logo_pattern, false, true)
+
+          if #logos == 0 then
+            error("No ASCII logos found in " .. vim.fn.fnamemodify(logo_pattern, ":h"))
+          end
+
+          local logo = logos[math.random(#logos)]
+          local lines = vim.fn.readfile(logo)
+
+          if #lines == 0 then
+            error("ASCII logo is empty: " .. logo)
+          end
+
+          return lines
+        end
+
+        function M.get_accent_color()
+          return theme_accents[math.random(#theme_accents)]
+        end
+
+        return M
+      '';
+      "lua/alpha.lua".source = ./lua/alpha.lua;
     };
 
     autoCmd = [
@@ -54,7 +93,7 @@
       };
 
       transparent = {
-        enable = true;
+        enable = false;
         settings = {
           extra_groups = [
             "NormalFloat"

@@ -1,14 +1,23 @@
-{ themeName, config, ... }:
+{ config, ... }:
 
 let
-  rawPalette = builtins.fromTOML (builtins.readFile ../../theme/${themeName}.toml);
-  palette = rawPalette // {
-    text = rawPalette.foreground;
-    muted = rawPalette.surfaceBright;
-    accent = rawPalette.purple;
-    error = rawPalette.red;
-    success = rawPalette.green;
-    warning = rawPalette.yellow;
+  c = config.lib.stylix.colors.withHashtag;
+  palette = {
+    background = c.base00;
+    surface = c.base02;
+    surfaceBright = c.base03;
+    red = c.base08;
+    yellow = c.base0A;
+    green = c.base0B;
+    aqua = c.base0C;
+    blue = c.base0D;
+    purple = c.base0E;
+    text = c.base05;
+    muted = c.base03;
+    accent = c.base0E;
+    error = c.base08;
+    success = c.base0B;
+    warning = c.base0A;
   };
 in
 
