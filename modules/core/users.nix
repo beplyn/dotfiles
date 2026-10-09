@@ -1,10 +1,10 @@
-{ config, pkgs, ... }:
+{ config, pkgs, username, ... }:
 
 {
   users.defaultUserShell = pkgs.fish;
-  users.users."beplyn" = {
+  users.users."${username}" = {
     isNormalUser = true;
-    description = "beplyn";
+    description = username;
     extraGroups = [
       "networkmanager"
       "wheel"

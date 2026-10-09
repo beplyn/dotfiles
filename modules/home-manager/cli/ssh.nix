@@ -1,4 +1,6 @@
 {
+  config,
+  codebergHost,
   ...
 }:
 
@@ -7,10 +9,10 @@
     enable = true;
     enableDefaultConfig = false;
     settings = {
-      "codeberg.org" = {
-        hostname = "codeberg.org";
+      "${codebergHost}" = {
+        hostname = codebergHost;
         user = "git";
-        identityFile = "/home/beplyn/.ssh/codeberg-auth";
+        identityFile = "${config.home.homeDirectory}/.ssh/codeberg-auth";
         identitiesOnly = true;
       };
     };
