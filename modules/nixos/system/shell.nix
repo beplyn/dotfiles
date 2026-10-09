@@ -1,4 +1,4 @@
-{ themeName, ... }:
+{ themeName, config, ... }:
 
 let
   rawPalette = builtins.fromTOML (builtins.readFile ../../theme/${themeName}.toml);
@@ -21,6 +21,9 @@ in
       icat = "kitty +kitten icat";
       "." = "cd ..";
       ".." = "cd ../../";
+      nrbs-catppuccin = "sudo nixos-rebuild switch --flake /etc/nixos#${config.networking.hostName}-catppuccin";
+      nrbs-nord = "sudo nixos-rebuild switch --flake /etc/nixos#${config.networking.hostName}-nord";
+      nrbs-gruvbox = "sudo nixos-rebuild switch --flake /etc/nixos#${config.networking.hostName}-gruvbox";
     };
     shellAliases = {
       vim = "nvim";
@@ -29,14 +32,6 @@ in
       grep = "rg --color=auto";
     };
     generateCompletions = true;
-
-    shellFunctions.nrbs.body = ''
-      set -l theme catppuccin
-      if test (count $argv) -gt 0
-        set theme $argv[1]
-      end
-      sudo nixos-rebuild switch --flake /etc/nixos#nixos-$theme
-    '';
 
     shellInit = ''
       set -gx GPG_TTY (tty)
