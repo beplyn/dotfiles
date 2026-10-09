@@ -58,7 +58,7 @@
         modules = [
           { nixpkgs.hostPlatform = "x86_64-linux"; }
           { nixpkgs.overlays = [ millennium.overlays.default ]; }
-          ./configuration.nix
+          ./hosts/nixos/configuration.nix
           home-manager.nixosModules.home-manager
           {
             home-manager.extraSpecialArgs = {
