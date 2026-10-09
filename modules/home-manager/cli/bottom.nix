@@ -1,4 +1,8 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
+
+let
+  p = config.themes.palette;
+in
 
 {
   home.packages = [
@@ -13,40 +17,40 @@
     network_use_bytes = true
 
     [styles.cpu]
-    all_entry_colour = "#cba6f7"
-    avg_entry_colour = "#cba6f7"
-    cpu_core_colours = ["#cba6f7", "#b4befe", "#89b4fa", "#74c7ec"]
+    all_entry_colour = "${p.accent}"
+    avg_entry_colour = "${p.accent}"
+    cpu_core_colours = ["${p.accent}", "${p.blue}", "${p.aqua}", "${p.purple}"]
 
     [styles.memory]
-    ram_colour = "#cba6f7"
-    cache_colour = "#b4befe"
-    swap_colour = "#89b4fa"
-    arc_colour = "#74c7ec"
+    ram_colour = "${p.accent}"
+    cache_colour = "${p.blue}"
+    swap_colour = "${p.aqua}"
+    arc_colour = "${p.purple}"
 
     [styles.network]
-    rx_colour = "#cba6f7"
-    tx_colour = "#b4befe"
-    rx_total_colour = "#89b4fa"
-    tx_total_colour = "#74c7ec"
+    rx_colour = "${p.accent}"
+    tx_colour = "${p.blue}"
+    rx_total_colour = "${p.aqua}"
+    tx_total_colour = "${p.purple}"
 
     [styles.battery]
-    high_battery_colour = "#a6e3a1"
-    medium_battery_colour = "#f9e2af"
-    low_battery_colour = "#f38ba8"
+    high_battery_colour = "${p.success}"
+    medium_battery_colour = "${p.warning}"
+    low_battery_colour = "${p.error}"
 
     [styles.tables]
-    headers = { colour = "#cba6f7", bold = true }
+    headers = { colour = "${p.accent}", bold = true }
 
     [styles.graphs]
-    graph_colour = "#cba6f7"
-    legend_text = { colour = "#cdd6f4" }
+    graph_colour = "${p.accent}"
+    legend_text = { colour = "${p.foreground}" }
 
     [styles.widgets]
-    border_colour = "#6c7086"
-    selected_border_colour = "#cba6f7"
-    widget_title = { colour = "#cba6f7", bold = true }
-    text = { colour = "#cdd6f4" }
-    selected_text = { colour = "#11111b", bg_colour = "#cba6f7" }
-    disabled_text = { colour = "#6c7086" }
+    border_colour = "${p.muted}"
+    selected_border_colour = "${p.accent}"
+    widget_title = { colour = "${p.accent}", bold = true }
+    text = { colour = "${p.foreground}" }
+    selected_text = { colour = "${p.background}", bg_colour = "${p.accent}" }
+    disabled_text = { colour = "${p.muted}" }
   '';
 }

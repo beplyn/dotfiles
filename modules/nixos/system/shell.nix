@@ -1,6 +1,16 @@
-{
-  ...
-}:
+{ themeName, ... }:
+
+let
+  rawPalette = builtins.fromTOML (builtins.readFile ../../theme/${themeName}.toml);
+  palette = rawPalette // {
+    text = rawPalette.foreground;
+    muted = rawPalette.surfaceBright;
+    accent = rawPalette.purple;
+    error = rawPalette.red;
+    success = rawPalette.green;
+    warning = rawPalette.yellow;
+  };
+in
 
 {
   programs.fish = {
@@ -20,7 +30,7 @@
     };
     generateCompletions = true;
 
-    shellFunctions.nrbs = ''
+    shellFunctions.nrbs.body = ''
       set -l theme catppuccin
       if test (count $argv) -gt 0
         set theme $argv[1]
@@ -70,58 +80,22 @@
       format = "$fill[](mauve)$os$directory$git_branch$git_status[([](mauve bg:surface2)$cmd_duration[](mauve))](crust bg:mauve)[─╮](fg:overlay0)$line_break[$character](mauve)";
       right_format = "[─╯](fg:overlay0)";
       add_newline = true;
-      palette = "catppuccin_mocha";
+      palette = "theme";
 
       palettes = {
-        powerlevel10k = {
-          p10k_directory = "#00afff";
-          p10k_green = "#5fd700";
-          p10k_red = "#ff0000";
-          p10k_modified = "#d7af00";
-          p10k_duration = "#87875f";
-          p10k_time = "#5f8787";
-          p10k_surface = "#444444";
-          p10k_separator = "#949494";
-          p10k_foreground = "#e4e4e4";
-          p10k_outline = "#6c6c6c";
-          p10k_black = "#080808";
-          p10k_ansi_black = "#2e3436";
-          p10k_ansi_green = "#4e9a06";
-          p10k_ansi_yellow = "#c4a000";
-          p10k_ansi_blue = "#3465a4";
-          p10k_ansi_white = "#d3d7cf";
-          p10k_blue = "#005faf";
-          p10k_yellow = "#d7af00";
-          p10k_white = "#d0d0d0";
-        };
-
-        catppuccin_mocha = {
-          rosewater = "#f5e0dc";
-          flamingo = "#f2cdcd";
-          pink = "#f5c2e7";
-          mauve = "#cba6f7";
-          red = "#f38ba8";
-          maroon = "#eba0ac";
-          peach = "#fab387";
-          yellow = "#f9e2af";
-          green = "#a6e3a1";
-          teal = "#94e2d5";
-          sky = "#89dceb";
-          sapphire = "#74c7ec";
-          blue = "#89b4fa";
-          lavender = "#b4befe";
-          text = "#cdd6f4";
-          subtext1 = "#bac2de";
-          subtext0 = "#a6adc8";
-          overlay2 = "#9399b2";
-          overlay1 = "#7f849c";
-          overlay0 = "#6c7086";
-          surface2 = "#585b70";
-          surface1 = "#45475a";
-          surface0 = "#313244";
-          base = "#1e1e2e";
-          mantle = "#181825";
-          crust = "#11111b";
+        theme = {
+          mauve = palette.accent;
+          red = palette.error;
+          yellow = palette.warning;
+          green = palette.success;
+          blue = palette.blue;
+          teal = palette.aqua;
+          purple = palette.purple;
+          text = palette.text;
+          overlay0 = palette.muted;
+          surface2 = palette.surfaceBright;
+          surface1 = palette.surface;
+          crust = palette.background;
         };
       };
 

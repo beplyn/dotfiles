@@ -1,4 +1,8 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
+
+let
+  p = config.themes.palette;
+in
 
 {
   home.packages = with pkgs; [
@@ -15,23 +19,23 @@
         showCommandLog = false;
         theme = {
           activeBorderColor = [
-            "#cba6f7"
+            p.accent
             "bold"
           ];
-          inactiveBorderColor = [ "#6c7086" ];
+          inactiveBorderColor = [ p.muted ];
           searchingActiveBorderColor = [
-            "#89dceb"
+            p.aqua
             "bold"
           ];
-          optionsTextColor = [ "#89b4fa" ];
-          selectedLineBgColor = [ "#313244" ];
-          inactiveViewSelectedLineBgColor = [ "#313244" ];
-          cherryPickedCommitBgColor = [ "#cba6f7" ];
-          cherryPickedCommitFgColor = [ "#11111b" ];
-          markedBaseCommitBgColor = [ "#f9e2af" ];
-          markedBaseCommitFgColor = [ "#11111b" ];
-          unstagedChangesColor = [ "#f38ba8" ];
-          defaultFgColor = [ "#cdd6f4" ];
+          optionsTextColor = [ p.blue ];
+          selectedLineBgColor = [ p.surface ];
+          inactiveViewSelectedLineBgColor = [ p.surface ];
+          cherryPickedCommitBgColor = [ p.accent ];
+          cherryPickedCommitFgColor = [ p.background ];
+          markedBaseCommitBgColor = [ p.warning ];
+          markedBaseCommitFgColor = [ p.background ];
+          unstagedChangesColor = [ p.error ];
+          defaultFgColor = [ p.foreground ];
         };
       };
       git = {

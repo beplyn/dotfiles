@@ -1,3 +1,8 @@
+{ config, ... }:
+
+let
+  p = config.themes.palette;
+in
 {
   programs.tmux = {
     enable = true;
@@ -10,14 +15,14 @@
     prefix = "C-a";
     sensibleOnTop = false;
     extraConfig = ''
-      set -g status-style "bg=#1e1e2e,fg=#cdd6f4"
-      set -g message-style "bg=#313244,fg=#cdd6f4"
-      set -g pane-border-style "fg=#45475a"
-      set -g pane-active-border-style "fg=#cba6f7"
-      set -g status-left "#[fg=#11111b,bg=#cba6f7,bold] #S #[fg=#cba6f7,bg=#1e1e2e]"
-      set -g status-right "#[fg=#6c7086]%Y-%m-%d #[fg=#cba6f7]#[fg=#11111b,bg=#cba6f7,bold] %H:%M "
-      set -g window-status-format "#[fg=#6c7086] #I:#W "
-      set -g window-status-current-format "#[fg=#11111b,bg=#cba6f7,bold] #I:#W "
+      set -g status-style "bg=${p.background},fg=${p.foreground}"
+      set -g message-style "bg=${p.surface},fg=${p.foreground}"
+      set -g pane-border-style "fg=${p.surfaceBright}"
+      set -g pane-active-border-style "fg=${p.accent}"
+      set -g status-left "#[fg=${p.background},bg=${p.accent},bold] #S #[fg=${p.accent},bg=${p.background}]"
+      set -g status-right "#[fg=${p.muted}]%Y-%m-%d #[fg=${p.accent}]#[fg=${p.background},bg=${p.accent},bold] %H:%M "
+      set -g window-status-format "#[fg=${p.muted}] #I:#W "
+      set -g window-status-current-format "#[fg=${p.background},bg=${p.accent},bold] #I:#W "
     '';
   };
 }
