@@ -20,6 +20,8 @@
     millennium.url = "github:SteamClientHomebrew/Millennium?dir=packages/nix";
 
     netspd.url = "github:TarunVishwakarma1/netspd";
+
+    sops-nix.url = "github:Mic92/sops-nix";
   };
 
   outputs =
@@ -32,31 +34,38 @@
       areofyl-fetch,
       millennium,
       netspd,
+      sops-nix,
       ...
     }:
+    let
+      username = "beplyn";
+      email = "me@beplyn.dev";
+      codebergHost = "codeberg.org";
+    in
     {
       nixosConfigurations."nixos" = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs; };
+        specialArgs = { inherit inputs username email codebergHost; };
         modules = [
           { nixpkgs.hostPlatform = "x86_64-linux"; }
           { nixpkgs.overlays = [ millennium.overlays.default ]; }
           ./configuration.nix
           home-manager.nixosModules.home-manager
           {
-            home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.extraSpecialArgs = { inherit inputs username email codebergHost; };
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
 
             home-manager.sharedModules = [
               nixvim.homeModules.nixvim
               areofyl-fetch.homeManagerModules.default
+              sops-nix.homeManagerModules.sops
             ];
-            home-manager.users.beplyn = {
+            home-manager.users.${username} = {
               imports = [
                 ./modules/home-manager/home.nix
               ];
-              home.username = "beplyn";
-              home.homeDirectory = "/home/beplyn";
+              home.username = username;
+              home.homeDirectory = "/home/${username}";
               home.stateVersion = "26.11";
             };
           }
