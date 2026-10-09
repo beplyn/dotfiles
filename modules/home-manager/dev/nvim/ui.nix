@@ -1,5 +1,11 @@
 {
   programs.nixvim = {
+    extraFiles = {
+      "logos".source = ./logos;
+      "lua/random_logo.lua".source = ./lua/random_logo.lua;
+      "lua/alpha.lua".source = ./lua/alpha.lua;
+    };
+
     colorschemes.catppuccin = {
       enable = true;
       settings = {
@@ -17,6 +23,12 @@
     };
 
     plugins = {
+      alpha = {
+        enable = true;
+        theme = "dashboard";
+        luaConfig.content = builtins.readFile ./lua/alpha.lua;
+      };
+
       lualine = {
         enable = true;
         settings = {
