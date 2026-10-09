@@ -3,7 +3,7 @@
   inputs,
   config,
   username,
-  codebergHost,
+  forgejoHost,
   ...
 }:
 
@@ -18,14 +18,14 @@
 
   home.sessionVariables = {
     FORGEJO_TOKEN_FILE = config.sops.secrets."forgejo-token".path;
-    FORGEJO_API_URL = "https://${codebergHost}/api/v1";
+    FORGEJO_API_URL = "https://${forgejoHost}/api/v1";
   };
 
   xdg.configFile."forgejo-cli/config.yml".text = ''
-    default_host: "${codebergHost}"
+    default_host: "${forgejoHost}"
     hosts:
-      ${codebergHost}:
+      ${forgejoHost}:
         user: "${username}"
-        url: "https://${codebergHost}"
+        url: "https://${forgejoHost}"
   '';
 }

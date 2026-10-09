@@ -19,6 +19,8 @@
 
     millennium.url = "github:SteamClientHomebrew/Millennium?dir=packages/nix";
 
+    catppuccin.url = "github:catppuccin/nix";
+
     netspd.url = "github:TarunVishwakarma1/netspd";
 
     sops-nix.url = "github:Mic92/sops-nix";
@@ -33,6 +35,7 @@
       nixvim,
       areofyl-fetch,
       millennium,
+      catppuccin,
       netspd,
       sops-nix,
       ...
@@ -40,22 +43,37 @@
     let
       username = "beplyn";
       email = "me@beplyn.dev";
-      codebergHost = "codeberg.org";
+      forgejoHost = "codeberg.org";
     in
     {
       nixosConfigurations."nixos" = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs username email codebergHost; };
+        specialArgs = {
+          inherit
+            inputs
+            username
+            email
+            forgejoHost
+            ;
+        };
         modules = [
           { nixpkgs.hostPlatform = "x86_64-linux"; }
           { nixpkgs.overlays = [ millennium.overlays.default ]; }
           ./configuration.nix
           home-manager.nixosModules.home-manager
           {
-            home-manager.extraSpecialArgs = { inherit inputs username email codebergHost; };
+            home-manager.extraSpecialArgs = {
+              inherit
+                inputs
+                username
+                email
+                forgejoHost
+                ;
+            };
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
 
             home-manager.sharedModules = [
+              catppuccin.homeModules.catppuccin
               nixvim.homeModules.nixvim
               areofyl-fetch.homeManagerModules.default
               sops-nix.homeManagerModules.sops
