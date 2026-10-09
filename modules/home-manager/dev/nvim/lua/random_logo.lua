@@ -1,35 +1,5 @@
 local M = {}
 
-local theme_accents = {
-  catppuccin = {
-    "#f38ba8", -- red
-    "#fab387", -- orange
-    "#f9e2af", -- yellow
-    "#a6e3a1", -- green
-    "#94e2d5", -- aqua
-    "#89b4fa", -- blue
-    "#cba6f7", -- purple
-  },
-  gruvbox = {
-    "#cc241d", -- red
-    "#d65d0e", -- orange
-    "#d79921", -- yellow
-    "#98971a", -- green
-    "#689d6a", -- aqua
-    "#458588", -- blue
-    "#b16286", -- purple
-  },
-  nord = {
-    "#bf616a", -- red
-    "#d08770", -- orange
-    "#ebcb8b", -- yellow
-    "#a3be8c", -- green
-    "#8fbcbb", -- aqua
-    "#81a1c1", -- blue
-    "#b48ead", -- purple
-  },
-}
-
 math.randomseed(os.time())
 
 function M.get_header()
@@ -51,14 +21,18 @@ function M.get_header()
 end
 
 function M.get_accent_color()
-  local colorscheme = vim.g.colors_name or "catppuccin"
-  local accents = theme_accents[colorscheme]
+  local accents = {
+    vim.api.nvim_get_hl(0, { name = "DiagnosticError", link = false }).fg,
+    vim.api.nvim_get_hl(0, { name = "DiagnosticWarn", link = false }).fg,
+    vim.api.nvim_get_hl(0, { name = "DiagnosticInfo", link = false }).fg,
+    vim.api.nvim_get_hl(0, { name = "DiagnosticHint", link = false }).fg,
+    vim.api.nvim_get_hl(0, { name = "Directory", link = false }).fg,
+  }
+  local available = vim.tbl_filter(function(color)
+    return color ~= nil
+  end, accents)
 
-  if not accents then
-    accents = theme_accents[colorscheme:match("^[^-]+")] or theme_accents.catppuccin
-  end
-
-  return accents[math.random(#accents)]
+  return string.format("#%06x", available[math.random(#available)])
 end
 
 return M

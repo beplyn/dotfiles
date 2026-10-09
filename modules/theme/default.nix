@@ -1,33 +1,32 @@
-{ config, lib, themeName, ... }:
+{ config, lib, ... }:
 
 let
-  palettes = {
-    catppuccin = builtins.fromTOML (builtins.readFile ./catppuccin.toml);
-    gruvbox = builtins.fromTOML (builtins.readFile ./gruvbox.toml);
-    nord = builtins.fromTOML (builtins.readFile ./nord.toml);
-  };
+  c = config.lib.stylix.colors.withHashtag;
 in
 {
-  options.themes = {
-    active = lib.mkOption {
-      type = lib.types.enum (builtins.attrNames palettes);
-      default = themeName;
-      description = "The active dark theme.";
-    };
-
-    palette = lib.mkOption {
-      type = lib.types.attrs;
-      readOnly = true;
-      description = "Colors from the active theme.";
-    };
+  options.themes.palette = lib.mkOption {
+    type = lib.types.attrs;
+    readOnly = true;
+    description = "Compatibility palette derived from Stylix.";
   };
 
-  config.themes.palette = palettes.${config.themes.active} // {
-    text = palettes.${config.themes.active}.foreground;
-    muted = palettes.${config.themes.active}.surfaceBright;
-    accent = palettes.${config.themes.active}.purple;
-    error = palettes.${config.themes.active}.red;
-    success = palettes.${config.themes.active}.green;
-    warning = palettes.${config.themes.active}.yellow;
+  config.themes.palette = {
+    background = c.base00;
+    surface = c.base02;
+    surfaceBright = c.base03;
+    foreground = c.base05;
+    red = c.base08;
+    orange = c.base09;
+    yellow = c.base0A;
+    green = c.base0B;
+    aqua = c.base0C;
+    blue = c.base0D;
+    purple = c.base0E;
+    text = c.base05;
+    muted = c.base03;
+    accent = c.base0E;
+    error = c.base08;
+    success = c.base0B;
+    warning = c.base0A;
   };
 }
