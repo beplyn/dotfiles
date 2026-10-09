@@ -1,6 +1,8 @@
 { ... }:
 
 {
+  sops.defaultSopsFile = ../../secrets.yaml;
+
   imports = [
     ./gtk.nix
     ./qt.nix
