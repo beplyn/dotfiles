@@ -10,6 +10,9 @@
           comments = [ "italic" ];
           functions = [ "bold" ];
         };
+        integrations = {
+          lualine = true;
+        };
       };
     };
 
