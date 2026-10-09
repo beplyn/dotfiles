@@ -4,7 +4,7 @@
   config,
   username,
   email,
-  codebergHost,
+  forgejoHost,
   ...
 }:
 
@@ -36,7 +36,7 @@
       $DRY_RUN_CMD ${pkgs.coreutils}/bin/mkdir -p "${config.home.homeDirectory}/.ssh"
       $DRY_RUN_CMD ${pkgs.openssh}/bin/ssh-keygen -q -t ed25519 -f "$ssh_key" \
         -N "" \
-        -C "${username}@${codebergHost}"
+        -C "${username}@${forgejoHost}"
     fi
   '';
 }

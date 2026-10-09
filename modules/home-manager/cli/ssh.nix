@@ -1,6 +1,6 @@
 {
   config,
-  codebergHost,
+  forgejoHost,
   ...
 }:
 
@@ -9,8 +9,8 @@
     enable = true;
     enableDefaultConfig = false;
     settings = {
-      "${codebergHost}" = {
-        hostname = codebergHost;
+      "${forgejoHost}" = {
+        hostname = forgejoHost;
         user = "git";
         identityFile = "${config.home.homeDirectory}/.ssh/codeberg-auth";
         identitiesOnly = true;

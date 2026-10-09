@@ -9,5 +9,6 @@
     ./gaming.nix
     ./dev/module.nix
     ./cli/module.nix
+    ./thme.nix
   ];
 }
