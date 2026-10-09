@@ -1,8 +1,10 @@
 keys:
   - &user_beplyn age1r436v0kp00v32lxks5g7ahu72kgae92ts4rljd44gutu4n79rfeq224t3z
+  - &host_nixos age109mvh3eyh4qryas4htue3zycf7yq4rc0thg7lgaa9e50wzyncy0stqal3k
 
 creation_rules:
   - path_regex: secrets.*\.ya?ml$
     key_groups:
       - age:
           - *user_beplyn
+          - *host_nixos
