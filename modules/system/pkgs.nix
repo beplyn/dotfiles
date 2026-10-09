@@ -8,6 +8,5 @@
     vim
     eza
     git
-    github-copilot-cli
   ];
 }
