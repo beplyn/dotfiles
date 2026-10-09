@@ -8,20 +8,6 @@
       "lua/alpha.lua".source = ./lua/alpha.lua;
     };
 
-    colorschemes.catppuccin = lib.mkIf (config.themes.active == "catppuccin") {
-      enable = true;
-      settings = {
-        flavour = "mocha";
-        transparent = false;
-        terminal_colors = true;
-        styles = {
-          comments = [ "italic" ];
-          functions = [ "bold" ];
-        };
-        integrations.lualine = true;
-      };
-    };
-
     colorschemes.gruvbox.enable = config.themes.active == "gruvbox";
     colorschemes.nord.enable = config.themes.active == "nord";
 

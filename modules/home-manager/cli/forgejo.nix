@@ -13,7 +13,7 @@
   };
 
   home.packages = [
-    inputs.forgejo-cli.packages.${pkgs.system}.default
+    inputs.forgejo-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   home.sessionVariables = {
