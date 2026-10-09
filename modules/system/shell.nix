@@ -6,10 +6,10 @@
   programs.fish = {
     enable = true;
     shellAbbrs = {
-      tree = "eza --icons --tree --colors=auto";
-      trel = "eza --icons --tree -a -I \".git\" --colors=auto --level=2";
+      tree = "eza --icons --tree --color=auto";
+      trel = "eza --icons --tree -a -I \".git\" --color=auto --level=2";
       icat = "kitty +kitten icat";
-      rebuild = "sudo nixos-rebuild switch --flake .#";
+      nrbs = "sudo nixos-rebuild switch --flake .#";
       "." = "cd ..";
       ".." = "cd ../../";
     };
