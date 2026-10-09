@@ -1,4 +1,6 @@
 {
+  username,
+  email,
   ...
 }:
 
@@ -7,8 +9,8 @@
     enable = true;
     settings = {
       user = {
-        name = "beplyn";
-        email = "me@beplyn.dev";
+        name = username;
+        inherit email;
       };
       init.defaultBranch = "master";
       core.editor = "nvim";
@@ -17,7 +19,7 @@
       };
     };
     signing = {
-      key = "me@beplyn.dev";
+      key = email;
       signByDefault = true;
     };
   };
