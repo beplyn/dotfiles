@@ -3,7 +3,7 @@ keys:
   - &host_nixos age109mvh3eyh4qryas4htue3zycf7yq4rc0thg7lgaa9e50wzyncy0stqal3k
 
 creation_rules:
-  - path_regex: secrets.*\.ya?ml$
+  - path_regex: secrets/.*\.ya?ml$
     key_groups:
       - age:
           - *user_beplyn

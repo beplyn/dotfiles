@@ -1,4 +1,4 @@
-{ ... }:
+{ config, ... }:
 
 {
   programs.kitty = {
@@ -10,28 +10,28 @@
     };
 
     settings = {
-      foreground = "#cdd6f4";
-      background = "#1e1e2e";
-      cursor = "#f5e0dc";
-      selection_background = "#585b70";
+      foreground = config.themes.palette.foreground;
+      background = config.themes.palette.background;
+      cursor = config.themes.palette.foreground;
+      selection_background = config.themes.palette.surfaceBright;
       selection_foreground = "none";
 
-      color0 = "#45475a";
-      color1 = "#f38ba8";
-      color2 = "#a6e3a1";
-      color3 = "#f9e2af";
-      color4 = "#89b4fa";
-      color5 = "#f5c2e7";
-      color6 = "#94e2d5";
-      color7 = "#bac2de";
-      color8 = "#585b70";
-      color9 = "#f38ba8";
-      color10 = "#a6e3a1";
-      color11 = "#f9e2af";
-      color12 = "#89b4fa";
-      color13 = "#f5c2e7";
-      color14 = "#94e2d5";
-      color15 = "#a6adc8";
+      color0 = config.themes.palette.surface;
+      color1 = config.themes.palette.red;
+      color2 = config.themes.palette.green;
+      color3 = config.themes.palette.yellow;
+      color4 = config.themes.palette.blue;
+      color5 = config.themes.palette.purple;
+      color6 = config.themes.palette.aqua;
+      color7 = config.themes.palette.foreground;
+      color8 = config.themes.palette.surfaceBright;
+      color9 = config.themes.palette.red;
+      color10 = config.themes.palette.green;
+      color11 = config.themes.palette.yellow;
+      color12 = config.themes.palette.blue;
+      color13 = config.themes.palette.purple;
+      color14 = config.themes.palette.aqua;
+      color15 = config.themes.palette.foreground;
 
       background_opacity = 0.65;
       background_blur = 20;

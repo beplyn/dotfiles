@@ -44,50 +44,58 @@
       username = "beplyn";
       email = "me@beplyn.dev";
       forgejoHost = "codeberg.org";
+      hostModule =
+        hostname: themeName:
+        nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            inherit
+              inputs
+              username
+              email
+              forgejoHost
+              ;
+          };
+          modules = [
+            { nixpkgs.hostPlatform = "x86_64-linux"; }
+            { nixpkgs.overlays = [ millennium.overlays.default ]; }
+            ./hosts/common
+            ./hosts/${hostname}
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.extraSpecialArgs = {
+                inherit
+                  inputs
+                  username
+                  email
+                  forgejoHost
+                  themeName
+                  ;
+              };
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+
+              home-manager.sharedModules = [
+                catppuccin.homeModules.catppuccin
+                nixvim.homeModules.nixvim
+                areofyl-fetch.homeManagerModules.default
+                sops-nix.homeManagerModules.sops
+              ];
+              home-manager.users.${username} = {
+                imports = [ ./users/${username} ];
+                home.username = username;
+                home.homeDirectory = "/home/${username}";
+                home.stateVersion = "26.11";
+              };
+            }
+          ];
+        };
     in
     {
-      nixosConfigurations."nixos" = nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          inherit
-            inputs
-            username
-            email
-            forgejoHost
-            ;
-        };
-        modules = [
-          { nixpkgs.hostPlatform = "x86_64-linux"; }
-          { nixpkgs.overlays = [ millennium.overlays.default ]; }
-          ./hosts/nixos/configuration.nix
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.extraSpecialArgs = {
-              inherit
-                inputs
-                username
-                email
-                forgejoHost
-                ;
-            };
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-
-            home-manager.sharedModules = [
-              catppuccin.homeModules.catppuccin
-              nixvim.homeModules.nixvim
-              areofyl-fetch.homeManagerModules.default
-              sops-nix.homeManagerModules.sops
-            ];
-            home-manager.users.${username} = {
-              imports = [
-                ./modules/home-manager/home.nix
-              ];
-              home.username = username;
-              home.homeDirectory = "/home/${username}";
-              home.stateVersion = "26.11";
-            };
-          }
-        ];
+      nixosConfigurations = {
+        "nixos-catppuccin" = hostModule "nixos" "catppuccin";
+        "nixos-gruvbox" = hostModule "nixos" "gruvbox";
+        "nixos-nord" = hostModule "nixos" "nord";
+        default = hostModule "nixos" "catppuccin";
       };
     };
 }
