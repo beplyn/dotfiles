@@ -12,7 +12,7 @@ in
     ./boot.nix
     ./networking.nix
     ./locale.nix
-    ./sddm.nix
+    ./displayManager.nix
     ./niri.nix
   ];
 
