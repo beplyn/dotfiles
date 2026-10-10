@@ -63,6 +63,20 @@ in
         end
       end
       bind \es __prepend_sudo
+
+      function __append_fzf
+        set -l cmd (commandline)
+        if test -z "$cmd"
+          return
+        end
+        if string match -q "*q (fzf)" "$cmd"
+          commandline -r (string replace -r ' \(fzf\)$' "$cmd")
+        else
+          commandline -r "$cmd (fzf)"
+        end
+      end
+      bind \ef __append_fzf
+
       fish_add_path --prepend --move \
         $HOME/.nix-profile/bin \
         /nix/var/nix/profiles/default/bin
