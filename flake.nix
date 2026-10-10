@@ -23,6 +23,11 @@
 
     sops-nix.url = "github:Mic92/sops-nix";
 
+    ly = {
+      url = "github:fairyglade/ly";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     stylix.url = "github:danth/stylix";
   };
 
@@ -37,6 +42,7 @@
       millennium,
       netspd,
       sops-nix,
+      ly,
       stylix,
       ...
     }:

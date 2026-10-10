@@ -238,6 +238,26 @@
         "type": "github"
       }
     },
+    "ly": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791131243,
+        "narHash": "sha256-Cl6DZldXjP6ISXba03r4YEMwzns83DEmo+nYSTHB99w=",
+        "owner": "fairyglade",
+        "repo": "ly",
+        "rev": "4e0f23f08406f20b95146de6ce2e876918d7903d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "fairyglade",
+        "repo": "ly",
+        "type": "github"
+      }
+    },
     "millennium": {
       "inputs": {
         "millennium-src": "millennium-src",
@@ -471,6 +491,7 @@
         "areofyl-fetch": "areofyl-fetch",
         "forgejo-cli": "forgejo-cli",
         "home-manager": "home-manager",
+        "ly": "ly",
         "millennium": "millennium",
         "netspd": "netspd",
         "nixpkgs": "nixpkgs_4",
