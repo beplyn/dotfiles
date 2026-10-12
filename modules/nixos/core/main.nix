@@ -19,6 +19,7 @@ in
   stylix = {
     enable = true;
     base16Scheme = base16Schemes.${themeName};
+    targets.grub.enable = true;
     fonts.monospace.name = "Maple Mono";
     opacity.terminal = 0.65;
   };
