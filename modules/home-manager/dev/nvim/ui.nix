@@ -76,8 +76,20 @@ in
                 "AlphaShortcut",
                 "AlphaFooter",
                 "DashboardRandomLogo",
+                "TreesitterContext",
+                "TreesitterContextLineNumber",
+                "TreesitterContextBottom",
               }) do
-                vim.api.nvim_set_hl(0, group, { bg = "none", ctermbg = "none" })
+                local hl = { bg = "none", ctermbg = "none" }
+
+                if group == "TreesitterContextLineNumber" then
+                  hl.fg = "#6c7086"
+                elseif group == "TreesitterContextBottom" then
+                  hl.underline = true
+                  hl.sp = "#45475a"
+                end
+
+                vim.api.nvim_set_hl(0, group, hl)
               end
             end
           '';
