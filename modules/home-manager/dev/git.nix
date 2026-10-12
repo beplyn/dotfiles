@@ -13,6 +13,7 @@
         inherit email;
       };
       init.defaultBranch = "master";
+      pull.rebase = true;
       core.editor = "nvim";
       safe = {
         directory = [ "/etc/nixos" ];
