@@ -5,8 +5,17 @@
 
   programs.kitty = {
     enable = true;
+    enableGitIntegration = true;
+    shellIntegration.enableFishIntegration = true;
+    font = {
+      name = "Maple Mono NF";
+      size = 12;
+    };
 
     settings = {
+      bold_font = "auto";
+
+      background_opacity = "0.75";
       background_blur = 20;
       cursor_shape = "underline";
       window_padding_width = 8;

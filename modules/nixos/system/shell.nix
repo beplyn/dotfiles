@@ -30,9 +30,9 @@ in
       icat = "kitty +kitten icat";
       "." = "cd ..";
       ".." = "cd ../../";
-      nrbs-catppuccin = "sudo nixos-rebuild switch --flake /etc/nixos#${config.networking.hostName}-catppuccin";
-      nrbs-nord = "sudo nixos-rebuild switch --flake /etc/nixos#${config.networking.hostName}-nord";
-      nrbs-gruvbox = "sudo nixos-rebuild switch --flake /etc/nixos#${config.networking.hostName}-gruvbox";
+      nrbs-catppuccin = "cd /etc/nixos; git add . && sudo nixos-rebuild switch --flake /etc/nixos#${config.networking.hostName}-catppuccin && git commit";
+      nrbs-nord = "cd /etc/nixos; git add . && sudo nixos-rebuild switch --flake /etc/nixos#${config.networking.hostName}-nord && git commit";
+      nrbs-gruvbox = "cd /etc/nixos; git add . && sudo nixos-rebuild switch --flake /etc/nixos#${config.networking.hostName}-gruvbox && git commit";
     };
     shellAliases = {
       vim = "nvim";
