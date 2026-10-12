@@ -2,8 +2,7 @@
 
 {
   imports = [
-    ./gtk.nix
-    ./gaming.nix
+    ./graphical/module.nix
     ./dev/module.nix
     ./cli/module.nix
     ../theme
