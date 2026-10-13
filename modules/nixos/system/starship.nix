@@ -74,16 +74,16 @@ in
       git_status = {
         style = "bg:surface1 fg:red";
         format = "[](fg:surface1)([$all_status$ahead_behind]($style))[](fg:surface1) ";
-        up_to_date = "[ ✓ ](bg:surface1 fg:green)";
-        untracked = "[?\\($count\\)](bg:surface1 fg:yellow)";
-        stashed = "[\\$](bg:surface1 fg:mauve)";
-        modified = "[!\\($count\\)](bg:surface1 fg:yellow)";
-        renamed = "[»\\($count\\)](bg:surface1 fg:mauve)";
-        deleted = "[✘\\($count\\)](bg:surface1 fg:red)";
-        staged = "[++\\($count\\)](bg:surface1 fg:green)";
-        ahead = "[⇡\\($count\\)](bg:surface1 fg:teal)";
-        diverged = "⇕[\\[](bg:surface1 fg:mauve)[⇡\\($ahead_count\\)](bg:surface1 fg:teal)[⇣\\($behind_count\\)](bg:surface1 fg:red)[\\]](bg:surface1 fg:mauve)";
-        behind = "[⇣\\($count\\)](bg:surface1 fg:red)";
+        up_to_date = "[ ✔ ](bg:surface1 fg:green)";
+        untracked = "[󱜺\\($count\\)](bg:surface1 fg:yellow)";
+        stashed = "[\\$](bg:surface1 fg:mauve)";
+        modified = "[\\($count\\)](bg:surface1 fg:yellow)";
+        renamed = "[󱟀\\($count\\)](bg:surface1 fg:mauve)";
+        deleted = "[\\($count\\)](bg:surface1 fg:red)";
+        staged = "[\\($count\\)](bg:surface1 fg:green)";
+        ahead = "[󰜷\\($count\\)](bg:surface1 fg:teal)";
+        diverged = "󰹺[\\[](bg:surface1 fg:mauve)[⇡\\($ahead_count\\)](bg:surface1 fg:teal)[⇣\\($behind_count\\)](bg:surface1 fg:red)[\\]](bg:surface1 fg:mauve)";
+        behind = "[󰜮\\($count\\)](bg:surface1 fg:red)";
       };
 
       nix_shell = {
