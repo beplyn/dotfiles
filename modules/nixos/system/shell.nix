@@ -1,25 +1,7 @@
-{ config, ... }:
-
-let
-  c = config.lib.stylix.colors.withHashtag;
-  palette = {
-    background = c.base00;
-    surface = c.base02;
-    surfaceBright = c.base03;
-    red = c.base08;
-    yellow = c.base0A;
-    green = c.base0B;
-    aqua = c.base0C;
-    blue = c.base0D;
-    purple = c.base0E;
-    text = c.base05;
-    muted = c.base03;
-    accent = c.base0E;
-    error = c.base08;
-    success = c.base0B;
-    warning = c.base0A;
-  };
-in
+{
+  config,
+  ...
+}:
 
 {
   programs.fish = {
@@ -88,102 +70,5 @@ in
   programs.zoxide = {
     enable = true;
     enableFishIntegration = true;
-  };
-
-  programs.starship = {
-    enable = true;
-    interactiveOnly = true;
-    settings = {
-      "$schema" = "https://starship.rs/config-schema.json";
-      format = "$fill[](mauve)$os$directory$git_branch$git_status[([](mauve bg:surface2)$cmd_duration[](mauve))](crust bg:mauve)[─╮](fg:overlay0)$line_break[$character](mauve)";
-      right_format = "[─╯](fg:overlay0)";
-      add_newline = true;
-      palette = "theme";
-
-      palettes = {
-        theme = {
-          mauve = palette.accent;
-          red = palette.error;
-          yellow = palette.warning;
-          green = palette.success;
-          blue = palette.blue;
-          teal = palette.aqua;
-          purple = palette.purple;
-          text = palette.text;
-          overlay0 = palette.muted;
-          surface2 = palette.surfaceBright;
-          surface1 = palette.surface;
-          crust = palette.background;
-        };
-      };
-
-      character = {
-        success_symbol = "[❯](bold fg:surface2)";
-        error_symbol = "[❯](bold fg:red)";
-        vimcmd_symbol = "[❮](bold fg:surface2)";
-        format = "▶ ";
-      };
-
-      cmd_duration = {
-        format = "[$duration]($style)";
-        min_time = 1500;
-        style = "bold crust bg:mauve";
-      };
-
-      directory = {
-        format = "[  $path ]($style)[](inverted surface2 bg:crust)";
-        style = "bold mauve bg:crust";
-        truncate_to_repo = false;
-        truncation_symbol = "…/";
-        repo_root_format = "[$before_root_path]($style)[$repo_root]($repo_root_style)[$path]($style)[$read_only]($read_only_style) ";
-      };
-
-      fill = {
-        style = "fg:overlay0";
-        symbol = " ";
-      };
-
-      git_branch = {
-        style = "red bg:surface2";
-        symbol = "";
-        format = "[( $branch $symbol (:$remote_branch))]($style)";
-      };
-
-      git_status = {
-        format = "[$all_status$ahead_behind ]($style)";
-        style = "bold purple bg:surface2";
-      };
-
-      jobs = {
-        format = "[ $symbol[$number](bold crust bg:bright-blue)[ ](bold crust bg:bright-blue)]($style)";
-        symbol = "[✦](crust bg:bright-blue)";
-        style = "bold crust bg:mauve";
-      };
-
-      os = {
-        disabled = false;
-        format = "[$symbol]($style)[](mauve bg:crust)";
-        style = "crust bg:mauve";
-        symbols = {
-          Arch = "";
-          NixOS = "";
-        };
-      };
-
-      status = {
-        disabled = false;
-        format = "[ $symbol$status ]($style)";
-        symbol = "✘";
-        style = "bold crust bg:mauve";
-        map_symbol = true;
-      };
-
-      time = {
-        disabled = false;
-        format = "[](bold red bg:bright-blue)[ at  $time ](surface0 bg:red)";
-        time_format = "%H:%M:%S";
-        style = "bold crust bg:mauve";
-      };
-    };
   };
 }
