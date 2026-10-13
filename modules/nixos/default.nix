@@ -2,8 +2,8 @@
 
 {
   imports = [
-    ./core/main.nix
-    ./system/main.nix
+    ./core/module.nix
+    ./system/module.nix
     ../theme
   ];
 }
