@@ -10,9 +10,11 @@ in
 {
   imports = [
     ./boot.nix
+    ./qbit.nix
     ./networking.nix
     ./locale.nix
     ./displayManager.nix
+    ./kdeconnect.nix
     ./niri.nix
   ];
 
