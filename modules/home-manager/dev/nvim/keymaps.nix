@@ -96,5 +96,11 @@
       action = "<cmd>write<cr>";
       options.desc = "Save buffer";
     }
+    {
+      mode = "n";
+      key = "<leader>tc";
+      action = "<cmd>TSContextToggle<cr>";
+      options.desc = "Toggle Treesitter Context";
+    }
   ];
 }

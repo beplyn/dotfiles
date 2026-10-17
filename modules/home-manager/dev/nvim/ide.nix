@@ -9,6 +9,5 @@
     inc-rename.enable = true;
     project-nvim.enable = true;
     todo-comments.enable = true;
-    treesitter-context.enable = true;
   };
 }

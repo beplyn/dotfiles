@@ -2,121 +2,58 @@
 
 let
   c = config.lib.stylix.colors.withHashtag;
-  logoColors = ''
-    {
-      "${c.base08}",
-      "${c.base09}",
-      "${c.base0A}",
-      "${c.base0B}",
-      "${c.base0C}",
-      "${c.base0D}",
-    }
-  '';
 in
 
 {
   stylix.targets.nixvim = {
     enable = true;
-    transparentBackground.main = true;
+    transparentBackground.main = false;
   };
 
   programs.nixvim = {
-    extraFiles = {
-      "logos".source = ./logos;
-      "lua/random_logo.lua".text = ''
-        local M = {}
-
-        local theme_accents = ${logoColors}
-
-        math.randomseed(os.time())
-
-        function M.get_header()
-          local logo_pattern = vim.fn.stdpath("config") .. "/logos/*.ascii"
-          local logos = vim.fn.glob(logo_pattern, false, true)
-
-          if #logos == 0 then
-            error("No ASCII logos found in " .. vim.fn.fnamemodify(logo_pattern, ":h"))
-          end
-
-          local logo = logos[math.random(#logos)]
-          local lines = vim.fn.readfile(logo)
-
-          if #lines == 0 then
-            error("ASCII logo is empty: " .. logo)
-          end
-
-          return lines
-        end
-
-        function M.get_accent_color()
-          return theme_accents[math.random(#theme_accents)]
-        end
-
-        return M
-      '';
-      "lua/alpha.lua".source = ./lua/alpha.lua;
-    };
-
     autoCmd = [
       {
-        event = "ColorScheme";
-        pattern = "*";
+        event = [
+          "ColorScheme"
+          "VimEnter"
+        ];
+        pattern = [ "*" ];
         callback = {
-          __raw = ''
-            function()
-              for _, group in ipairs({
-                "Normal",
-                "NormalNC",
-                "NormalFloat",
-                "FloatBorder",
-                "SignColumn",
-                "EndOfBuffer",
-                "AlphaHeader",
-                "AlphaButtons",
-                "AlphaShortcut",
-                "AlphaFooter",
-                "DashboardRandomLogo",
-                "TreesitterContext",
-                "TreesitterContextLineNumber",
-                "TreesitterContextBottom",
-              }) do
-                local hl = { bg = "none", ctermbg = "none" }
-
-                if group == "TreesitterContextLineNumber" then
-                  hl.fg = "#6c7086"
-                elseif group == "TreesitterContextBottom" then
-                  hl.underline = true
-                  hl.sp = "#45475a"
-                end
-
-                vim.api.nvim_set_hl(0, group, hl)
-              end
-            end
-          '';
+          __raw = builtins.replaceStrings
+            [
+              "@base00@"
+              "@base01@"
+              "@base04@"
+              "@base05@"
+              "@base0C@"
+              "@base0D@"
+              "@base0E@"
+            ]
+            [
+              c.base00
+              c.base01
+              c.base04
+              c.base05
+              c.base0C
+              c.base0D
+              c.base0E
+            ]
+            (builtins.readFile ./lua/highlights.lua);
         };
       }
     ];
+
+    extraFiles = {
+      "logos".source = ./logos;
+      "lua/random_logo.lua".source = ./lua/random_logo.lua;
+      "lua/alpha.lua".source = ./lua/alpha.lua;
+    };
 
     plugins = {
       alpha = {
         enable = true;
         theme = "dashboard";
         luaConfig.content = builtins.readFile ./lua/alpha.lua;
-      };
-
-      transparent = {
-        enable = false;
-        settings = {
-          extra_groups = [
-            "NormalFloat"
-            "FloatBorder"
-            "AlphaHeader"
-            "AlphaButtons"
-            "AlphaShortcut"
-            "AlphaFooter"
-            "DashboardRandomLogo"
-          ];
-        };
       };
 
       lualine = {
