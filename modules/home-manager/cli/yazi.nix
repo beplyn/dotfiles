@@ -4,6 +4,10 @@ let
   p = config.themes.palette;
 in
 {
+  home.sessionVariables = {
+    EDITOR = "nvim";
+  };
+
   programs.yazi = {
     enable = true;
     enableFishIntegration = true;
@@ -11,9 +15,53 @@ in
       opener = {
         edit = [
           {
-            run = "nvim \"$@\"";
+            run = "nvim %s";
             block = true;
             for = "unix";
+          }
+        ];
+      };
+      open = {
+        prepend_rules = [
+          {
+            url = "*.nix";
+            use = "edit";
+          }
+          {
+            url = "*.lua";
+            use = "edit";
+          }
+          {
+            url = "*.sh";
+            use = "edit";
+          }
+          {
+            url = "*.toml";
+            use = "edit";
+          }
+          {
+            url = "*.yaml";
+            use = "edit";
+          }
+          {
+            url = "*.yml";
+            use = "edit";
+          }
+          {
+            url = "*.json";
+            use = "edit";
+          }
+          {
+            url = "*.md";
+            use = "edit";
+          }
+          {
+            mime = "text/*";
+            use = "edit";
+          }
+          {
+            mime = "application/x-subrip";
+            use = "edit";
           }
         ];
       };
