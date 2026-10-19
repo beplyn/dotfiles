@@ -41,6 +41,7 @@ in
       git = {
         autoFetch = true;
         autoRefresh = true;
+        overrideGpg = true;
       };
     };
   };
