@@ -5,6 +5,13 @@
 
 let
   c = config.lib.stylix.colors.withHashtag;
+  hostIcon =
+    {
+      anvil = "󰢛";
+      compass = "󰆋";
+      shulker = "";
+    }
+    .${config.networking.hostName};
   palette = {
     background = c.base00;
     surface = c.base02;
@@ -31,7 +38,7 @@ in
 
     settings = {
       "$schema" = "https://starship.rs/config-schema.json";
-      format = "$directory[$git_branch$git_status]()$nix_shell";
+      format = "$hostname$directory[$git_branch$git_status]()$nix_shell";
       right_format = "$cmd_duration$time";
       add_newline = true;
       palette = "theme";
@@ -89,6 +96,12 @@ in
       nix_shell = {
         format = "[](fg:surface1)[ $symbol$state ]($style)[](fg:surface1) ";
         symbol = " ";
+        style = "bg:surface1 fg:blue";
+      };
+
+      hostname = {
+        format = "[](fg:surface1)[ ${hostIcon} ]($style)[](fg:surface1) ";
+        ssh_only = false;
         style = "bg:surface1 fg:blue";
       };
 
