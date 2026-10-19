@@ -2,11 +2,14 @@
   config,
   ...
 }:
-
+let
+  themeSwitch = "cd /etc/nixos; git add . && sudo nixos-rebuild switch --flake /etc/nixos#${config.networking.hostName}-";
+in
 {
   programs.fish = {
     enable = true;
     shellAbbrs = {
+      g = "git";
       tree = "eza --icons --tree --color=auto";
       trel = "eza --icons --tree -a -I \".git\" --color=auto --level=2";
       icat = "kitty +kitten icat";
@@ -19,9 +22,9 @@
 
       "." = "cd ..";
       ".." = "cd ../../";
-      catppuccin = "cd /etc/nixos; git add . && sudo nixos-rebuild switch --flake /etc/nixos#${config.networking.hostName}-catppuccin";
-      nord = "cd /etc/nixos; git add . && sudo nixos-rebuild switch --flake /etc/nixos#${config.networking.hostName}-nord";
-      gruvbox = "cd /etc/nixos; git add . && sudo nixos-rebuild switch --flake /etc/nixos#${config.networking.hostName}-gruvbox";
+      catppuccin = themeSwitch + "catppuccin";
+      nord = themeSwitch + "nord";
+      gruvbox = themeSwitch + "gruvbox";
     };
     shellAliases = {
       vim = "nvim";
