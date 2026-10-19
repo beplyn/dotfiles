@@ -19,14 +19,14 @@
 
       "." = "cd ..";
       ".." = "cd ../../";
-      bsc = "cd /etc/nixos; git add . && sudo nixos-rebuild switch --flake /etc/nixos#${config.networking.hostName}-catppuccin && git commit";
-      bsn = "cd /etc/nixos; git add . && sudo nixos-rebuild switch --flake /etc/nixos#${config.networking.hostName}-nord && git commit";
-      bsg = "cd /etc/nixos; git add . && sudo nixos-rebuild switch --flake /etc/nixos#${config.networking.hostName}-gruvbox && git commit";
+      catppuccin = "cd /etc/nixos; git add . && sudo nixos-rebuild switch --flake /etc/nixos#${config.networking.hostName}-catppuccin";
+      nord = "cd /etc/nixos; git add . && sudo nixos-rebuild switch --flake /etc/nixos#${config.networking.hostName}-nord";
+      gruvbox = "cd /etc/nixos; git add . && sudo nixos-rebuild switch --flake /etc/nixos#${config.networking.hostName}-gruvbox";
     };
     shellAliases = {
       vim = "nvim";
       nano = "nvim";
-      ls = "eza --icons --color=auto";
+      ls = "eza --icons --color=auto -a";
       grep = "rg --color=auto";
     };
     generateCompletions = true;
@@ -60,6 +60,8 @@
         end
         if string match -q "*q (fzf)" "$cmd"
           commandline -r (string replace -r ' \(fzf\)$' "$cmd")
+        else if string match -q "* " "$cmd"
+          commandline -r "$cmd(fzf)"
         else
           commandline -r "$cmd (fzf)"
         end
