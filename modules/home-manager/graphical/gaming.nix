@@ -7,7 +7,7 @@
 }:
 
 let
-  enabled = lib.toLower osConfig.networking.hostName != "larptop";
+  enabled = lib.toLower osConfig.networking.hostName == "anvil";
   p = config.themes.palette;
 in
 
