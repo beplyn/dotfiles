@@ -99,10 +99,16 @@
     in
     {
       nixosConfigurations = {
-        "virtM-catppuccin" = hostModule "virtM" "catppuccin";
-        "virtM-gruvbox" = hostModule "virtM" "gruvbox";
-        "virtM-nord" = hostModule "virtM" "nord";
-        default = hostModule "virtM" "catppuccin";
+        "anvil-catppuccin" = hostModule "anvil" "catppuccin";
+        "anvil-gruvbox" = hostModule "anvil" "gruvbox";
+        "anvil-nord" = hostModule "anvil" "nord";
+        "compass-catppuccin" = hostModule "compass" "catppuccin";
+        "compass-gruvbox" = hostModule "compass" "gruvbox";
+        "compass-nord" = hostModule "compass" "nord";
+        "shulker-catppuccin" = hostModule "shulker" "catppuccin";
+        "shulker-gruvbox" = hostModule "shulker" "gruvbox";
+        "shulker-nord" = hostModule "shulker" "nord";
+        default = hostModule "shulker" "catppuccin";
       };
     };
 }
