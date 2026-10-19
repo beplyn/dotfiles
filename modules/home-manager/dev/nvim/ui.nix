@@ -11,6 +11,31 @@ in
   };
 
   programs.nixvim = {
+    highlightOverride = {
+      "@comment".fg = c.base0C;
+      "@comment".italic = true;
+      "@keyword".fg = c.base0E;
+      "@function".fg = c.base0D;
+      "@function.builtin".fg = c.base0D;
+      "@variable".fg = c.base05;
+      "@variable.builtin".fg = c.base0E;
+      "@variable.parameter".fg = c.base08;
+      "@property".fg = c.base0C;
+      "@type".fg = c.base0A;
+      "@constant".fg = c.base09;
+      "@number".fg = c.base09;
+      "@string".fg = c.base0B;
+      "@string.special".fg = c.base0C;
+      "@string.special.path".fg = c.base0C;
+      "@string.special.uri".fg = c.base0C;
+      "@escape".fg = c.base0C;
+      "@operator".fg = c.base0D;
+      "@punctuation.delimiter".fg = c.base04;
+      "@punctuation.bracket".fg = c.base04;
+      "@punctuation.special".fg = c.base0E;
+      "@embedded".fg = c.base0A;
+    };
+
     autoCmd = [
       {
         event = [
