@@ -102,5 +102,25 @@
       action = "<cmd>TSContextToggle<cr>";
       options.desc = "Toggle Treesitter Context";
     }
+    {
+      mode = "v";
+      key = ">";
+      action = ">gv";
+      options = {
+        noremap = true;
+        silent = true;
+        desc = "Indent right and preserve visual selection";
+      };
+    }
+    {
+      mode = "v";
+      key = "<";
+      action = "<gv";
+      options = {
+        noremap = true;
+        silent = true;
+        desc = "Indent left and preserve visual selection";
+      };
+    }
   ];
 }

@@ -11,13 +11,14 @@
   };
 
   programs.nixvim.plugins.treesitter-context = {
-    enable = true;
+    enable = false;
     settings = {
       max_lines = 3;
       min_rows = 2;
       multiline_threshold = 1;
       trim_scope = "outer";
       mode = "cursor";
+      winblend = 0;
     };
   };
 }
