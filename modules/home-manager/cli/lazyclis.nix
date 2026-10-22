@@ -9,6 +9,7 @@ in
     lazycommit
     lazyjournal
     lazyssh
+    onefetch
     serie
   ];
   programs.lazygit = {
