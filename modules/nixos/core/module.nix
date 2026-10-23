@@ -10,6 +10,7 @@ in
 {
   imports = [
     ./boot.nix
+    ./containers.nix
     ./qbit.nix
     ./networking.nix
     ./locale.nix
