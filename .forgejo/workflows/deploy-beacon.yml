@@ -1,0 +1,45 @@
+name: Deploy beacon
+
+on:
+  push:
+    paths:
+      - ".forgejo/workflows/**"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: docker
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v27
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Configure SSH
+        shell: bash
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.BEACON_SSH_PRIVATE_KEY }}
+          KNOWN_HOSTS: ${{ secrets.BEACON_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$SSH_PRIVATE_KEY" > "$HOME/.ssh/beacon"
+          printf '%s\n' "$KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/beacon" "$HOME/.ssh/known_hosts"
+
+      - name: Deploy beacon
+        shell: bash
+        env:
+          DEPLOY_HOST: ${{ secrets.BEACON_HOST }}
+          DEPLOY_USER: ${{ secrets.BEACON_USER }}
+        run: |
+          set -euo pipefail
+          export NIX_SSHOPTS="-i $HOME/.ssh/beacon -o IdentitiesOnly=yes"
+          nix run nixpkgs#nixos-rebuild -- switch \
+            --flake ".#beacon-catppuccin" \
+            --target-host "$DEPLOY_USER@$DEPLOY_HOST" \
+            --use-remote-sudo
