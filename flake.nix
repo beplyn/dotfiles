@@ -102,6 +102,9 @@
         "anvil-catppuccin" = hostModule "anvil" "catppuccin";
         "anvil-gruvbox" = hostModule "anvil" "gruvbox";
         "anvil-nord" = hostModule "anvil" "nord";
+        "beacon-catppuccin" = hostModule "beacon" "catppuccin";
+        "beacon-gruvbox" = hostModule "beacon" "gruvbox";
+        "beacon-nord" = hostModule "beacon" "nord";
         "compass-catppuccin" = hostModule "compass" "catppuccin";
         "compass-gruvbox" = hostModule "compass" "gruvbox";
         "compass-nord" = hostModule "compass" "nord";

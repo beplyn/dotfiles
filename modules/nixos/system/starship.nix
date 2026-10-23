@@ -8,6 +8,7 @@ let
   hostIcon =
     {
       anvil = "󰢛";
+      beacon = "";
       compass = "󰆋";
       shulker = "";
     }
