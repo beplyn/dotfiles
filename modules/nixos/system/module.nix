@@ -8,6 +8,7 @@
     ./pkgs.nix
     ./gaming.nix
     ./starship.nix
+    ./niri.nix
   ];
   nixpkgs.config.allowUnfree = true;
   nix.settings.experimental-features = [
