@@ -28,6 +28,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    niri = {
+      url = "github:sodiboo/niri-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     stylix.url = "github:danth/stylix";
   };
 
@@ -42,7 +47,7 @@
       millennium,
       netspd,
       sops-nix,
-      ly,
+      ly, niri
       stylix,
       ...
     }:

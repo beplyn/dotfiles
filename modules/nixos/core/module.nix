@@ -16,7 +16,6 @@ in
     ./locale.nix
     ./displayManager.nix
     ./kdeconnect.nix
-    ./niri.nix
   ];
 
   stylix = {
