@@ -5,8 +5,15 @@
   programs.niri = {
     enable = true;
     # niri-flake's default (niri-stable) no longer builds against nixpkgs.
-    # niri-glass is niri 26.04 plus a liquid-glass background effect.
-    package = inputs.niri-glass.packages.${pkgs.stdenv.hostPlatform.system}.niri-glass;
+    # niri-glass is niri 26.04 plus a liquid-glass background effect. Its
+    # libdisplay-info-sys crate needs < 0.4, so swap in 0.3 like nixpkgs' niri.
+    package =
+      inputs.niri-glass.packages.${pkgs.stdenv.hostPlatform.system}.niri-glass.overrideAttrs
+        (old: {
+          buildInputs = map (
+            p: if (p.pname or "") == "libdisplay-info" then pkgs.libdisplay-info_0_3 else p
+          ) old.buildInputs;
+        });
   };
 
   # niri spawns this on demand for X11 clients (Steam).

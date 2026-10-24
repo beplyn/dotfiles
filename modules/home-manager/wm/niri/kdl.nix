@@ -1,14 +1,18 @@
 {
+  config,
   inputs,
   lib,
   options,
   ...
 }:
 
-# Liquid-glass background for kitty (needs the niri-glass package, see
-# modules/nixos/system/niri.nix). niri-flake's settings schema has no
-# background-effect yet, so the rule is appended to the rendered settings as
-# raw KDL; niri validates the result at build time.
+# Raw KDL appended to the rendered niri-flake settings, for things its schema
+# doesn't cover. niri validates the result at build time.
+#
+# - Liquid-glass background for kitty (needs the niri-glass package, see
+#   modules/nixos/system/niri.nix).
+# - The nirimation animations block, included by store path so validation
+#   sees it.
 let
   inherit (inputs.niri.lib.kdl) node leaf;
 in
@@ -38,5 +42,8 @@ in
         ])
       ])
     ]
+    ++ lib.optional (config.programs.nirimation.kdl != null) (
+      leaf "include" [ "${config.programs.nirimation.kdl}" ]
+    )
   );
 }
