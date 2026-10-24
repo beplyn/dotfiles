@@ -1,7 +1,6 @@
 {
   imports = [
-    ./waybar.nix
-    ./swaync.nix
+    ./quickshell
     ./walker.nix
     ./clipboard.nix
     ./screenshot.nix
