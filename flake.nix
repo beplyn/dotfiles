@@ -47,7 +47,8 @@
       millennium,
       netspd,
       sops-nix,
-      ly, niri
+      ly,
+      niri,
       stylix,
       ...
     }:
@@ -72,6 +73,7 @@
             { nixpkgs.overlays = [ millennium.overlays.default ]; }
             ./hosts/common
             ./hosts/${hostname}
+            niri.nixosModules.niri
             stylix.nixosModules.stylix
             home-manager.nixosModules.home-manager
             {

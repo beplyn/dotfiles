@@ -10,19 +10,17 @@ let
   ModCtrlShift = k: "Mod+Ctrl+Shift+${k}";
 in
 {
-  programs.niri.binds = {
+  programs.niri.settings.binds = {
     ${Mod "Return"} = {
       action.spawn = [ "kitty" ];
       hotkey-overlay = {
         title = "Kitty";
-        hidden = false;
       };
     };
     ${Mod "Space"} = {
       action.spawn = [ "walker" ];
       hotkey-overlay = {
         title = "Launcher";
-        hidden = false;
       };
     };
     ${Mod "Q"} = {
