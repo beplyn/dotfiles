@@ -28,9 +28,20 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # niri 26.04 with a liquid-glass background effect. Keeps its own pinned
-    # niri/nixpkgs: the overlay replaces whole upstream source files.
-    niri-glass.url = "github:zaroutt/Niri-glass";
+    # niri 26.04 with a liquid-glass background effect. The niri source stays
+    # pinned (the overlay replaces whole upstream files), but it must build
+    # against our nixpkgs: niri dlopens mesa from /run/opengl-driver, which
+    # needs the system glibc. With its own nixpkgs GBM fails to load and niri
+    # starts without outputs.
+    niri-glass = {
+      url = "github:zaroutt/Niri-glass";
+      inputs.niri.inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nirimation = {
+      url = "git+https://codeberg.org/beplyn/nirimation";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     stylix.url = "github:danth/stylix";
 
