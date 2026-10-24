@@ -13,12 +13,8 @@ in
       tree = "eza --icons --tree --color=auto";
       trel = "eza --icons --tree -a -I \".git\" --color=auto --level=2";
       icat = "kitty +kitten icat";
-      purgeGarbage = "nix store optimise && \
-        sudo nix-env -p /nix/var/nix/profiles/system --delete-generations +3 && \
-        nix-env --delete-generations +3 && \
-        nix-env -p ~/.local/state/nix/profiles/home-manager --delete-generations +3 2>/dev/null || true \
-        sudo nix-collect-garbage \
-        sudo /run/current-system/bin/switch-to-configuration boot";
+      # On-demand version of nix.gc; also drops removed generations from the boot menu.
+      purgeGarbage = "sudo nix-collect-garbage --delete-older-than 14d && sudo /run/current-system/bin/switch-to-configuration boot";
 
       "." = "cd ..";
       ".." = "cd ../../";
