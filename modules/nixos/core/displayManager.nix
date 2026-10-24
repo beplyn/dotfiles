@@ -1,10 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  inputs,
-  ...
-}:
+{ pkgs, ... }:
 
 {
   services.displayManager.ly = {
@@ -28,11 +22,4 @@
       box_title = "⚞^. .^⚟";
     };
   };
-
-  stylix.targets.console.enable = true;
-  environment.systemPackages = [
-    pkgs.kdePackages.qt5compat
-    pkgs.kdePackages.qtdeclarative
-    pkgs.kdePackages.qtsvg
-  ];
 }

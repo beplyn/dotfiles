@@ -1,13 +1,19 @@
-{ pkgs, config, ... }:
+{ pkgs, ... }:
 
+# niri-flake's module already sets up polkit, the GNOME portal and gnome-keyring.
 {
-  security.polkit.enable = true;
-
-  programs.niri.enable = true;
-
-  xdg.portal = {
+  programs.niri = {
     enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
-    config.niri.default = [ "gnome" "gtk" ];
+    # niri-flake's default (niri-stable) no longer builds against nixpkgs.
+    package = pkgs.niri;
   };
+
+  # niri spawns this on demand for X11 clients (Steam).
+  environment.systemPackages = [ pkgs.xwayland-satellite ];
+
+  # Run Electron/Chromium apps (Equibop) natively on Wayland.
+  environment.sessionVariables.NIXOS_OZONE_WL = "1";
+
+  # swaylock can't check passwords without its own PAM service.
+  security.pam.services.swaylock = { };
 }

@@ -50,5 +50,14 @@
 
     jetbrains-mono
     nerd-fonts.jetbrains-mono
+
+    # Microsoft Office fonts and metric-compatible stand-ins, so .docx/.xlsx
+    # files keep their layout: Arial/Times/Courier (corefonts, Liberation),
+    # Calibri/Cambria/Consolas (vista-fonts, Carlito, Caladea).
+    corefonts
+    vista-fonts
+    liberation_ttf
+    carlito
+    caladea
   ];
 }
