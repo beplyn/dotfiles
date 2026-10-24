@@ -4,7 +4,6 @@
       matches = [
         { app-id = "^equibop$"; }
         { app-id = "^steam$"; }
-        { app-id = "^kitty$"; }
       ];
       opacity = 0.75;
     }
