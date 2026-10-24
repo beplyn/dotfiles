@@ -1,13 +1,10 @@
 {
-  ...
-}:
-
-{
   stylix.targets.niri.enable = true;
 
   imports = [
     ./binds.nix
-    ./cursor.nix
+    ./input.nix
     ./layout.nix
+    ./rules.nix
   ];
 }
