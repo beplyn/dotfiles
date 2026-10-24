@@ -1,13 +1,15 @@
-{ ... }:
+{ lib, headless, ... }:
 
 {
   imports = [
     ./shell.nix
-    ./fonts.nix
     ./tools.nix
     ./pkgs.nix
-    ./gaming.nix
     ./starship.nix
+  ]
+  ++ lib.optionals (!headless) [
+    ./fonts.nix
+    ./gaming.nix
     ./niri.nix
   ];
   nixpkgs.config.allowUnfree = true;
@@ -15,4 +17,11 @@
     "nix-command"
     "flakes"
   ];
+
+  nix.optimise.automatic = true;
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 14d";
+  };
 }

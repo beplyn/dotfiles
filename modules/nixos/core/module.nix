@@ -1,4 +1,10 @@
-{ pkgs, themeName, ... }:
+{
+  lib,
+  pkgs,
+  themeName,
+  headless,
+  ...
+}:
 
 let
   base16Schemes = {
@@ -14,6 +20,11 @@ in
     ./qbit.nix
     ./networking.nix
     ./locale.nix
+    ./encryption.nix
+  ]
+  ++ lib.optionals (!headless) [
+    ./audio.nix
+    ./desktop.nix
     ./displayManager.nix
     ./kdeconnect.nix
   ];
@@ -21,8 +32,26 @@ in
   stylix = {
     enable = true;
     base16Scheme = base16Schemes.${themeName};
-    targets.grub.enable = true;
-    fonts.monospace.name = "Maple Mono";
+    targets = lib.mkMerge [
+      { grub.enable = true; }
+      # Desktop theming only matters with a display.
+      (lib.mkIf headless {
+        gtk.enable = false;
+        qt.enable = false;
+        gnome.enable = false;
+        font-packages.enable = false;
+        fontconfig.enable = false;
+      })
+    ];
+    fonts.monospace = {
+      name = "Maple Mono";
+      package = pkgs.maple-mono.truetype;
+    };
     opacity.terminal = 0.65;
+    cursor = lib.mkIf (!headless) {
+      package = pkgs.bibata-cursors;
+      name = "Bibata-Modern-Classic";
+      size = 24;
+    };
   };
 }
