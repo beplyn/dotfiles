@@ -3,9 +3,10 @@
 
   imports = [
     ./binds.nix
-    ./glass.nix
+    ./kdl.nix
     ./input.nix
     ./layout.nix
+    ./nirimation.nix
     ./rules.nix
   ];
 }
