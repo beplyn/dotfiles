@@ -16,6 +16,10 @@
   };
   services.blueman.enable = true;
 
+  # Battery and power-profile sources for the quickshell bar.
+  services.upower.enable = true;
+  services.power-profiles-daemon.enable = true;
+
   # The GNOME portal's file chooser is provided by Nautilus; without it,
   # upload/attach/save dialogs fail to open.
   environment.systemPackages = [ pkgs.nautilus ];
