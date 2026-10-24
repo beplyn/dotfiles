@@ -1,8 +1,4 @@
 {
-  ...
-}:
-
-{
   imports = [
     ./git.nix
     ./sign.nix

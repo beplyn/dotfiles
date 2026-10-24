@@ -4,7 +4,6 @@
 }:
 
 let
-  c = config.lib.stylix.colors.withHashtag;
   hostIcon =
     {
       anvil = "󰢛";
@@ -13,23 +12,7 @@ let
       shulker = "";
     }
     .${config.networking.hostName};
-  palette = {
-    background = c.base00;
-    surface = c.base02;
-    surfaceBright = c.base03;
-    red = c.base08;
-    yellow = c.base0A;
-    green = c.base0B;
-    aqua = c.base0C;
-    blue = c.base0D;
-    purple = c.base0E;
-    text = c.base05;
-    muted = c.base03;
-    accent = c.base0E;
-    error = c.base08;
-    success = c.base0B;
-    warning = c.base0A;
-  };
+  palette = config.themes.palette;
 in
 
 {
@@ -49,10 +32,8 @@ in
         red = palette.error;
         yellow = palette.warning;
         green = palette.success;
-        blue = palette.blue;
+        inherit (palette) blue purple text;
         teal = palette.aqua;
-        purple = palette.purple;
-        text = palette.text;
         overlay0 = palette.muted;
         surface2 = palette.surfaceBright;
         surface1 = palette.surface;

@@ -4,10 +4,6 @@ let
   p = config.themes.palette;
 in
 {
-  home.sessionVariables = {
-    EDITOR = "nvim";
-  };
-
   programs.yazi = {
     enable = true;
     enableFishIntegration = true;
