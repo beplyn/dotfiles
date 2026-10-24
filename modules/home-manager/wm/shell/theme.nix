@@ -1,4 +1,4 @@
-# Shared look for the shell layer (waybar, swaync, walker).
+# Shared look for the shell layer (quickshell, walker, satty).
 # Every color comes from Stylix, exported as GTK named colors so each
 # stylesheet can use @accent / alpha(@base, 0.8) instead of raw hex.
 { config }:
