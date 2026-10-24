@@ -1,4 +1,6 @@
 {
+  lib,
+  headless,
   ...
 }:
 
@@ -17,10 +19,12 @@
     ./yazi.nix
     ./tools.nix
     ./forgejo.nix
-    ./kitty.nix
     ./fastfetch.nix
     ./bottom.nix
     ./btop.nix
     ./netspd.nix
+  ]
+  ++ lib.optionals (!headless) [
+    ./kitty.nix
   ];
 }

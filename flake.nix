@@ -23,31 +23,28 @@
 
     sops-nix.url = "github:Mic92/sops-nix";
 
-    ly = {
-      url = "github:fairyglade/ly";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     niri = {
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     stylix.url = "github:danth/stylix";
+
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
   };
 
   outputs =
     inputs@{
-      self,
       nixpkgs,
       home-manager,
-      forgejo-cli,
       nixvim,
       areofyl-fetch,
       millennium,
-      netspd,
       sops-nix,
-      ly,
       niri,
       stylix,
       ...
@@ -56,8 +53,24 @@
       username = "beplyn";
       email = "me@beplyn.dev";
       forgejoHost = "codeberg.org";
+      hosts = [
+        "anvil"
+        "beacon"
+        "compass"
+        "shulker"
+      ];
+      themes = [
+        "catppuccin"
+        "gruvbox"
+        "nord"
+      ];
+      # Servers: no display manager, compositor, fonts or GUI apps.
+      headlessHosts = [ "beacon" ];
       hostModule =
         hostname: themeName:
+        let
+          headless = builtins.elem hostname headlessHosts;
+        in
         nixpkgs.lib.nixosSystem {
           specialArgs = {
             inherit
@@ -66,6 +79,7 @@
               email
               forgejoHost
               themeName
+              headless
               ;
           };
           modules = [
@@ -73,7 +87,9 @@
             { nixpkgs.overlays = [ millennium.overlays.default ]; }
             ./hosts/common
             ./hosts/${hostname}
-            niri.nixosModules.niri
+          ]
+          ++ nixpkgs.lib.optional (!headless) niri.nixosModules.niri
+          ++ [
             stylix.nixosModules.stylix
             home-manager.nixosModules.home-manager
             {
@@ -84,6 +100,7 @@
                   email
                   forgejoHost
                   themeName
+                  headless
                   ;
               };
               home-manager.useGlobalPkgs = true;
@@ -105,20 +122,15 @@
         };
     in
     {
-      nixosConfigurations = {
-        "anvil-catppuccin" = hostModule "anvil" "catppuccin";
-        "anvil-gruvbox" = hostModule "anvil" "gruvbox";
-        "anvil-nord" = hostModule "anvil" "nord";
-        "beacon-catppuccin" = hostModule "beacon" "catppuccin";
-        "beacon-gruvbox" = hostModule "beacon" "gruvbox";
-        "beacon-nord" = hostModule "beacon" "nord";
-        "compass-catppuccin" = hostModule "compass" "catppuccin";
-        "compass-gruvbox" = hostModule "compass" "gruvbox";
-        "compass-nord" = hostModule "compass" "nord";
-        "shulker-catppuccin" = hostModule "shulker" "catppuccin";
-        "shulker-gruvbox" = hostModule "shulker" "gruvbox";
-        "shulker-nord" = hostModule "shulker" "nord";
-        default = hostModule "shulker" "catppuccin";
-      };
+      nixosConfigurations =
+        nixpkgs.lib.listToAttrs (
+          map (h: {
+            name = "${h.host}-${h.theme}";
+            value = hostModule h.host h.theme;
+          }) (nixpkgs.lib.cartesianProduct { host = hosts; theme = themes; })
+        )
+        // {
+          default = hostModule "shulker" "catppuccin";
+        };
     };
 }

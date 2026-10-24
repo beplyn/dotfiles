@@ -10,8 +10,5 @@
       "wheel"
       "docker"
     ];
-    packages = with pkgs; [
-      # thunderbird
-    ];
   };
 }
