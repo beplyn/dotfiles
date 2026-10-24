@@ -7,12 +7,11 @@
 }:
 
 let
-  enabled = lib.toLower osConfig.networking.hostName == "anvil";
   p = config.themes.palette;
 in
 
 {
-  config = lib.mkIf enabled {
+  config = lib.mkIf osConfig.gaming.enable {
     programs.prismlauncher = {
       enable = true;
       settings = {

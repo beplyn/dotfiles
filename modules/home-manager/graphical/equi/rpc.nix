@@ -1,8 +1,4 @@
 {
-  ...
-}:
-
-{
   programs.equibop.settings = {
     arRPC = true;
     arRPCDisabled = false;
