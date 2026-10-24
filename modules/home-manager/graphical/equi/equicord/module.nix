@@ -1,8 +1,4 @@
 {
-  ...
-}:
-
-{
   imports = [
     ./themes.nix
     ./plugins.nix
@@ -11,7 +7,7 @@
     autoUpdate = false;
     autoUpdateNotification = false;
     enableOnlineThemes = true;
-    useQuickCss = false;
+    useQuickCss = true;
     transparent = true;
     nativeTitleBar = false;
   };

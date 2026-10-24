@@ -1,8 +1,4 @@
 {
-  ...
-}:
-
-{
   programs.equibop.settings = {
     appBadge = false;
     badgeOnlyForMentions = true;

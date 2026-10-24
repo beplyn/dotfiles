@@ -1,8 +1,4 @@
 {
-  ...
-}:
-
-{
   programs.equibop.equicord.settings.plugins = {
     AudioPlayerAPI.enabled = true;
     BadgeAPI.enabled = true;

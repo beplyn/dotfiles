@@ -1,8 +1,4 @@
 {
-  ...
-}:
-
-{
   programs.equibop.settings = {
     notifications = {
       useNative = "not-focused";
