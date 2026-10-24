@@ -20,7 +20,7 @@ in
       center-focused-column = "never";
 
       # Stylix colors the border; active is pulled to base0E to match the
-      # waybar/swaync/walker accent.
+      # quickshell/walker accent.
       border = {
         enable = true;
         width = 2;
@@ -61,7 +61,7 @@ in
       };
     };
 
-    # 12px corners to match waybar, swaync and walker.
+    # 12px corners to match quickshell and walker.
     window-rules = [
       {
         geometry-corner-radius =

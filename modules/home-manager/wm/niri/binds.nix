@@ -11,141 +11,120 @@ let
 
   kitty = lib.getExe config.programs.kitty.package;
   walker = lib.getExe config.services.walker.package;
-  swaync-client = lib.getExe' config.services.swaync.package "swaync-client";
+  ipc = config.lib.haku.ipc;
   swaylock = lib.getExe config.programs.swaylock.package;
   wpctl = lib.getExe' pkgs.wireplumber "wpctl";
   brightnessctl = lib.getExe pkgs.brightnessctl;
 
-  # Media keys keep working on the lock screen.
-  media = args: {
-    action.spawn = args;
-    allow-when-locked = true;
+  # Every bind is listed in the hotkey overlay (Mod+Shift+/) under a title,
+  # except basic navigation, which is hidden explicitly because niri would
+  # otherwise list it by default.
+  show = title: action: {
+    inherit action;
+    hotkey-overlay.title = title;
   };
+  hide = action: {
+    inherit action;
+    hotkey-overlay.hidden = true;
+  };
+  spawn = title: args: show title { spawn = args; };
+
+  # Media keys keep working on the lock screen.
+  media = args: hide { spawn = args; } // { allow-when-locked = true; };
 
   # Mod+1..9 focuses a workspace, Mod+Shift+1..9 sends the column there.
   workspaces = lib.listToAttrs (
     lib.concatMap (i: [
       {
         name = Mod (toString i);
-        value.action.focus-workspace = i;
+        value = hide { focus-workspace = i; };
       }
       {
         name = ModShift (toString i);
-        value.action.move-column-to-workspace = i;
+        value = hide { move-column-to-workspace = i; };
       }
     ]) (lib.range 1 9)
   );
 in
 {
   programs.niri.settings.binds = workspaces // {
-    ${Mod "Return"} = {
-      action.spawn = [ kitty ];
-      hotkey-overlay = {
-        title = "Kitty";
-      };
-    };
-    ${Mod "Space"} = {
-      action.spawn = [ walker ];
-      hotkey-overlay = {
-        title = "Launcher";
-      };
-    };
-    ${Mod "V"} = {
-      action.spawn = [
-        walker
-        "-m"
-        "clipboard"
-      ];
-      hotkey-overlay = {
-        title = "Clipboard history";
-      };
-    };
-    ${Mod "N"} = {
-      action.spawn = [
-        swaync-client
-        "-t"
-        "-sw"
-      ];
-      hotkey-overlay = {
-        title = "Notification center";
-      };
-    };
-    "Print" = {
-      action.spawn = [
-        "screenshot"
-        "area"
-      ];
-      hotkey-overlay = {
-        title = "Screenshot area";
-      };
-    };
-    ${ModShift "S"}.action.spawn = [
+    # --- apps and shell ---------------------------------------------------
+    ${Mod "Return"} = spawn "Terminal" [ kitty ];
+    ${Mod "Space"} = spawn "Launcher" [ walker ];
+    ${Mod "V"} = spawn "Clipboard history" [
+      walker
+      "-m"
+      "clipboard"
+    ];
+    ${Mod "N"} = spawn "Notification center" (ipc "notifications" "toggle");
+    ${ModShift "N"} = spawn "Toggle do not disturb" (ipc "notifications" "toggleDnd");
+    ${ModShift "R"} = spawn "Screen recorder" (ipc "recorder" "toggle");
+    ${Mod "W"} = spawn "Wallpaper picker" [ (lib.getExe pkgs.waypaper) ];
+    "Print" = spawn "Screenshot area" [
       "screenshot"
       "area"
     ];
-    "Shift+Print" = {
-      action.spawn = [
-        "screenshot"
-        "output"
-      ];
-      hotkey-overlay = {
-        title = "Screenshot screen";
-      };
+    ${ModShift "S"} = spawn "Screenshot area" [
+      "screenshot"
+      "area"
+    ];
+    "Shift+Print" = spawn "Screenshot screen" [
+      "screenshot"
+      "output"
+    ];
+
+    # --- session ----------------------------------------------------------
+    ${Mod "Q"} = show "Close window" { close-window = [ ]; } // { repeat = false; };
+    ${ModShift "E"} = show "Quit niri" { quit = [ ]; };
+    "Mod+Alt+L" = spawn "Lock screen" [
+      swaylock
+      "-f"
+    ];
+    ${ModShift "Slash"} = show "Show hotkeys" { show-hotkey-overlay = [ ]; };
+    ${Mod "Tab"} = show "Overview" { toggle-overview = [ ]; } // { repeat = false; };
+
+    # --- window sizing ----------------------------------------------------
+    ${Mod "F"} = show "Fullscreen window" { fullscreen-window = [ ]; };
+    ${ModShift "F"} = show "Maximize column" { maximize-column = [ ]; };
+    "Mod+Alt+X" = show "Toggle floating" { toggle-window-floating = [ ]; };
+    ${Mod "R"} = show "Cycle column width" { switch-preset-column-width = [ ]; };
+    # niri matches the unshifted key, so "+" is bound on Equal (Shift+= on
+    # gb). The Shift and keypad variants are aliases kept out of the list.
+    ${Mod "Minus"} = show "Shrink column" { set-column-width = "-10%"; };
+    ${Mod "Equal"} = show "Grow column" { set-column-width = "+10%"; };
+    ${ModShift "Equal"} = hide { set-column-width = "+10%"; };
+    ${Mod "KP_Subtract"} = hide { set-column-width = "-10%"; };
+    ${Mod "KP_Add"} = hide { set-column-width = "+10%"; };
+
+    ${Mod "BracketLeft"} = show "Consume / expel window left" { consume-or-expel-window-left = [ ]; };
+    ${Mod "BracketRight"} = show "Consume / expel window right" {
+      consume-or-expel-window-right = [ ];
     };
 
-    ${Mod "Q"} = {
-      action.close-window = [ ];
-      repeat = false;
-    };
-    ${ModShift "E"}.action.quit = [ ];
-    "Mod+Alt+L" = {
-      action.spawn = [
-        swaylock
-        "-f"
-      ];
-      hotkey-overlay = {
-        title = "Lock screen";
-      };
-    };
-    ${ModShift "Slash"}.action.show-hotkey-overlay = [ ];
-    ${Mod "Tab"} = {
-      action.toggle-overview = [ ];
-      repeat = false;
-    };
+    # --- navigation (hidden) ----------------------------------------------
+    ${Mod "H"} = hide { focus-column-left = [ ]; };
+    ${Mod "L"} = hide { focus-column-right = [ ]; };
+    ${Mod "K"} = hide { focus-window-or-workspace-up = [ ]; };
+    ${Mod "J"} = hide { focus-window-or-workspace-down = [ ]; };
 
-    ${Mod "F"}.action.fullscreen-window = [ ];
-    ${ModShift "F"}.action.maximize-column = [ ];
-    "Mod+Alt+X".action.toggle-window-floating = [ ];
-    ${Mod "R"}.action.switch-preset-column-width = [ ];
-    ${Mod "Minus"}.action.set-column-width = "-10%";
-    ${Mod "Plus"}.action.set-column-width = "+10%";
-    ${ModShift "Equal"}.action.set-column-width = "+10%";
+    ${Mod "U"} = hide { focus-workspace-down = [ ]; };
+    ${Mod "I"} = hide { focus-workspace-up = [ ]; };
 
-    ${Mod "H"}.action.focus-column-left = [ ];
-    ${Mod "L"}.action.focus-column-right = [ ];
-    ${Mod "K"}.action.focus-window-or-workspace-up = [ ];
-    ${Mod "J"}.action.focus-window-or-workspace-down = [ ];
+    ${ModShift "H"} = hide { move-column-left = [ ]; };
+    ${ModShift "L"} = hide { move-column-right = [ ]; };
+    ${ModShift "K"} = hide { move-window-up = [ ]; };
+    ${ModShift "J"} = hide { move-window-down = [ ]; };
 
-    ${Mod "BracketLeft"}.action.consume-or-expel-window-left = [ ];
-    ${Mod "BracketRight"}.action.consume-or-expel-window-right = [ ];
+    ${ModShift "U"} = hide { move-workspace-down = [ ]; };
+    ${ModShift "I"} = hide { move-workspace-up = [ ]; };
 
-    ${Mod "U"}.action.focus-workspace-down = [ ];
-    ${Mod "I"}.action.focus-workspace-up = [ ];
+    ${ModCtrl "H"} = hide { focus-monitor-left = [ ]; };
+    ${ModCtrl "L"} = hide { focus-monitor-right = [ ]; };
 
-    ${ModShift "H"}.action.move-column-left = [ ];
-    ${ModShift "L"}.action.move-column-right = [ ];
-    ${ModShift "K"}.action.move-window-up = [ ];
-    ${ModShift "J"}.action.move-window-down = [ ];
+    ${ModCtrl "U"} = hide { move-column-to-workspace-down = [ ]; };
+    ${ModCtrl "I"} = hide { move-column-to-workspace-up = [ ]; };
 
-    ${ModShift "U"}.action.move-workspace-down = [ ];
-    ${ModShift "I"}.action.move-workspace-up = [ ];
-
-    ${ModCtrl "H"}.action.focus-monitor-left = [ ];
-    ${ModCtrl "L"}.action.focus-monitor-right = [ ];
-
-    ${ModCtrl "U"}.action.move-column-to-workspace-down = [ ];
-    ${ModCtrl "I"}.action.move-column-to-workspace-up = [ ];
-
+    # --- media keys (hidden) ----------------------------------------------
     "XF86AudioRaiseVolume" = media [
       wpctl
       "set-volume"
