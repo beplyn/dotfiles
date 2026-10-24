@@ -8,6 +8,9 @@
     keyboard.xkb = {
       inherit (osConfig.services.xserver.xkb) layout variant;
     };
-    focus-follows-mouse.max-scroll-amount = "50%";
+    focus-follows-mouse = {
+      enable = true;
+      max-scroll-amount = "50%";
+    };
   };
 }

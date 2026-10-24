@@ -1,11 +1,12 @@
-{ pkgs, ... }:
+{ inputs, pkgs, ... }:
 
 # niri-flake's module already sets up polkit, the GNOME portal and gnome-keyring.
 {
   programs.niri = {
     enable = true;
     # niri-flake's default (niri-stable) no longer builds against nixpkgs.
-    package = pkgs.niri;
+    # niri-glass is niri 26.04 plus a liquid-glass background effect.
+    package = inputs.niri-glass.packages.${pkgs.stdenv.hostPlatform.system}.niri-glass;
   };
 
   # niri spawns this on demand for X11 clients (Steam).

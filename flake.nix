@@ -28,6 +28,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # niri 26.04 with a liquid-glass background effect. Keeps its own pinned
+    # niri/nixpkgs: the overlay replaces whole upstream source files.
+    niri-glass.url = "github:zaroutt/Niri-glass";
+
     stylix.url = "github:danth/stylix";
 
     zen-browser = {
