@@ -3,6 +3,7 @@
 
   imports = [
     ./binds.nix
+    ./glass.nix
     ./input.nix
     ./layout.nix
     ./rules.nix
