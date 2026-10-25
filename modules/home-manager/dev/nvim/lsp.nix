@@ -1,3 +1,11 @@
+{ osConfig, themeName, ... }:
+
+let
+  # nixd evaluates these to complete options. Point it at this flake and the
+  # configuration the current machine was built from.
+  flake = ''(builtins.getFlake "/etc/nixos")'';
+  nixos = ''${flake}.nixosConfigurations."${osConfig.networking.hostName}-${themeName}"'';
+in
 {
   programs.nixvim.plugins.lsp = {
     enable = true;
@@ -19,7 +27,18 @@
       csharp_ls.enable = true;
       gopls.enable = true;
       marksman.enable = true;
-      nixd.enable = true;
+      nixd = {
+        enable = true;
+        settings = {
+          nixpkgs.expr = "import ${flake}.inputs.nixpkgs { }";
+          formatting.command = [ "nixfmt" ];
+          options = {
+            nixos.expr = "${nixos}.options";
+            # Includes programs.nixvim.* via the nixvim home module.
+            home-manager.expr = "${nixos}.options.home-manager.users.type.getSubOptions [ ]";
+          };
+        };
+      };
     };
   };
 }
