@@ -19,6 +19,7 @@ in
     ./containers.nix
     ./qbit.nix
     ./networking.nix
+    ./ssh.nix
     ./locale.nix
     ./encryption.nix
   ]
