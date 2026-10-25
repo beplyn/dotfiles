@@ -30,13 +30,15 @@
         --quick-generate-key "${username} <${email}>" default default 0
     fi
 
-    ssh_key="${config.home.homeDirectory}/.ssh/codeberg-auth"
-    if [ ! -e "$ssh_key" ]; then
-      echo "No SSH key found at $ssh_key, generating one..."
-      run ${pkgs.coreutils}/bin/mkdir -p "${config.home.homeDirectory}/.ssh"
-      run ${pkgs.openssh}/bin/ssh-keygen -q -t ed25519 -f "$ssh_key" \
-        -N "" \
-        -C "${username}@${forgejoHost}"
-    fi
+    for pair in "codeberg-auth:${forgejoHost}" "gitlab-auth:gitlab.com"; do
+      ssh_key="${config.home.homeDirectory}/.ssh/''${pair%%:*}"
+      if [ ! -e "$ssh_key" ]; then
+        echo "No SSH key found at $ssh_key, generating one..."
+        run ${pkgs.coreutils}/bin/mkdir -p "${config.home.homeDirectory}/.ssh"
+        run ${pkgs.openssh}/bin/ssh-keygen -q -t ed25519 -f "$ssh_key" \
+          -N "" \
+          -C "${username}@''${pair#*:}"
+      fi
+    done
   '';
 }
