@@ -3,13 +3,11 @@ import QtQuick
 import Quickshell
 import Quickshell.Services.Mpris
 
-// Launchers and session actions shared by the bar and control center.
+// Session actions and the followed media player, shared by the panels.
 Singleton {
     id: root
 
-    property bool idleInhibited: false
-
-    // The player the bar and control center follow: playing first.
+    // The player the dashboard follows: playing first.
     readonly property MprisPlayer player: {
         const players = Mpris.players.values
         return players.find(p => p.isPlaying) ?? players[0] ?? null
@@ -19,7 +17,6 @@ Singleton {
         Quickshell.execDetached(["sh", "-c", cmd])
     }
 
-    function launcher() { Quickshell.execDetached([Theme.bin.launcher]) }
     function mixer() { Quickshell.execDetached([Theme.bin.mixer]) }
     function wallpaper() { Quickshell.execDetached([Theme.bin.wallpaper]) }
     function randomWallpaper() { Quickshell.execDetached([Theme.bin.wallpaper, "--random"]) }

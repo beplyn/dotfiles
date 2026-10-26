@@ -11,6 +11,7 @@ Singleton {
     readonly property real volume: sink?.audio?.volume ?? 0
     readonly property bool muted: sink?.audio?.muted ?? false
     readonly property bool micMuted: source?.audio?.muted ?? false
+    readonly property real micVolume: source?.audio?.volume ?? 0
     readonly property int percent: Math.round(volume * 100)
 
     // Pipewire only fills in audio state for bound nodes.
@@ -27,6 +28,13 @@ Singleton {
 
     function step(delta) {
         setVolume(volume + delta)
+    }
+
+    function setMicVolume(v) {
+        if (source?.audio) {
+            source.audio.muted = false
+            source.audio.volume = Math.max(0, Math.min(1, v))
+        }
     }
 
     function toggleMute() {
