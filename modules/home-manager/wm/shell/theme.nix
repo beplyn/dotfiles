@@ -1,4 +1,4 @@
-# Shared look for the shell layer (quickshell, walker, satty).
+# Shared look for the shell layer (waybar, quickshell, walker, satty).
 # Every color comes from Stylix, exported as GTK named colors so each
 # stylesheet can use @accent / alpha(@base, 0.8) instead of raw hex.
 { config }:
@@ -9,7 +9,8 @@ let
 in
 {
   radius = 12;
-  glass = 0.82;
+  # Panel and bar translucency; niri blurs what shows through.
+  glass = config.stylix.opacity.desktop;
 
   font = ''"${fonts.monospace.name}", "Maple Mono NF", "Symbols Nerd Font"'';
   fontSize = fonts.sizes.desktop;

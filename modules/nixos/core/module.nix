@@ -48,7 +48,9 @@ in
       name = "Maple Mono";
       package = pkgs.maple-mono.truetype;
     };
-    opacity.terminal = 0.65;
+    opacity.terminal = 0.75;
+    # Shell surfaces: waybar, quickshell panels, walker.
+    opacity.desktop = 0.82;
     cursor = lib.mkIf (!headless) {
       package = pkgs.bibata-cursors;
       name = "Bibata-Modern-Classic";
