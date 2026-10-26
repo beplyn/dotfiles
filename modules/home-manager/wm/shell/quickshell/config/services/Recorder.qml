@@ -49,6 +49,10 @@ Singleton {
 
     property int seconds: 0
 
+    // Waybar's custom/recorder shows the timer; re-run its `status` on change.
+    onRecordingChanged: Theme.signalBar(Theme.signals.recorder)
+    onElapsedChanged: Theme.signalBar(Theme.signals.recorder)
+
     Process {
         id: session
         onExited: root.elapsed = "00:00"
@@ -106,5 +110,10 @@ Singleton {
         function toggle(): void { root.toggle() }
         function stop(): void { root.stop() }
         function start(mode: string): void { root.start(mode, "") }
+
+        // JSON for waybar's custom/recorder; empty text hides the module.
+        function status(): string {
+            return JSON.stringify(root.recording ? { text: root.elapsed, class: "recording" } : { text: "" })
+        }
     }
 }

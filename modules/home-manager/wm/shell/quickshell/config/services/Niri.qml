@@ -11,6 +11,8 @@ Singleton {
     property var workspaces: []
     property var windows: ({})
 
+    readonly property string focusedOutput: workspaces.find(ws => ws.is_focused)?.output ?? ""
+
     // Workspaces on one output, ordered as niri shows them.
     function workspacesOn(output) {
         return workspaces

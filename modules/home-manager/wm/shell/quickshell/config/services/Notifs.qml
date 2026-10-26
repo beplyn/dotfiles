@@ -10,7 +10,7 @@ Singleton {
     id: root
 
     property bool dnd: false
-    property bool centerOpen: false
+    readonly property bool centerOpen: Panels.current === "notifications"
     property var popupIds: []
     property var arrived: ({})
     property real now: Date.now()
@@ -54,9 +54,15 @@ Singleton {
     }
 
     function toggleCenter() {
-        centerOpen = !centerOpen
-        if (centerOpen) popupIds = []
+        Panels.toggle("notifications")
     }
+
+    onCenterOpenChanged: if (centerOpen) popupIds = []
+
+    // Waybar's custom/notifications re-runs `status` on this signal.
+    onCountChanged: Theme.signalBar(Theme.signals.notifications)
+    onDndChanged: Theme.signalBar(Theme.signals.notifications)
+    Component.onCompleted: Theme.signalBar(Theme.signals.notifications)
 
     // Default action if the sender offered one, else just close it.
     function activate(n) {
@@ -92,9 +98,20 @@ Singleton {
     IpcHandler {
         target: "notifications"
         function toggle(): void { root.toggleCenter() }
-        function open(): void { root.centerOpen = true; root.popupIds = [] }
-        function close(): void { root.centerOpen = false }
+        function open(): void { Panels.open("notifications") }
+        function close(): void { if (root.centerOpen) Panels.close() }
         function toggleDnd(): void { root.dnd = !root.dnd }
         function clear(): void { root.clearAll() }
+
+        // JSON for waybar's custom/notifications (return-type json).
+        function status(): string {
+            const unread = root.count > 0
+            return JSON.stringify({
+                text: String(root.count),
+                alt: (root.dnd ? "dnd-" : "") + (unread ? "notification" : "none"),
+                class: [unread ? "notification" : "", root.dnd ? "dnd" : ""].filter(c => c),
+                tooltip: root.count + " notification" + (root.count === 1 ? "" : "s") + (root.dnd ? " · do not disturb" : "")
+            })
+        }
     }
 }
