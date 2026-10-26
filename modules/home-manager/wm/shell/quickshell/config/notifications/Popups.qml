@@ -15,8 +15,8 @@ PanelWindow {
         right: true
     }
     margins {
-        top: 6
-        right: 6
+        top: Theme.gap
+        right: Theme.gap
     }
     implicitWidth: 420
     implicitHeight: stack.implicitHeight
