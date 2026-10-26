@@ -1,71 +1,97 @@
 import QtQuick
+import QtQuick.Layouts
 import qs.services
 
-// Labelled 0..1 slider for the control center's volume/backlight rows.
-Item {
+// 0..1 slider row: clickable glyph (e.g. mute), track, percentage.
+// Drag, click or scroll on the track to move it.
+RowLayout {
     id: root
 
-    property string label: ""
+    property string icon: ""
     property real value: 0
+    property bool dimmed: false
     signal moved(real value)
-    signal labelClicked
+    signal iconClicked
 
-    implicitHeight: 36
+    readonly property real clamped: Math.max(0, Math.min(1, value))
+
+    spacing: 10
 
     Text {
-        id: icon
-        anchors.left: parent.left
-        anchors.verticalCenter: parent.verticalCenter
-        width: 28
-        text: root.label
-        color: Theme.accent
+        Layout.preferredWidth: 24
+        horizontalAlignment: Text.AlignHCenter
+        text: root.icon
+        color: root.dimmed ? Theme.overlay : Theme.accent
         font.family: Theme.font
         font.pointSize: Theme.popupFontSize + 4
 
         MouseArea {
             anchors.fill: parent
             cursorShape: Qt.PointingHandCursor
-            onClicked: root.labelClicked()
+            onClicked: root.iconClicked()
         }
     }
 
-    Rectangle {
-        id: track
-        anchors.left: icon.right
-        anchors.right: parent.right
-        anchors.leftMargin: 8
-        anchors.rightMargin: 8
-        anchors.verticalCenter: parent.verticalCenter
-        height: 6
-        radius: 3
-        color: Theme.surface
+    Item {
+        Layout.fillWidth: true
+        implicitHeight: 24
 
         Rectangle {
-            width: track.width * Math.max(0, Math.min(1, root.value))
-            height: parent.height
-            radius: parent.radius
-            color: Theme.accent
+            id: track
+            anchors.verticalCenter: parent.verticalCenter
+            width: parent.width
+            height: 8
+            radius: 4
+            color: Theme.alpha(Theme.surface, 0.9)
+
+            Rectangle {
+                width: Math.max(height, track.width * root.clamped)
+                height: parent.height
+                radius: parent.radius
+                color: root.dimmed ? Theme.overlay : Theme.accent
+
+                Behavior on width {
+                    enabled: !drag.pressed
+                    NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic }
+                }
+            }
         }
 
         Rectangle {
-            x: track.width * Math.max(0, Math.min(1, root.value)) - width / 2
+            x: track.width * root.clamped - width / 2
             anchors.verticalCenter: parent.verticalCenter
-            width: 14
-            height: 14
-            radius: 7
-            color: Theme.text
+            width: drag.pressed || drag.containsMouse ? 16 : 12
+            height: width
+            radius: width / 2
+            color: Theme.bright
+            border.color: root.dimmed ? Theme.overlay : Theme.accent
+            border.width: 2
+
+            Behavior on width {
+                NumberAnimation { duration: 120 }
+            }
         }
 
         MouseArea {
+            id: drag
             anchors.fill: parent
-            anchors.margins: -10
+            hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
             function update(x) {
-                root.moved(Math.max(0, Math.min(1, (x - 10) / track.width)))
+                root.moved(Math.max(0, Math.min(1, x / track.width)))
             }
             onPressed: m => update(m.x)
             onPositionChanged: m => { if (pressed) update(m.x) }
             onWheel: w => root.moved(Math.max(0, Math.min(1, root.value + (w.angleDelta.y > 0 ? 0.05 : -0.05))))
         }
+    }
+
+    Text {
+        Layout.preferredWidth: 38
+        horizontalAlignment: Text.AlignRight
+        text: Math.round(root.clamped * 100) + "%"
+        color: Theme.subtext
+        font.family: Theme.font
+        font.pointSize: Theme.popupFontSize
     }
 }
