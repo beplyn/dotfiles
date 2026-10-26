@@ -1,0 +1,304 @@
+/*
+ * Waybar as a single floating capsule. default.nix prepends the Stylix
+ * palette (@base, @surface, @accent, ...), @glass, fonts and the corner
+ * radius, so nothing here hardcodes a color or a font.
+ *
+ * Inside the capsule, modules are flat labels that light up as small
+ * pills on hover; related modules share a tinted sub-pill (group/ modules).
+ */
+
+* {
+  min-height: 0;
+  border: none;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+window#waybar {
+  background: transparent;
+  color: @text;
+}
+
+/* The capsule. niri blurs behind it with the same radius (kdl.nix). */
+window#waybar > box {
+  background: @glass;
+  border: 1px solid alpha(@surface, 0.9);
+  padding: 0 5px;
+}
+
+/* --- shared module look ------------------------------------------------ */
+
+#custom-launcher,
+#workspaces,
+#window,
+#mpris,
+#clock,
+#custom-recorder,
+#hardware,
+#idle_inhibitor,
+#status,
+#tray,
+#custom-notifications,
+#custom-control {
+  margin: 5px 0;
+  border-radius: 8px;
+}
+
+#custom-launcher,
+#window,
+#mpris,
+#clock,
+#custom-recorder,
+#cpu,
+#memory,
+#temperature,
+#idle_inhibitor,
+#network,
+#bluetooth,
+#wireplumber,
+#battery,
+#power-profiles-daemon,
+#custom-notifications,
+#custom-control {
+  padding: 0 10px;
+  border-radius: 8px;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+#custom-launcher:hover,
+#mpris:hover,
+#clock:hover,
+#cpu:hover,
+#memory:hover,
+#temperature:hover,
+#idle_inhibitor:hover,
+#network:hover,
+#bluetooth:hover,
+#wireplumber:hover,
+#battery:hover,
+#power-profiles-daemon:hover,
+#custom-notifications:hover {
+  background: alpha(@accent, 0.18);
+}
+
+/* --- left ---------------------------------------------------------------- */
+
+#custom-launcher {
+  color: @accent;
+  font-size: 1.25em;
+  padding: 0 12px 0 10px;
+}
+
+#workspaces {
+  background: alpha(@mantle, 0.6);
+  padding: 0 3px;
+}
+
+#workspaces button {
+  min-width: 20px;
+  padding: 0 4px;
+  margin: 3px 1px;
+  border-radius: 6px;
+  color: alpha(@text, 0.55);
+  background: transparent;
+  transition: all 250ms cubic-bezier(0, 0.5, 0.35, 1);
+}
+
+#workspaces button.empty {
+  color: alpha(@text, 0.25);
+}
+
+#workspaces button:hover {
+  background: alpha(@accent, 0.18);
+  color: @text;
+}
+
+#workspaces button.active {
+  min-width: 34px;
+  background: @accent;
+  color: @base;
+}
+
+#workspaces button.urgent {
+  background: @red;
+  color: @base;
+}
+
+#window {
+  color: @subtext;
+}
+
+/* --- center ---------------------------------------------------------------- */
+
+#mpris {
+  color: @green;
+}
+
+#mpris.paused {
+  color: @subtext;
+}
+
+#clock {
+  color: @text;
+  font-weight: bold;
+}
+
+#custom-recorder {
+  background: alpha(@red, 0.18);
+  color: @red;
+  border: 1px solid alpha(@red, 0.6);
+  animation: blink 1s ease-in-out infinite alternate;
+}
+
+@keyframes blink {
+  to {
+    background: alpha(@red, 0.05);
+  }
+}
+
+/* --- right ------------------------------------------------------------- */
+
+#hardware,
+#status {
+  background: alpha(@mantle, 0.6);
+}
+
+#cpu {
+  color: @blue;
+}
+
+#memory {
+  color: @cyan;
+}
+
+#temperature {
+  color: @orange;
+}
+
+#cpu.warning,
+#memory.warning {
+  color: @yellow;
+}
+
+#cpu.critical,
+#memory.critical,
+#temperature.critical {
+  color: @red;
+}
+
+#idle_inhibitor {
+  color: @subtext;
+}
+
+#idle_inhibitor.activated {
+  color: @yellow;
+}
+
+#network,
+#bluetooth {
+  color: @blue;
+}
+
+#network.disconnected,
+#network.disabled,
+#bluetooth.disabled,
+#bluetooth.off {
+  color: @overlay;
+}
+
+#wireplumber {
+  color: @accent;
+}
+
+#wireplumber.muted {
+  color: @overlay;
+}
+
+#battery {
+  color: @green;
+}
+
+#battery.charging {
+  color: @cyan;
+}
+
+#battery.warning:not(.charging) {
+  color: @yellow;
+}
+
+#battery.critical:not(.charging) {
+  color: @red;
+}
+
+#power-profiles-daemon {
+  color: @subtext;
+}
+
+#power-profiles-daemon.performance {
+  color: @orange;
+}
+
+#power-profiles-daemon.power-saver {
+  color: @green;
+}
+
+#tray {
+  padding: 0 8px;
+}
+
+#tray > .needs-attention {
+  background: alpha(@red, 0.3);
+  border-radius: 6px;
+}
+
+#custom-notifications {
+  color: @text;
+}
+
+#custom-notifications.notification {
+  color: @accent;
+}
+
+#custom-notifications.dnd {
+  color: @overlay;
+}
+
+/* The panel trigger: the one solid pill in the bar. */
+#custom-control {
+  margin-left: 2px;
+  background: @accent;
+  color: @base;
+}
+
+#custom-control:hover {
+  background: @blue;
+}
+
+/* --- popups ----------------------------------------------------------- */
+
+tooltip {
+  background: alpha(@base, 0.95);
+  border: 1px solid @surface;
+}
+
+tooltip label {
+  color: @text;
+  padding: 2px 4px;
+}
+
+menu {
+  background: alpha(@base, 0.95);
+  border: 1px solid @surface;
+  padding: 4px;
+}
+
+menuitem {
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: @text;
+}
+
+menuitem:hover {
+  background: @accent;
+  color: @base;
+}
