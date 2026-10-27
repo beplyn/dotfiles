@@ -9,7 +9,7 @@ in
 {
   programs.niri.settings = {
     layout = {
-      gaps = 8;
+      gaps = 3;
 
       preset-column-widths = [
         { proportion = 1.0 / 3.0; }
@@ -61,7 +61,7 @@ in
       };
     };
 
-    # 12px corners to match quickshell and walker.
+    # 12px corners to match quickshell and walker, with hollow borders.
     window-rules = [
       {
         geometry-corner-radius =
@@ -75,6 +75,9 @@ in
             bottom-right = r;
           };
         clip-to-geometry = true;
+        # Without CSD niri fills the border's colour behind the whole window,
+        # which tints translucent windows (kitty) with the base0E accent.
+        draw-border-with-background = false;
       }
     ];
   };

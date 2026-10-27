@@ -56,6 +56,8 @@ in
       "-m"
       "clipboard"
     ];
+    ${Mod "A"} = spawn "Control center" (ipc "panels" "toggle" ++ [ "control" ]);
+    ${Mod "D"} = spawn "Dashboard" (ipc "panels" "toggle" ++ [ "dashboard" ]);
     ${Mod "N"} = spawn "Notification center" (ipc "notifications" "toggle");
     ${ModShift "N"} = spawn "Toggle do not disturb" (ipc "notifications" "toggleDnd");
     ${ModShift "R"} = spawn "Screen recorder" (ipc "recorder" "toggle");
@@ -84,8 +86,8 @@ in
     ${Mod "Tab"} = show "Overview" { toggle-overview = [ ]; } // { repeat = false; };
 
     # --- window sizing ----------------------------------------------------
-    ${Mod "F"} = show "Fullscreen window" { fullscreen-window = [ ]; };
-    ${ModShift "F"} = show "Maximize column" { maximize-column = [ ]; };
+    ${Mod "F"} = show "Maximize column" { maximize-column = [ ]; };
+    ${ModShift "F"} = show "Fullscreen window" { fullscreen-window = [ ]; };
     "Mod+Alt+X" = show "Toggle floating" { toggle-window-floating = [ ]; };
     ${Mod "R"} = show "Cycle column width" { switch-preset-column-width = [ ]; };
     # niri matches the unshifted key, so "+" is bound on Equal (Shift+= on

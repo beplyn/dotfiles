@@ -13,6 +13,12 @@
           buildInputs = map (
             p: if (p.pname or "") == "libdisplay-info" then pkgs.libdisplay-info_0_3 else p
           ) old.buildInputs;
+          # Drop the overlay's leftover debug logging; the non-xray one fires
+          # every frame for every glass window.
+          postPatch = old.postPatch + ''
+            sed -i '/warn!("LIQUID GLASS:/d' src/render_helpers/background_effect.rs
+            if grep -q 'LIQUID GLASS:' src/render_helpers/background_effect.rs; then exit 1; fi
+          '';
         });
   };
 
