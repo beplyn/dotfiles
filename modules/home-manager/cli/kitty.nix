@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   pkgs,
   ...
@@ -21,10 +22,15 @@
     settings = {
       bold_font = "auto";
 
-      background_opacity = lib.mkForce "0.75";
-      background_blur = 20;
+      # Follow Stylix's base00 so the background matches every theme. Blur is
+      # done by niri's window rule (see wm/niri/kdl.nix), so no
+      # background_blur here.
+      background = lib.mkForce "#${config.lib.stylix.colors.base00}";
+      background_opacity = lib.mkForce "0.80";
+      dynamic_background_opacity = true;
+
       cursor_shape = "underline";
-      window_padding_width = 8;
+      window_padding_width = 14;
       hide_window_decorations = true;
       tab_bar_style = "hidden";
 
