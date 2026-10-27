@@ -12,7 +12,7 @@
     LC_NUMERIC = "hu_HU.UTF-8";
     LC_PAPER = "hu_HU.UTF-8";
     LC_TELEPHONE = "hu_HU.UTF-8";
-    LC_TIME = "hu_HU.UTF-8";
+    LC_TIME = "en_GB.UTF-8";
   };
 
   services.xserver.xkb = {
