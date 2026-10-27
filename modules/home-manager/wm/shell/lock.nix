@@ -24,13 +24,13 @@ in
 
       clock = true;
       timestr = "%H:%M";
-      datestr = "%A, %d %B";
+      datestr = "%a, %d %b";
       font = config.stylix.fonts.monospace.name;
-      font-size = 28;
+      font-size = 24;
 
       indicator = true;
-      indicator-radius = 120;
-      indicator-thickness = 8;
+      indicator-radius = 100;
+      indicator-thickness = 6;
       ignore-empty-password = true;
       show-failed-attempts = true;
     };
