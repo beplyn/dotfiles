@@ -1,7 +1,12 @@
+{ lib, headless, ... }:
+
 {
   imports = [
-    ./core/module.nix
-    ./system/module.nix
+    ./base
+    ./services
     ../theme
-  ];
+    ../theme/stylix.nix
+  ]
+  # Servers: no display manager, compositor, fonts or GUI apps.
+  ++ lib.optionals (!headless) [ ./desktop ];
 }

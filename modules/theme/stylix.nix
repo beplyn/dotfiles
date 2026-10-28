@@ -14,22 +14,6 @@ let
   };
 in
 {
-  imports = [
-    ./boot.nix
-    ./containers.nix
-    ./qbit.nix
-    ./networking.nix
-    ./ssh.nix
-    ./locale.nix
-    ./encryption.nix
-  ]
-  ++ lib.optionals (!headless) [
-    ./audio.nix
-    ./desktop.nix
-    ./displayManager.nix
-    ./kdeconnect.nix
-  ];
-
   stylix = {
     enable = true;
     base16Scheme = base16Schemes.${themeName};

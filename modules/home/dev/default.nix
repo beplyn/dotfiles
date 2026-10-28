@@ -1,8 +1,8 @@
 {
   imports = [
     ./git.nix
-    ./sign.nix
-    ./nvim.nix
+    ./signing.nix
+    ./nvim
     ./opencode.nix
   ];
 }
