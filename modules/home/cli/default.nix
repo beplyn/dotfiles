@@ -1,10 +1,4 @@
 {
-  lib,
-  headless,
-  ...
-}:
-
-{
   imports = [
     ./ssh.nix
     ./bat.nix
@@ -23,8 +17,5 @@
     ./bottom.nix
     ./btop.nix
     ./netspd.nix
-  ]
-  ++ lib.optionals (!headless) [
-    ./kitty.nix
   ];
 }

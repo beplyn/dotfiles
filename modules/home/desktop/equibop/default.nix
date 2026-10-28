@@ -3,7 +3,7 @@
     ./notifications.nix
     ./rpc.nix
     ./tray.nix
-    ./equicord/module.nix
+    ./equicord
   ];
 
   programs.equibop = {

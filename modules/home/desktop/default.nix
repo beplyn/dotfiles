@@ -1,10 +1,11 @@
 {
   imports = [
+    ./kitty.nix
     ./gaming.nix
     ./gtk.nix
     ./protonmail.nix
     ./virtualization.nix
-    ./equi/module.nix
+    ./equibop
     ./browsers.nix
     ./office.nix
     ./media.nix
