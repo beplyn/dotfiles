@@ -13,10 +13,12 @@ let
 in
 {
   # Colors come from stylix.targets.swaylock, so they follow the theme.
-  programs.swaylock = {
+  programs.swaylock =
+  {
     enable = true;
     package = pkgs.swaylock-effects;
-    settings = {
+    settings =
+    {
       screenshots = true;
       effect-blur = "7x5";
       effect-vignette = "0.4:0.6";
@@ -36,9 +38,11 @@ in
     };
   };
 
-  services.swayidle = {
+  services.swayidle =
+  {
     enable = true;
-    timeouts = [
+    timeouts =
+    [
       {
         timeout = 300;
         command = lock;
@@ -49,7 +53,8 @@ in
         resumeCommand = "${niri} msg action power-on-monitors";
       }
     ];
-    events = {
+    events =
+    {
       before-sleep = lock;
       inherit lock;
     };

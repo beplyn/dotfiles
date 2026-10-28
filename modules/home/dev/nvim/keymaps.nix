@@ -1,5 +1,6 @@
 {
-  programs.nixvim.keymaps = [
+  programs.nixvim.keymaps =
+  [
     {
       mode = "n";
       key = "<leader>ff";
@@ -106,7 +107,8 @@
       mode = "v";
       key = ">";
       action = ">gv";
-      options = {
+      options =
+      {
         noremap = true;
         silent = true;
         desc = "Indent right and preserve visual selection";
@@ -116,7 +118,8 @@
       mode = "v";
       key = "<";
       action = "<gv";
-      options = {
+      options =
+      {
         noremap = true;
         silent = true;
         desc = "Indent left and preserve visual selection";

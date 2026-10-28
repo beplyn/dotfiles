@@ -11,11 +11,13 @@ let
 in
 {
   # Off unless a host opts in (beacon, shulker).
-  services.openssh = {
+  services.openssh =
+  {
     enable = lib.mkDefault false;
     ports = [ 2222 ];
     openFirewall = true;
-    settings = {
+    settings =
+    {
       # Keep password login as a fallback until a key is authorized.
       PasswordAuthentication = !hasAuthorizedKeys;
       KbdInteractiveAuthentication = false;

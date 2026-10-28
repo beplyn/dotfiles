@@ -13,7 +13,8 @@ let
   toRgb =
     color:
     lib.concatStringsSep ";" (
-      builtins.map (part: toString (lib.fromHexString part)) [
+      builtins.map (part: toString (lib.fromHexString part))
+      [
         (builtins.substring 0 2 color)
         (builtins.substring 2 2 color)
         (builtins.substring 4 2 color)
@@ -27,7 +28,8 @@ let
   system = pkgs.stdenv.hostPlatform.system;
   upstreamFetch = inputs.areofyl-fetch.packages.${system}.default;
 
-  patchedFetch = upstreamFetch.overrideAttrs (oldAttrs: {
+  patchedFetch = upstreamFetch.overrideAttrs (oldAttrs:
+  {
     postPatch = (oldAttrs.postPatch or "") + ''
       # 1. Strip the trailing colon and forced magenta escape from all labels
       # "%.0s" consumes label_color (prints 0 chars), followed by label and value with a clean 2-space gap

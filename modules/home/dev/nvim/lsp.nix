@@ -7,15 +7,19 @@ let
   nixos = ''${flake}.nixosConfigurations."${osConfig.networking.hostName}-${themeName}"'';
 in
 {
-  programs.nixvim.plugins.lsp = {
+  programs.nixvim.plugins.lsp =
+  {
     enable = true;
-    servers = {
+    servers =
+    {
       clangd.enable = true;
-      hls = {
+      hls =
+      {
         enable = true;
         installGhc = true;
       };
-      rust_analyzer = {
+      rust_analyzer =
+      {
         enable = true;
         installCargo = true;
         installRustc = true;
@@ -27,12 +31,15 @@ in
       csharp_ls.enable = true;
       gopls.enable = true;
       marksman.enable = true;
-      nixd = {
+      nixd =
+      {
         enable = true;
-        settings = {
+        settings =
+        {
           nixpkgs.expr = "import ${flake}.inputs.nixpkgs { }";
           formatting.command = [ "nixfmt" ];
-          options = {
+          options =
+          {
             nixos.expr = "${nixos}.options";
             # Includes programs.nixvim.* via the nixvim home module.
             home-manager.expr = "${nixos}.options.home-manager.users.type.getSubOptions [ ]";

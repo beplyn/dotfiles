@@ -1,5 +1,6 @@
 {
-  programs.nixvim.plugins = {
+  programs.nixvim.plugins =
+  {
     aerial.enable = true;
     auto-session.enable = true;
     autoclose.enable = true;

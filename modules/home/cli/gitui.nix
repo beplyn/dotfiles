@@ -8,7 +8,8 @@ in
   # Themed from our palette below; Stylix's target would also write theme.ron.
   stylix.targets.gitui.enable = false;
 
-  programs.gitui = {
+  programs.gitui =
+  {
     enable = true;
     # Empty patch: keep gitui's default keys (an empty file would log a parse error).
     keyConfig = "()";

@@ -1,10 +1,12 @@
 { pkgs, ... }:
 
 {
-  services.displayManager.ly = {
+  services.displayManager.ly =
+  {
     enable = true;
     package = pkgs.ly;
-    settings = {
+    settings =
+    {
       animation = "none";
 
       clock = "%c";

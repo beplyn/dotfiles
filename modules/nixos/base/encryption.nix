@@ -19,34 +19,41 @@ let
   '';
 in
 {
-  options.encryption = {
-    enable = lib.mkOption {
+  options.encryption =
+  {
+    enable = lib.mkOption
+    {
       type = lib.types.bool;
       default = true;
       description = "LUKS-encrypted root, unlocked from a Stylix-themed Plymouth prompt.";
     };
 
-    device = lib.mkOption {
+    device = lib.mkOption
+    {
       type = lib.types.str;
       default = "/dev/disk/by-partlabel/cryptroot";
       description = "The LUKS container holding the root filesystem.";
     };
   };
 
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf cfg.enable
+  {
     boot.initrd.systemd.enable = true;
 
-    boot.initrd.luks.devices.cryptroot = {
+    boot.initrd.luks.devices.cryptroot =
+    {
       inherit (cfg) device;
       allowDiscards = true;
     };
 
-    fileSystems."/" = {
+    fileSystems."/" =
+    {
       device = lib.mkDefault "/dev/mapper/cryptroot";
       fsType = lib.mkDefault "ext4";
     };
 
-    boot.plymouth = {
+    boot.plymouth =
+    {
       enable = true;
       font = "${plymouthFont}";
     };
@@ -55,7 +62,8 @@ in
     # Keep kernel/systemd chatter off the splash so the prompt is all you see.
     boot.consoleLogLevel = 3;
     boot.initrd.verbose = false;
-    boot.kernelParams = [
+    boot.kernelParams =
+    [
       "quiet"
       "splash"
       "udev.log_level=3"

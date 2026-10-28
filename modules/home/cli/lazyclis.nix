@@ -5,26 +5,33 @@ let
 in
 
 {
-  home.packages = with pkgs; [
+  home.packages = with pkgs;
+  [
     lazycommit
     lazyjournal
     lazyssh
     onefetch
     serie
   ];
-  programs.lazygit = {
+  programs.lazygit =
+  {
     enable = true;
-    settings = {
-      gui = {
+    settings =
+    {
+      gui =
+      {
         nerdFontsVersion = "3";
         showCommandLog = false;
-        theme = {
-          activeBorderColor = [
+        theme =
+        {
+          activeBorderColor =
+          [
             p.accent
             "bold"
           ];
           inactiveBorderColor = [ p.muted ];
-          searchingActiveBorderColor = [
+          searchingActiveBorderColor =
+          [
             p.aqua
             "bold"
           ];
@@ -39,7 +46,8 @@ in
           defaultFgColor = [ p.foreground ];
         };
       };
-      git = {
+      git =
+      {
         autoFetch = true;
         autoRefresh = true;
         overrideGpg = true;

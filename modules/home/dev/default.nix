@@ -1,5 +1,6 @@
 {
-  imports = [
+  imports =
+  [
     ./git.nix
     ./signing.nix
     ./nvim

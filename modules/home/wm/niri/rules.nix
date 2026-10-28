@@ -1,7 +1,9 @@
 {
-  programs.niri.settings.window-rules = [
+  programs.niri.settings.window-rules =
+  [
     {
-      matches = [
+      matches =
+      [
         { app-id = "^equibop$"; }
         { app-id = "^steam$"; }
       ];
@@ -10,7 +12,8 @@
 
     # Steam's toast popups are separate windows; pin only those to the top right.
     {
-      matches = [
+      matches =
+      [
         {
           app-id = "^steam$";
           title = "^notificationtoasts_\\d+_desktop$";
@@ -18,7 +21,8 @@
       ];
       open-floating = true;
       open-focused = false;
-      default-floating-position = {
+      default-floating-position =
+      {
         x = 10;
         y = 10;
         relative-to = "top-right";

@@ -1,7 +1,9 @@
 {
-  programs.nixvim.plugins.neotest = {
+  programs.nixvim.plugins.neotest =
+  {
     enable = true;
-    adapters = {
+    adapters =
+    {
       gtest.enable = true;
       haskell.enable = true;
       rust.enable = true;

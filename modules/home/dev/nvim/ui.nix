@@ -8,15 +8,18 @@ let
   transparent = lib.mkForce "NONE";
 in
 {
-  stylix.targets.nixvim = {
+  stylix.targets.nixvim =
+  {
     enable = true;
     transparentBackground.main = true;
     transparentBackground.numberLine = true;
   };
 
-  programs.nixvim = {
+  programs.nixvim =
+  {
     opts.termguicolors = true;
-    highlightOverride = {
+    highlightOverride =
+    {
       # --- Comments & Structure ---
       "@comment".fg = c.base03;
       "@comment".italic = true;
@@ -55,50 +58,60 @@ in
       "@embedded".fg = c.base0A;
 
       # --- Core Window & Buffer Transparency ---
-      Normal = {
+      Normal =
+      {
         bg = transparent;
         ctermbg = transparent;
       };
-      NormalNC = {
+      NormalNC =
+      {
         bg = transparent;
         ctermbg = transparent;
       };
-      NormalFloat = {
+      NormalFloat =
+      {
         bg = transparent;
         ctermbg = transparent;
       };
-      FloatBorder = {
+      FloatBorder =
+      {
         bg = transparent;
         fg = c.base03;
       };
       FoldColumn.bg = transparent;
       EndOfBuffer.bg = transparent;
-      WinSeparator = {
+      WinSeparator =
+      {
         bg = transparent;
         fg = c.base02;
       };
 
       # --- Treesitter Context Transparency ---
       TreesitterContext.bg = transparent;
-      TreesitterContextLineNumber = {
+      TreesitterContextLineNumber =
+      {
         bg = transparent;
         fg = c.base04;
       };
-      TreesitterContextBottom = {
+      TreesitterContextBottom =
+      {
         underline = false;
         bg = transparent;
       };
 
       # Keep gutter backgrounds transparent while retaining diff colors.
-      GitSignsAddNr = {
+      GitSignsAddNr =
+      {
         bg = transparent;
         fg = c.base0B;
       };
-      GitSignsChangeNr = {
+      GitSignsChangeNr =
+      {
         bg = transparent;
         fg = c.base0D;
       };
-      GitSignsDeleteNr = {
+      GitSignsDeleteNr =
+      {
         bg = transparent;
         fg = c.base08;
       };
@@ -107,7 +120,8 @@ in
       LineNrAbove.bg = transparent;
       LineNrBelow.bg = transparent;
       CursorLine.bg = transparent;
-      CursorLineNr = {
+      CursorLineNr =
+      {
         bg = transparent;
         fg = c.base0E;
         bold = true;
@@ -116,7 +130,8 @@ in
       CursorLineFold.bg = transparent;
       TabLine.bg = transparent;
       TabLineFill.bg = transparent;
-      TabLineSel = {
+      TabLineSel =
+      {
         bg = transparent;
         fg = c.base05;
       };
@@ -125,19 +140,23 @@ in
       BufferLineDevIconNixSelected.bg = transparent;
       BufferLineDevIconDefault.bg = transparent;
       BufferLineDevIconDefaultSelected.bg = transparent;
-      DevIconNix = {
+      DevIconNix =
+      {
         bg = transparent;
         fg = c.base0D;
       };
     };
-    autoCmd = [
+    autoCmd =
+    [
       {
-        event = [
+        event =
+        [
           "ColorScheme"
           "VimEnter"
         ];
         pattern = [ "*" ];
-        callback = {
+        callback =
+        {
           __raw =
             builtins.replaceStrings
               [
@@ -163,23 +182,29 @@ in
       }
     ];
 
-    extraFiles = {
+    extraFiles =
+    {
       "logos".source = ./logos;
       "lua/random_logo.lua".source = ./lua/random_logo.lua;
       "lua/alpha.lua".source = ./lua/alpha.lua;
     };
 
-    plugins = {
-      alpha = {
+    plugins =
+    {
+      alpha =
+      {
         enable = true;
         theme = "dashboard";
         luaConfig.content = builtins.readFile ./lua/alpha.lua;
       };
 
-      lualine = {
+      lualine =
+      {
         enable = true;
-        settings = {
-          options = {
+        settings =
+        {
+          options =
+          {
             globalstatus = true;
             theme = "auto";
             component_separators = "";
@@ -188,9 +213,11 @@ in
         };
       };
 
-      bufferline = {
+      bufferline =
+      {
         enable = true;
-        settings.options = {
+        settings.options =
+        {
           mode = "buffers";
           diagnostics = "nvim_lsp";
           indicator.style = "none";
@@ -198,33 +225,40 @@ in
           show_buffer_close_icons = false;
           show_close_icon = false;
         };
-        settings.highlights = {
+        settings.highlights =
+        {
           fill.bg = "NONE";
           background.bg = "NONE";
           tab.bg = "NONE";
-          tab_selected = {
+          tab_selected =
+          {
             bg = "NONE";
             fg = c.base05;
           };
-          separator_selected = {
+          separator_selected =
+          {
             fg = "NONE";
             bg = "NONE";
           };
-          separator = {
+          separator =
+          {
             fg = "NONE";
             bg = "NONE";
           };
-          buffer_selected = {
+          buffer_selected =
+          {
             bg = "NONE";
             fg = c.base05;
             bold = true;
           };
           buffer_visible.bg = "NONE";
-          indicator_selected = {
+          indicator_selected =
+          {
             fg = "NONE";
             bg = "NONE";
           };
-          indicator_visible = {
+          indicator_visible =
+          {
             fg = "NONE";
             bg = "NONE";
           };

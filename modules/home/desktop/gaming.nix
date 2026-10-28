@@ -11,19 +11,25 @@ let
 in
 
 {
-  config = lib.mkIf osConfig.gaming.enable {
-    programs.prismlauncher = {
+  config = lib.mkIf osConfig.gaming.enable
+  {
+    programs.prismlauncher =
+    {
       enable = true;
-      settings = {
+      settings =
+      {
         IconTheme = "flat";
         MaxMemAlloc = 18432;
         MenuBarInsteadOfToolBar = false;
       };
-      themes.theme = {
-        theme = {
+      themes.theme =
+      {
+        theme =
+        {
           name = "theme";
           widgets = "Fusion";
-          colors = {
+          colors =
+          {
             AlternateBase = p.surfaceBright;
             Base = p.background;
             BrightText = p.text;

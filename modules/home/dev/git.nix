@@ -5,20 +5,25 @@
 }:
 
 {
-  programs.git = {
+  programs.git =
+  {
     enable = true;
-    settings = {
-      user = {
+    settings =
+    {
+      user =
+      {
         name = username;
         inherit email;
       };
       init.defaultBranch = "master";
       pull.rebase = true;
       core.editor = "nvim";
-      safe = {
+      safe =
+      {
         directory = [ "/etc/nixos" ];
       };
-      alias = {
+      alias =
+      {
         st = "status";
         co = "checkout";
         br = "branch";
@@ -26,7 +31,8 @@
         lg = "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
       };
     };
-    signing = {
+    signing =
+    {
       key = email;
       signByDefault = true;
     };

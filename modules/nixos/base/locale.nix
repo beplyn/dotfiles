@@ -3,7 +3,8 @@
 
   i18n.defaultLocale = "en_GB.UTF-8";
 
-  i18n.extraLocaleSettings = {
+  i18n.extraLocaleSettings =
+  {
     LC_ADDRESS = "hu_HU.UTF-8";
     LC_IDENTIFICATION = "hu_HU.UTF-8";
     LC_MEASUREMENT = "hu_HU.UTF-8";
@@ -15,7 +16,8 @@
     LC_TIME = "en_GB.UTF-8";
   };
 
-  services.xserver.xkb = {
+  services.xserver.xkb =
+  {
     layout = "gb";
     variant = "";
   };

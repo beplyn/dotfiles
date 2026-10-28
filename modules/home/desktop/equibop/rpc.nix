@@ -1,5 +1,6 @@
 {
-  programs.equibop.settings = {
+  programs.equibop.settings =
+  {
     arRPC = true;
     arRPCDisabled = false;
     arRPCProcessScanning = true;

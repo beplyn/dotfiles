@@ -4,7 +4,8 @@
 {
   imports = [ inputs.nirimation.homeManagerModules.default ];
 
-  programs.nirimation = {
+  programs.nirimation =
+  {
     enable = true;
     animation = "glitch-cyberpunk";
   };

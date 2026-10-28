@@ -1,11 +1,13 @@
 {
-  programs.nixvim = {
+  programs.nixvim =
+  {
     enable = true;
     defaultEditor = true;
 
     nixpkgs.config.allowUnfree = true;
 
-    opts = {
+    opts =
+    {
       number = true;
       relativenumber = true;
       cursorline = true;

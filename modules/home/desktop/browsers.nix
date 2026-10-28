@@ -4,10 +4,12 @@
   imports = [ inputs.zen-browser.homeModules.beta ];
 
   # Zen: everyday browser, default for links and HTML.
-  programs.zen-browser = {
+  programs.zen-browser =
+  {
     enable = true;
     setAsDefaultBrowser = true;
-    profiles.default = {
+    profiles.default =
+    {
       id = 0;
       isDefault = true;
     };
@@ -16,14 +18,17 @@
 
   # LibreWolf: throwaway browsing. Keeps no history, and wipes cookies,
   # site data, cache and form data when the last window closes.
-  programs.librewolf = {
+  programs.librewolf =
+  {
     enable = true;
     # Profile settings land in user.js, which is re-applied on every launch,
     # so these can't be switched off from about:preferences for good.
-    profiles.default = {
+    profiles.default =
+    {
       id = 0;
       isDefault = true;
-      settings = {
+      settings =
+      {
         "places.history.enabled" = false;
         "browser.formfill.enable" = false;
         "signon.rememberSignons" = false;

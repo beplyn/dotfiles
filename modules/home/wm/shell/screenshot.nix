@@ -12,9 +12,11 @@ let
   # Saves to ~/Pictures/Screenshots, copies to the clipboard and raises a
   # notification whose actions open the shot in satty, an image viewer or
   # the folder.
-  screenshot = pkgs.writeShellApplication {
+  screenshot = pkgs.writeShellApplication
+  {
     name = "screenshot";
-    runtimeInputs = with pkgs; [
+    runtimeInputs = with pkgs;
+    [
       grim
       slurp
       wl-clipboard
@@ -73,8 +75,10 @@ in
 {
   home.packages = [ screenshot ];
 
-  xdg.configFile."satty/config.toml".source = (pkgs.formats.toml { }).generate "satty-config" {
-    general = {
+  xdg.configFile."satty/config.toml".source = (pkgs.formats.toml { }).generate "satty-config"
+  {
+    general =
+    {
       early-exit = true;
       initial-tool = "arrow";
       copy-command = "wl-copy";
@@ -86,7 +90,8 @@ in
       actions-on-escape = [ "exit" ];
     };
     font.family = config.stylix.fonts.monospace.name;
-    color-palette.palette = [
+    color-palette.palette =
+    [
       c.base0E
       c.base08
       c.base09
