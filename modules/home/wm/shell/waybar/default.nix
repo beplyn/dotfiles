@@ -11,7 +11,7 @@
 }:
 
 let
-  t = import ../theme.nix { inherit config; };
+  t = config.themes.shell;
   gap = config.programs.niri.settings.layout.gaps;
   niri = lib.getExe osConfig.programs.niri.package;
   signals = config.lib.haku.waybarSignals;
