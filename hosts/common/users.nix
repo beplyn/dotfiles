@@ -1,4 +1,10 @@
-{ pkgs, username, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  username,
+  ...
+}:
 
 {
   users.defaultUserShell = pkgs.fish;
@@ -12,7 +18,7 @@
     extraGroups = [
       "networkmanager"
       "wheel"
-      "docker"
-    ];
+    ]
+    ++ lib.optional config.docker.enable "docker";
   };
 }
