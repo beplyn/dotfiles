@@ -1,15 +1,18 @@
 {
-  imports = [
+  imports =
+  [
     ./notifications.nix
     ./rpc.nix
     ./tray.nix
     ./equicord
   ];
 
-  programs.equibop = {
+  programs.equibop =
+  {
     enable = true;
 
-    settings = {
+    settings =
+    {
       checkUpdates = false;
       discordBranch = "stable";
       spellCheckLanguages = [ "en" ];

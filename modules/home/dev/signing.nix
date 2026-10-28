@@ -13,12 +13,14 @@
 
   programs.gpg.enable = true;
 
-  services.gpg-agent = {
+  services.gpg-agent =
+  {
     enable = true;
     pinentry.package = pkgs.pinentry-curses;
   };
 
-  home.packages = with pkgs; [
+  home.packages = with pkgs;
+  [
     gpg-tui
   ];
 

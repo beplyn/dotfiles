@@ -41,11 +41,13 @@ in
   # waybar CSS would fight the capsule layout.
   stylix.targets.waybar.enable = false;
 
-  programs.waybar = {
+  programs.waybar =
+  {
     enable = true;
     systemd.enable = true;
 
-    settings.main = {
+    settings.main =
+    {
       layer = "top";
       position = "top";
       height = 36;
@@ -54,17 +56,20 @@ in
       margin-right = gap;
       spacing = 4;
 
-      modules-left = [
+      modules-left =
+      [
         "custom/launcher"
         "niri/workspaces"
         "niri/window"
       ];
-      modules-center = [
+      modules-center =
+      [
         "mpris"
         "clock"
         "custom/recorder"
       ];
-      modules-right = [
+      modules-right =
+      [
         "group/hardware"
         "idle_inhibitor"
         "group/status"
@@ -73,26 +78,30 @@ in
         "custom/control"
       ];
 
-      "custom/launcher" = {
+      "custom/launcher" =
+      {
         format = glyph 62227; # nf-linux-nixos
         tooltip = false;
         on-click = lib.getExe config.services.walker.package;
       };
 
-      "niri/workspaces" = {
+      "niri/workspaces" =
+      {
         format = "{index}";
         on-scroll-up = "${niri} msg action focus-workspace-up";
         on-scroll-down = "${niri} msg action focus-workspace-down";
       };
 
-      "niri/window" = {
+      "niri/window" =
+      {
         format = "{title}";
         max-length = 48;
         separate-outputs = true;
         icon = false;
       };
 
-      mpris = {
+      mpris =
+      {
         format = "{player_icon} {title}";
         format-paused = "{status_icon} <i>{title}</i>";
         title-len = 28;
@@ -103,13 +112,15 @@ in
         # the dashboard has the full player.
       };
 
-      clock = {
+      clock =
+      {
         format = "${glyph 983376}  {:%a %d  %H:%M}"; # clock-outline
         tooltip = false;
         on-click = panel "dashboard";
       };
 
-      "custom/recorder" = {
+      "custom/recorder" =
+      {
         exec = ipc "recorder" "status" [ ];
         return-type = "json";
         signal = signals.recorder;
@@ -121,35 +132,42 @@ in
         on-click = ipc "recorder" "stop" [ ];
       };
 
-      "group/hardware" = {
+      "group/hardware" =
+      {
         orientation = "horizontal";
-        modules = [
+        modules =
+        [
           "cpu"
           "memory"
           "temperature"
         ];
       };
-      cpu = {
+      cpu =
+      {
         format = "${glyph 62171} {usage}%";
         interval = 2;
-        states = {
+        states =
+        {
           warning = 70;
           critical = 90;
         };
         on-click = panel "cpu";
       };
-      memory = {
+      memory =
+      {
         format = "${glyph 61381} {percentage}%";
         interval = 2;
         tooltip-format = "{used:0.1f} / {total:0.1f} GiB";
-        states = {
+        states =
+        {
           warning = 75;
           critical = 90;
         };
         on-click = panel "memory";
       };
       # k10temp, the CPU sensor on the AMD hosts.
-      temperature = {
+      temperature =
+      {
         hwmon-path-abs = "/sys/devices/pci0000:00/0000:00:18.3/hwmon";
         input-filename = "temp1_input";
         critical-threshold = 85;
@@ -157,9 +175,11 @@ in
         on-click = panel "temperature";
       };
 
-      idle_inhibitor = {
+      idle_inhibitor =
+      {
         format = "{icon}";
-        format-icons = {
+        format-icons =
+        {
           activated = glyph 983414; # coffee
           deactivated = glyph 984242; # sleep
         };
@@ -167,27 +187,32 @@ in
         tooltip-format-deactivated = "Idle allowed";
       };
 
-      "group/status" = {
+      "group/status" =
+      {
         orientation = "horizontal";
-        modules = [
+        modules =
+        [
           "network"
           "bluetooth"
           "wireplumber"
         ]
-        ++ lib.optionals laptop [
+        ++ lib.optionals laptop
+        [
           "battery"
           "power-profiles-daemon"
         ];
       };
       # Just the connection type at a glance; picking networks and the
       # cable state live in the control center.
-      network = {
+      network =
+      {
         format-wifi = "{icon}";
         format-ethernet = glyph 983552; # ethernet
         format-linked = glyph 983552;
         format-disconnected = glyph 985390; # wifi-strength-off
         format-disabled = glyph 985390;
-        format-icons = glyphs [
+        format-icons = glyphs
+        [
           985391 # wifi-strength-outline
           985375
           985378
@@ -201,7 +226,8 @@ in
         tooltip-format-disabled = "Offline";
         on-click = panel "control";
       };
-      bluetooth = {
+      bluetooth =
+      {
         format = glyph 983215; # bluetooth
         format-disabled = glyph 983218; # bluetooth-off
         format-connected = "${glyph 983217} {num_connections}";
@@ -210,10 +236,12 @@ in
         tooltip-format-enumerate-connected = "{device_alias}";
         on-click = panel "control";
       };
-      wireplumber = {
+      wireplumber =
+      {
         format = "{icon} {volume}%";
         format-muted = glyph 984927; # volume-off
-        format-icons = glyphs [
+        format-icons = glyphs
+        [
           61478
           61479
           61480
@@ -222,10 +250,12 @@ in
         on-click = panel "control";
         on-click-right = lib.getExe pkgs.pavucontrol;
       };
-      battery = {
+      battery =
+      {
         format = "{icon} {capacity}%";
         format-charging = "${glyph 983172} {capacity}%";
-        format-icons = glyphs [
+        format-icons = glyphs
+        [
           983162
           983163
           983164
@@ -237,7 +267,8 @@ in
           983170
           983161
         ];
-        states = {
+        states =
+        {
           warning = 30;
           critical = 15;
         };
@@ -245,9 +276,11 @@ in
         on-click = panel "control";
       };
       # Left-click cycles saver → balanced → performance.
-      power-profiles-daemon = {
+      power-profiles-daemon =
+      {
         format = "{icon}";
-        format-icons = {
+        format-icons =
+        {
           power-saver = glyph 61548; # leaf
           balanced = glyph 62030; # balance-scale
           performance = glyph 61671; # bolt
@@ -256,17 +289,20 @@ in
         tooltip-format = "Power mode: {profile}";
       };
 
-      tray = {
+      tray =
+      {
         icon-size = 16;
         spacing = 8;
       };
 
-      "custom/notifications" = {
+      "custom/notifications" =
+      {
         exec = ipc "notifications" "status" [ ];
         return-type = "json";
         signal = signals.notifications;
         format = "{icon}";
-        format-icons = {
+        format-icons =
+        {
           none = glyph 983194; # bell
           notification = glyph 983198; # bell-ring
           dnd-none = glyph 983195; # bell-off
@@ -276,7 +312,8 @@ in
         on-click-right = ipc "notifications" "toggleDnd" [ ];
       };
 
-      "custom/control" = {
+      "custom/control" =
+      {
         format = glyph 984211; # cog
         tooltip = false;
         on-click = panel "control";

@@ -1,18 +1,22 @@
 { config, ... }:
 
 {
-  programs.nixvim.plugins.treesitter = {
+  programs.nixvim.plugins.treesitter =
+  {
     enable = true;
     grammarPackages = config.programs.nixvim.plugins.treesitter.package.allGrammars;
-    settings = {
+    settings =
+    {
       highlight.enable = true;
       indent.enable = true;
     };
   };
 
-  programs.nixvim.plugins.treesitter-context = {
+  programs.nixvim.plugins.treesitter-context =
+  {
     enable = false;
-    settings = {
+    settings =
+    {
       max_lines = 3;
       min_rows = 2;
       multiline_threshold = 1;

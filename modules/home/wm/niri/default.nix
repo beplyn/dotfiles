@@ -1,7 +1,8 @@
 {
   stylix.targets.niri.enable = true;
 
-  imports = [
+  imports =
+  [
     ./binds.nix
     ./kdl.nix
     ./input.nix

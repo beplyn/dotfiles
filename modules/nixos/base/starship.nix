@@ -16,18 +16,21 @@ let
 in
 
 {
-  programs.starship = {
+  programs.starship =
+  {
     enable = true;
     interactiveOnly = true;
 
-    settings = {
+    settings =
+    {
       "$schema" = "https://starship.rs/config-schema.json";
       format = "$hostname$directory[$git_branch$git_status]()$nix_shell";
       right_format = "$cmd_duration$time";
       add_newline = true;
       palette = "theme";
 
-      palettes.theme = {
+      palettes.theme =
+      {
         mauve = palette.accent;
         red = palette.error;
         yellow = palette.warning;
@@ -40,13 +43,15 @@ in
         crust = palette.background;
       };
 
-      directory = {
+      directory =
+      {
         format = "[](fg:surface1)[ $path ]($style)[](fg:surface1) ";
         style = "bg:surface1 fg:blue";
         truncation_symbol = "󰝰 …/";
         home_symbol = "";
         read_only = " ";
-        substitutions = {
+        substitutions =
+        {
           Documents = "󰈙";
           Downloads = " ";
           Music = " ";
@@ -54,13 +59,15 @@ in
         };
       };
 
-      git_branch = {
+      git_branch =
+      {
         format = "[](fg:surface1)[ $symbol $branch ]($style)[](fg:surface1) ";
         style = "bg:surface1 fg:teal";
         symbol = "";
       };
 
-      git_status = {
+      git_status =
+      {
         style = "bg:surface1 fg:red";
         format = "[](fg:surface1)([$all_status$ahead_behind]($style))[](fg:surface1) ";
         up_to_date = "[ ✔ ](bg:surface1 fg:green)";
@@ -75,25 +82,29 @@ in
         behind = "[󰜮\\($count\\)](bg:surface1 fg:red)";
       };
 
-      nix_shell = {
+      nix_shell =
+      {
         format = "[](fg:surface1)[ $symbol$state ]($style)[](fg:surface1) ";
         symbol = " ";
         style = "bg:surface1 fg:blue";
       };
 
-      hostname = {
+      hostname =
+      {
         format = "[](fg:surface1)[ ${hostIcon} ]($style)[](fg:surface1) ";
         ssh_only = false;
         style = "bg:surface1 fg:blue";
       };
 
-      cmd_duration = {
+      cmd_duration =
+      {
         min_time = 1000;
         format = "[](fg:surface1)[  $duration ]($style)[](fg:surface1)";
         style = "bg:surface1 fg:yellow";
       };
 
-      time = {
+      time =
+      {
         disabled = false;
         format = " [](fg:surface1)[ $time 󱑃 ]($style)[](fg:surface1)";
         style = "bg:surface1 fg:mauve";

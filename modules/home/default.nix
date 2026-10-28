@@ -1,12 +1,14 @@
 { lib, headless, ... }:
 
 {
-  imports = [
+  imports =
+  [
     ./dev
     ./cli
     ../theme
   ]
-  ++ lib.optionals (!headless) [
+  ++ lib.optionals (!headless)
+  [
     ./desktop
     ./wm
   ];

@@ -5,17 +5,21 @@
 }:
 
 {
-  programs.ssh = {
+  programs.ssh =
+  {
     enable = true;
     enableDefaultConfig = false;
-    settings = {
-      "gitlab.com" = {
+    settings =
+    {
+      "gitlab.com" =
+      {
         hostname = "gitlab.com";
         user = "git";
         identityFile = "${config.home.homeDirectory}/.ssh/gitlab-auth";
         identitiesOnly = true;
       };
-      "${forgejoHost}" = {
+      "${forgejoHost}" =
+      {
         hostname = forgejoHost;
         user = "git";
         identityFile = "${config.home.homeDirectory}/.ssh/codeberg-auth";

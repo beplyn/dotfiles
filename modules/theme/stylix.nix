@@ -7,20 +7,24 @@
 }:
 
 let
-  base16Schemes = {
+  base16Schemes =
+  {
     catppuccin = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
     gruvbox = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
     nord = "${pkgs.base16-schemes}/share/themes/nord.yaml";
   };
 in
 {
-  stylix = {
+  stylix =
+  {
     enable = true;
     base16Scheme = base16Schemes.${themeName};
-    targets = lib.mkMerge [
+    targets = lib.mkMerge
+    [
       { grub.enable = true; }
       # Desktop theming only matters with a display.
-      (lib.mkIf headless {
+      (lib.mkIf headless
+      {
         gtk.enable = false;
         qt.enable = false;
         gnome.enable = false;
@@ -28,14 +32,16 @@ in
         fontconfig.enable = false;
       })
     ];
-    fonts.monospace = {
+    fonts.monospace =
+    {
       name = "Maple Mono";
       package = pkgs.maple-mono.truetype;
     };
     opacity.terminal = 0.75;
     # Shell surfaces: waybar, quickshell panels, walker.
     opacity.desktop = 0.82;
-    cursor = lib.mkIf (!headless) {
+    cursor = lib.mkIf (!headless)
+    {
       package = pkgs.bibata-cursors;
       name = "Bibata-Modern-Classic";
       size = 24;
@@ -44,8 +50,10 @@ in
 
   # Stylix themes these unconditionally in Home Manager; keep only terminal
   # targets on servers.
-  home-manager.sharedModules = lib.optional headless {
-    stylix.targets = {
+  home-manager.sharedModules = lib.optional headless
+  {
+    stylix.targets =
+    {
       gtk.enable = false;
       qt.enable = false;
       kde.enable = false;

@@ -1,7 +1,8 @@
 { lib, headless, ... }:
 
 {
-  imports = [
+  imports =
+  [
     ./base
     ./services
     ../theme

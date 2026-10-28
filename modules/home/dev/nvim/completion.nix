@@ -1,12 +1,15 @@
 { pkgs, ... }:
 
 {
-  programs.nixvim = {
-    opts = {
+  programs.nixvim =
+  {
+    opts =
+    {
       wildmenu = true;
       wildmode = "longest:full,full";
       wildoptions = [ "pum" ];
-      completeopt = [
+      completeopt =
+      [
         "menu"
         "menuone"
         "noselect"
@@ -15,11 +18,14 @@
       pumblend = 0;
     };
 
-    plugins.cmp = {
+    plugins.cmp =
+    {
       enable = true;
       autoEnableSources = true;
-      settings = {
-        sources = [
+      settings =
+      {
+        sources =
+        [
           { name = "nvim_lsp"; }
           { name = "path"; }
           { name = "buffer"; }
@@ -28,7 +34,8 @@
         # so <CR> only confirms something picked with <Tab>/<S-Tab>.
         preselect = "cmp.PreselectMode.None";
         completion.completeopt = "menu,menuone,noselect";
-        mapping = {
+        mapping =
+        {
           "<Down>" = "cmp.mapping.select_next_item()";
           "<Up>" = "cmp.mapping.select_prev_item()";
           # Confirms an explicitly selected item, otherwise inserts a newline.
@@ -58,7 +65,8 @@
       };
     };
 
-    extraPlugins = with pkgs.vimPlugins; [
+    extraPlugins = with pkgs.vimPlugins;
+    [
       nvim-web-devicons
     ];
   };

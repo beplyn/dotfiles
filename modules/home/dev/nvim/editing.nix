@@ -1,8 +1,11 @@
 {
-  programs.nixvim.plugins = {
-    nvim-autopairs = {
+  programs.nixvim.plugins =
+  {
+    nvim-autopairs =
+    {
       enable = true;
-      settings = {
+      settings =
+      {
         check_ts = true;
         map_cr = true;
         map_c_h = true;
@@ -11,9 +14,11 @@
     };
 
     comment.enable = true;
-    indent-blankline = {
+    indent-blankline =
+    {
       enable = true;
-      settings = {
+      settings =
+      {
         indent.char = "│";
         scope.enabled = true;
       };

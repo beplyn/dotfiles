@@ -1,7 +1,8 @@
 { config, ... }:
 
 {
-  home.sessionVariables = {
+  home.sessionVariables =
+  {
     PAGER = "bat --paging=always";
     MANPAGER = "sh -c 'col -bx | bat -l man -p'";
   };
@@ -9,9 +10,11 @@
     set -gx PAGER ${builtins.toJSON config.home.sessionVariables.PAGER}
     set -gx MANPAGER ${builtins.toJSON config.home.sessionVariables.MANPAGER}
   '';
-  programs.bat = {
+  programs.bat =
+  {
     enable = true;
-    config = {
+    config =
+    {
       style = "numbers,changes,header";
     };
   };

@@ -4,7 +4,8 @@ let
   p = config.themes.palette;
 in
 {
-  home.packages = [
+  home.packages =
+  [
     pkgs.btop
   ];
 

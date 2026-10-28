@@ -1,8 +1,11 @@
 {
-  programs.nixvim.plugins.gitsigns = {
+  programs.nixvim.plugins.gitsigns =
+  {
     enable = true;
-    settings = {
-      signs = {
+    settings =
+    {
+      signs =
+      {
         add.text = "│";
         change.text = "│";
         delete.text = "_";

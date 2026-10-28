@@ -6,38 +6,46 @@
 }:
 
 {
-  options.qbittorrent = {
+  options.qbittorrent =
+  {
     enable = lib.mkEnableOption "qBittorrent (headless, web UI on port 8090)";
 
-    openWebUI = lib.mkOption {
+    openWebUI = lib.mkOption
+    {
       type = lib.types.bool;
       default = true;
       description = "Open the qBittorrent web UI port (8090) in the firewall.";
     };
   };
 
-  config = lib.mkIf config.qbittorrent.enable {
+  config = lib.mkIf config.qbittorrent.enable
+  {
     users.groups.media = { };
 
-    services.qbittorrent = {
+    services.qbittorrent =
+    {
       enable = true;
       user = "qbittorrent";
       group = "media";
       openFirewall = false;
     };
 
-    users.users.qbittorrent = {
+    users.users.qbittorrent =
+    {
       isSystemUser = true;
       home = "/var/lib/qbittorrent";
       createHome = true;
       group = "media";
     };
 
-    systemd.services.qbittorrent = {
+    systemd.services.qbittorrent =
+    {
       environment.HOME = "/var/lib/qbittorrent";
-      serviceConfig = {
+      serviceConfig =
+      {
         StateDirectory = "qbittorrent";
-        ExecStart = lib.mkForce [
+        ExecStart = lib.mkForce
+        [
           ""
           "${pkgs.qbittorrent-nox}/bin/qbittorrent-nox --webui-port=8090"
         ];

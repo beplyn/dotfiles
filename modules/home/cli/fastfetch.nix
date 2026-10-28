@@ -4,25 +4,31 @@ let
   c = config.lib.stylix.colors.withHashtag;
 in
 {
-  programs.fastfetch = {
+  programs.fastfetch =
+  {
     enable = true;
-    settings = {
-      logo = {
+    settings =
+    {
+      logo =
+      {
         type = "builtin";
         source = "NixOS";
         height = 20;
         padding.right = 3;
-        color = {
+        color =
+        {
           "1" = c.base0D;
           "2" = c.base0C;
         };
       };
 
-      display = {
+      display =
+      {
         separator = " ";
       };
 
-      modules = [
+      modules =
+      [
         {
           type = "host";
           key = "╭─󰌢";

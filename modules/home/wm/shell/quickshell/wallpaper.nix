@@ -19,8 +19,10 @@ in
 
   # waypaper rewrites config.ini on exit; a read-only file only makes it
   # log a warning, and the chosen wallpaper goes to its state file instead.
-  xdg.configFile."waypaper/config.ini".source = (pkgs.formats.ini { }).generate "waypaper-config" {
-    Settings = {
+  xdg.configFile."waypaper/config.ini".source = (pkgs.formats.ini { }).generate "waypaper-config"
+  {
+    Settings =
+    {
       backend = "awww";
       folder = "~/Pictures/Wallpapers";
       fill = "fill";
@@ -39,14 +41,17 @@ in
     };
   };
 
-  systemd.user.services.waypaper-restore = {
-    Unit = {
+  systemd.user.services.waypaper-restore =
+  {
+    Unit =
+    {
       Description = "Restore the last waypaper wallpaper";
       After = [ "awww.service" ];
       Requires = [ "awww.service" ];
       PartOf = [ "awww.service" ];
     };
-    Service = {
+    Service =
+    {
       Type = "oneshot";
       Environment = "PATH=${lib.makeBinPath [ awww pkgs.procps pkgs.coreutils ]}";
       # awww.service counts as started before its socket accepts requests.

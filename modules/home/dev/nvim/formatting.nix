@@ -1,12 +1,16 @@
 {
-  programs.nixvim.plugins.conform-nvim = {
+  programs.nixvim.plugins.conform-nvim =
+  {
     enable = true;
-    settings = {
-      format_on_save = {
+    settings =
+    {
+      format_on_save =
+      {
         lsp_fallback = true;
         timeout_ms = 500;
       };
-      formatters_by_ft = {
+      formatters_by_ft =
+      {
         nix = [ "nixfmt" ];
       };
     };

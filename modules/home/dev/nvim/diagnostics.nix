@@ -1,7 +1,9 @@
 {
-  programs.nixvim.plugins.trouble = {
+  programs.nixvim.plugins.trouble =
+  {
     enable = true;
-    settings = {
+    settings =
+    {
       auto_close = true;
       auto_preview = true;
       focus = true;

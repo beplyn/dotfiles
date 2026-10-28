@@ -22,17 +22,21 @@ in
 {
   programs.niri.config = lib.mkForce (
     options.programs.niri.config.default
-    ++ [
+    ++
+    [
       # Blur strength is global in niri (rules can't set it per window), so
       # this softens it everywhere; mainly so kitty's frost is lighter.
       # Defaults are passes 3 / offset 3.
-      (node "blur" [ ] [
+      (node "blur" [ ]
+      [
         (leaf "passes" 2)
         (leaf "offset" 2.0)
       ])
-      (node "window-rule" [ ] [
+      (node "window-rule" [ ]
+      [
         (leaf "match" { app-id = "^kitty$"; })
-        (node "background-effect" [ ] [
+        (node "background-effect" [ ]
+        [
           # Frosted glass over whatever is actually behind the window. xray
           # would instead sample the wallpaper at the window's position, so
           # windows over different parts of it pick up different tints.
@@ -44,25 +48,30 @@ in
         ])
       ])
       # Blur behind the windows rules.nix makes translucent.
-      (node "window-rule" [ ] [
+      (node "window-rule" [ ]
+      [
         (leaf "match" { app-id = "^equibop$"; })
         (leaf "match" { app-id = "^steam$"; })
-        (node "background-effect" [ ] [
+        (node "background-effect" [ ]
+        [
           (leaf "blur" true)
           (leaf "xray" false)
         ])
       ])
       # Waybar's surface is exactly its capsule, so round, shadow and blur
       # it like a window. Its tray menus get the same frosted look.
-      (node "layer-rule" [ ] [
+      (node "layer-rule" [ ]
+      [
         (leaf "match" { namespace = "^waybar$"; })
         (leaf "geometry-corner-radius" radius)
         (node "shadow" [ ] [ (leaf "on" [ ]) ])
-        (node "background-effect" [ ] [
+        (node "background-effect" [ ]
+        [
           (leaf "blur" true)
           (leaf "xray" false)
         ])
-        (node "popups" [ ] [
+        (node "popups" [ ]
+        [
           (leaf "geometry-corner-radius" radius)
           (node "background-effect" [ ] [ (leaf "blur" true) ])
         ])
@@ -70,7 +79,8 @@ in
       # Quickshell panels request a card-shaped blur themselves through
       # ext-background-effect; xray off makes it frost the windows below
       # instead of showing the wallpaper.
-      (node "layer-rule" [ ] [
+      (node "layer-rule" [ ]
+      [
         (leaf "match" { namespace = "^haku-"; })
         (node "background-effect" [ ] [ (leaf "xray" false) ])
       ])

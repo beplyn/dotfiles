@@ -8,18 +8,21 @@
 {
   stylix.targets.kitty.enable = true;
 
-  programs.kitty = {
+  programs.kitty =
+  {
     enable = true;
     enableGitIntegration = true;
     shellIntegration.enableFishIntegration = true;
 
-    font = {
+    font =
+    {
       name = lib.mkForce "Maple Mono NF";
       package = lib.mkForce pkgs.maple-mono.NF;
       size = 12;
     };
 
-    settings = {
+    settings =
+    {
       bold_font = "auto";
 
       # Follow Stylix's base00 so the background matches every theme. Blur is

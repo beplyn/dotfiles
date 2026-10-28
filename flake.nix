@@ -1,17 +1,21 @@
 {
-  inputs = {
+  inputs =
+  {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    home-manager = {
+    home-manager =
+    {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    forgejo-cli = {
+    forgejo-cli =
+    {
       url = "git+https://codeberg.org/forgejo-contrib/forgejo-cli.git";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixvim = {
+    nixvim =
+    {
       url = "github:nix-community/nixvim";
     };
 
@@ -23,7 +27,8 @@
 
     sops-nix.url = "github:Mic92/sops-nix";
 
-    niri = {
+    niri =
+    {
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
@@ -33,19 +38,22 @@
     # against our nixpkgs: niri dlopens mesa from /run/opengl-driver, which
     # needs the system glibc. With its own nixpkgs GBM fails to load and niri
     # starts without outputs.
-    niri-glass = {
+    niri-glass =
+    {
       url = "github:zaroutt/Niri-glass";
       inputs.niri.inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nirimation = {
+    nirimation =
+    {
       url = "git+https://codeberg.org/beplyn/nirimation";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     stylix.url = "github:danth/stylix";
 
-    zen-browser = {
+    zen-browser =
+    {
       url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
@@ -55,18 +63,21 @@
   outputs =
     inputs@{ nixpkgs, ... }:
     let
-      hosts = [
+      hosts =
+      [
         "anvil"
         "beacon"
         "compass"
         "shulker"
       ];
-      themes = [
+      themes =
+      [
         "catppuccin"
         "gruvbox"
         "nord"
       ];
-      mkHost = import ./lib/mkHost.nix {
+      mkHost = import ./lib/mkHost.nix
+      {
         inherit inputs;
         username = "beplyn";
         email = "me@beplyn.dev";
@@ -77,12 +88,16 @@
     {
       nixosConfigurations =
         nixpkgs.lib.listToAttrs (
-          map (h: {
-            name = "${h.host}-${h.theme}";
-            value = mkHost h.host h.theme;
-          }) (nixpkgs.lib.cartesianProduct { host = hosts; theme = themes; })
+          map
+            (h:
+            {
+              name = "${h.host}-${h.theme}";
+              value = mkHost h.host h.theme;
+            })
+            (nixpkgs.lib.cartesianProduct { host = hosts; theme = themes; })
         )
-        // {
+        //
+        {
           default = mkHost "shulker" "catppuccin";
         };
     };

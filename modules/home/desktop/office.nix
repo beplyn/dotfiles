@@ -37,7 +37,8 @@ let
   '';
 in
 {
-  home.packages = with pkgs; [
+  home.packages = with pkgs;
+  [
     libreoffice
     hunspell
     hunspellDicts.en_GB-ise

@@ -4,7 +4,8 @@ let
   # Map every MIME type in `types` to one desktop entry.
   defaults = app: types: lib.genAttrs types (_: [ app ]);
 
-  images = [
+  images =
+  [
     "image/png"
     "image/jpeg"
     "image/gif"
@@ -17,7 +18,8 @@ let
     "image/x-icon"
   ];
 
-  videos = [
+  videos =
+  [
     "video/mp4"
     "video/x-matroska"
     "video/webm"
@@ -35,21 +37,24 @@ let
     "audio/aac"
   ];
 
-  documents = [
+  documents =
+  [
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     "application/msword"
     "application/rtf"
     "application/vnd.oasis.opendocument.text"
   ];
 
-  spreadsheets = [
+  spreadsheets =
+  [
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     "application/vnd.ms-excel"
     "text/csv"
     "application/vnd.oasis.opendocument.spreadsheet"
   ];
 
-  presentations = [
+  presentations =
+  [
     "application/vnd.openxmlformats-officedocument.presentationml.presentation"
     "application/vnd.ms-powerpoint"
     "application/vnd.oasis.opendocument.presentation"
@@ -58,17 +63,21 @@ in
 {
   home.packages = [ pkgs.loupe ];
 
-  programs.zathura = {
+  programs.zathura =
+  {
     enable = true;
-    options = {
+    options =
+    {
       selection-clipboard = "clipboard";
       recolor = false;
     };
   };
 
-  programs.mpv = {
+  programs.mpv =
+  {
     enable = true;
-    config = {
+    config =
+    {
       hwdec = "auto-safe";
       vo = "gpu-next";
       keep-open = true;
@@ -77,7 +86,8 @@ in
   };
 
   # Browser types are claimed by zen (setAsDefaultBrowser in browsers.nix).
-  xdg.mimeApps = {
+  xdg.mimeApps =
+  {
     enable = true;
     defaultApplications =
       defaults "org.gnome.Loupe.desktop" images

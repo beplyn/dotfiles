@@ -5,7 +5,8 @@
 }:
 
 {
-  home.packages = [
+  home.packages =
+  [
     inputs.netspd.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 

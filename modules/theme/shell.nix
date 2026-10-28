@@ -8,13 +8,15 @@ let
   fonts = config.stylix.fonts;
   readOnly =
     type: description:
-    lib.mkOption {
+    lib.mkOption
+    {
       inherit type description;
       readOnly = true;
     };
 in
 {
-  options.themes.shell = {
+  options.themes.shell =
+  {
     radius = readOnly lib.types.int "Corner radius of shell surfaces, in pixels.";
     glass = readOnly lib.types.float "Panel and bar opacity; niri blurs what shows through.";
     font = readOnly lib.types.str "CSS font-family list for shell surfaces.";
@@ -23,7 +25,8 @@ in
     css = readOnly lib.types.lines "GTK @define-color block of the Stylix palette.";
   };
 
-  config.themes.shell = {
+  config.themes.shell =
+  {
     radius = 12;
     glass = config.stylix.opacity.desktop;
 

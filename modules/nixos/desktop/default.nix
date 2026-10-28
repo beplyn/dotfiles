@@ -1,5 +1,6 @@
 {
-  imports = [
+  imports =
+  [
     ./audio.nix
     ./desktop.nix
     ./display-manager.nix

@@ -1,7 +1,8 @@
 { pkgs, ... }:
 
 {
-  programs.nixvim.extraPackages = with pkgs; [
+  programs.nixvim.extraPackages = with pkgs;
+  [
     fd
     clang-tools
     rust-analyzer
