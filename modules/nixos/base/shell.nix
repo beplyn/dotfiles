@@ -6,9 +6,11 @@ let
   themeSwitch = "cd /etc/nixos; git add . && sudo nixos-rebuild switch --flake /etc/nixos#${config.networking.hostName}-";
 in
 {
-  programs.fish = {
+  programs.fish =
+  {
     enable = true;
-    shellAbbrs = {
+    shellAbbrs =
+    {
       g = "git";
       tree = "eza --icons --tree --color=auto";
       trel = "eza --icons --tree -a -I \".git\" --color=auto --level=2";
@@ -22,7 +24,8 @@ in
       nord = themeSwitch + "nord";
       gruvbox = themeSwitch + "gruvbox";
     };
-    shellAliases = {
+    shellAliases =
+    {
       vim = "nvim";
       nano = "nvim";
       ls = "eza --icons --color=auto -a";
@@ -75,7 +78,8 @@ in
       fastfetch
     '';
   };
-  programs.zoxide = {
+  programs.zoxide =
+  {
     enable = true;
     enableFishIntegration = true;
   };

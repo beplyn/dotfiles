@@ -1,5 +1,6 @@
 {
-  imports = [
+  imports =
+  [
     ./quickshell
     ./waybar
     ./walker.nix

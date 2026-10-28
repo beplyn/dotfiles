@@ -19,11 +19,13 @@ let
   # Every bind is listed in the hotkey overlay (Mod+Shift+/) under a title,
   # except basic navigation, which is hidden explicitly because niri would
   # otherwise list it by default.
-  show = title: action: {
+  show = title: action:
+  {
     inherit action;
     hotkey-overlay.title = title;
   };
-  hide = action: {
+  hide = action:
+  {
     inherit action;
     hotkey-overlay.hidden = true;
   };
@@ -34,24 +36,29 @@ let
 
   # Mod+1..9 focuses a workspace, Mod+Shift+1..9 sends the column there.
   workspaces = lib.listToAttrs (
-    lib.concatMap (i: [
-      {
-        name = Mod (toString i);
-        value = hide { focus-workspace = i; };
-      }
-      {
-        name = ModShift (toString i);
-        value = hide { move-column-to-workspace = i; };
-      }
-    ]) (lib.range 1 9)
+    lib.concatMap
+      (i:
+      [
+        {
+          name = Mod (toString i);
+          value = hide { focus-workspace = i; };
+        }
+        {
+          name = ModShift (toString i);
+          value = hide { move-column-to-workspace = i; };
+        }
+      ])
+      (lib.range 1 9)
   );
 in
 {
-  programs.niri.settings.binds = workspaces // {
+  programs.niri.settings.binds = workspaces //
+  {
     # --- apps and shell ---------------------------------------------------
     ${Mod "Return"} = spawn "Terminal" [ kitty ];
     ${Mod "Space"} = spawn "Launcher" [ walker ];
-    ${Mod "V"} = spawn "Clipboard history" [
+    ${Mod "V"} = spawn "Clipboard history"
+    [
       walker
       "-m"
       "clipboard"
@@ -62,15 +69,18 @@ in
     ${ModShift "N"} = spawn "Toggle do not disturb" (ipc "notifications" "toggleDnd");
     ${ModShift "R"} = spawn "Screen recorder" (ipc "recorder" "toggle");
     ${Mod "W"} = spawn "Wallpaper picker" [ (lib.getExe pkgs.waypaper) ];
-    "Print" = spawn "Screenshot area" [
+    "Print" = spawn "Screenshot area"
+    [
       "screenshot"
       "area"
     ];
-    ${ModShift "S"} = spawn "Screenshot area" [
+    ${ModShift "S"} = spawn "Screenshot area"
+    [
       "screenshot"
       "area"
     ];
-    "Shift+Print" = spawn "Screenshot screen" [
+    "Shift+Print" = spawn "Screenshot screen"
+    [
       "screenshot"
       "output"
     ];
@@ -78,7 +88,8 @@ in
     # --- session ----------------------------------------------------------
     ${Mod "Q"} = show "Close window" { close-window = [ ]; } // { repeat = false; };
     ${ModShift "E"} = show "Quit niri" { quit = [ ]; };
-    "Mod+Alt+L" = spawn "Lock screen" [
+    "Mod+Alt+L" = spawn "Lock screen"
+    [
       swaylock
       "-f"
     ];
@@ -99,7 +110,8 @@ in
     ${Mod "KP_Add"} = hide { set-column-width = "+10%"; };
 
     ${Mod "BracketLeft"} = show "Consume / expel window left" { consume-or-expel-window-left = [ ]; };
-    ${Mod "BracketRight"} = show "Consume / expel window right" {
+    ${Mod "BracketRight"} = show "Consume / expel window right"
+    {
       consume-or-expel-window-right = [ ];
     };
 
@@ -127,7 +139,8 @@ in
     ${ModCtrl "I"} = hide { move-column-to-workspace-up = [ ]; };
 
     # --- media keys (hidden) ----------------------------------------------
-    "XF86AudioRaiseVolume" = media [
+    "XF86AudioRaiseVolume" = media
+    [
       wpctl
       "set-volume"
       "-l"
@@ -135,30 +148,35 @@ in
       "@DEFAULT_AUDIO_SINK@"
       "5%+"
     ];
-    "XF86AudioLowerVolume" = media [
+    "XF86AudioLowerVolume" = media
+    [
       wpctl
       "set-volume"
       "@DEFAULT_AUDIO_SINK@"
       "5%-"
     ];
-    "XF86AudioMute" = media [
+    "XF86AudioMute" = media
+    [
       wpctl
       "set-mute"
       "@DEFAULT_AUDIO_SINK@"
       "toggle"
     ];
-    "XF86AudioMicMute" = media [
+    "XF86AudioMicMute" = media
+    [
       wpctl
       "set-mute"
       "@DEFAULT_AUDIO_SOURCE@"
       "toggle"
     ];
-    "XF86MonBrightnessUp" = media [
+    "XF86MonBrightnessUp" = media
+    [
       brightnessctl
       "set"
       "5%+"
     ];
-    "XF86MonBrightnessDown" = media [
+    "XF86MonBrightnessDown" = media
+    [
       brightnessctl
       "set"
       "5%-"

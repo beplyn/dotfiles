@@ -1,5 +1,6 @@
 {
-  imports = [
+  imports =
+  [
     ./kitty.nix
     ./gaming.nix
     ./gtk.nix

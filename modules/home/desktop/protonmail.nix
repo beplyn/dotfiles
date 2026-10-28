@@ -1,7 +1,8 @@
 { pkgs, ... }:
 
 {
-  home.packages = [
+  home.packages =
+  [
     pkgs.protonmail-desktop
   ];
 

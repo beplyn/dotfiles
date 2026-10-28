@@ -1,5 +1,6 @@
 {
-  imports = [
+  imports =
+  [
     ./boot.nix
     ./encryption.nix
     ./locale.nix
@@ -12,13 +13,15 @@
   ];
 
   nixpkgs.config.allowUnfree = true;
-  nix.settings.experimental-features = [
+  nix.settings.experimental-features =
+  [
     "nix-command"
     "flakes"
   ];
 
   nix.optimise.automatic = true;
-  nix.gc = {
+  nix.gc =
+  {
     automatic = true;
     dates = "weekly";
     options = "--delete-older-than 14d";

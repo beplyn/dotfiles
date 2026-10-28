@@ -1,5 +1,6 @@
 {
-  imports = [
+  imports =
+  [
     ./ssh.nix
     ./bat.nix
     ./fzf.nix

@@ -5,289 +5,382 @@ let
 in
 
 {
-  programs.eza = {
+  programs.eza =
+  {
     enable = true;
     enableFishIntegration = true;
     icons = "auto";
     git = true;
     colors = "auto";
-    extraOptions = [
+    extraOptions =
+    [
       "--group-directories-first"
       "--header"
     ];
 
-    theme = {
+    theme =
+    {
       colourful = true;
 
-      filekinds = {
-        normal = {
+      filekinds =
+      {
+        normal =
+        {
           foreground = c.base04;
         };
-        directory = {
+        directory =
+        {
           foreground = c.base0D;
         };
-        symlink = {
+        symlink =
+        {
           foreground = c.base0C;
         };
-        pipe = {
+        pipe =
+        {
           foreground = c.base03;
         };
-        block_device = {
+        block_device =
+        {
           foreground = c.base08;
         };
-        char_device = {
+        char_device =
+        {
           foreground = c.base08;
         };
-        socket = {
+        socket =
+        {
           foreground = c.base02;
         };
-        special = {
+        special =
+        {
           foreground = c.base0E;
         };
-        executable = {
+        executable =
+        {
           foreground = c.base0B;
         };
-        mount_point = {
+        mount_point =
+        {
           foreground = c.base0D;
         };
       };
 
-      perms = {
-        user_read = {
+      perms =
+      {
+        user_read =
+        {
           foreground = c.base05;
         };
-        user_write = {
+        user_write =
+        {
           foreground = c.base0A;
         };
-        user_execute_file = {
+        user_execute_file =
+        {
           foreground = c.base0B;
         };
-        user_execute_other = {
+        user_execute_other =
+        {
           foreground = c.base0B;
         };
-        group_read = {
+        group_read =
+        {
           foreground = c.base04;
         };
-        group_write = {
+        group_write =
+        {
           foreground = c.base0A;
         };
-        group_execute = {
+        group_execute =
+        {
           foreground = c.base0B;
         };
-        other_read = {
+        other_read =
+        {
           foreground = c.base04;
         };
-        other_write = {
+        other_write =
+        {
           foreground = c.base0A;
         };
-        other_execute = {
+        other_execute =
+        {
           foreground = c.base0B;
         };
-        special_user_file = {
+        special_user_file =
+        {
           foreground = c.base0E;
         };
-        special_other = {
+        special_other =
+        {
           foreground = c.base02;
         };
-        attribute = {
+        attribute =
+        {
           foreground = c.base04;
         };
       };
 
-      size = {
-        major = {
+      size =
+      {
+        major =
+        {
           foreground = c.base04;
         };
-        minor = {
+        minor =
+        {
           foreground = c.base0C;
         };
-        number_byte = {
+        number_byte =
+        {
           foreground = c.base05;
         };
-        number_kilo = {
+        number_kilo =
+        {
           foreground = c.base04;
         };
-        number_mega = {
+        number_mega =
+        {
           foreground = c.base0D;
         };
-        number_giga = {
+        number_giga =
+        {
           foreground = c.base0E;
         };
-        number_huge = {
+        number_huge =
+        {
           foreground = c.base0E;
         };
-        unit_byte = {
+        unit_byte =
+        {
           foreground = c.base04;
         };
-        unit_kilo = {
+        unit_kilo =
+        {
           foreground = c.base0D;
         };
-        unit_mega = {
+        unit_mega =
+        {
           foreground = c.base0E;
         };
-        unit_giga = {
+        unit_giga =
+        {
           foreground = c.base0E;
         };
-        unit_huge = {
+        unit_huge =
+        {
           foreground = c.base0D;
         };
       };
 
-      users = {
-        user_you = {
+      users =
+      {
+        user_you =
+        {
           foreground = c.base05;
         };
-        user_root = {
+        user_root =
+        {
           foreground = c.base08;
         };
-        user_other = {
+        user_other =
+        {
           foreground = c.base0E;
         };
-        group_yours = {
+        group_yours =
+        {
           foreground = c.base04;
         };
-        group_other = {
+        group_other =
+        {
           foreground = c.base03;
         };
-        group_root = {
+        group_root =
+        {
           foreground = c.base08;
         };
       };
 
-      links = {
-        normal = {
+      links =
+      {
+        normal =
+        {
           foreground = c.base0C;
         };
-        multi_link_file = {
+        multi_link_file =
+        {
           foreground = c.base0D;
         };
       };
 
-      git = {
-        new = {
+      git =
+      {
+        new =
+        {
           foreground = c.base0B;
         };
-        modified = {
+        modified =
+        {
           foreground = c.base0A;
         };
-        deleted = {
+        deleted =
+        {
           foreground = c.base08;
         };
-        renamed = {
+        renamed =
+        {
           foreground = c.base0C;
         };
-        typechange = {
+        typechange =
+        {
           foreground = c.base0E;
         };
-        ignored = {
+        ignored =
+        {
           foreground = c.base03;
         };
-        conflicted = {
+        conflicted =
+        {
           foreground = c.base08;
         };
       };
 
-      git_repo = {
-        branch_main = {
+      git_repo =
+      {
+        branch_main =
+        {
           foreground = c.base05;
         };
-        branch_other = {
+        branch_other =
+        {
           foreground = c.base0E;
         };
-        git_clean = {
+        git_clean =
+        {
           foreground = c.base0B;
         };
-        git_dirty = {
+        git_dirty =
+        {
           foreground = c.base08;
         };
       };
 
-      security_context = {
-        colon = {
+      security_context =
+      {
+        colon =
+        {
           foreground = c.base03;
         };
-        user = {
+        user =
+        {
           foreground = c.base04;
         };
-        role = {
+        role =
+        {
           foreground = c.base0E;
         };
-        typ = {
+        typ =
+        {
           foreground = c.base02;
         };
-        range = {
+        range =
+        {
           foreground = c.base0E;
         };
       };
 
-      file_type = {
-        image = {
+      file_type =
+      {
+        image =
+        {
           foreground = c.base0A;
         };
-        video = {
+        video =
+        {
           foreground = c.base08;
         };
-        music = {
+        music =
+        {
           foreground = c.base0B;
         };
-        lossless = {
+        lossless =
+        {
           foreground = c.base0C;
         };
-        crypto = {
+        crypto =
+        {
           foreground = c.base02;
         };
-        document = {
+        document =
+        {
           foreground = c.base05;
         };
-        compressed = {
+        compressed =
+        {
           foreground = c.base0E;
         };
-        temp = {
+        temp =
+        {
           foreground = c.base08;
         };
-        compiled = {
+        compiled =
+        {
           foreground = c.base0D;
         };
-        build = {
+        build =
+        {
           foreground = c.base02;
         };
-        source = {
+        source =
+        {
           foreground = c.base0D;
         };
       };
 
-      punctuation = {
+      punctuation =
+      {
         foreground = c.base03;
       };
-      date = {
+      date =
+      {
         foreground = c.base0A;
       };
-      inode = {
+      inode =
+      {
         foreground = c.base04;
       };
-      blocks = {
+      blocks =
+      {
         foreground = c.base04;
       };
-      header = {
+      header =
+      {
         foreground = c.base05;
       };
-      octal = {
+      octal =
+      {
         foreground = c.base0C;
       };
-      flags = {
+      flags =
+      {
         foreground = c.base0E;
       };
 
-      symlink_path = {
+      symlink_path =
+      {
         foreground = c.base0C;
       };
-      control_char = {
+      control_char =
+      {
         foreground = c.base0D;
       };
-      broken_symlink = {
+      broken_symlink =
+      {
         foreground = c.base08;
       };
-      broken_path_overlay = {
+      broken_path_overlay =
+      {
         foreground = c.base02;
       };
     };

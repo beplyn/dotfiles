@@ -4,7 +4,8 @@
 { lib, ... }:
 
 {
-  imports = [
+  imports =
+  [
     ./palette.nix
     ./shell.nix
   ]

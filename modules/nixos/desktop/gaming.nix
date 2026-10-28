@@ -9,16 +9,20 @@
 {
   options.gaming.enable = lib.mkEnableOption "Steam and game launchers";
 
-  config = lib.mkIf config.gaming.enable {
-    programs.steam = {
+  config = lib.mkIf config.gaming.enable
+  {
+    programs.steam =
+    {
       enable = true;
       package = pkgs.millennium-steam;
     };
 
     # Launch games with `gamemoderun %command%`.
-    programs.gamemode = {
+    programs.gamemode =
+    {
       enable = true;
-      settings.general = {
+      settings.general =
+      {
         renice = 10;
         softrealtime = "auto";
         ioprio = 0;
@@ -28,7 +32,8 @@
     users.users.${username}.extraGroups = [ "gamemode" ];
 
     # capSysNice lets gamescope raise its own scheduling priority.
-    programs.gamescope = {
+    programs.gamescope =
+    {
       enable = true;
       capSysNice = true;
     };

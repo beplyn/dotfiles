@@ -1,5 +1,6 @@
 {
-  programs.equibop.settings = {
+  programs.equibop.settings =
+  {
     appBadge = false;
     badgeOnlyForMentions = true;
     enableTaskbarFlashing = false;

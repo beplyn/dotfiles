@@ -1,5 +1,6 @@
 {
-  programs.equibop.equicord.settings.plugins = {
+  programs.equibop.equicord.settings.plugins =
+  {
     AudioPlayerAPI.enabled = true;
     BadgeAPI.enabled = true;
     ChatInputButtonAPI.enabled = true;
@@ -23,16 +24,19 @@
     UserAreaAPI.enabled = true;
     UserSettingsAPI.enabled = true;
 
-    AccountPanelServerProfile = {
+    AccountPanelServerProfile =
+    {
       enabled = true;
       prioritizeServerProfile = false;
     };
     AddAttachments.enabled = true;
-    AdvancedPermissions = {
+    AdvancedPermissions =
+    {
       enabled = true;
       simplifiedCard = "hide";
     };
-    AnonymiseFileNames = {
+    AnonymiseFileNames =
+    {
       enabled = true;
       anonymiseByDefault = true;
       consistent = "image";
@@ -41,28 +45,33 @@
       randomisedLength = 7;
       spoilerMessages = false;
     };
-    AutoZipper = {
+    AutoZipper =
+    {
       enabled = true;
       extensions = ".psd,.blend,.exe,.dmg,.app,.apk,.iso";
     };
     BetterBlockedUsers.enabled = true;
-    BetterForwards = {
+    BetterForwards =
+    {
       enabled = true;
       dontFollowForwards = false;
       resendOnFail = true;
       selfForward = false;
     };
-    BetterGifLoad = {
+    BetterGifLoad =
+    {
       enabled = true;
       gifQuality = 1;
     };
-    BetterGifPicker = {
+    BetterGifPicker =
+    {
       enabled = true;
       keepOpen = false;
     };
     BetterInvites.enabled = true;
     BetterRoleContext.enabled = true;
-    BetterSettings = {
+    BetterSettings =
+    {
       enabled = true;
       disableFade = true;
       eagerLoad = true;
@@ -71,13 +80,15 @@
     BiggerStreamPreview.enabled = true;
     BlockKrisp.enabled = true;
     BypassPinPrompt.enabled = true;
-    CallTimer = {
+    CallTimer =
+    {
       enabled = true;
       allCallTimers = false;
       format = "stopwatch";
       watchLargeGuilds = false;
     };
-    ChannelBadges = {
+    ChannelBadges =
+    {
       enabled = true;
       announcementBadgeLabel = "News";
       forumBadgeLabel = "Forum";
@@ -97,20 +108,23 @@
       textBadgeLabel = "Text";
       voiceBadgeLabel = "Voice";
     };
-    CharacterCounter = {
+    CharacterCounter =
+    {
       enabled = true;
       colorEffects = true;
     };
     CleanerChannelGroups.enabled = true;
     ColorSighted.enabled = true;
     ConcatenatedComponentExtractor.enabled = true;
-    CrashHandler = {
+    CrashHandler =
+    {
       enabled = true;
       attemptToNavigateToHome = false;
       attemptToPreventCrashes = true;
     };
     DisableDeepLinks.enabled = true;
-    EquicordHelper = {
+    EquicordHelper =
+    {
       enabled = true;
       accountStandingButton = false;
       disableAdoptTagPrompt = false;
@@ -127,18 +141,21 @@
       restoreFileDownloadButton = false;
       showYourOwnActivityButtons = false;
     };
-    FixSpotifyEmbeds = {
+    FixSpotifyEmbeds =
+    {
       enabled = true;
       volume = 10;
     };
     ForceOwnerCrown.enabled = true;
     FriendsSince.enabled = true;
-    GameActivityToggle = {
+    GameActivityToggle =
+    {
       enabled = true;
       location = "PANEL";
       oldIcon = false;
     };
-    GifMaker = {
+    GifMaker =
+    {
       enabled = true;
       lastBubbleTipBase = 0.1;
       lastCaptionMode = "none";
@@ -150,20 +167,24 @@
       maxHeight = 720;
       maxWidth = 1280;
     };
-    GifProviderSwitcher = {
+    GifProviderSwitcher =
+    {
       enabled = true;
-      provider = [
+      provider =
+      [
         "tenor"
         "giphy"
         "klipy"
       ];
     };
     HomeTyping.enabled = true;
-    ImageFilename = {
+    ImageFilename =
+    {
       enabled = true;
       showFullUrl = false;
     };
-    ImageZoom = {
+    ImageZoom =
+    {
       enabled = true;
       invertScroll = true;
       nearestNeighbour = false;
@@ -173,13 +194,15 @@
       zoom = 3.349333333333334;
       zoomSpeed = 0.9788888888888889;
     };
-    MemberCount = {
+    MemberCount =
+    {
       enabled = true;
       memberList = true;
       toolTip = true;
       voiceActivity = true;
     };
-    Moyai = {
+    Moyai =
+    {
       enabled = true;
       ignoreBlocked = true;
       ignoreBots = true;
@@ -188,18 +211,21 @@
       volume = 0.5;
     };
     NoF1.enabled = true;
-    NoPendingCount = {
+    NoPendingCount =
+    {
       enabled = true;
       hideFriendRequestsCount = true;
       hideMessageRequestsCount = true;
       hidePremiumOffersCount = true;
     };
-    NoTrack = {
+    NoTrack =
+    {
       enabled = true;
       disableAnalytics = true;
     };
     PetPet.enabled = true;
-    PlatformIndicators = {
+    PlatformIndicators =
+    {
       enabled = true;
       ConsoleIcon = "suncord";
       colorMobileIndicator = true;
@@ -208,12 +234,14 @@
       profiles = true;
       showBots = false;
     };
-    PlatformSpoofer = {
+    PlatformSpoofer =
+    {
       enabled = true;
       platform = "desktop";
     };
     ReactionTimestamps.enabled = true;
-    RelationshipNotifier = {
+    RelationshipNotifier =
+    {
       enabled = true;
       friendRequestCancels = true;
       friends = true;
@@ -222,40 +250,47 @@
       offlineRemovals = true;
       servers = true;
     };
-    ReplaceGoogleSearch = {
+    ReplaceGoogleSearch =
+    {
       enabled = true;
       replacementEngine = "Startpage";
     };
     ServerInfo.enabled = true;
-    Settings = {
+    Settings =
+    {
       enabled = true;
       includeVencordInfoWhenCopying = true;
       settingsLocation = "aboveNitro";
     };
-    ShikiCodeblocks = {
+    ShikiCodeblocks =
+    {
       enabled = true;
       bgOpacity = 100;
       tryHljs = "PRIMARY";
       useDevIcon = "COLOR";
     };
-    ShowHiddenChannels = {
+    ShowHiddenChannels =
+    {
       enabled = true;
       channelStyle = 0;
       defaultAllowedUsersAndRolesDropdownState = true;
       showMode = 0;
     };
-    ShowHiddenThings = {
+    ShowHiddenThings =
+    {
       enabled = true;
       showInvitesPaused = true;
       showModView = true;
       showTimeouts = true;
     };
     ShowResourceChannels.enabled = true;
-    SilentMessageToggle = {
+    SilentMessageToggle =
+    {
       enabled = true;
       persistState = "none";
     };
-    SilentTyping = {
+    SilentTyping =
+    {
       enabled = true;
       alwaysEnableInActiveVoiceChat = false;
       chatContextMenu = true;
@@ -272,48 +307,58 @@
       temporaryEnableThresholdDirectMessages = 0;
       temporaryEnableThresholdServers = 0;
     };
-    SongLink = {
+    SongLink =
+    {
       enabled = true;
       includeMetadata = true;
       userCountry = "US";
-      servicesSettings = {
-        spotify = {
+      servicesSettings =
+      {
+        spotify =
+        {
           enabled = true;
           openInNative = true;
         };
-        soundcloud = {
+        soundcloud =
+        {
           enabled = true;
           openInNative = false;
         };
       };
     };
-    SpotifyActivityToggle = {
+    SpotifyActivityToggle =
+    {
       enabled = true;
       location = "PANEL";
     };
-    SpotifyCrack = {
+    SpotifyCrack =
+    {
       enabled = true;
       keepSpotifyActivityOnIdle = false;
       noSpotifyAutoPause = true;
     };
-    SplitLargeMessages = {
+    SplitLargeMessages =
+    {
       enabled = true;
       maxLength = 0;
     };
     SupportHelper.enabled = true;
-    UserVoiceShow = {
+    UserVoiceShow =
+    {
       enabled = true;
       showInMemberList = true;
       showInMessages = true;
       showInUserProfileModal = true;
     };
     ValidReply.enabled = true;
-    ViewIcons = {
+    ViewIcons =
+    {
       enabled = true;
       format = "webp";
       imgSize = "1024";
     };
-    VoiceChannelLog = {
+    VoiceChannelLog =
+    {
       enabled = true;
       ignoreBlockedUsers = false;
       logActivity = true;
@@ -324,7 +369,8 @@
       logVideo = true;
     };
     VoiceChatDoubleClick.enabled = true;
-    VoiceChatUtilities = {
+    VoiceChatUtilities =
+    {
       enabled = true;
       waitAfter = 5;
       waitSeconds = 2;
@@ -333,7 +379,8 @@
     VoiceMessages.enabled = true;
     VoiceMessagesInBackground.enabled = true;
     VoiceStats.enabled = true;
-    VolumeBooster = {
+    VolumeBooster =
+    {
       enabled = true;
       multiplier = 4;
     };

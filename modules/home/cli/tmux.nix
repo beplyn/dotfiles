@@ -4,7 +4,8 @@ let
   p = config.themes.palette;
 in
 {
-  programs.tmux = {
+  programs.tmux =
+  {
     enable = true;
     clock24 = true;
     escapeTime = 0;

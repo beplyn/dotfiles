@@ -4,12 +4,16 @@ let
   p = config.themes.palette;
 in
 {
-  programs.yazi = {
+  programs.yazi =
+  {
     enable = true;
     enableFishIntegration = true;
-    settings = {
-      opener = {
-        edit = [
+    settings =
+    {
+      opener =
+      {
+        edit =
+        [
           {
             run = "nvim %s";
             block = true;
@@ -17,8 +21,10 @@ in
           }
         ];
       };
-      open = {
-        prepend_rules = [
+      open =
+      {
+        prepend_rules =
+        [
           {
             url = "*.nix";
             use = "edit";
@@ -61,114 +67,146 @@ in
           }
         ];
       };
-      theme = {
-        mgr = {
-          cwd = {
+      theme =
+      {
+        mgr =
+        {
+          cwd =
+          {
             fg = p.accent;
           };
-          hovered = {
+          hovered =
+          {
             fg = p.background;
             bg = p.accent;
           };
-          preview_hovered = {
+          preview_hovered =
+          {
             underline = true;
           };
-          find_keyword = {
+          find_keyword =
+          {
             fg = p.warning;
             italic = true;
           };
-          find_position = {
+          find_position =
+          {
             fg = p.error;
             italic = true;
           };
-          marker_copied = {
+          marker_copied =
+          {
             fg = p.success;
             bg = p.success;
           };
-          marker_cut = {
+          marker_cut =
+          {
             fg = p.error;
             bg = p.error;
           };
-          marker_marked = {
+          marker_marked =
+          {
             fg = p.warning;
             bg = p.warning;
           };
-          marker_selected = {
+          marker_selected =
+          {
             fg = p.accent;
             bg = p.accent;
           };
-          tab_active = {
+          tab_active =
+          {
             fg = p.background;
             bg = p.accent;
           };
-          tab_inactive = {
+          tab_inactive =
+          {
             fg = p.foreground;
             bg = p.surface;
           };
-          border_style = {
+          border_style =
+          {
             fg = p.muted;
           };
         };
 
-        mode = {
-          normal_main = {
+        mode =
+        {
+          normal_main =
+          {
             fg = p.background;
             bg = p.accent;
             bold = true;
           };
-          select_main = {
+          select_main =
+          {
             fg = p.background;
             bg = p.success;
             bold = true;
           };
-          unset_main = {
+          unset_main =
+          {
             fg = p.background;
             bg = p.error;
             bold = true;
           };
         };
 
-        status = {
-          overall = {
+        status =
+        {
+          overall =
+          {
             fg = p.foreground;
             bg = p.surface;
           };
         };
 
-        which = {
-          mask = {
+        which =
+        {
+          mask =
+          {
             bg = p.background;
           };
-          cand = {
+          cand =
+          {
             fg = p.blue;
           };
-          rest = {
+          rest =
+          {
             fg = p.muted;
           };
-          desc = {
+          desc =
+          {
             fg = p.accent;
           };
           separator = "  ";
         };
 
-        confirm = {
-          border = {
+        confirm =
+        {
+          border =
+          {
             fg = p.accent;
           };
-          title = {
+          title =
+          {
             fg = p.accent;
           };
-          body = {
+          body =
+          {
             fg = p.foreground;
           };
-          list = {
+          list =
+          {
             fg = p.foreground;
           };
-          btn_yes = {
+          btn_yes =
+          {
             fg = p.background;
             bg = p.success;
           };
-          btn_no = {
+          btn_no =
+          {
             fg = p.background;
             bg = p.error;
           };

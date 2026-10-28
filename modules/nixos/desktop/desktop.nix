@@ -10,7 +10,8 @@
   services.gvfs.enable = true;
   services.udisks2.enable = true;
 
-  hardware.bluetooth = {
+  hardware.bluetooth =
+  {
     enable = true;
     powerOnBoot = true;
   };

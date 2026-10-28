@@ -4,13 +4,15 @@ let
   c = config.lib.stylix.colors.withHashtag;
 in
 {
-  options.themes.palette = lib.mkOption {
+  options.themes.palette = lib.mkOption
+  {
     type = lib.types.attrs;
     readOnly = true;
     description = "Compatibility palette derived from Stylix.";
   };
 
-  config.themes.palette = {
+  config.themes.palette =
+  {
     background = c.base00;
     surface = c.base02;
     surfaceBright = c.base03;

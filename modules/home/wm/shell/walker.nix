@@ -10,33 +10,41 @@ in
 {
   # Elephant is walker's backend: it indexes apps, runs commands and keeps
   # the clipboard history that `walker -m clipboard` shows.
-  services.elephant = {
+  services.elephant =
+  {
     enable = true;
   };
 
-  services.walker = {
+  services.walker =
+  {
     enable = true;
     systemd.enable = true;
 
-    settings = {
+    settings =
+    {
       close_when_open = true;
       force_keyboard_focus = true;
       selection_wrap = true;
       click_to_close = true;
 
-      placeholders = {
-        default = {
+      placeholders =
+      {
+        default =
+        {
           input = "Search";
           list = "Nothing found";
         };
-        clipboard = {
+        clipboard =
+        {
           input = "Clipboard";
           list = "Clipboard is empty";
         };
       };
 
-      providers = {
-        default = [
+      providers =
+      {
+        default =
+        [
           "desktopapplications"
           "calc"
           "runner"
@@ -48,7 +56,8 @@ in
       };
     };
 
-    theme = {
+    theme =
+    {
       name = "stylix";
       style = ''
         ${t.css}
