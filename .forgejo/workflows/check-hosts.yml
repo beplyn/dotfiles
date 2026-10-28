@@ -10,8 +10,6 @@ jobs:
   eval:
     name: eval ${{ matrix.host }}
     runs-on: codeberg-medium
-    container:
-      image: nixos/nix:latest
     strategy:
       fail-fast: false
       matrix:
@@ -20,9 +18,22 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Install Nix
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install linux \
+            --init none \
+            --no-confirm
+
+          echo "/nix/var/nix/profiles/default/bin" >> "$GITHUB_PATH"
+
       - name: Evaluate ${{ matrix.host }}
+        shell: bash
         run: |
           set -euo pipefail
-          nix --extra-experimental-features "nix-command flakes" eval --raw \
+
+          # Ensure Nix binary is in PATH
+          export PATH="/nix/var/nix/profiles/default/bin:$PATH"
+
+          nix eval --raw \
             ".#nixosConfigurations.${{ matrix.host }}-catppuccin.config.system.build.toplevel.drvPath"
           echo
