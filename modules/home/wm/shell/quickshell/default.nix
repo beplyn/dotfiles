@@ -13,7 +13,7 @@
 }:
 
 let
-  t = import ../theme.nix { inherit config; };
+  t = config.themes.shell;
   c = config.lib.stylix.colors.withHashtag;
   fonts = config.stylix.fonts;
 

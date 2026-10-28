@@ -17,7 +17,7 @@
 #   sees it.
 let
   inherit (inputs.niri.lib.kdl) node leaf;
-  radius = (import ../shell/theme.nix { inherit config; }).radius * 1.0;
+  radius = config.themes.shell.radius * 1.0;
 in
 {
   programs.niri.config = lib.mkForce (
