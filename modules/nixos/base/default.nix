@@ -1,18 +1,16 @@
-{ lib, headless, ... }:
-
 {
   imports = [
+    ./boot.nix
+    ./encryption.nix
+    ./locale.nix
+    ./networking.nix
+    ./ssh.nix
     ./shell.nix
-    ./tools.nix
-    ./pkgs.nix
     ./starship.nix
-    ./llm.nix
-  ]
-  ++ lib.optionals (!headless) [
-    ./fonts.nix
-    ./gaming.nix
-    ./niri.nix
+    ./tools.nix
+    ./packages.nix
   ];
+
   nixpkgs.config.allowUnfree = true;
   nix.settings.experimental-features = [
     "nix-command"

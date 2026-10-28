@@ -2,13 +2,13 @@
 
 {
   imports = [
-    ./dev/module.nix
-    ./cli/module.nix
+    ./dev
+    ./cli
     ../theme
   ]
   ++ lib.optionals (!headless) [
-    ./graphical/module.nix
-    ./wm/module.nix
+    ./desktop
+    ./wm
   ];
 
   # Stylix themes these unconditionally; keep only terminal targets on servers.

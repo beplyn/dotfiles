@@ -1,6 +1,6 @@
 {
   imports = [
-    ./themes.nix
+    ./themes
     ./plugins.nix
   ];
   programs.equibop.equicord.settings = {
