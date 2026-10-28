@@ -41,4 +41,17 @@ in
       size = 24;
     };
   };
+
+  # Stylix themes these unconditionally in Home Manager; keep only terminal
+  # targets on servers.
+  home-manager.sharedModules = lib.optional headless {
+    stylix.targets = {
+      gtk.enable = false;
+      qt.enable = false;
+      kde.enable = false;
+      gnome.enable = false;
+      font-packages.enable = false;
+      fontconfig.enable = false;
+    };
+  };
 }
