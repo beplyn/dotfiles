@@ -1,0 +1,38 @@
+name: Check hosts
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  eval:
+    name: eval ${{ matrix.host }}
+    runs-on: docker
+    strategy:
+      # Report every host, not just the first one that breaks.
+      fail-fast: false
+      matrix:
+        host: [anvil, beacon, compass, shulker]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v27
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      # One host per job: evaluating every configuration in a single process
+      # (as `nix flake check` does) runs out of memory. Evaluating the
+      # toplevel drvPath runs all module assertions without building anything.
+      # sops-nix only decrypts at activation, so no age key is needed here.
+      - name: Evaluate ${{ matrix.host }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          nix eval --raw \
+            ".#nixosConfigurations.${{ matrix.host }}-catppuccin.config.system.build.toplevel.drvPath"
+          echo
