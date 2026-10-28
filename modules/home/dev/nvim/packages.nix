@@ -14,7 +14,6 @@
     gopls
     haskell-language-server
     marksman
-    nixfmt
     ripgrep
   ];
 }
