@@ -37,7 +37,6 @@ in
         settings =
         {
           nixpkgs.expr = "import ${flake}.inputs.nixpkgs { }";
-          formatting.command = [ "nixfmt" ];
           options =
           {
             nixos.expr = "${nixos}.options";
