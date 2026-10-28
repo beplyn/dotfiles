@@ -70,59 +70,7 @@ in
   programs.fetch.enable = lib.mkForce false;
   home.packages = [ patchedFetch ];
 
-  xdg.configFile."fetch/config".text = ''
-    # Block 1: Hardware
-    host
-    cpu
-    gpu
-    disk
-    memory
-    ---
-    # Block 2: Environment (Streamlined to Shell, Terminal, WM)
-    shell
-    terminal
-    wm
-    ---
-    # Block 3: System
-    os
-    kernel
-    packages
-    uptime
-    ---
-    # Color palette
-    colors
+  xdg.configFile."fetch/config".text = builtins.readFile ./fetch.conf;
 
-    # 3D Animation Settings
-    spin=xy
-    speed=1.0
-    size=1.2
-    depth=0.5
-    shading_mode=blocks
-    height=18
-    separator=
-  '';
-
-  home.file.".config/fetch/logo.txt".text = ''
-    # distro: nixos
-              ▗▄▄▄       ▗▄▄▄▄    ▄▄▄▖
-              ▜███▙       ▜███▙  ▟███▛
-               ▜███▙       ▜███▙▟███▛
-                ▜███▙       ▜██████▛
-          ▟█████████████████▙ ▜████▛     ▟▙
-        ▟███████████████████▙ ▜███▙    ▟██▙
-               ▄▄▄▄▖           ▜███▙  ▟███▛
-              ▟███▛             ▜██▛ ▟███▛
-             ▟███▛               ▜▛ ▟███▛
-    ▟███████████▛                  ▟██████████▙
-    ▜██████████▛                  ▟███████████▛
-          ▟███▛ ▟▙                ▟███▛
-         ▟███▛ ▟██▙              ▟███▛
-        ▟███▛  ▜███▙            ▝▀▀▀▀
-        ▜██▛   ▜███▙ ▜██████████████████▛
-         ▜▛     ▟████▙ ▜████████████████▛
-               ▟██████▙          ▜███▙
-              ▟███▛▜███▙          ▜███▙
-             ▟███▛  ▜███▙          ▜███▙
-             ▝▀▀▀   ▀▀▀▀▘          ▀▀▀▘
-  '';
+  home.file.".config/fetch/logo.txt".text = builtins.readFile ./fetch-logo.txt;
 }
