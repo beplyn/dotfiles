@@ -9,33 +9,20 @@ on:
 jobs:
   eval:
     name: eval ${{ matrix.host }}
-    runs-on: alpine
+    runs-on: codeberg-medium
+    container:
+      image: nixos/nix:latest
     strategy:
-      # Report every host, not just the first one that breaks.
       fail-fast: false
       matrix:
         host: [anvil, beacon, compass, shulker]
     steps:
-      # Installed before checkout so actions/checkout can use git.
-      - name: Install Nix
-        # bash isn't present until this step finishes.
-        shell: sh
-        run: |
-          apk add --no-cache nix git bash
-          mkdir -p ~/.config/nix
-          echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
-
       - name: Check out repository
         uses: actions/checkout@v4
 
-      # One host per job: evaluating every configuration in a single process
-      # (as `nix flake check` does) runs out of memory. Evaluating the
-      # toplevel drvPath runs all module assertions without building anything.
-      # sops-nix only decrypts at activation, so no age key is needed here.
       - name: Evaluate ${{ matrix.host }}
-        shell: bash
         run: |
           set -euo pipefail
-          nix eval --raw \
+          nix --extra-experimental-features "nix-command flakes" eval --raw \
             ".#nixosConfigurations.${{ matrix.host }}-catppuccin.config.system.build.toplevel.drvPath"
           echo
