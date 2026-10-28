@@ -6,6 +6,7 @@
     ./tools.nix
     ./pkgs.nix
     ./starship.nix
+    ./llm.nix
   ]
   ++ lib.optionals (!headless) [
     ./fonts.nix
