@@ -1,8 +1,7 @@
 {
   networking.hostName = "compass";
-  # Kept on every host for now; prune per host once the refactor lands.
-  docker.enable = true;
-  qbittorrent.enable = true;
+  docker.enable = false;
+  qbittorrent.enable = false;
 
   system.stateVersion = "26.11";
 }

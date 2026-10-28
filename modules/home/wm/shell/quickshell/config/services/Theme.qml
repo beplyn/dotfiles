@@ -3,7 +3,7 @@ import QtQuick
 import Quickshell
 
 // Roles over the generated Stylix singleton (services/Stylix.qml). Roles
-// follow the shared shell theme (theme.nix): base0E is the accent, as in
+// follow the shared shell theme (themes.shell): base0E is the accent, as in
 // waybar and walker. Components use these and never a literal color.
 Singleton {
     id: root

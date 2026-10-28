@@ -1,8 +1,9 @@
 {
+  imports = [ ./hardware.nix ];
+
   networking.hostName = "beacon";
-  # Kept on every host for now; prune per host once the refactor lands.
   docker.enable = true;
-  qbittorrent.enable = true;
+  qbittorrent.enable = false;
   encryption.enable = false;
   services.openssh.enable = true;
 
