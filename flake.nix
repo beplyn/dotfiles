@@ -53,21 +53,8 @@
   };
 
   outputs =
-    inputs@{
-      nixpkgs,
-      home-manager,
-      nixvim,
-      areofyl-fetch,
-      millennium,
-      sops-nix,
-      niri,
-      stylix,
-      ...
-    }:
+    inputs@{ nixpkgs, ... }:
     let
-      username = "beplyn";
-      email = "me@beplyn.dev";
-      forgejoHost = "codeberg.org";
       hosts = [
         "anvil"
         "beacon"
@@ -79,73 +66,24 @@
         "gruvbox"
         "nord"
       ];
-      # Servers: no display manager, compositor, fonts or GUI apps.
-      headlessHosts = [ "beacon" ];
-      hostModule =
-        hostname: themeName:
-        let
-          headless = builtins.elem hostname headlessHosts;
-        in
-        nixpkgs.lib.nixosSystem {
-          specialArgs = {
-            inherit
-              inputs
-              username
-              email
-              forgejoHost
-              themeName
-              headless
-              ;
-          };
-          modules = [
-            { nixpkgs.hostPlatform = "x86_64-linux"; }
-            { nixpkgs.overlays = [ millennium.overlays.default ]; }
-            ./hosts/common
-            ./hosts/${hostname}
-          ]
-          ++ nixpkgs.lib.optional (!headless) niri.nixosModules.niri
-          ++ [
-            stylix.nixosModules.stylix
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.extraSpecialArgs = {
-                inherit
-                  inputs
-                  username
-                  email
-                  forgejoHost
-                  themeName
-                  headless
-                  ;
-              };
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-
-              home-manager.sharedModules = [
-                nixvim.homeModules.nixvim
-                areofyl-fetch.homeManagerModules.default
-                sops-nix.homeManagerModules.sops
-              ];
-              home-manager.users.${username} = {
-                imports = [ ./users/${username} ];
-                home.username = username;
-                home.homeDirectory = "/home/${username}";
-                home.stateVersion = "26.11";
-              };
-            }
-          ];
-        };
+      mkHost = import ./lib/mkHost.nix {
+        inherit inputs;
+        username = "beplyn";
+        email = "me@beplyn.dev";
+        forgejoHost = "codeberg.org";
+        headlessHosts = [ "beacon" ];
+      };
     in
     {
       nixosConfigurations =
         nixpkgs.lib.listToAttrs (
           map (h: {
             name = "${h.host}-${h.theme}";
-            value = hostModule h.host h.theme;
+            value = mkHost h.host h.theme;
           }) (nixpkgs.lib.cartesianProduct { host = hosts; theme = themes; })
         )
         // {
-          default = hostModule "shulker" "catppuccin";
+          default = mkHost "shulker" "catppuccin";
         };
     };
 }
