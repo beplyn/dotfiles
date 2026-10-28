@@ -4,7 +4,7 @@
 }:
 
 let
-  t = import ./theme.nix { inherit config; };
+  t = config.themes.shell;
   r = toString t.radius;
 in
 {
