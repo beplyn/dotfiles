@@ -44,7 +44,7 @@ in
       Description = "Restore the last waypaper wallpaper";
       After = [ "awww.service" ];
       Requires = [ "awww.service" ];
-      PartOf = [ config.wayland.systemd.target ];
+      PartOf = [ "awww.service" ];
     };
     Service = {
       Type = "oneshot";
@@ -54,7 +54,11 @@ in
       ExecStart = "${waypaper} --restore";
       TimeoutStartSec = 30;
     };
-    Install.WantedBy = [ config.wayland.systemd.target ];
+    # Hang off awww rather than the session target: awww is ordered after the
+    # target, and the target is implicitly ordered after everything it wants,
+    # so WantedBy=<target> here formed a cycle that systemd broke by randomly
+    # dropping this job or awww itself.
+    Install.WantedBy = [ "awww.service" ];
   };
 
   home.activation.wallpaperDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
