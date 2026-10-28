@@ -6,13 +6,17 @@
 }:
 
 {
-  options.qbittorrent.openWebUI = lib.mkOption {
-    type = lib.types.bool;
-    default = true;
-    description = "Open the qBittorrent web UI port (8090) in the firewall.";
+  options.qbittorrent = {
+    enable = lib.mkEnableOption "qBittorrent (headless, web UI on port 8090)";
+
+    openWebUI = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Open the qBittorrent web UI port (8090) in the firewall.";
+    };
   };
 
-  config = {
+  config = lib.mkIf config.qbittorrent.enable {
     users.groups.media = { };
 
     services.qbittorrent = {
