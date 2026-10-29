@@ -48,7 +48,6 @@ nixpkgs.lib.nixosSystem {
       home-manager.sharedModules = [
         inputs.nixvim.homeModules.nixvim
         inputs.areofyl-fetch.homeManagerModules.default
-        inputs.sops-nix.homeManagerModules.sops
       ];
       home-manager.users.${username}.imports = [ ../users/${username} ];
     }

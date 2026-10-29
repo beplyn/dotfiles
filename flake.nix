@@ -25,8 +25,6 @@
 
     netspd.url = "github:TarunVishwakarma1/netspd";
 
-    sops-nix.url = "github:Mic92/sops-nix";
-
     niri =
     {
       url = "github:sodiboo/niri-flake";

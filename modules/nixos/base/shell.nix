@@ -3,7 +3,7 @@
   ...
 }:
 let
-  themeSwitch = "cd /etc/nixos; git add . && sudo nixos-rebuild switch --flake /etc/nixos#${config.networking.hostName}-";
+  themeSwitch = "rebuild ";
 in
 {
   programs.fish =
