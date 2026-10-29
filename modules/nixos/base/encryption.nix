@@ -44,7 +44,17 @@ in
     {
       inherit (cfg) device;
       allowDiscards = true;
+      # Skip dm-crypt's kernel workqueues; on NVMe this cuts latency and
+      # noticeably raises throughput.
+      bypassWorkqueues = true;
+      # Keep re-prompting after a typo instead of dropping to the emergency
+      # shell after three attempts.
+      crypttabExtraOpts = [ "tries=0" ];
     };
+
+    # Load the console keymap in the initrd so the passphrase is typed with
+    # the same layout as everywhere else, not the kernel's default US one.
+    console.earlySetup = true;
 
     fileSystems."/" =
     {
