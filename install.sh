@@ -186,9 +186,6 @@ fi
 sudo ln -s "$repo_dir" /etc/nixos
 info "Linked /etc/nixos -> $repo_dir"
 
-if [[ ! -f "$HOME/.config/sops/age/keys.txt" ]]; then
-  warn "No age key at ~/.config/sops/age/keys.txt; sops secrets won't decrypt until you add it."
-fi
 [[ "$USER" == "beplyn" ]] || warn "You are '$USER', but the config sets up the user 'beplyn'."
 
 target="$host-$theme"
