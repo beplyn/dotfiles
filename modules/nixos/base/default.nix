@@ -7,6 +7,7 @@
     ./networking.nix
     ./ssh.nix
     ./shell.nix
+    ./rebuild.nix
     ./starship.nix
     ./tools.nix
     ./packages.nix

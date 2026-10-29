@@ -9,8 +9,6 @@
 }:
 
 {
-  sops.age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
-
   programs.gpg.enable = true;
 
   services.gpg-agent =
@@ -24,18 +22,9 @@
     gpg-tui
   ];
 
+  # The GPG signing key is created by `rebuild`, which can prompt for its
+  # passphrase; activation has no terminal.
   home.activation.autoGenerateSigningCredentials = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    if ! ${pkgs.gnupg}/bin/gpg --list-secret-keys "${email}" >/dev/null 2>&1; then
-      echo "No GPG secret key found for ${email}, generating one..."
-      run ${pkgs.gnupg}/bin/gpg --batch --pinentry-mode loopback \
-        --passphrase "" \
-        --quick-generate-key "${username} <${email}>" default default 0
-    fi
-
-    # activation can run at boot before /run/user exists, so any keyboxd/agent
-    # spawned above binds in ~/.gnupg and holds the keyring lock forever
-    run ${pkgs.gnupg}/bin/gpgconf --kill all
-
     for pair in "codeberg-auth:${forgejoHost}" "gitlab-auth:gitlab.com"; do
       ssh_key="${config.home.homeDirectory}/.ssh/''${pair%%:*}"
       if [ ! -e "$ssh_key" ]; then

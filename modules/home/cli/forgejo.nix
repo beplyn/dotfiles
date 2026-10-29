@@ -8,11 +8,6 @@
 }:
 
 {
-  sops.secrets."forgejo-token" =
-  {
-    path = "${config.home.homeDirectory}/.ssh/forgejo-token";
-  };
-
   home.packages =
   [
     inputs.forgejo-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
@@ -20,7 +15,6 @@
 
   home.sessionVariables =
   {
-    FORGEJO_TOKEN_FILE = config.sops.secrets."forgejo-token".path;
     FORGEJO_API_URL = "https://${forgejoHost}/api/v1";
   };
 
