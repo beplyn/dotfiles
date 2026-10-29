@@ -32,6 +32,10 @@
         --quick-generate-key "${username} <${email}>" default default 0
     fi
 
+    # activation can run at boot before /run/user exists, so any keyboxd/agent
+    # spawned above binds in ~/.gnupg and holds the keyring lock forever
+    run ${pkgs.gnupg}/bin/gpgconf --kill all
+
     for pair in "codeberg-auth:${forgejoHost}" "gitlab-auth:gitlab.com"; do
       ssh_key="${config.home.homeDirectory}/.ssh/''${pair%%:*}"
       if [ ! -e "$ssh_key" ]; then
