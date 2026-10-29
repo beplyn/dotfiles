@@ -22,6 +22,7 @@
       {
         directory = [ "/etc/nixos" ];
       };
+      url."git@codeberg.org:".pushInsteadOf = "https://codeberg.org/";
       alias =
       {
         st = "status";
