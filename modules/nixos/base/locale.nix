@@ -1,3 +1,5 @@
+{ lib, ... }:
+
 {
   time.timeZone = "Europe/Budapest";
 
@@ -18,9 +20,9 @@
 
   services.xserver.xkb =
   {
-    layout = "gb";
-    variant = "";
+    layout = lib.mkDefault "gb";
+    variant = lib.mkDefault "";
   };
 
-  console.keyMap = "uk";
+  console.keyMap = lib.mkDefault "uk";
 }
