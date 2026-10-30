@@ -13,6 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # one job per directory in hosts/ (minus common); each evaluates every theme
         host: [anvil, beacon, compass, shulker]
     steps:
       - name: Check out repository
@@ -34,6 +35,35 @@ jobs:
           # Ensure Nix binary is in PATH
           export PATH="/nix/var/nix/profiles/default/bin:$PATH"
 
-          nix eval --raw \
-            ".#nixosConfigurations.${{ matrix.host }}-catppuccin.config.system.build.toplevel.drvPath"
-          echo
+          # every <host>-<theme> the flake defines
+          configs="$(nix eval --raw .#nixosConfigurations \
+            --apply 'cs: builtins.concatStringsSep " " (builtins.filter (n: builtins.match "${{ matrix.host }}-.*" n != null) (builtins.attrNames cs))')"
+          [ -n "$configs" ] || { echo "no configurations for ${{ matrix.host }}" >&2; exit 1; }
+
+          for config in $configs; do
+            echo "== $config"
+            nix eval --raw ".#nixosConfigurations.$config.config.system.build.toplevel.drvPath"
+            echo
+          done
+
+  shellcheck:
+    name: shellcheck install.sh
+    runs-on: codeberg-medium
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install linux \
+            --init none \
+            --no-confirm
+
+          echo "/nix/var/nix/profiles/default/bin" >> "$GITHUB_PATH"
+
+      # the other scripts are checked by writeShellApplication at build time
+      - name: Run shellcheck
+        shell: bash
+        run: |
+          export PATH="/nix/var/nix/profiles/default/bin:$PATH"
+          nix run nixpkgs#shellcheck -- install.sh
