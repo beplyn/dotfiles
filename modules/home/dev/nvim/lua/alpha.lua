@@ -28,9 +28,9 @@ dashboard.section.buttons.val = {
 
 local chosen_color_hex = random_logo.get_accent_color()
 vim.api.nvim_set_hl(0, "DashboardRandomLogo", { fg = chosen_color_hex, bold = true })
-vim.api.nvim_set_hl(0, "DashboardHeader", { fg = "#88c0d0" })
-vim.api.nvim_set_hl(0, "DashboardCenter", { fg = "#d8dee9" })
-vim.api.nvim_set_hl(0, "DashboardShortcut", { fg = "#b48ead" })
+vim.api.nvim_set_hl(0, "DashboardHeader", { fg = "@cyan@" })
+vim.api.nvim_set_hl(0, "DashboardCenter", { fg = "@subtext@" })
+vim.api.nvim_set_hl(0, "DashboardShortcut", { fg = "@purple@" })
 
 dashboard.section.header.val = random_logo.get_header()
 dashboard.section.header.opts.hl = "DashboardRandomLogo"
