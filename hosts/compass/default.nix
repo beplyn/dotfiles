@@ -3,6 +3,8 @@
 
   networking.hostName = "compass";
   laptop = true;
+  # early KMS: native-res Plymouth unlock (here, hardware.nix gets regenerated)
+  boot.initrd.kernelModules = [ "i915" ];
   docker.enable = false;
   qbittorrent.enable = false;
   services.xserver.xkb.layout = "us";
