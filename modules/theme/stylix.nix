@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   pkgs,
   themeName,
@@ -18,6 +19,9 @@ in
   stylix =
   {
     enable = true;
+    # All shipped schemes are dark; GTK/libadwaita and the greeter read this.
+    polarity = "dark";
+    image = lib.mkIf (!headless) (import ./wallpaper.nix { inherit config pkgs; });
     base16Scheme = base16Schemes.${themeName};
     targets = lib.mkMerge
     [
