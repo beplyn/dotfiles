@@ -1,7 +1,4 @@
-# Top bar: one floating capsule. Waybar owns the always-on status; every
-# click that needs more than a toggle opens a Quickshell panel over IPC.
-# Colors and fonts come from the shared shell theme (Stylix), so the CSS
-# in ./style.css only ever names @base / @accent / @glass.
+# Floating capsule bar; panels open in Quickshell over IPC.
 {
   config,
   lib,
@@ -17,13 +14,11 @@ let
   signals = config.lib.haku.waybarSignals;
   laptop = config.lib.haku.laptop;
 
-  # `qs ipc call <target> <fn> [args]` as a shell string for on-click.
+  # qs ipc call as an on-click string
   ipc = target: fn: args: lib.escapeShellArgs (config.lib.haku.ipc target fn ++ args);
   panel = name: ipc "panels" "toggle" [ name ];
 
-  # Nerd Font glyph from its codepoint, as the QML Icons singleton does:
-  # Nix strings have no \u escape, and literal glyphs get mangled by
-  # editors. Astral codepoints go through a JSON surrogate pair.
+  # Nerd Font glyph from codepoint (no \u in Nix)
   glyph =
     cp:
     let
@@ -37,8 +32,7 @@ let
   glyphs = map glyph;
 in
 {
-  # The shared theme already exports the Stylix palette; Stylix's own
-  # waybar CSS would fight the capsule layout.
+  # Stylix's waybar CSS fights the capsule
   stylix.targets.waybar.enable = false;
 
   programs.waybar =
@@ -108,8 +102,7 @@ in
         player-icons.default = glyph 984922; # music
         status-icons.paused = glyph 61516; # pause
         tooltip-format = "{artist} — {album}";
-        # Left: play/pause, middle: previous, right: next (waybar defaults);
-        # the dashboard has the full player.
+        # play/pause, prev, next
       };
 
       clock =
@@ -125,8 +118,7 @@ in
         return-type = "json";
         signal = signals.recorder;
         format = "${glyph 984138} {}";
-        # The glyph keeps the formatted text non-empty, so without this the
-        # chip stays up even when `status` returns no text.
+        # hide when `status` is empty
         hide-empty-text = true;
         tooltip = false;
         on-click = ipc "recorder" "stop" [ ];
@@ -165,7 +157,7 @@ in
         };
         on-click = panel "memory";
       };
-      # k10temp, the CPU sensor on the AMD hosts.
+      # AMD CPU sensor
       temperature =
       {
         hwmon-path-abs = "/sys/devices/pci0000:00/0000:00:18.3/hwmon";
@@ -202,8 +194,7 @@ in
           "power-profiles-daemon"
         ];
       };
-      # Just the connection type at a glance; picking networks and the
-      # cable state live in the control center.
+      # type only; details in the control center
       network =
       {
         format-wifi = "{icon}";
@@ -275,7 +266,7 @@ in
         tooltip-format = "{timeTo}";
         on-click = panel "control";
       };
-      # Left-click cycles saver → balanced → performance.
+      # click cycles profiles
       power-profiles-daemon =
       {
         format = "{icon}";
@@ -320,9 +311,7 @@ in
       };
     };
 
-    # Only what CSS can't name: the Stylix palette, the glass level (a bit
-    # clearer than the Quickshell panels), radius and fonts. The layout
-    # itself is plain CSS.
+    # palette, glass, radius, fonts; layout in style.css
     style = ''
       ${t.css}
       @define-color glass alpha(@base, ${toString (t.glass - 0.17)});

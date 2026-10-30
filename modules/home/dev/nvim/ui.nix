@@ -20,14 +20,14 @@ in
     opts.termguicolors = true;
     highlightOverride =
     {
-      # --- Comments & Structure ---
+      # --- Comments ---
       "@comment".fg = c.base03;
       "@comment".italic = true;
       "@punctuation.delimiter".fg = c.base04;
       "@punctuation.bracket".fg = c.base0C;
       "@punctuation.special".fg = c.base0E;
 
-      # --- Variables & Identifiers (Fixes the white text in Nix files) ---
+      # --- Identifiers ---
       "@variable".fg = c.base05;
       "@variable.builtin".fg = c.base0E;
       "@variable.builtin".bold = true;
@@ -36,7 +36,7 @@ in
       "@property".fg = c.base0A;
       "@field".fg = c.base0A;
 
-      # --- Keywords & Logic ---
+      # --- Keywords ---
       "@keyword".fg = c.base0E;
       "@keyword".bold = true;
       "@operator".fg = c.base0E;
@@ -45,7 +45,7 @@ in
       "@function.builtin".fg = c.base0D;
       "@function.builtin".bold = true;
 
-      # --- Literals & Values ---
+      # --- Literals ---
       "@string".fg = c.base0B;
       "@string.special".fg = c.base0C;
       "@string.special.path".fg = c.base0C;
@@ -57,7 +57,7 @@ in
       "@constant".fg = c.base09;
       "@embedded".fg = c.base0A;
 
-      # --- Core Window & Buffer Transparency ---
+      # --- Transparency ---
       Normal =
       {
         bg = transparent;
@@ -86,7 +86,7 @@ in
         fg = c.base02;
       };
 
-      # --- Treesitter Context Transparency ---
+      # --- Treesitter context ---
       TreesitterContext.bg = transparent;
       TreesitterContextLineNumber =
       {
@@ -99,7 +99,7 @@ in
         bg = transparent;
       };
 
-      # Keep gutter backgrounds transparent while retaining diff colors.
+      # transparent gutter, keep diff colours
       GitSignsAddNr =
       {
         bg = transparent;

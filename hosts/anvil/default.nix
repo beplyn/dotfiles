@@ -8,8 +8,7 @@
   gaming.enable = true;
   llm.enable = true;
 
-  # Connector names are guesses; confirm with `niri msg outputs` on anvil.
-  # The 1080p secondary sits to the left of the primary.
+  # connector names unverified (niri msg outputs); 1080p sits left
   monitors =
   [
     {

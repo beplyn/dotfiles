@@ -9,9 +9,7 @@ let
   llm = osConfig.llm;
 in
 {
-  # Terminal coding agent wired to the local Ollama model. Built-in tools
-  # cover files, shell and fetching pages (webfetch); the SearXNG MCP server
-  # adds web search, so the agent can find pages and then crawl them.
+  # coding agent on local Ollama; SearXNG MCP for web search
   programs.opencode = lib.mkIf llm.enable
   {
     enable = true;

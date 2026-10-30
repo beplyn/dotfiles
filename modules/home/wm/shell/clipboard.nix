@@ -5,9 +5,7 @@
 }:
 
 {
-  # History lives in elephant's clipboard provider (see walker.nix) and is
-  # browsed with `walker -m clipboard`, so it shares the launcher's theme.
-  # wl-clip-persist keeps a selection alive after its source app closes.
+  # history via elephant (walker -m clipboard); wl-clip-persist keeps it alive
   services.wl-clip-persist =
   {
     enable = true;

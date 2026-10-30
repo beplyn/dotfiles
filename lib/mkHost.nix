@@ -1,12 +1,10 @@
-# Builds one NixOS system for a host/theme pair, with Home Manager for the
-# primary user. Everything passed in `specialArgs` is also handed to Home
-# Manager, so modules on both sides see the same arguments.
+# One host/theme system plus Home Manager; specialArgs are shared with HM.
 {
   inputs,
   username,
   email,
   forgejoHost,
-  # Servers: no display manager, compositor, fonts or GUI apps.
+  # servers: no GUI
   headlessHosts ? [ ],
 }:
 

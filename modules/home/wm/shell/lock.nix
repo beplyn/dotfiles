@@ -6,9 +6,7 @@
   ...
 }:
 
-# hyprlock over the Stylix wallpaper; it never screenshots the session, so
-# no windows show through. Stylix's hyprlock target sets the background and
-# the input field's colours, the layout below uses the same palette.
+# hyprlock over the Stylix wallpaper; colours from Stylix.
 let
   c = config.lib.stylix.colors;
   rgb = color: "rgb(${color})";
@@ -17,7 +15,7 @@ let
   pidof = lib.getExe' pkgs.procps "pidof";
   loginctl = lib.getExe' pkgs.systemd "loginctl";
   niri = lib.getExe osConfig.programs.niri.package;
-  # Recoloured by the Stylix nixos-icons overlay.
+  # recoloured by Stylix
   avatar = "${pkgs.nixos-icons}/share/icons/hicolor/256x256/apps/nix-snowflake.png";
 in
 {
@@ -79,7 +77,7 @@ in
         }
       ];
 
-      # An attrset, not a list, so it merges with Stylix's colours.
+      # attrset so it merges with Stylix
       input-field =
       {
         size = "340, 56";
@@ -99,8 +97,7 @@ in
     };
   };
 
-  # hypridle rather than swayidle: inhibit_sleep holds suspend until the
-  # lock surface is up, so the session is never visible on resume.
+  # inhibit_sleep: lock is up before suspend
   services.hypridle =
   {
     enable = true;

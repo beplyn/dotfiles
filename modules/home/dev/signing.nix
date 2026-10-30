@@ -22,8 +22,7 @@
     gpg-tui
   ];
 
-  # The GPG signing key is created by `rebuild`, which can prompt for its
-  # passphrase; activation has no terminal.
+  # GPG key comes from `rebuild` (needs a terminal)
   home.activation.autoGenerateSigningCredentials = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     for pair in "codeberg-auth:${forgejoHost}" "gitlab-auth:gitlab.com"; do
       ssh_key="${config.home.homeDirectory}/.ssh/''${pair%%:*}"

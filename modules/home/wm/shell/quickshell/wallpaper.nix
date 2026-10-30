@@ -1,5 +1,4 @@
-# awww draws the wallpaper; waypaper picks it and restores it at login.
-# Transition settings match hakuspace's AWWW_OPTS.
+# awww draws, waypaper picks and restores.
 {
   config,
   lib,
@@ -17,8 +16,7 @@ in
 
   home.packages = [ pkgs.waypaper ];
 
-  # waypaper rewrites config.ini on exit; a read-only file only makes it
-  # log a warning, and the chosen wallpaper goes to its state file instead.
+  # writable: waypaper rewrites it on exit
   xdg.configFile."waypaper/config.ini".source = (pkgs.formats.ini { }).generate "waypaper-config"
   {
     Settings =
@@ -54,15 +52,12 @@ in
     {
       Type = "oneshot";
       Environment = "PATH=${lib.makeBinPath [ awww pkgs.procps pkgs.coreutils ]}";
-      # awww.service counts as started before its socket accepts requests.
+      # awww is "started" before its socket is ready
       ExecStartPre = "${pkgs.bash}/bin/sh -c 'until awww query; do sleep 0.1; done'";
       ExecStart = "${waypaper} --restore";
       TimeoutStartSec = 30;
     };
-    # Hang off awww rather than the session target: awww is ordered after the
-    # target, and the target is implicitly ordered after everything it wants,
-    # so WantedBy=<target> here formed a cycle that systemd broke by randomly
-    # dropping this job or awww itself.
+    # WantedBy awww, not the session target (avoids a cycle)
     Install.WantedBy = [ "awww.service" ];
   };
 
