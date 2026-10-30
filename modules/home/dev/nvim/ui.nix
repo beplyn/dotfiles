@@ -134,7 +134,7 @@ in
       TabLineSel =
       {
         bg = transparent;
-        fg = p.foreground;
+        fg = p.purple;
       };
 
       BufferLineDevIconNix.bg = transparent;
@@ -230,6 +230,8 @@ in
         settings.options =
         {
           mode = "buffers";
+          # own the highlights; mini.base16 otherwise overrides them
+          themable = false;
           diagnostics = "nvim_lsp";
           indicator.style = "none";
           separator_style = "thin";
@@ -244,7 +246,7 @@ in
           tab_selected =
           {
             bg = "NONE";
-            fg = p.foreground;
+            fg = p.purple;
           };
           separator_selected =
           {
@@ -259,7 +261,7 @@ in
           buffer_selected =
           {
             bg = "NONE";
-            fg = p.foreground;
+            fg = p.purple;
             bold = true;
           };
           buffer_visible.bg = "NONE";
