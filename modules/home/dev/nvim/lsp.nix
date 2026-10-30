@@ -1,8 +1,7 @@
 { osConfig, themeName, ... }:
 
 let
-  # nixd evaluates these to complete options. Point it at this flake and the
-  # configuration the current machine was built from.
+  # nixd: options from this flake and host
   flake = ''(builtins.getFlake "/etc/nixos")'';
   nixos = ''${flake}.nixosConfigurations."${osConfig.networking.hostName}-${themeName}"'';
 in
@@ -40,7 +39,7 @@ in
           options =
           {
             nixos.expr = "${nixos}.options";
-            # Includes programs.nixvim.* via the nixvim home module.
+            # includes programs.nixvim.*
             home-manager.expr = "${nixos}.options.home-manager.users.type.getSubOptions [ ]";
           };
         };

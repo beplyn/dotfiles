@@ -1,12 +1,11 @@
 { pkgs, ... }:
 
-# Plumbing every desktop host needs: keyring, mounts, Bluetooth, file picker.
+# keyring, mounts, Bluetooth, file picker
 {
-  # Unlock gnome-keyring with the login password so browsers and Proton Mail
-  # don't ask for it each session.
+  # unlock keyring on login
   security.pam.services.greetd.enableGnomeKeyring = true;
 
-  # gvfs: trash and network locations; udisks2: removable drives.
+  # gvfs: trash, network; udisks2: drives
   services.gvfs.enable = true;
   services.udisks2.enable = true;
 
@@ -17,11 +16,10 @@
   };
   services.blueman.enable = true;
 
-  # Battery and power-profile sources for the quickshell bar.
+  # battery and power profiles for the bar
   services.upower.enable = true;
   services.power-profiles-daemon.enable = true;
 
-  # The GNOME portal's file chooser is provided by Nautilus; without it,
-  # upload/attach/save dialogs fail to open.
+  # Nautilus provides the portal file chooser
   environment.systemPackages = [ pkgs.nautilus ];
 }

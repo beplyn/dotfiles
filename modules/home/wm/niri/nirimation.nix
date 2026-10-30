@@ -1,6 +1,6 @@
 { inputs, ... }:
 
-# Custom shader animations; the generated KDL is included from kdl.nix.
+# shader animations, included from kdl.nix
 {
   imports = [ inputs.nirimation.homeManagerModules.default ];
 

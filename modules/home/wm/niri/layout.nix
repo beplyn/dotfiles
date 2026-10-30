@@ -22,8 +22,7 @@ in
       default-column-width.proportion = 0.5;
       center-focused-column = "never";
 
-      # Stylix colors the border; active is pulled to base0E to match the
-      # quickshell/walker accent.
+      # active border: base0E accent
       border =
       {
         enable = true;
@@ -71,7 +70,7 @@ in
       };
     };
 
-    # 12px corners to match quickshell and walker, with hollow borders.
+    # 12px corners, hollow borders
     window-rules =
     [
       {
@@ -86,8 +85,7 @@ in
             bottom-right = r;
           };
         clip-to-geometry = true;
-        # Without CSD niri fills the border's colour behind the whole window,
-        # which tints translucent windows (kitty) with the base0E accent.
+        # CSD: stops the border tinting translucent windows
         draw-border-with-background = false;
       }
     ];

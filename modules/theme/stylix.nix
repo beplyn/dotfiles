@@ -15,7 +15,7 @@ let
     nord = "${pkgs.base16-schemes}/share/themes/nord.yaml";
   };
 
-  # Papirus folder colour closest to each scheme's base0E accent.
+  # Papirus folder colour per accent
   folderColors =
   {
     catppuccin = "violet";
@@ -27,14 +27,14 @@ in
   stylix =
   {
     enable = true;
-    # All shipped schemes are dark; GTK/libadwaita and the greeter read this.
+    # all schemes are dark
     polarity = "dark";
     image = lib.mkIf (!headless) (import ./wallpaper.nix { inherit config pkgs; });
     base16Scheme = base16Schemes.${themeName};
     targets = lib.mkMerge
     [
       { grub.enable = true; }
-      # Desktop theming only matters with a display.
+      # only with a display
       (lib.mkIf headless
       {
         gtk.enable = false;
@@ -50,7 +50,7 @@ in
       package = pkgs.maple-mono.truetype;
     };
     opacity.terminal = 0.75;
-    # Shell surfaces: waybar, quickshell panels, walker.
+    # waybar, quickshell, walker
     opacity.desktop = 0.82;
     cursor = lib.mkIf (!headless)
     {
@@ -67,8 +67,7 @@ in
     };
   };
 
-  # Stylix themes these unconditionally in Home Manager; keep only terminal
-  # targets on servers.
+  # servers: terminal targets only
   home-manager.sharedModules = lib.optional headless
   {
     stylix.targets =

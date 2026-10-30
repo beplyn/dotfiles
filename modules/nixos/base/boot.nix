@@ -1,5 +1,4 @@
-# GRUB is themed by stylix.targets.grub (modules/theme/stylix.nix): palette
-# background, sans-serif menu font and accent selection bar.
+# GRUB theme: stylix.targets.grub
 {
   boot.loader.systemd-boot.enable = false;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -10,8 +9,7 @@
     enable = true;
     device = "nodev";
     efiSupport = true;
-    # Keep the menu short; older generations stay reachable through
-    # `nixos-rebuild --rollback` until garbage collection.
+    # older generations: nixos-rebuild --rollback
     configurationLimit = 10;
   };
 }

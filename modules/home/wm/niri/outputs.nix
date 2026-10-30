@@ -4,8 +4,7 @@
   ...
 }:
 
-# Maps the host's `monitors` list onto niri outputs, laid out left to right
-# at scale 1 in list order.
+# host monitors -> niri outputs, left to right
 let
   place = acc: m:
   {

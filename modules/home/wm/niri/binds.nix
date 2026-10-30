@@ -16,9 +16,7 @@ let
   wpctl = lib.getExe' pkgs.wireplumber "wpctl";
   brightnessctl = lib.getExe pkgs.brightnessctl;
 
-  # Every bind is listed in the hotkey overlay (Mod+Shift+/) under a title,
-  # except basic navigation, which is hidden explicitly because niri would
-  # otherwise list it by default.
+  # all binds titled in the overlay; navigation hidden
   show = title: action:
   {
     inherit action;
@@ -31,10 +29,10 @@ let
   };
   spawn = title: args: show title { spawn = args; };
 
-  # Media keys keep working on the lock screen.
+  # work while locked
   media = args: hide { spawn = args; } // { allow-when-locked = true; };
 
-  # Mod+1..9 focuses a workspace, Mod+Shift+1..9 sends the column there.
+  # Mod(+Shift)+1..9: focus / move to workspace
   workspaces = lib.listToAttrs (
     lib.concatMap
       (i:
@@ -97,8 +95,7 @@ in
     ${ModShift "F"} = show "Fullscreen window" { fullscreen-window = [ ]; };
     "Mod+Alt+X" = show "Toggle floating" { toggle-window-floating = [ ]; };
     ${Mod "R"} = show "Cycle column width" { switch-preset-column-width = [ ]; };
-    # niri matches the unshifted key, so "+" is bound on Equal (Shift+= on
-    # gb). The Shift and keypad variants are aliases kept out of the list.
+    # "+" is bound on Equal; other variants hidden
     ${Mod "Minus"} = show "Shrink column" { set-column-width = "-10%"; };
     ${Mod "Equal"} = show "Grow column" { set-column-width = "+10%"; };
     ${ModShift "Equal"} = hide { set-column-width = "+10%"; };

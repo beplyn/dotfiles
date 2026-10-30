@@ -1,8 +1,6 @@
 { lib, ... }:
 
-# Per-host display layout, set in hosts/<host>/default.nix and turned into
-# niri outputs by modules/home/wm/niri/outputs.nix. Hosts that leave it
-# empty (VMs) let niri pick modes and follow the guest agent's resizes.
+# Per-host layout for niri; empty on VMs.
 let
   monitor = lib.types.submodule
   {

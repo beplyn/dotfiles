@@ -17,7 +17,7 @@
       package = pkgs.millennium-steam;
     };
 
-    # Launch games with `gamemoderun %command%`.
+    # gamemoderun %command%
     programs.gamemode =
     {
       enable = true;
@@ -31,7 +31,7 @@
     };
     users.users.${username}.extraGroups = [ "gamemode" ];
 
-    # capSysNice lets gamescope raise its own scheduling priority.
+    # lets gamescope renice itself
     programs.gamescope =
     {
       enable = true;

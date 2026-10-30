@@ -17,7 +17,7 @@ let
     app:
     "/org.openoffice.Office.UI.ToolbarMode/Applications/org.openoffice.Office.UI.ToolbarMode:Application['${app}']";
 
-  # Starting preferences that make LibreOffice behave like MS Office.
+  # MS Office-like defaults
   msDefaults = pkgs.writeText "registrymodifications.xcu" ''
     <?xml version="1.0" encoding="UTF-8"?>
     <oor:items xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -45,9 +45,7 @@ in
     hunspellDicts.hu_HU
   ];
 
-  # LibreOffice rewrites this file whenever a setting changes, so it can't be
-  # a read-only store link. Seed it once; later changes made in the app stick.
-  # Delete the file to go back to these defaults.
+  # seeded once, LibreOffice must write it; delete to reset
   home.activation.libreofficeDefaults = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     if [ ! -e "${profile}" ]; then
       run mkdir -p "$(dirname "${profile}")"

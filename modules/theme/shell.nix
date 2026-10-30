@@ -1,6 +1,4 @@
-# Shared look for the shell layer (waybar, quickshell, walker, satty).
-# Every color comes from Stylix, exported as GTK named colors so each
-# stylesheet can use @accent / alpha(@base, 0.8) instead of raw hex.
+# Shell look, Stylix colours as GTK named colours.
 { config, lib, ... }:
 
 let

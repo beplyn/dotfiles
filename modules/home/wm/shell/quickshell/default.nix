@@ -1,9 +1,4 @@
-# Quickshell is the interactive layer over waybar: control center,
-# dashboard, notification daemon and center, OSD and the wl-screenrec
-# recorder. Waybar opens the panels over IPC (lib.haku.ipc).
-# The QML lives in ./config; Nix only generates services/Stylix.qml, a
-# data-only singleton with the Stylix palette, fonts and store paths, so
-# the QML never hardcodes either. services/Theme.qml maps it to roles.
+# Quickshell panels, notifications, OSD, recorder. Nix only generates services/Stylix.qml.
 {
   config,
   lib,
@@ -66,18 +61,17 @@ let
     pkill = lib.getExe' pkgs.procps "pkill";
   };
 
-  # SIGRTMIN+n that makes waybar re-run a custom module fed by Quickshell.
+  # SIGRTMIN+n to refresh a waybar module
   waybarSignals =
   {
     notifications = 8;
     recorder = 9;
   };
 
-  # Battery and power-profile widgets only exist on the laptop.
+  # laptop only
   laptop = osConfig.networking.hostName == "compass";
 
-  # services/Stylix.qml: one readonly property per value. Strings go
-  # through toJSON, which is also a valid JS string literal.
+  # Stylix.qml: one property per value, strings via toJSON
   prop = type: name: value: "    readonly property ${type} ${name}: ${value}";
   str = name: value: prop "string" name (builtins.toJSON (toString value));
   num = name: value: prop "real" name (toString value);
@@ -126,8 +120,7 @@ let
     )
   );
 
-  # Copied (not linked) so the generated singleton sits next to the
-  # hand-written services, where `import qs.services` finds it.
+  # copied so `import qs.services` finds it
   shellConfig = pkgs.runCommandLocal "quickshell-haku" { } ''
     cp -r ${./config} $out
     chmod -R u+w $out
@@ -147,7 +140,7 @@ in
     systemd.enable = true;
   };
 
-  # Reload the shell whenever the generated config changes.
+  # reload on config change
   systemd.user.services.quickshell.Unit.X-Restart-Triggers = [ "${shellConfig}" ];
 
   home.packages =
@@ -159,8 +152,7 @@ in
   lib.haku.waybarSignals = waybarSignals;
   lib.haku.laptop = laptop;
 
-  # Argv for `qs ipc call <target> <function>`, used by the niri binds
-  # and waybar.
+  # argv for `qs ipc call`
   lib.haku.ipc = target: fn:
   [
     qs

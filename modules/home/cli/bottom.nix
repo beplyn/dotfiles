@@ -5,7 +5,7 @@ let
 in
 
 {
-  # Themed from our palette below; Stylix's target would set the same keys.
+  # own palette theme instead
   stylix.targets.bottom.enable = false;
 
   programs.bottom =

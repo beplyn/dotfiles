@@ -17,8 +17,7 @@ in
     model = lib.mkOption
     {
       type = lib.types.str;
-      # Dense 27B, ~18 GB at Q4_K_M: leaves room on a 24 GB card for the KV
-      # cache.
+      # dense 27B, ~18 GB at Q4_K_M
       default = "qwen3.8:27b";
       description = "Ollama model tag to pull and serve.";
     };
@@ -44,26 +43,23 @@ in
     services.ollama =
     {
       enable = true;
-      # The 7900 XTX (gfx1100) is a supported ROCm target, so no
-      # rocmOverrideGfx is needed.
+      # gfx1100 is supported, no override
       package = pkgs.ollama-rocm;
       loadModels = [ cfg.model ];
       environmentVariables =
       {
         OLLAMA_CONTEXT_LENGTH = toString cfg.contextLength;
-        # Flash attention plus a q8 KV cache halves cache memory with no
-        # measurable quality loss; needed to fit 64k context next to the model.
+        # flash attn + q8 KV to fit 64k context
         OLLAMA_FLASH_ATTENTION = "1";
         OLLAMA_KV_CACHE_TYPE = "q8_0";
-        # One model at a time: two 27B models do not fit in 24 GB.
+        # one model at a time
         OLLAMA_MAX_LOADED_MODELS = "1";
         OLLAMA_NUM_PARALLEL = "1";
         OLLAMA_KEEP_ALIVE = "30m";
       };
     };
 
-    # Metasearch backend for the agent's web search tool. Bound to localhost;
-    # the JSON output format is what MCP clients query.
+    # SearXNG for agent web search, localhost, JSON
     services.searx =
     {
       enable = true;
@@ -86,8 +82,7 @@ in
       };
     };
 
-    # The secret only signs cookies and the image proxy, but it should not
-    # live in the world-readable store: generate it once on first boot.
+    # secret generated on first boot, not in the store
     systemd.services.searx-secret =
     {
       wantedBy = [ "searx-init.service" ];

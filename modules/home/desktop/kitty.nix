@@ -25,9 +25,7 @@
     {
       bold_font = "auto";
 
-      # Follow Stylix's base00 so the background matches every theme. Blur is
-      # done by niri's window rule (see wm/niri/kdl.nix), so no
-      # background_blur here.
+      # base00 background; blur comes from niri
       background = lib.mkForce "#${config.lib.stylix.colors.base00}";
       background_opacity = lib.mkForce "0.80";
       dynamic_background_opacity = true;

@@ -8,8 +8,7 @@
 let
   cfg = config.encryption;
 
-  # Plymouth wants a single font file; take the regular face of Stylix's
-  # monospace font so the prompt follows whatever font Stylix is set to.
+  # Plymouth font: Stylix monospace, regular
   plymouthFont = pkgs.runCommand "plymouth-font.ttf" { } ''
     font="$(find ${config.stylix.fonts.monospace.package} -name '*Regular.ttf' | sort | head -n1)"
     if [ -z "$font" ]; then
@@ -44,16 +43,13 @@ in
     {
       inherit (cfg) device;
       allowDiscards = true;
-      # Skip dm-crypt's kernel workqueues; on NVMe this cuts latency and
-      # noticeably raises throughput.
+      # faster on NVMe
       bypassWorkqueues = true;
-      # Keep re-prompting after a typo instead of dropping to the emergency
-      # shell after three attempts.
+      # retry forever, no emergency shell
       crypttabExtraOpts = [ "tries=0" ];
     };
 
-    # Load the console keymap in the initrd so the passphrase is typed with
-    # the same layout as everywhere else, not the kernel's default US one.
+    # console keymap for the passphrase
     console.earlySetup = true;
 
     fileSystems."/" =
@@ -69,7 +65,7 @@ in
     };
     stylix.targets.plymouth.enable = true;
 
-    # Keep kernel/systemd chatter off the splash so the prompt is all you see.
+    # quiet splash
     boot.consoleLogLevel = 3;
     boot.initrd.verbose = false;
     boot.kernelParams =

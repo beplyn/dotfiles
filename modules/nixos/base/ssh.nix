@@ -10,7 +10,7 @@ let
   hasAuthorizedKeys = authorizedKeys.keys != [ ] || authorizedKeys.keyFiles != [ ];
 in
 {
-  # Off unless a host opts in (beacon, shulker).
+  # opt-in per host
   services.openssh =
   {
     enable = lib.mkDefault false;
@@ -18,7 +18,7 @@ in
     openFirewall = true;
     settings =
     {
-      # Keep password login as a fallback until a key is authorized.
+      # password fallback until a key is set
       PasswordAuthentication = !hasAuthorizedKeys;
       KbdInteractiveAuthentication = false;
       PermitRootLogin = "no";

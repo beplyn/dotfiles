@@ -10,7 +10,7 @@
       opacity = 0.75;
     }
 
-    # Steam's toast popups are separate windows; pin only those to the top right.
+    # Steam toasts top right
     {
       matches =
       [
