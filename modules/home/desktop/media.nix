@@ -27,6 +27,10 @@ let
     "video/x-msvideo"
     "video/mpeg"
     "video/ogg"
+  ];
+
+  audio =
+  [
     "audio/mpeg"
     "audio/flac"
     "audio/ogg"
@@ -91,7 +95,7 @@ in
     enable = true;
     defaultApplications =
       defaults "org.gnome.Loupe.desktop" images
-      // defaults "mpv.desktop" videos
+      // defaults "mpv.desktop" (videos ++ audio)
       // defaults "org.pwmt.zathura.desktop" [ "application/pdf" ]
       // defaults "writer.desktop" documents
       // defaults "calc.desktop" spreadsheets
