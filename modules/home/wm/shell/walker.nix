@@ -1,6 +1,6 @@
 {
   config,
-  lib,
+  subst,
   ...
 }:
 
@@ -58,17 +58,16 @@ in
     theme =
     {
       name = "stylix";
-      style = t.css + "\n" + lib.replaceStrings
-        [ "@font@" "@fontSize@" "@fontSizeLarge@" "@radius@" "@radiusSmall@" "@radiusLarge@" "@glass@" ]
-        [
-          t.font
-          (toString t.popupFontSize)
-          (toString (t.popupFontSize + 2))
-          (toString t.radius)
-          (toString (t.radius - 6))
-          (toString (t.radius + 6))
-          (toString t.glass)
-        ]
+      style = t.css + "\n" + subst
+        {
+          font = t.font;
+          fontSize = t.popupFontSize;
+          fontSizeLarge = t.popupFontSize + 2;
+          radius = t.radius;
+          radiusSmall = t.radius - 6;
+          radiusLarge = t.radius + 6;
+          glass = t.glass;
+        }
         (builtins.readFile ./walker.css);
     };
   };

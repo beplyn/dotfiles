@@ -1,8 +1,8 @@
 {
   config,
-  lib,
   pkgs,
   inputs,
+  subst,
   username,
   email,
   forgejoHost,
@@ -21,9 +21,11 @@ let
       gnupg
       inputs.forgejo-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
     ];
-    text = lib.replaceStrings
-      [ "@username@" "@email@" "@forgejoHost@" "@themeName@" "@hostName@" ]
-      [ username email forgejoHost themeName config.networking.hostName ]
+    text = subst
+      {
+        inherit username email forgejoHost themeName;
+        hostName = config.networking.hostName;
+      }
       (builtins.readFile ./rebuild.sh);
   };
 in
