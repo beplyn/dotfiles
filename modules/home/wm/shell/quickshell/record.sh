@@ -212,7 +212,7 @@ start_recording() {
 
   mkdir -p "$SAVE_DIR" "$STATE_DIR"
   local file
-  file="$SAVE_DIR/recording_$(date +%Y%m%d_%H%M%S).mp4"
+  file="$SAVE_DIR/recording_$(date +%Y-%m-%d_%H-%M-%S).mp4"
   local args=("${REC_OPTS[@]}" -o "$display" -f "$file")
 
   trap cleanup_runtime EXIT INT TERM

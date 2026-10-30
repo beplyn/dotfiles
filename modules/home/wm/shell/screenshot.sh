@@ -1,6 +1,6 @@
 mode="${1:-area}"
 dir="$HOME/Pictures/Screenshots"
-file="$dir/$(date +%Y-%m-%d_%H-%M-%S).png"
+file="$dir/screenshot_$(date +%Y-%m-%d_%H-%M-%S).png"
 mkdir -p "$dir"
 
 case "$mode" in
