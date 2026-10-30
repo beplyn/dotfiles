@@ -58,7 +58,7 @@ let
     cava = lib.getExe pkgs.cava;
     inherit cavaConfig;
     niri = lib.getExe osConfig.programs.niri.package;
-    lock = "${lib.getExe config.programs.swaylock.package} -f";
+    lock = "${lib.getExe' pkgs.procps "pidof"} hyprlock || ${lib.getExe config.programs.hyprlock.package}";
     brightnessctl = lib.getExe pkgs.brightnessctl;
     mixer = lib.getExe pkgs.pavucontrol;
     wallpaper = lib.getExe pkgs.waypaper;

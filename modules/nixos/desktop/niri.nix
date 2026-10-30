@@ -30,6 +30,6 @@
   # Run Electron/Chromium apps (Equibop) natively on Wayland.
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
-  # swaylock can't check passwords without its own PAM service.
-  security.pam.services.swaylock = { };
+  # hyprlock can't check passwords without its own PAM service.
+  security.pam.services.hyprlock = { };
 }

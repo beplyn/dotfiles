@@ -12,7 +12,7 @@ let
   kitty = lib.getExe config.programs.kitty.package;
   walker = lib.getExe config.services.walker.package;
   ipc = config.lib.haku.ipc;
-  swaylock = lib.getExe config.programs.swaylock.package;
+  hyprlock = lib.getExe config.programs.hyprlock.package;
   wpctl = lib.getExe' pkgs.wireplumber "wpctl";
   brightnessctl = lib.getExe pkgs.brightnessctl;
 
@@ -88,11 +88,7 @@ in
     # --- session ----------------------------------------------------------
     ${Mod "Q"} = show "Close window" { close-window = [ ]; } // { repeat = false; };
     ${ModShift "E"} = show "Quit niri" { quit = [ ]; };
-    "Mod+Alt+L" = spawn "Lock screen"
-    [
-      swaylock
-      "-f"
-    ];
+    "Mod+Alt+L" = spawn "Lock screen" [ hyprlock ];
     ${ModShift "Slash"} = show "Show hotkeys" { show-hotkey-overlay = [ ]; };
     ${Mod "Tab"} = show "Overview" { toggle-overview = [ ]; } // { repeat = false; };
 

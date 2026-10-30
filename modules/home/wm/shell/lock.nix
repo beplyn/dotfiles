@@ -6,57 +6,125 @@
   ...
 }:
 
+# hyprlock over the Stylix wallpaper; it never screenshots the session, so
+# no windows show through. Stylix's hyprlock target sets the background and
+# the input field's colours, the layout below uses the same palette.
 let
-  swaylock = lib.getExe config.programs.swaylock.package;
+  c = config.lib.stylix.colors;
+  rgb = color: "rgb(${color})";
+  font = config.stylix.fonts.monospace.name;
+  hyprlock = lib.getExe config.programs.hyprlock.package;
+  pidof = lib.getExe' pkgs.procps "pidof";
+  loginctl = lib.getExe' pkgs.systemd "loginctl";
   niri = lib.getExe osConfig.programs.niri.package;
-  lock = "${swaylock} -f";
+  # Recoloured by the Stylix nixos-icons overlay.
+  avatar = "${pkgs.nixos-icons}/share/icons/hicolor/256x256/apps/nix-snowflake.png";
 in
 {
-  # Colors come from stylix.targets.swaylock, so they follow the theme.
-  programs.swaylock =
+  programs.hyprlock =
   {
     enable = true;
-    package = pkgs.swaylock-effects;
     settings =
     {
-      screenshots = true;
-      effect-blur = "7x5";
-      effect-vignette = "0.4:0.6";
-      fade-in = 0.2;
+      general =
+      {
+        hide_cursor = true;
+        ignore_empty_input = true;
+      };
 
-      clock = true;
-      timestr = "%H:%M";
-      datestr = "%a, %d %b";
-      font = config.stylix.fonts.monospace.name;
-      font-size = 24;
+      animations.enabled = true;
 
-      indicator = true;
-      indicator-radius = 100;
-      indicator-thickness = 6;
-      ignore-empty-password = true;
-      show-failed-attempts = true;
+      label =
+      [
+        {
+          text = "$TIME";
+          color = rgb c.base05;
+          font_size = 96;
+          font_family = "${font} Bold";
+          position = "0, 260";
+          halign = "center";
+          valign = "center";
+        }
+        {
+          text = ''cmd[update:60000] date +"%A, %d %B"'';
+          color = rgb c.base04;
+          font_size = 20;
+          font_family = font;
+          position = "0, 170";
+          halign = "center";
+          valign = "center";
+        }
+        {
+          text = "Welcome back, $USER";
+          color = rgb c.base05;
+          font_size = 16;
+          font_family = font;
+          position = "0, -95";
+          halign = "center";
+          valign = "center";
+        }
+      ];
+
+      image =
+      [
+        {
+          path = avatar;
+          size = 120;
+          rounding = -1;
+          border_size = 3;
+          border_color = rgb c.base0E;
+          position = "0, 10";
+          halign = "center";
+          valign = "center";
+        }
+      ];
+
+      # An attrset, not a list, so it merges with Stylix's colours.
+      input-field =
+      {
+        size = "340, 56";
+        outline_thickness = 2;
+        rounding = 14;
+        dots_size = 0.22;
+        dots_spacing = 0.4;
+        dots_center = true;
+        fade_on_empty = false;
+        placeholder_text = "<i>Password</i>";
+        fail_text = "<i>$FAIL ($ATTEMPTS)</i>";
+        font_family = font;
+        position = "0, -175";
+        halign = "center";
+        valign = "center";
+      };
     };
   };
 
-  services.swayidle =
+  # hypridle rather than swayidle: inhibit_sleep holds suspend until the
+  # lock surface is up, so the session is never visible on resume.
+  services.hypridle =
   {
     enable = true;
-    timeouts =
-    [
-      {
-        timeout = 300;
-        command = lock;
-      }
-      {
-        timeout = 600;
-        command = "${niri} msg action power-off-monitors";
-        resumeCommand = "${niri} msg action power-on-monitors";
-      }
-    ];
-    events =
+    settings =
     {
-      before-sleep = lock;
-      inherit lock;
+      general =
+      {
+        lock_cmd = "${pidof} hyprlock || ${hyprlock}";
+        before_sleep_cmd = "${loginctl} lock-session";
+        after_sleep_cmd = "${niri} msg action power-on-monitors";
+        inhibit_sleep = 3;
+      };
+      listener =
+      [
+        {
+          timeout = 300;
+          on-timeout = "${loginctl} lock-session";
+        }
+        {
+          timeout = 600;
+          on-timeout = "${niri} msg action power-off-monitors";
+          on-resume = "${niri} msg action power-on-monitors";
+        }
+      ];
     };
   };
 }
