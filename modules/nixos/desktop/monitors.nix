@@ -1,6 +1,6 @@
 { lib, ... }:
 
-# Per-host layout for niri; empty on VMs.
+# Per-host display hardware: niri layout (empty on VMs) and laptop panel.
 let
   monitor = lib.types.submodule
   {
@@ -35,4 +35,7 @@ in
     default = [ ];
     description = "Outputs from left to right; each is placed after the previous one.";
   };
+
+  # battery and backlight widgets in the shell
+  options.laptop = lib.mkEnableOption "laptop-only shell widgets";
 }

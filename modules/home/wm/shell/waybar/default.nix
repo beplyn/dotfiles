@@ -12,7 +12,7 @@ let
   gap = config.programs.niri.settings.layout.gaps;
   niri = lib.getExe osConfig.programs.niri.package;
   signals = config.lib.haku.waybarSignals;
-  laptop = config.lib.haku.laptop;
+  laptop = osConfig.laptop;
 
   # qs ipc call as an on-click string
   ipc = target: fn: args: lib.escapeShellArgs (config.lib.haku.ipc target fn ++ args);

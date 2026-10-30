@@ -2,6 +2,7 @@
   imports = [ ./hardware.nix ];
 
   networking.hostName = "compass";
+  laptop = true;
   docker.enable = false;
   qbittorrent.enable = false;
   services.xserver.xkb.layout = "us";
