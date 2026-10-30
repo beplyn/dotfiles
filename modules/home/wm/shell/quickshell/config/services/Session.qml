@@ -22,6 +22,7 @@ Singleton {
     function randomWallpaper() { Quickshell.execDetached([Theme.bin.wallpaper, "--random"]) }
     function lock() { run(Theme.bin.lock) }
     function logout() { Niri.action("quit", "--skip-confirmation") }
+    function suspend() { Quickshell.execDetached([Theme.bin.systemctl, "suspend"]) }
     function reboot() { Quickshell.execDetached([Theme.bin.systemctl, "reboot"]) }
     function poweroff() { Quickshell.execDetached([Theme.bin.systemctl, "poweroff"]) }
 }
