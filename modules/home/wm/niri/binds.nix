@@ -12,7 +12,8 @@ let
   kitty = lib.getExe config.programs.kitty.package;
   walker = lib.getExe config.services.walker.package;
   ipc = config.lib.haku.ipc;
-  hyprlock = lib.getExe config.programs.hyprlock.package;
+  # through hypridle, whose lock_cmd skips an already running hyprlock
+  loginctl = lib.getExe' pkgs.systemd "loginctl";
   wpctl = lib.getExe' pkgs.wireplumber "wpctl";
   brightnessctl = lib.getExe pkgs.brightnessctl;
 
@@ -86,7 +87,7 @@ in
     # --- session ----------------------------------------------------------
     ${Mod "Q"} = show "Close window" { close-window = [ ]; } // { repeat = false; };
     ${ModShift "E"} = show "Quit niri" { quit = [ ]; };
-    "Mod+Alt+L" = spawn "Lock screen" [ hyprlock ];
+    "Mod+Alt+L" = spawn "Lock screen" [ loginctl "lock-session" ];
     ${ModShift "Slash"} = show "Show hotkeys" { show-hotkey-overlay = [ ]; };
     ${Mod "Tab"} = show "Overview" { toggle-overview = [ ]; } // { repeat = false; };
 
