@@ -16,7 +16,7 @@
       trel = "eza --icons --tree -a -I \".git\" --color=auto --level=2";
       icat = "kitty +kitten icat";
       # manual gc, also cleans the boot menu
-      purgeGarbage = "sudo nix-collect-garbage ${config.nix.gc.options} && sudo /run/current-system/bin/switch-to-configuration boot";
+      gc = "sudo nix-collect-garbage ${config.nix.gc.options} && sudo /run/current-system/bin/switch-to-configuration boot";
 
       ".." = "cd ..";
       "..." = "cd ../..";
@@ -25,6 +25,7 @@
     // lib.genAttrs themes (t: "rebuild ${t}");
     shellAliases =
     {
+      repo-update = "git fetch && git pull --rebase && git push";
       vim = "nvim";
       nano = "nvim";
       ls = "eza --icons --color=auto -a";
