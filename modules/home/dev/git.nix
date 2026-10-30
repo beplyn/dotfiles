@@ -1,6 +1,7 @@
 {
   username,
   email,
+  forgejoHost,
   ...
 }:
 
@@ -22,7 +23,7 @@
       {
         directory = [ "/etc/nixos" ];
       };
-      url."git@codeberg.org:".pushInsteadOf = "https://codeberg.org/";
+      url."git@${forgejoHost}:".pushInsteadOf = "https://${forgejoHost}/";
       alias =
       {
         st = "status";
