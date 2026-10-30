@@ -167,7 +167,6 @@ in
     {
       "logos".source = ./logos;
       "lua/random_logo.lua".source = ./lua/random_logo.lua;
-      "lua/alpha.lua".source = ./lua/alpha.lua;
     };
 
     plugins =
@@ -176,7 +175,7 @@ in
       {
         enable = true;
         theme = "dashboard";
-        luaConfig.content = builtins.readFile ./lua/alpha.lua;
+        luaConfig.content = subst p (builtins.readFile ./lua/alpha.lua);
       };
 
       lualine =
