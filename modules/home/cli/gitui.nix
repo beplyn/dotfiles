@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, subst, ... }:
 
 let
   p = config.themes.palette;
@@ -13,9 +13,6 @@ in
     enable = true;
     # default keys; an empty file errors
     keyConfig = "()";
-    theme = lib.replaceStrings
-      (map (n: "@${n}@") (lib.attrNames p))
-      (lib.attrValues p)
-      (builtins.readFile ./gitui.ron);
+    theme = subst p (builtins.readFile ./gitui.ron);
   };
 }
