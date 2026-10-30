@@ -186,7 +186,38 @@ in
           options =
           {
             globalstatus = true;
-            theme = "auto";
+            # no fills; the mode shows as accent-coloured text
+            theme =
+            let
+              mode = fg:
+              {
+                a =
+                {
+                  inherit fg;
+                  bg = "NONE";
+                  gui = "bold";
+                };
+                b =
+                {
+                  fg = p.subtext;
+                  bg = "NONE";
+                };
+                c =
+                {
+                  fg = p.subtext;
+                  bg = "NONE";
+                };
+              };
+            in
+            {
+              normal = mode p.purple;
+              insert = mode p.green;
+              visual = mode p.yellow;
+              replace = mode p.red;
+              command = mode p.orange;
+              terminal = mode p.cyan;
+              inactive = mode p.muted;
+            };
             component_separators = "";
             section_separators = "";
           };

@@ -17,8 +17,8 @@ function()
   -- 3. Active Line Number: Bright accent with bold styling
   hl(0, "CursorLineNr", { fg = "@purple@", bold = true })
 
-  -- 4. CursorLine: Subtle contrast row
-  hl(0, "CursorLine", { bg = "@mantle@" })
+  -- 4. CursorLine: no fill, so the terminal's opacity shows through
+  hl(0, "CursorLine", {})
 
   -- 5. Native Cmdline Popup (wildoptions=pum) & Menus
   hl(0, "Pmenu", { bg = "@mantle@", fg = "@foreground@" })
