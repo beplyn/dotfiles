@@ -9,6 +9,7 @@
     ./shell.nix
     ./rebuild.nix
     ./starship.nix
+    ./greeting.nix
     ./tools.nix
     ./packages.nix
   ];

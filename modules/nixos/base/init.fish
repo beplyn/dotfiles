@@ -36,4 +36,3 @@ fish_add_path --prepend --move \
   /nix/var/nix/profiles/default/bin
 
 set -g fish_greeting ""
-fastfetch
