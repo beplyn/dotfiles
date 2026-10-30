@@ -1,8 +1,5 @@
 {
-  imports =
-  [
-    ./hardware.nix
-  ];
+  imports = [ ./hardware.nix ];
 
   networking.hostName = "shulker";
   docker.enable = true;
