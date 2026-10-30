@@ -1,10 +1,10 @@
 {
   config,
+  lib,
+  themes,
   ...
 }:
-let
-  themeSwitch = "rebuild ";
-in
+
 {
   programs.fish =
   {
@@ -16,14 +16,13 @@ in
       trel = "eza --icons --tree -a -I \".git\" --color=auto --level=2";
       icat = "kitty +kitten icat";
       # manual gc, also cleans the boot menu
-      purgeGarbage = "sudo nix-collect-garbage --delete-older-than 14d && sudo /run/current-system/bin/switch-to-configuration boot";
+      purgeGarbage = "sudo nix-collect-garbage ${config.nix.gc.options} && sudo /run/current-system/bin/switch-to-configuration boot";
 
-      "." = "cd ..";
-      ".." = "cd ../../";
-      catppuccin = themeSwitch + "catppuccin";
-      nord = themeSwitch + "nord";
-      gruvbox = themeSwitch + "gruvbox";
-    };
+      ".." = "cd ..";
+      "..." = "cd ../..";
+    }
+    # one per theme: `nord` -> rebuild nord
+    // lib.genAttrs themes (t: "rebuild ${t}");
     shellAliases =
     {
       vim = "nvim";
