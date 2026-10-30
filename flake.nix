@@ -31,11 +31,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # niri 26.04 with a liquid-glass background effect. The niri source stays
-    # pinned (the overlay replaces whole upstream files), but it must build
-    # against our nixpkgs: niri dlopens mesa from /run/opengl-driver, which
-    # needs the system glibc. With its own nixpkgs GBM fails to load and niri
-    # starts without outputs.
+    # niri-glass; follows our nixpkgs so mesa/GBM loads (system glibc)
     niri-glass =
     {
       url = "github:zaroutt/Niri-glass";

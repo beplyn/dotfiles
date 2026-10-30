@@ -1,6 +1,4 @@
-# PLACEHOLDER so the flake evaluates. Replace with the output of
-# `nixos-generate-config --show-hardware-config` from beacon itself before
-# deploying: this root filesystem is a guess and will not boot as-is.
+# PLACEHOLDER: replace with nixos-generate-config output before deploying
 {
   fileSystems."/" =
   {

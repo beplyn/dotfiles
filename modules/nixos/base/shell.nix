@@ -15,7 +15,7 @@ in
       tree = "eza --icons --tree --color=auto";
       trel = "eza --icons --tree -a -I \".git\" --color=auto --level=2";
       icat = "kitty +kitten icat";
-      # On-demand version of nix.gc; also drops removed generations from the boot menu.
+      # manual gc, also cleans the boot menu
       purgeGarbage = "sudo nix-collect-garbage --delete-older-than 14d && sudo /run/current-system/bin/switch-to-configuration boot";
 
       "." = "cd ..";

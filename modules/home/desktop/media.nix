@@ -1,7 +1,7 @@
 { lib, pkgs, ... }:
 
 let
-  # Map every MIME type in `types` to one desktop entry.
+  # all MIME types -> one desktop entry
   defaults = app: types: lib.genAttrs types (_: [ app ]);
 
   images =
@@ -85,7 +85,7 @@ in
     };
   };
 
-  # Browser types are claimed by zen (setAsDefaultBrowser in browsers.nix).
+  # browser types: see browsers.nix
   xdg.mimeApps =
   {
     enable = true;

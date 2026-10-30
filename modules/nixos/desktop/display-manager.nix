@@ -1,12 +1,4 @@
-# greetd running ReGreet inside cage. Stylix's regreet target supplies the
-# GTK theme, colours, font, cursor, icons and wallpaper, so only layout
-# lives here.
-#
-# Stock ReGreet shares one grid row between the session picker and the
-# password entry, so the password only shows up after pressing Login. The
-# patch moves the session picker into the bottom-left corner and keeps it
-# there during password entry; skip_selection then starts the login for the
-# last user right away, so the password field is up from the start.
+# greetd + ReGreet in cage, themed by Stylix. Patched so the password field shows right away.
 { pkgs, ... }:
 {
   services.displayManager.regreet =

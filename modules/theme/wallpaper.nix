@@ -1,7 +1,4 @@
-# The Stylix wallpaper: a soft radial glow from the palette with a faint,
-# palette-tinted NixOS snowflake. Built from the colours rather than shipped
-# as a file, so every theme gets a matching one. The greeter and the lock
-# screen show it; the session's own wallpaper is still picked with waypaper.
+# Palette-built wallpaper with a tinted NixOS logo.
 {
   config,
   pkgs,
@@ -10,7 +7,7 @@
 
 let
   c = config.lib.stylix.colors.withHashtag;
-  # Recoloured by the Stylix nixos-icons overlay.
+  # recoloured by Stylix
   snowflake = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake-white.svg";
 in
 pkgs.runCommand "stylix-wallpaper.png"

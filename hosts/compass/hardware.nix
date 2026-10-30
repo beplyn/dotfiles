@@ -9,15 +9,12 @@
     ];
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" ];
-  # Early KMS: i915 in the initrd gives Plymouth the native-resolution unlock
-  # screen instead of the firmware framebuffer.
+  # early KMS: native-res Plymouth unlock
   boot.initrd.kernelModules = [ "i915" ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
-  # fileSystems."/" and the LUKS device come from
-  # modules/nixos/base/encryption.nix (/dev/mapper/cryptroot); the container
-  # is set with encryption.device in ./default.nix.
+  # root fs and LUKS: modules/nixos/base/encryption.nix
 
   fileSystems."/boot" =
     { device = "/dev/disk/by-uuid/3A8D-33AC";

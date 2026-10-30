@@ -3,9 +3,7 @@
   ...
 }:
 
-# Stylix puts stylix.icons into the GTK 3/4 settings.ini, but libadwaita apps
-# (Nautilus) read the icon theme, like the dark preference Stylix's gnome
-# target writes, from GSettings through the portal.
+# libadwaita reads the icon theme from GSettings, not settings.ini
 {
   gtk =
   {

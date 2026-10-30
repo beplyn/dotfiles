@@ -30,19 +30,17 @@
           { name = "path"; }
           { name = "buffer"; }
         ];
-        # Never start with an item selected (LSP servers can request this),
-        # so <CR> only confirms something picked with <Tab>/<S-Tab>.
+        # never preselect; <CR> only confirms a <Tab> pick
         preselect = "cmp.PreselectMode.None";
         completion.completeopt = "menu,menuone,noselect";
         mapping =
         {
           "<Down>" = "cmp.mapping.select_next_item()";
           "<Up>" = "cmp.mapping.select_prev_item()";
-          # Confirms an explicitly selected item, otherwise inserts a newline.
+          # confirm selection, else newline
           "<CR>" = "cmp.mapping.confirm({ select = false })";
           "<C-y>" = "cmp.mapping.confirm({ select = true })";
-          # Cycling passes through an unselected state between the last and
-          # first item, so <S-Tab> past the first item deselects again.
+          # <S-Tab> past the first item deselects
           "<Tab>" = ''
             cmp.mapping(function(fallback)
               if cmp.visible() then

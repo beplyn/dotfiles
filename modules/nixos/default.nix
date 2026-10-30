@@ -7,6 +7,6 @@
     ./services
     ../theme
   ]
-  # Servers: no display manager, compositor, fonts or GUI apps.
+  # servers: no GUI
   ++ lib.optionals (!headless) [ ./desktop ];
 }

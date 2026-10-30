@@ -3,7 +3,7 @@
 {
   imports = [ inputs.zen-browser.homeModules.beta ];
 
-  # Zen: everyday browser, default for links and HTML.
+  # Zen: default browser
   programs.zen-browser =
   {
     enable = true;
@@ -16,13 +16,11 @@
   };
   stylix.targets.zen-browser.profileNames = [ "default" ];
 
-  # LibreWolf: throwaway browsing. Keeps no history, and wipes cookies,
-  # site data, cache and form data when the last window closes.
+  # LibreWolf: throwaway, wipes everything on close
   programs.librewolf =
   {
     enable = true;
-    # Profile settings land in user.js, which is re-applied on every launch,
-    # so these can't be switched off from about:preferences for good.
+    # user.js is re-applied every launch
     profiles.default =
     {
       id = 0;
