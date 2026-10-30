@@ -88,6 +88,7 @@ in
     ${Mod "Q"} = show "Close window" { close-window = [ ]; } // { repeat = false; };
     ${ModShift "E"} = show "Quit niri" { quit = [ ]; };
     "Mod+Alt+L" = spawn "Lock screen" [ loginctl "lock-session" ];
+    ${Mod "X"} = spawn "Power menu" (ipc "panels" "toggle" ++ [ "power" ]);
     ${ModShift "Slash"} = show "Show hotkeys" { show-hotkey-overlay = [ ]; };
     ${Mod "Tab"} = show "Overview" { toggle-overview = [ ]; } // { repeat = false; };
 

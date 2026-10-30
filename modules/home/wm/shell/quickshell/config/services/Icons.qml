@@ -55,6 +55,7 @@ Singleton {
     readonly property string reboot: g(0xF0453)
     readonly property string lock: g(0xF033E)
     readonly property string exit: g(0xF0343)
+    readonly property string sleep: g(0xF0904)
     readonly property string chevronLeft: g(0xF0141)
     readonly property string chevronRight: g(0xF0142)
     readonly property string ethernet: g(0xF0200)

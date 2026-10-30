@@ -5,6 +5,7 @@ import qs.dashboard
 import qs.monitor
 import qs.notifications
 import qs.osd
+import qs.power
 import qs.recorder
 import qs.services
 
@@ -17,6 +18,7 @@ ShellRoot {
     Popups {}
     Osd {}
     RecordMenu {}
+    PowerMenu {}
 
     // One per waybar hardware pill.
     Monitor {
