@@ -4,6 +4,7 @@
 }:
 
 let
+  # unknown hosts get a generic server icon
   hostIcon =
     {
       anvil = "󰢛";
@@ -11,7 +12,7 @@ let
       compass = "󰆋";
       shulker = "";
     }
-    .${config.networking.hostName};
+    .${config.networking.hostName} or "󰒋";
 in
 
 {
@@ -96,8 +97,7 @@ in
         disabled = false;
         format = " [](fg:surface)[ $time 󱑃 ]($style)[](fg:surface)";
         style = "bg:surface fg:accent";
-        time_format = "%I:%M%P";
-        use_12hr = true;
+        time_format = "%H:%M";
       };
     };
   };
