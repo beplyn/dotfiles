@@ -27,7 +27,7 @@ in
     radius = 12;
     glass = config.stylix.opacity.desktop;
 
-    font = ''"${fonts.monospace.name}", "Maple Mono NF", "Symbols Nerd Font"'';
+    font = ''"${fonts.monospace.name}", monospace'';
     fontSize = fonts.sizes.desktop;
     popupFontSize = fonts.sizes.popups;
 
