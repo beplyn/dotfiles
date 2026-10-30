@@ -16,6 +16,7 @@ in
     settings =
     {
       model = "ollama/${llm.model}";
+      # same model: one is loaded at a time (OLLAMA_MAX_LOADED_MODELS)
       small_model = "ollama/${llm.model}";
       share = "disabled";
       autoupdate = false;
@@ -26,7 +27,7 @@ in
         options.baseURL = "http://127.0.0.1:11434/v1";
         models.${llm.model} =
         {
-          name = "Qwen3.8 27B";
+          name = llm.model;
           tools = true;
           limit =
           {
