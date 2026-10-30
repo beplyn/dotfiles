@@ -68,8 +68,7 @@ let
     recorder = 9;
   };
 
-  # laptop only
-  laptop = osConfig.networking.hostName == "compass";
+  laptop = osConfig.laptop;
 
   # Stylix.qml: one property per value, strings via toJSON
   prop = type: name: value: "    readonly property ${type} ${name}: ${value}";
@@ -150,7 +149,6 @@ in
   ];
 
   lib.haku.waybarSignals = waybarSignals;
-  lib.haku.laptop = laptop;
 
   # argv for `qs ipc call`
   lib.haku.ipc = target: fn:
