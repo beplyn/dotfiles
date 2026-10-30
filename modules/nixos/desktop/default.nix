@@ -7,6 +7,7 @@
     ./kdeconnect.nix
     ./fonts.nix
     ./gaming.nix
+    ./monitors.nix
     ./niri.nix
   ];
 }

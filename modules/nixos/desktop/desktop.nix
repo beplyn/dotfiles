@@ -4,7 +4,7 @@
 {
   # Unlock gnome-keyring with the login password so browsers and Proton Mail
   # don't ask for it each session.
-  security.pam.services.ly.enableGnomeKeyring = true;
+  security.pam.services.greetd.enableGnomeKeyring = true;
 
   # gvfs: trash and network locations; udisks2: removable drives.
   services.gvfs.enable = true;
