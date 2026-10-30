@@ -1,3 +1,6 @@
+let
+  fd = "fd --hidden --follow --exclude .git";
+in
 {
   programs.fzf =
   {
@@ -13,10 +16,10 @@
       "--multi"
       "--color=dark"
     ];
-    defaultCommand = "fd --type f --hidden --follow --exclude .git";
+    defaultCommand = "${fd} --type f";
     fileWidget =
     {
-      command = "fd --type f --hidden --follow --exclude .git";
+      command = "${fd} --type f";
       options =
       [
         "--preview 'bat --color=always --style=numbers {}'"
@@ -25,10 +28,10 @@
     };
     changeDirWidget =
     {
-      command = "fd --type d --hidden --follow --exclude .git";
+      command = "${fd} --type d";
       options =
       [
-        "--preview 'tree -C {}'"
+        "--preview 'eza --tree --icons --color=always --level=2 {}'"
       ];
     };
   };
