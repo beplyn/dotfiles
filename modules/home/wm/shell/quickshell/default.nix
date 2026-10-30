@@ -53,7 +53,8 @@ let
     cava = lib.getExe pkgs.cava;
     inherit cavaConfig;
     niri = lib.getExe osConfig.programs.niri.package;
-    lock = "${lib.getExe' pkgs.procps "pidof"} hyprlock || ${lib.getExe config.programs.hyprlock.package}";
+    # via hypridle, which skips an already running hyprlock
+    lock = "${lib.getExe' pkgs.systemd "loginctl"} lock-session";
     brightnessctl = lib.getExe pkgs.brightnessctl;
     mixer = lib.getExe pkgs.pavucontrol;
     wallpaper = lib.getExe pkgs.waypaper;
