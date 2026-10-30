@@ -1,7 +1,7 @@
 { config, ... }:
 
 let
-  c = config.lib.stylix.colors.withHashtag;
+  p = config.themes.palette;
 in
 {
   programs.fastfetch =
@@ -17,8 +17,8 @@ in
         padding.right = 3;
         color =
         {
-          "1" = c.base0D;
-          "2" = c.base0C;
+          "1" = p.blue;
+          "2" = p.cyan;
         };
       };
 
@@ -32,85 +32,85 @@ in
         {
           type = "host";
           key = "╭─󰌢";
-          keyColor = c.base0D;
+          keyColor = p.blue;
         }
         {
           type = "cpu";
           key = "├─󰻠";
-          keyColor = c.base0C;
+          keyColor = p.cyan;
         }
         {
           type = "gpu";
           key = "├─󰍛";
-          keyColor = c.base0B;
+          keyColor = p.green;
         }
         {
           type = "disk";
           key = "├─";
-          keyColor = c.base0A;
+          keyColor = p.yellow;
         }
         {
           type = "memory";
           key = "╰─󰑭";
-          keyColor = c.base09;
+          keyColor = p.orange;
         }
         "break"
         {
           type = "shell";
           key = "╭─";
-          keyColor = c.base0B;
+          keyColor = p.green;
         }
         {
           type = "terminal";
           key = "├─";
-          keyColor = c.base0C;
+          keyColor = p.cyan;
         }
         {
           type = "terminalfont";
           key = "├─";
-          keyColor = c.base0D;
+          keyColor = p.blue;
         }
         {
           type = "lm";
           key = "├─󰧨";
-          keyColor = c.base0E;
+          keyColor = p.purple;
         }
         {
           type = "wm";
           key = "╰─";
-          keyColor = c.base0F;
+          keyColor = p.brown;
         }
         "break"
         {
           type = "title";
           key = "╭─";
           format = "{user-name}@{host-name}";
-          keyColor = c.base0E;
+          keyColor = p.purple;
         }
         {
           type = "os";
           key = "├─{icon}";
-          keyColor = c.base0D;
+          keyColor = p.blue;
         }
         {
           type = "kernel";
           key = "├─";
-          keyColor = c.base0C;
+          keyColor = p.cyan;
         }
         {
           type = "packages";
           key = "├─󰏖";
-          keyColor = c.base0B;
+          keyColor = p.green;
         }
         {
           type = "media";
           key = "├─󰝚";
-          keyColor = c.base0A;
+          keyColor = p.yellow;
         }
         {
           type = "uptime";
           key = "╰─󰅐";
-          keyColor = c.base09;
+          keyColor = p.orange;
         }
         "break"
         "break"

@@ -3,23 +3,18 @@
   lib,
   pkgs,
   inputs,
+  subst,
   ...
 }:
 
 let
-  colors = lib.filterAttrs (n: _: builtins.match "base0[0-9A-F]" n != null) config.lib.stylix.colors;
-
-  # hex -> "R;G;B"
+  # "#rrggbb" -> "R;G;B"
   toRgb =
     color:
-    lib.concatStringsSep ";" (
-      builtins.map (part: toString (lib.fromHexString part))
-      [
-        (builtins.substring 0 2 color)
-        (builtins.substring 2 2 color)
-        (builtins.substring 4 2 color)
-      ]
-    );
+    let
+      hex = lib.removePrefix "#" color;
+    in
+    lib.concatMapStringsSep ";" (i: toString (lib.fromHexString (builtins.substring i 2 hex))) [ 0 2 4 ];
 
   ansi = color: "\\x1b[38;2;${toRgb color}m";
   reset = "\\x1b[0m";
@@ -29,17 +24,15 @@ let
 
   patchedFetch = upstreamFetch.overrideAttrs (oldAttrs:
   {
-    postPatch = (oldAttrs.postPatch or "") + lib.replaceStrings
-      (map (n: "@${n}@") (lib.attrNames colors) ++ [ "@reset@" ])
-      (map ansi (lib.attrValues colors) ++ [ reset ])
-      (builtins.readFile ./fetch-patch.sh);
+    postPatch = (oldAttrs.postPatch or "")
+      + subst (lib.mapAttrs (_: ansi) config.themes.palette // { inherit reset; }) (builtins.readFile ./fetch-patch.sh);
   });
 in
 {
   programs.fetch.enable = lib.mkForce false;
   home.packages = [ patchedFetch ];
 
-  xdg.configFile."fetch/config".text = builtins.readFile ./fetch.conf;
+  xdg.configFile."fetch/config".source = ./fetch.conf;
 
-  home.file.".config/fetch/logo.txt".text = builtins.readFile ./fetch-logo.txt;
+  xdg.configFile."fetch/logo.txt".source = ./fetch-logo.txt;
 }

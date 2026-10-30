@@ -1,3 +1,4 @@
+# The one colour vocabulary; modules use these names, not raw baseXX.
 { config, lib, ... }:
 
 let
@@ -8,27 +9,31 @@ in
   {
     type = lib.types.attrs;
     readOnly = true;
-    description = "Compatibility palette derived from Stylix.";
+    description = "Named colours derived from the Stylix base16 scheme.";
   };
 
-  config.themes.palette =
+  config.themes.palette = rec
   {
     background = c.base00;
+    mantle = c.base01;
     surface = c.base02;
-    surfaceBright = c.base03;
+    muted = c.base03;
+    subtext = c.base04;
     foreground = c.base05;
+    bright = c.base06;
     red = c.base08;
     orange = c.base09;
     yellow = c.base0A;
     green = c.base0B;
-    aqua = c.base0C;
+    cyan = c.base0C;
     blue = c.base0D;
     purple = c.base0E;
-    text = c.base05;
-    muted = c.base03;
-    accent = c.base0E;
-    error = c.base08;
-    success = c.base0B;
-    warning = c.base0A;
+    brown = c.base0F;
+
+    # semantic aliases
+    accent = purple;
+    error = red;
+    success = green;
+    warning = yellow;
   };
 }

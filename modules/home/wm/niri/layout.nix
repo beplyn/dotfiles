@@ -4,7 +4,7 @@
 }:
 
 let
-  c = config.lib.stylix.colors.withHashtag;
+  p = config.themes.palette;
 in
 {
   programs.niri.settings =
@@ -27,16 +27,16 @@ in
       {
         enable = true;
         width = 2;
-        active = { color = c.base0E; };
-        urgent = { color = c.base08; };
+        active = { color = p.accent; };
+        urgent = { color = p.red; };
       };
       focus-ring.enable = false;
 
       shadow =
       {
         enable = true;
-        color = "${c.base00}80";
-        inactive-color = "${c.base00}50";
+        color = "${p.background}80";
+        inactive-color = "${p.background}50";
         draw-behind-window = false;
         offset =
         {
@@ -49,7 +49,7 @@ in
       insert-hint =
       {
         enable = true;
-        display = { color = "${c.base0E}80"; };
+        display = { color = "${p.accent}80"; };
       };
     };
     prefer-no-csd = true;
@@ -59,7 +59,7 @@ in
       workspace-shadow =
       {
         enable = true;
-        color = "${c.base00}80";
+        color = "${p.background}80";
         offset =
         {
           x = 0;

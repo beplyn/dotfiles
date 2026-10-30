@@ -20,8 +20,8 @@
   hint_fg: Some("@blue@"),
   hint_bg: Some("@background@"),
   active_border_fg: Some("@accent@"),
-  inactive_border_fg: Some("@surfaceBright@"),
-  searching_border_fg: Some("@aqua@"),
+  inactive_border_fg: Some("@muted@"),
+  searching_border_fg: Some("@cyan@"),
   scrollbar_fg: Some("@muted@"),
   scrollbar_bg: Some("@surface@"),
 )

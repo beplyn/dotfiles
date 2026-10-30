@@ -1,7 +1,7 @@
 { config, ... }:
 
 let
-  c = config.lib.stylix.colors.withHashtag;
+  p = config.themes.palette;
 in
 
 {
@@ -26,43 +26,43 @@ in
       {
         normal =
         {
-          foreground = c.base04;
+          foreground = p.subtext;
         };
         directory =
         {
-          foreground = c.base0D;
+          foreground = p.blue;
         };
         symlink =
         {
-          foreground = c.base0C;
+          foreground = p.cyan;
         };
         pipe =
         {
-          foreground = c.base03;
+          foreground = p.muted;
         };
         block_device =
         {
-          foreground = c.base08;
+          foreground = p.red;
         };
         char_device =
         {
-          foreground = c.base08;
+          foreground = p.red;
         };
         socket =
         {
-          foreground = c.base02;
+          foreground = p.surface;
         };
         special =
         {
-          foreground = c.base0E;
+          foreground = p.purple;
         };
         executable =
         {
-          foreground = c.base0B;
+          foreground = p.green;
         };
         mount_point =
         {
-          foreground = c.base0D;
+          foreground = p.blue;
         };
       };
 
@@ -70,55 +70,55 @@ in
       {
         user_read =
         {
-          foreground = c.base05;
+          foreground = p.foreground;
         };
         user_write =
         {
-          foreground = c.base0A;
+          foreground = p.yellow;
         };
         user_execute_file =
         {
-          foreground = c.base0B;
+          foreground = p.green;
         };
         user_execute_other =
         {
-          foreground = c.base0B;
+          foreground = p.green;
         };
         group_read =
         {
-          foreground = c.base04;
+          foreground = p.subtext;
         };
         group_write =
         {
-          foreground = c.base0A;
+          foreground = p.yellow;
         };
         group_execute =
         {
-          foreground = c.base0B;
+          foreground = p.green;
         };
         other_read =
         {
-          foreground = c.base04;
+          foreground = p.subtext;
         };
         other_write =
         {
-          foreground = c.base0A;
+          foreground = p.yellow;
         };
         other_execute =
         {
-          foreground = c.base0B;
+          foreground = p.green;
         };
         special_user_file =
         {
-          foreground = c.base0E;
+          foreground = p.purple;
         };
         special_other =
         {
-          foreground = c.base02;
+          foreground = p.surface;
         };
         attribute =
         {
-          foreground = c.base04;
+          foreground = p.subtext;
         };
       };
 
@@ -126,51 +126,51 @@ in
       {
         major =
         {
-          foreground = c.base04;
+          foreground = p.subtext;
         };
         minor =
         {
-          foreground = c.base0C;
+          foreground = p.cyan;
         };
         number_byte =
         {
-          foreground = c.base05;
+          foreground = p.foreground;
         };
         number_kilo =
         {
-          foreground = c.base04;
+          foreground = p.subtext;
         };
         number_mega =
         {
-          foreground = c.base0D;
+          foreground = p.blue;
         };
         number_giga =
         {
-          foreground = c.base0E;
+          foreground = p.purple;
         };
         number_huge =
         {
-          foreground = c.base0E;
+          foreground = p.purple;
         };
         unit_byte =
         {
-          foreground = c.base04;
+          foreground = p.subtext;
         };
         unit_kilo =
         {
-          foreground = c.base0D;
+          foreground = p.blue;
         };
         unit_mega =
         {
-          foreground = c.base0E;
+          foreground = p.purple;
         };
         unit_giga =
         {
-          foreground = c.base0E;
+          foreground = p.purple;
         };
         unit_huge =
         {
-          foreground = c.base0D;
+          foreground = p.blue;
         };
       };
 
@@ -178,27 +178,27 @@ in
       {
         user_you =
         {
-          foreground = c.base05;
+          foreground = p.foreground;
         };
         user_root =
         {
-          foreground = c.base08;
+          foreground = p.red;
         };
         user_other =
         {
-          foreground = c.base0E;
+          foreground = p.purple;
         };
         group_yours =
         {
-          foreground = c.base04;
+          foreground = p.subtext;
         };
         group_other =
         {
-          foreground = c.base03;
+          foreground = p.muted;
         };
         group_root =
         {
-          foreground = c.base08;
+          foreground = p.red;
         };
       };
 
@@ -206,11 +206,11 @@ in
       {
         normal =
         {
-          foreground = c.base0C;
+          foreground = p.cyan;
         };
         multi_link_file =
         {
-          foreground = c.base0D;
+          foreground = p.blue;
         };
       };
 
@@ -218,31 +218,31 @@ in
       {
         new =
         {
-          foreground = c.base0B;
+          foreground = p.green;
         };
         modified =
         {
-          foreground = c.base0A;
+          foreground = p.yellow;
         };
         deleted =
         {
-          foreground = c.base08;
+          foreground = p.red;
         };
         renamed =
         {
-          foreground = c.base0C;
+          foreground = p.cyan;
         };
         typechange =
         {
-          foreground = c.base0E;
+          foreground = p.purple;
         };
         ignored =
         {
-          foreground = c.base03;
+          foreground = p.muted;
         };
         conflicted =
         {
-          foreground = c.base08;
+          foreground = p.red;
         };
       };
 
@@ -250,19 +250,19 @@ in
       {
         branch_main =
         {
-          foreground = c.base05;
+          foreground = p.foreground;
         };
         branch_other =
         {
-          foreground = c.base0E;
+          foreground = p.purple;
         };
         git_clean =
         {
-          foreground = c.base0B;
+          foreground = p.green;
         };
         git_dirty =
         {
-          foreground = c.base08;
+          foreground = p.red;
         };
       };
 
@@ -270,23 +270,23 @@ in
       {
         colon =
         {
-          foreground = c.base03;
+          foreground = p.muted;
         };
         user =
         {
-          foreground = c.base04;
+          foreground = p.subtext;
         };
         role =
         {
-          foreground = c.base0E;
+          foreground = p.purple;
         };
         typ =
         {
-          foreground = c.base02;
+          foreground = p.surface;
         };
         range =
         {
-          foreground = c.base0E;
+          foreground = p.purple;
         };
       };
 
@@ -294,94 +294,94 @@ in
       {
         image =
         {
-          foreground = c.base0A;
+          foreground = p.yellow;
         };
         video =
         {
-          foreground = c.base08;
+          foreground = p.red;
         };
         music =
         {
-          foreground = c.base0B;
+          foreground = p.green;
         };
         lossless =
         {
-          foreground = c.base0C;
+          foreground = p.cyan;
         };
         crypto =
         {
-          foreground = c.base02;
+          foreground = p.surface;
         };
         document =
         {
-          foreground = c.base05;
+          foreground = p.foreground;
         };
         compressed =
         {
-          foreground = c.base0E;
+          foreground = p.purple;
         };
         temp =
         {
-          foreground = c.base08;
+          foreground = p.red;
         };
         compiled =
         {
-          foreground = c.base0D;
+          foreground = p.blue;
         };
         build =
         {
-          foreground = c.base02;
+          foreground = p.surface;
         };
         source =
         {
-          foreground = c.base0D;
+          foreground = p.blue;
         };
       };
 
       punctuation =
       {
-        foreground = c.base03;
+        foreground = p.muted;
       };
       date =
       {
-        foreground = c.base0A;
+        foreground = p.yellow;
       };
       inode =
       {
-        foreground = c.base04;
+        foreground = p.subtext;
       };
       blocks =
       {
-        foreground = c.base04;
+        foreground = p.subtext;
       };
       header =
       {
-        foreground = c.base05;
+        foreground = p.foreground;
       };
       octal =
       {
-        foreground = c.base0C;
+        foreground = p.cyan;
       };
       flags =
       {
-        foreground = c.base0E;
+        foreground = p.purple;
       };
 
       symlink_path =
       {
-        foreground = c.base0C;
+        foreground = p.cyan;
       };
       control_char =
       {
-        foreground = c.base0D;
+        foreground = p.blue;
       };
       broken_symlink =
       {
-        foreground = c.base08;
+        foreground = p.red;
       };
       broken_path_overlay =
       {
-        foreground = c.base02;
+        foreground = p.surface;
       };
     };
   };

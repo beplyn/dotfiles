@@ -31,7 +31,7 @@ in
           [
             p.accent
             p.blue
-            p.aqua
+            p.cyan
             p.purple
           ];
         };
@@ -40,7 +40,7 @@ in
         {
           ram_colour = p.accent;
           cache_colour = p.blue;
-          swap_colour = p.aqua;
+          swap_colour = p.cyan;
           arc_colour = p.purple;
         };
 
@@ -48,7 +48,7 @@ in
         {
           rx_colour = p.accent;
           tx_colour = p.blue;
-          rx_total_colour = p.aqua;
+          rx_total_colour = p.cyan;
           tx_total_colour = p.purple;
         };
 
