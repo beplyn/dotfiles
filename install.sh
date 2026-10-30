@@ -186,7 +186,8 @@ fi
 sudo ln -s "$repo_dir" /etc/nixos
 info "Linked /etc/nixos -> $repo_dir"
 
-[[ "$USER" == "beplyn" ]] || warn "You are '$USER', but the config sets up the user 'beplyn'."
+user="$(sed -n 's/^\s*username = "\([^"]*\)";.*/\1/p' flake.nix | head -n1)"
+[[ "$USER" == "$user" ]] || warn "You are '$USER', but the config sets up the user '$user'."
 
 target="$host-$theme"
 echo
