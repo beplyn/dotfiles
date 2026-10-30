@@ -4,6 +4,8 @@
   username,
   email,
   forgejoHost,
+  # every theme in the flake, for the rebuild shortcuts
+  themes,
   # servers: no GUI
   headlessHosts ? [ ],
 }:
@@ -19,20 +21,26 @@ let
       username
       email
       forgejoHost
+      themes
       themeName
       headless
       ;
+    subst = import ./subst.nix { inherit (nixpkgs) lib; };
   };
 in
 nixpkgs.lib.nixosSystem {
   inherit specialArgs;
   modules = [
     { nixpkgs.hostPlatform = "x86_64-linux"; }
-    { nixpkgs.overlays = [ inputs.millennium.overlays.default ]; }
     ../hosts/common
     ../hosts/${hostname}
   ]
-  ++ nixpkgs.lib.optional (!headless) inputs.niri.nixosModules.niri
+  # Steam (Millennium) and niri only with a display
+  ++ nixpkgs.lib.optionals (!headless)
+  [
+    { nixpkgs.overlays = [ inputs.millennium.overlays.default ]; }
+    inputs.niri.nixosModules.niri
+  ]
   ++ [
     inputs.stylix.nixosModules.stylix
     home-manager.nixosModules.home-manager
