@@ -7,7 +7,7 @@
 }:
 
 let
-  c = config.lib.stylix.colors.withHashtag;
+  p = config.themes.palette;
   waypaper = lib.getExe pkgs.waypaper;
   awww = config.services.awww.package;
 in
@@ -25,7 +25,7 @@ in
       folder = "~/Pictures/Wallpapers";
       fill = "fill";
       sort = "name";
-      color = c.base00;
+      color = p.background;
       subfolders = true;
       show_hidden = false;
       show_path_in_tooltip = true;

@@ -6,16 +6,16 @@
   ...
 }:
 
-# hyprlock over the Stylix wallpaper; colours from Stylix.
+# hyprlock over the Stylix wallpaper; colours from the palette.
 let
-  c = config.lib.stylix.colors;
-  rgb = color: "rgb(${color})";
+  p = config.themes.palette;
+  rgb = color: "rgb(${lib.removePrefix "#" color})";
   font = config.stylix.fonts.monospace.name;
   hyprlock = lib.getExe config.programs.hyprlock.package;
   pidof = lib.getExe' pkgs.procps "pidof";
   loginctl = lib.getExe' pkgs.systemd "loginctl";
   niri = lib.getExe osConfig.programs.niri.package;
-  # recoloured by Stylix
+  # the stock blue snowflake; the ring around it carries the accent
   avatar = "${pkgs.nixos-icons}/share/icons/hicolor/256x256/apps/nix-snowflake.png";
 in
 {
@@ -36,7 +36,7 @@ in
       [
         {
           text = "$TIME";
-          color = rgb c.base05;
+          color = rgb p.foreground;
           font_size = 96;
           font_family = "${font} Bold";
           position = "0, 260";
@@ -45,7 +45,7 @@ in
         }
         {
           text = ''cmd[update:60000] date +"%A, %d %B"'';
-          color = rgb c.base04;
+          color = rgb p.subtext;
           font_size = 20;
           font_family = font;
           position = "0, 170";
@@ -54,7 +54,7 @@ in
         }
         {
           text = "Welcome back, $USER";
-          color = rgb c.base05;
+          color = rgb p.foreground;
           font_size = 16;
           font_family = font;
           position = "0, -95";
@@ -70,7 +70,7 @@ in
           size = 120;
           rounding = -1;
           border_size = 3;
-          border_color = rgb c.base0E;
+          border_color = rgb p.accent;
           position = "0, 10";
           halign = "center";
           valign = "center";

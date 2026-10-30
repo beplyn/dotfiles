@@ -1,10 +1,11 @@
 {
   config,
   lib,
+  subst,
   ...
 }:
 let
-  c = config.lib.stylix.colors.withHashtag;
+  p = config.themes.palette;
   transparent = lib.mkForce "NONE";
 in
 {
@@ -21,41 +22,41 @@ in
     highlightOverride =
     {
       # --- Comments ---
-      "@comment".fg = c.base03;
+      "@comment".fg = p.muted;
       "@comment".italic = true;
-      "@punctuation.delimiter".fg = c.base04;
-      "@punctuation.bracket".fg = c.base0C;
-      "@punctuation.special".fg = c.base0E;
+      "@punctuation.delimiter".fg = p.subtext;
+      "@punctuation.bracket".fg = p.cyan;
+      "@punctuation.special".fg = p.purple;
 
       # --- Identifiers ---
-      "@variable".fg = c.base05;
-      "@variable.builtin".fg = c.base0E;
+      "@variable".fg = p.foreground;
+      "@variable.builtin".fg = p.purple;
       "@variable.builtin".bold = true;
-      "@variable.parameter".fg = c.base08;
-      "@variable.member".fg = c.base0D;
-      "@property".fg = c.base0A;
-      "@field".fg = c.base0A;
+      "@variable.parameter".fg = p.red;
+      "@variable.member".fg = p.blue;
+      "@property".fg = p.yellow;
+      "@field".fg = p.yellow;
 
       # --- Keywords ---
-      "@keyword".fg = c.base0E;
+      "@keyword".fg = p.purple;
       "@keyword".bold = true;
-      "@operator".fg = c.base0E;
-      "@type".fg = c.base0A;
-      "@function".fg = c.base0D;
-      "@function.builtin".fg = c.base0D;
+      "@operator".fg = p.purple;
+      "@type".fg = p.yellow;
+      "@function".fg = p.blue;
+      "@function.builtin".fg = p.blue;
       "@function.builtin".bold = true;
 
       # --- Literals ---
-      "@string".fg = c.base0B;
-      "@string.special".fg = c.base0C;
-      "@string.special.path".fg = c.base0C;
-      "@string.special.uri".fg = c.base0C;
-      "@escape".fg = c.base08;
-      "@boolean".fg = c.base09;
+      "@string".fg = p.green;
+      "@string.special".fg = p.cyan;
+      "@string.special.path".fg = p.cyan;
+      "@string.special.uri".fg = p.cyan;
+      "@escape".fg = p.red;
+      "@boolean".fg = p.orange;
       "@boolean".bold = true;
-      "@number".fg = c.base09;
-      "@constant".fg = c.base09;
-      "@embedded".fg = c.base0A;
+      "@number".fg = p.orange;
+      "@constant".fg = p.orange;
+      "@embedded".fg = p.yellow;
 
       # --- Transparency ---
       Normal =
@@ -76,14 +77,14 @@ in
       FloatBorder =
       {
         bg = transparent;
-        fg = c.base03;
+        fg = p.muted;
       };
       FoldColumn.bg = transparent;
       EndOfBuffer.bg = transparent;
       WinSeparator =
       {
         bg = transparent;
-        fg = c.base02;
+        fg = p.surface;
       };
 
       # --- Treesitter context ---
@@ -91,7 +92,7 @@ in
       TreesitterContextLineNumber =
       {
         bg = transparent;
-        fg = c.base04;
+        fg = p.subtext;
       };
       TreesitterContextBottom =
       {
@@ -103,17 +104,17 @@ in
       GitSignsAddNr =
       {
         bg = transparent;
-        fg = c.base0B;
+        fg = p.green;
       };
       GitSignsChangeNr =
       {
         bg = transparent;
-        fg = c.base0D;
+        fg = p.blue;
       };
       GitSignsDeleteNr =
       {
         bg = transparent;
-        fg = c.base08;
+        fg = p.red;
       };
       SignColumn.bg = transparent;
       LineNr.bg = transparent;
@@ -123,7 +124,7 @@ in
       CursorLineNr =
       {
         bg = transparent;
-        fg = c.base0E;
+        fg = p.purple;
         bold = true;
       };
       CursorLineSign.bg = transparent;
@@ -133,7 +134,7 @@ in
       TabLineSel =
       {
         bg = transparent;
-        fg = c.base05;
+        fg = p.foreground;
       };
 
       BufferLineDevIconNix.bg = transparent;
@@ -143,7 +144,7 @@ in
       DevIconNix =
       {
         bg = transparent;
-        fg = c.base0D;
+        fg = p.blue;
       };
     };
     autoCmd =
@@ -157,27 +158,7 @@ in
         pattern = [ "*" ];
         callback =
         {
-          __raw =
-            builtins.replaceStrings
-              [
-                "@base00@"
-                "@base01@"
-                "@base04@"
-                "@base05@"
-                "@base0C@"
-                "@base0D@"
-                "@base0E@"
-              ]
-              [
-                c.base00
-                c.base01
-                c.base04
-                c.base05
-                c.base0C
-                c.base0D
-                c.base0E
-              ]
-              (builtins.readFile ./lua/highlights.lua);
+          __raw = subst p (builtins.readFile ./lua/highlights.lua);
         };
       }
     ];
@@ -233,7 +214,7 @@ in
           tab_selected =
           {
             bg = "NONE";
-            fg = c.base05;
+            fg = p.foreground;
           };
           separator_selected =
           {
@@ -248,7 +229,7 @@ in
           buffer_selected =
           {
             bg = "NONE";
-            fg = c.base05;
+            fg = p.foreground;
             bold = true;
           };
           buffer_visible.bg = "NONE";
