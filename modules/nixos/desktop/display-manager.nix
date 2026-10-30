@@ -1,27 +1,22 @@
-{ pkgs, ... }:
+{ lib, ... }:
 
+# greetd running ReGreet inside cage. Stylix's regreet target supplies the
+# GTK theme, colours, font, cursor and icons, so only layout lives here.
 {
-  services.displayManager.ly =
+  services.displayManager.regreet =
   {
     enable = true;
-    package = pkgs.ly;
     settings =
     {
-      animation = "none";
-
-      clock = "%c";
-      box_style = 2;
-      bigclock = "en";
-
-      bg = 0;
-      fg = 7;
-      border_fg = 6;
-      input_fg = 4;
-      hide_borders = false;
-      blank_box = false;
-      clear_password = true;
-
-      box_title = "⚞^. .^⚟";
+      # Stylix derives this from polarity, which is unset; every theme we
+      # ship is dark.
+      GTK.application_prefer_dark_theme = lib.mkForce true;
+      appearance.greeting_msg = "⚞^. .^⚟";
+      widget.clock =
+      {
+        format = "%a, %d %b  %H:%M";
+        resolution = "1s";
+      };
     };
   };
 }
