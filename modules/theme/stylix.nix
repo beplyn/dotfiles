@@ -46,10 +46,10 @@ in
     ];
     fonts.monospace =
     {
-      name = "Maple Mono";
-      package = pkgs.maple-mono.truetype;
+      name = "Maple Mono NF";
+      package = pkgs.maple-mono.NF;
     };
-    opacity.terminal = 0.75;
+    opacity.terminal = 0.80;
     # waybar, quickshell, walker
     opacity.desktop = 0.82;
     cursor = lib.mkIf (!headless)

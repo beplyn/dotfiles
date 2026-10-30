@@ -1,33 +1,23 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 
+# font and opacity come from Stylix (fonts.monospace, opacity.terminal)
 {
-  stylix.targets.kitty.enable = true;
-
   programs.kitty =
   {
     enable = true;
     enableGitIntegration = true;
     shellIntegration.enableFishIntegration = true;
 
-    font =
-    {
-      name = lib.mkForce "Maple Mono NF";
-      package = lib.mkForce pkgs.maple-mono.NF;
-      size = 12;
-    };
-
     settings =
     {
       bold_font = "auto";
 
       # base00 background; blur comes from niri
-      background = lib.mkForce "#${config.lib.stylix.colors.base00}";
-      background_opacity = lib.mkForce "0.80";
+      background = lib.mkForce config.themes.palette.background;
       dynamic_background_opacity = true;
 
       cursor_shape = "underline";
