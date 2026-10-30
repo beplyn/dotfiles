@@ -14,6 +14,14 @@ let
     gruvbox = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
     nord = "${pkgs.base16-schemes}/share/themes/nord.yaml";
   };
+
+  # Papirus folder colour closest to each scheme's base0E accent.
+  folderColors =
+  {
+    catppuccin = "violet";
+    gruvbox = "pink";
+    nord = "nordic";
+  };
 in
 {
   stylix =
@@ -49,6 +57,13 @@ in
       package = pkgs.bibata-cursors;
       name = "Bibata-Modern-Classic";
       size = 24;
+    };
+    icons = lib.mkIf (!headless)
+    {
+      enable = true;
+      package = pkgs.papirus-icon-theme.override { color = folderColors.${themeName}; };
+      dark = "Papirus-Dark";
+      light = "Papirus-Light";
     };
   };
 
