@@ -30,9 +30,9 @@ in
           widgets = "Fusion";
           colors =
           {
-            AlternateBase = p.surfaceBright;
+            AlternateBase = p.muted;
             Base = p.background;
-            BrightText = p.text;
+            BrightText = p.foreground;
             Button = p.surface;
             ButtonText = p.foreground;
             Highlight = p.accent;
@@ -42,7 +42,7 @@ in
             ToolTipBase = p.background;
             ToolTipText = p.foreground;
             Window = p.background;
-            WindowText = p.text;
+            WindowText = p.foreground;
             fadeAmount = 0.5;
             fadeColor = p.muted;
           };

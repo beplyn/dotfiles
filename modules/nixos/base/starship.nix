@@ -12,7 +12,6 @@ let
       shulker = "";
     }
     .${config.networking.hostName};
-  palette = config.themes.palette;
 in
 
 {
@@ -29,24 +28,13 @@ in
       add_newline = true;
       palette = "theme";
 
-      palettes.theme =
-      {
-        mauve = palette.accent;
-        red = palette.error;
-        yellow = palette.warning;
-        green = palette.success;
-        inherit (palette) blue purple text;
-        teal = palette.aqua;
-        overlay0 = palette.muted;
-        surface2 = palette.surfaceBright;
-        surface1 = palette.surface;
-        crust = palette.background;
-      };
+      # the shared colour names, so styles read fg:accent, bg:surface
+      palettes.theme = config.themes.palette;
 
       directory =
       {
-        format = "[](fg:surface1)[ $path ]($style)[](fg:surface1) ";
-        style = "bg:surface1 fg:blue";
+        format = "[](fg:surface)[ $path ]($style)[](fg:surface) ";
+        style = "bg:surface fg:blue";
         truncation_symbol = "󰝰 …/";
         home_symbol = "";
         read_only = " ";
@@ -61,53 +49,53 @@ in
 
       git_branch =
       {
-        format = "[](fg:surface1)[ $symbol $branch ]($style)[](fg:surface1) ";
-        style = "bg:surface1 fg:teal";
+        format = "[](fg:surface)[ $symbol $branch ]($style)[](fg:surface) ";
+        style = "bg:surface fg:cyan";
         symbol = "";
       };
 
       git_status =
       {
-        style = "bg:surface1 fg:red";
-        format = "[](fg:surface1)([$all_status$ahead_behind]($style))[](fg:surface1) ";
-        up_to_date = "[ ✔ ](bg:surface1 fg:green)";
-        untracked = "[󱜺\\($count\\)](bg:surface1 fg:yellow)";
-        stashed = "[\\$](bg:surface1 fg:mauve)";
-        modified = "[\\($count\\)](bg:surface1 fg:yellow)";
-        renamed = "[󱟀\\($count\\)](bg:surface1 fg:mauve)";
-        deleted = "[\\($count\\)](bg:surface1 fg:red)";
-        staged = "[\\($count\\)](bg:surface1 fg:green)";
-        ahead = "[󰜷\\($count\\)](bg:surface1 fg:teal)";
-        diverged = "󰹺[\\[](bg:surface1 fg:mauve)[⇡\\($ahead_count\\)](bg:surface1 fg:teal)[⇣\\($behind_count\\)](bg:surface1 fg:red)[\\]](bg:surface1 fg:mauve)";
-        behind = "[󰜮\\($count\\)](bg:surface1 fg:red)";
+        style = "bg:surface fg:red";
+        format = "[](fg:surface)([$all_status$ahead_behind]($style))[](fg:surface) ";
+        up_to_date = "[ ✔ ](bg:surface fg:green)";
+        untracked = "[󱜺\\($count\\)](bg:surface fg:yellow)";
+        stashed = "[\\$](bg:surface fg:accent)";
+        modified = "[\\($count\\)](bg:surface fg:yellow)";
+        renamed = "[󱟀\\($count\\)](bg:surface fg:accent)";
+        deleted = "[\\($count\\)](bg:surface fg:red)";
+        staged = "[\\($count\\)](bg:surface fg:green)";
+        ahead = "[󰜷\\($count\\)](bg:surface fg:cyan)";
+        diverged = "󰹺[\\[](bg:surface fg:accent)[⇡\\($ahead_count\\)](bg:surface fg:cyan)[⇣\\($behind_count\\)](bg:surface fg:red)[\\]](bg:surface fg:accent)";
+        behind = "[󰜮\\($count\\)](bg:surface fg:red)";
       };
 
       nix_shell =
       {
-        format = "[](fg:surface1)[ $symbol$state ]($style)[](fg:surface1) ";
+        format = "[](fg:surface)[ $symbol$state ]($style)[](fg:surface) ";
         symbol = " ";
-        style = "bg:surface1 fg:blue";
+        style = "bg:surface fg:blue";
       };
 
       hostname =
       {
-        format = "[](fg:surface1)[ ${hostIcon} ]($style)[](fg:surface1) ";
+        format = "[](fg:surface)[ ${hostIcon} ]($style)[](fg:surface) ";
         ssh_only = false;
-        style = "bg:surface1 fg:blue";
+        style = "bg:surface fg:blue";
       };
 
       cmd_duration =
       {
         min_time = 1000;
-        format = "[](fg:surface1)[  $duration ]($style)[](fg:surface1)";
-        style = "bg:surface1 fg:yellow";
+        format = "[](fg:surface)[  $duration ]($style)[](fg:surface)";
+        style = "bg:surface fg:yellow";
       };
 
       time =
       {
         disabled = false;
-        format = " [](fg:surface1)[ $time 󱑃 ]($style)[](fg:surface1)";
-        style = "bg:surface1 fg:mauve";
+        format = " [](fg:surface)[ $time 󱑃 ]($style)[](fg:surface)";
+        style = "bg:surface fg:accent";
         time_format = "%I:%M%P";
         use_12hr = true;
       };

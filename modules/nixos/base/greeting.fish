@@ -39,7 +39,7 @@ function __greeting
     end
   end
   test (count $parts) -gt 0
-  and echo "  $(set_color @aqua@)󱄅$(set_color normal)  $(string join -- $dot $parts)"
+  and echo "  $(set_color @cyan@)󱄅$(set_color normal)  $(string join -- $dot $parts)"
 
   # warnings, if any
   set -l warn

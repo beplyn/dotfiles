@@ -1,6 +1,6 @@
 /*
  * Waybar as a single floating capsule. default.nix prepends the Stylix
- * palette (@base, @surface, @accent, ...), @glass, fonts and the corner
+ * palette (@background, @surface, @accent, ...), @glass, fonts and the corner
  * radius, so nothing here hardcodes a color or a font.
  *
  * Inside the capsule, modules are flat labels that light up as small
@@ -16,7 +16,7 @@
 
 window#waybar {
   background: transparent;
-  color: @text;
+  color: @foreground;
 }
 
 /* The capsule. niri blurs behind it with the same radius (kdl.nix). */
@@ -99,29 +99,29 @@ window#waybar > box {
   padding: 0 4px;
   margin: 3px 1px;
   border-radius: 6px;
-  color: alpha(@text, 0.55);
+  color: alpha(@foreground, 0.55);
   background: transparent;
   transition: all 250ms cubic-bezier(0, 0.5, 0.35, 1);
 }
 
 #workspaces button.empty {
-  color: alpha(@text, 0.25);
+  color: alpha(@foreground, 0.25);
 }
 
 #workspaces button:hover {
   background: alpha(@accent, 0.18);
-  color: @text;
+  color: @foreground;
 }
 
 #workspaces button.active {
   min-width: 34px;
   background: @accent;
-  color: @base;
+  color: @background;
 }
 
 #workspaces button.urgent {
   background: @red;
-  color: @base;
+  color: @background;
 }
 
 #window {
@@ -139,7 +139,7 @@ window#waybar > box {
 }
 
 #clock {
-  color: @text;
+  color: @foreground;
   font-weight: bold;
 }
 
@@ -203,7 +203,7 @@ window#waybar > box {
 #network.disabled,
 #bluetooth.disabled,
 #bluetooth.off {
-  color: @overlay;
+  color: @muted;
 }
 
 #wireplumber {
@@ -211,7 +211,7 @@ window#waybar > box {
 }
 
 #wireplumber.muted {
-  color: @overlay;
+  color: @muted;
 }
 
 #battery {
@@ -252,7 +252,7 @@ window#waybar > box {
 }
 
 #custom-notifications {
-  color: @text;
+  color: @foreground;
 }
 
 #custom-notifications.notification {
@@ -260,14 +260,14 @@ window#waybar > box {
 }
 
 #custom-notifications.dnd {
-  color: @overlay;
+  color: @muted;
 }
 
 /* The panel trigger: the one solid pill in the bar. */
 #custom-control {
   margin-left: 2px;
   background: @accent;
-  color: @base;
+  color: @background;
 }
 
 #custom-control:hover {
@@ -277,17 +277,17 @@ window#waybar > box {
 /* --- popups ----------------------------------------------------------- */
 
 tooltip {
-  background: alpha(@base, 0.95);
+  background: alpha(@background, 0.95);
   border: 1px solid @surface;
 }
 
 tooltip label {
-  color: @text;
+  color: @foreground;
   padding: 2px 4px;
 }
 
 menu {
-  background: alpha(@base, 0.95);
+  background: alpha(@background, 0.95);
   border: 1px solid @surface;
   padding: 4px;
 }
@@ -295,10 +295,10 @@ menu {
 menuitem {
   padding: 4px 8px;
   border-radius: 6px;
-  color: @text;
+  color: @foreground;
 }
 
 menuitem:hover {
   background: @accent;
-  color: @base;
+  color: @background;
 }

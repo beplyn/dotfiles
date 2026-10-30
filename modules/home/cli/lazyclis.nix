@@ -32,7 +32,7 @@ in
           inactiveBorderColor = [ p.muted ];
           searchingActiveBorderColor =
           [
-            p.aqua
+            p.cyan
             "bold"
           ];
           optionsTextColor = [ p.blue ];

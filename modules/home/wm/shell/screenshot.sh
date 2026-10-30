@@ -6,10 +6,10 @@ mkdir -p "$dir"
 case "$mode" in
   area)
     geometry="$(slurp -d \
-      -b '@base00@66' \
-      -c '@base0E@ff' \
-      -s '@base0E@22' \
-      -B '@base00@00' \
+      -b '@background@66' \
+      -c '@accent@ff' \
+      -s '@accent@22' \
+      -B '@background@00' \
       -w 2)" || exit 0
     grim -g "$geometry" "$file"
     ;;

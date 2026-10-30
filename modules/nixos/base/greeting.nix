@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  subst,
   ...
 }:
 
@@ -15,10 +16,5 @@ in
 {
   programs.fish.shellAbbrs.ff = "fastfetch";
 
-  programs.fish.interactiveShellInit = lib.mkAfter (
-    lib.replaceStrings
-      (map (n: "@${n}@") (lib.attrNames vars))
-      (lib.attrValues vars)
-      (builtins.readFile ./greeting.fish)
-  );
+  programs.fish.interactiveShellInit = lib.mkAfter (subst vars (builtins.readFile ./greeting.fish));
 }

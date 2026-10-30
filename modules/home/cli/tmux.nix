@@ -18,7 +18,7 @@ in
     extraConfig = ''
       set -g status-style "bg=${p.background},fg=${p.foreground}"
       set -g message-style "bg=${p.surface},fg=${p.foreground}"
-      set -g pane-border-style "fg=${p.surfaceBright}"
+      set -g pane-border-style "fg=${p.muted}"
       set -g pane-active-border-style "fg=${p.accent}"
       set -g status-left "#[fg=${p.background},bg=${p.accent},bold] #S #[fg=${p.accent},bg=${p.background}]"
       set -g status-right "#[fg=${p.muted}]%Y-%m-%d #[fg=${p.accent}]#[fg=${p.background},bg=${p.accent},bold] %H:%M "

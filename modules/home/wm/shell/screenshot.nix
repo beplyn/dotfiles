@@ -1,13 +1,13 @@
 {
   config,
-  lib,
   pkgs,
+  subst,
   ...
 }:
 
 let
   t = config.themes.shell;
-  c = config.lib.stylix.colors.withHashtag;
+  p = config.themes.palette;
 
   # screenshot [area|output]: save, copy, notify with edit/open actions
   screenshot = pkgs.writeShellApplication
@@ -23,10 +23,7 @@ let
       xdg-utils
       jq
     ];
-    text = lib.replaceStrings
-      [ "@base00@" "@base0E@" ]
-      [ c.base00 c.base0E ]
-      (builtins.readFile ./screenshot.sh);
+    text = subst { inherit (p) background accent; } (builtins.readFile ./screenshot.sh);
   };
 in
 {
@@ -49,13 +46,13 @@ in
     font.family = config.stylix.fonts.monospace.name;
     color-palette.palette =
     [
-      c.base0E
-      c.base08
-      c.base09
-      c.base0A
-      c.base0B
-      c.base0D
-      c.base05
+      p.accent
+      p.red
+      p.orange
+      p.yellow
+      p.green
+      p.blue
+      p.foreground
     ];
   };
 }
