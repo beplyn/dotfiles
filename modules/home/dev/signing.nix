@@ -1,6 +1,6 @@
 { pkgs, ... }:
 
-# per-host GPG signing and SSH keys come from `rebuild` (needs a terminal); public halves in keys/
+# per-host GPG signing and SSH keys come from `rebuild` (needs a terminal) and stay out of the repo
 {
   programs.gpg.enable = true;
 
