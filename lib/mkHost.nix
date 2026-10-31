@@ -26,7 +26,6 @@ let
       headless
       ;
     subst = import ./subst.nix { inherit (nixpkgs) lib; };
-    keys = import ../keys { inherit (nixpkgs) lib; };
   };
 in
 nixpkgs.lib.nixosSystem {
