@@ -9,6 +9,13 @@ if [ "$(id -un)" != "@username@" ]; then
   exit 1
 fi
 
+# an expired key is replaced, not renewed
+for fpr in $(gpg --with-colons --list-secret-keys "=$uid" 2>/dev/null \
+    | awk -F: '$1 == "sec" { dead = ($2 == "e") } $1 == "fpr" && dead { print $10; dead = 0 }'); do
+  echo "GPG key $fpr for $uid expired, replacing it."
+  gpg --batch --yes --delete-secret-and-public-key "$fpr"
+done
+
 if ! gpg --list-secret-keys "=$uid" >/dev/null 2>&1; then
   echo "No GPG signing key for $uid, generating one."
   while true; do
@@ -27,11 +34,11 @@ if ! gpg --list-secret-keys "=$uid" >/dev/null 2>&1; then
   done
   if [ -z "$pass" ]; then
     gpg --batch --pinentry-mode loopback --passphrase '' \
-      --quick-generate-key "$uid" ed25519 sign 0
+      --quick-generate-key "$uid" ed25519 sign 6m
   else
     # via stdin, keeps it out of argv
     printf '%s' "$pass" | gpg --batch --pinentry-mode loopback --passphrase-fd 0 \
-      --quick-generate-key "$uid" ed25519 sign 0
+      --quick-generate-key "$uid" ed25519 sign 6m
   fi
   unset pass pass2 insecure
   echo "Upload the output of \`gpg --armor --export '=$uid'\` to @forgejoHost@ and GitLab."
