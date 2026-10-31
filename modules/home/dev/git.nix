@@ -1,6 +1,7 @@
 {
   username,
   email,
+  osConfig,
   forgejoHost,
   ...
 }:
@@ -35,7 +36,8 @@
     };
     signing =
     {
-      key = email;
+      # exact uid, so only this host's key (from `rebuild`) can match
+      key = "=${username} (${osConfig.networking.hostName}) <${email}>";
       signByDefault = true;
     };
   };

@@ -1,6 +1,6 @@
 { pkgs, ... }:
 
-# GPG signing key comes from `rebuild` (needs a terminal); SSH keys: cli/ssh.nix
+# per-host GPG signing and SSH keys come from `rebuild` (needs a terminal); public halves in keys/
 {
   programs.gpg.enable = true;
 
