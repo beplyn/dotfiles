@@ -333,7 +333,7 @@ in
     # palette, glass, radius, fonts; layout in style.css
     style = ''
       ${t.css}
-      @define-color glass alpha(@base, ${toString (t.glass - 0.17)});
+      @define-color glass alpha(@background, ${toString (t.glass - 0.17)});
 
       * {
         font-family: ${t.font};
