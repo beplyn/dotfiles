@@ -6,7 +6,7 @@
   ...
 }:
 
-# hyprlock over the Stylix wallpaper; colours from the palette.
+# hyprlock over wallpaper-pick's wallpaper; colours from the palette.
 let
   p = config.themes.palette;
   rgb = color: "rgb(${lib.removePrefix "#" color})";
@@ -31,6 +31,15 @@ in
       };
 
       animations.enabled = true;
+
+      # set by wallpaper-pick; hyprlock falls back to the colour if missing
+      background =
+      {
+        path = lib.mkForce "${config.xdg.cacheHome}/wallpaper/current.png";
+        # slight blur, like the greeter
+        blur_passes = 2;
+        blur_size = 4;
+      };
 
       label =
       [
