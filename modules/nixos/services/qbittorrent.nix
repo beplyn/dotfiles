@@ -5,16 +5,19 @@
   ...
 }:
 
+let
+  port = 8090;
+in
 {
   options.qbittorrent =
   {
-    enable = lib.mkEnableOption "qBittorrent (headless, web UI on port 8090)";
+    enable = lib.mkEnableOption "qBittorrent (headless, web UI on port ${toString port})";
 
     openWebUI = lib.mkOption
     {
       type = lib.types.bool;
       default = true;
-      description = "Open the qBittorrent web UI port (8090) in the firewall.";
+      description = "Open the qBittorrent web UI port (${toString port}) in the firewall.";
     };
   };
 
@@ -47,11 +50,11 @@
         ExecStart = lib.mkForce
         [
           ""
-          "${pkgs.qbittorrent-nox}/bin/qbittorrent-nox --webui-port=8090"
+          "${pkgs.qbittorrent-nox}/bin/qbittorrent-nox --webui-port=${toString port}"
         ];
       };
     };
 
-    networking.firewall.allowedTCPPorts = lib.mkIf config.qbittorrent.openWebUI [ 8090 ];
+    networking.firewall.allowedTCPPorts = lib.mkIf config.qbittorrent.openWebUI [ port ];
   };
 }
