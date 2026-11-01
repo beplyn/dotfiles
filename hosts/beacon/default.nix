@@ -8,6 +8,8 @@
   encryption.enable = false;
   services.openssh.enable = true;
 
+  environment.systemPackages = [ pkgs.kitty.terminfo ];
+
   # wake-on-lan (magic packet) on every wired NIC; also needs WoL enabled in the BIOS
   services.udev.extraRules = ''
     ACTION=="add", SUBSYSTEM=="net", KERNEL=="en*", RUN+="${pkgs.ethtool}/bin/ethtool -s $name wol g"
