@@ -8,6 +8,7 @@ let
   Mod = k: "Mod+${k}";
   ModShift = k: "Mod+Shift+${k}";
   ModCtrl = k: "Mod+Ctrl+${k}";
+  ModAlt = k: "Mod+Alt+${k}";
 
   kitty = lib.getExe config.programs.kitty.package;
   walker = lib.getExe config.services.walker.package;
@@ -73,11 +74,15 @@ in
       "screenshot"
       "area"
     ];
-    ${ModShift "S"} = spawn "Screenshot area"
-    [
-      "screenshot"
-      "area"
-    ];
+    # same as Print, so hidden
+    ${ModShift "S"} = hide
+    {
+      spawn =
+      [
+        "screenshot"
+        "area"
+      ];
+    };
     "Shift+Print" = spawn "Screenshot screen"
     [
       "screenshot"
@@ -87,7 +92,7 @@ in
     # --- session ----------------------------------------------------------
     ${Mod "Q"} = show "Close window" { close-window = [ ]; } // { repeat = false; };
     ${ModShift "E"} = show "Quit niri" { quit = [ ]; };
-    "Mod+Alt+L" = spawn "Lock screen" [ loginctl "lock-session" ];
+    ${ModAlt "L"} = spawn "Lock screen" [ loginctl "lock-session" ];
     ${Mod "X"} = spawn "Power menu" (ipc "panels" "toggle" ++ [ "power" ]);
     ${ModShift "Slash"} = show "Show hotkeys" { show-hotkey-overlay = [ ]; };
     ${Mod "Tab"} = show "Overview" { toggle-overview = [ ]; } // { repeat = false; };
@@ -95,7 +100,7 @@ in
     # --- window sizing ----------------------------------------------------
     ${Mod "F"} = show "Maximize column" { maximize-column = [ ]; };
     ${ModShift "F"} = show "Fullscreen window" { fullscreen-window = [ ]; };
-    "Mod+Alt+X" = show "Toggle floating" { toggle-window-floating = [ ]; };
+    ${ModAlt "X"} = show "Toggle floating" { toggle-window-floating = [ ]; };
     ${Mod "R"} = show "Cycle column width" { switch-preset-column-width = [ ]; };
     # "+" is bound on Equal; other variants hidden
     ${Mod "Minus"} = show "Shrink column" { set-column-width = "-10%"; };
