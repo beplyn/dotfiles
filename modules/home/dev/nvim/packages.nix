@@ -1,19 +1,10 @@
 { pkgs, ... }:
 
 {
+  # telescope; the LSP servers come with lsp.nix
   programs.nixvim.extraPackages = with pkgs;
   [
     fd
-    clang-tools
-    rust-analyzer
-    rustfmt
-    zls
-    fish-lsp
-    bash-language-server
-    csharp-ls
-    gopls
-    haskell-language-server
-    marksman
     ripgrep
   ];
 }
