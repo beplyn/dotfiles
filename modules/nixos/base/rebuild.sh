@@ -75,9 +75,14 @@ sudo nixos-rebuild switch --flake "$flake#@hostName@-$theme"
 if command -v wallpaper-pick >/dev/null; then
   if wallpaper-pick; then
     # blurred copy for the greeter: it can't read ~/.cache and has no blur of its own
-    magick "$HOME/.cache/wallpaper/current.png" -resize 1920x1080^ -blur 0x8 png24:- \
+    magick "$HOME/.cache/wallpaper/current.png" -resize 1920x1080^ -filter Gaussian -blur 0x20 -level 0%,100%,0.85 png24:- \
       | sudo install -Dm644 /dev/stdin /var/lib/wallpaper/current.png
   else
     echo "wallpaper-pick failed, keeping the current wallpaper" >&2
   fi
+fi
+
+# ~/.pfp (or the snowflake) for the greeter, which can't read homes
+if command -v pfp >/dev/null && pfp; then
+  sudo install -Dm644 "$HOME/.cache/pfp.png" /var/lib/AccountsService/icons/@username@
 fi

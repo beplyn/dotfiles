@@ -15,10 +15,28 @@ let
   pidof = lib.getExe' pkgs.procps "pidof";
   loginctl = lib.getExe' pkgs.systemd "loginctl";
   niri = lib.getExe osConfig.programs.niri.package;
-  # the stock blue snowflake; the ring around it carries the accent
-  avatar = "${pkgs.nixos-icons}/share/icons/hicolor/256x256/apps/nix-snowflake.png";
+  avatar = "${config.xdg.cacheHome}/pfp.png";
+
+  # ~/.pfp in any format ImageMagick reads (first frame of a gif), square-cropped
+  # to a png for hyprlock; the stock blue snowflake if it's missing or unreadable
+  pfp = pkgs.writeShellApplication
+  {
+    name = "pfp";
+    runtimeInputs = [ pkgs.imagemagick pkgs.coreutils ];
+    text = ''
+      mkdir -p "$(dirname "${avatar}")"
+      tmp="$(mktemp "${avatar}.XXXXXX")"
+      if ! magick "$HOME/.pfp[0]" -resize 256x256^ -gravity center -extent 256x256 "png:$tmp" 2>/dev/null; then
+        cp -f ${pkgs.nixos-icons}/share/icons/hicolor/256x256/apps/nix-snowflake.png "$tmp"
+      fi
+      mv -f "$tmp" "${avatar}"
+    '';
+  };
 in
 {
+  # rebuild also runs it, for the greeter's copy
+  home.packages = [ pfp ];
+
   programs.hyprlock =
   {
     enable = true;
@@ -114,7 +132,8 @@ in
     {
       general =
       {
-        lock_cmd = "${pidof} hyprlock || ${hyprlock}";
+        # pfp re-renders first, so a changed ~/.pfp shows on the next lock
+        lock_cmd = "${pidof} hyprlock || { ${lib.getExe pfp}; ${hyprlock}; }";
         before_sleep_cmd = "${loginctl} lock-session";
         after_sleep_cmd = "${niri} msg action power-on-monitors";
         inhibit_sleep = 3;
