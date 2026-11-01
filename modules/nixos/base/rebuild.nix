@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   inputs,
   subst,
@@ -7,11 +8,12 @@
   email,
   forgejoHost,
   themeName,
+  headless,
   ...
 }:
 
 let
-  # rebuild [theme]: prompts for missing secrets, then switches to <host>-<theme>
+  # rebuild [theme]: prompts for missing secrets and ~/.pfp, then switches to <host>-<theme>
   rebuild = pkgs.writeShellApplication
   {
     name = "rebuild";
@@ -27,6 +29,7 @@ let
       {
         inherit username email forgejoHost themeName;
         hostName = config.networking.hostName;
+        desktop = lib.boolToString (!headless);
       }
       (builtins.readFile ./rebuild.sh);
   };

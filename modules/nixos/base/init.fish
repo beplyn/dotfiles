@@ -21,7 +21,7 @@ function __append_fzf
   if test -z "$cmd"
     return
   end
-  if string match -q "*q (fzf)" "$cmd"
+  if string match -q "* (fzf)" "$cmd"
     commandline -r (string replace -r ' \(fzf\)$' "$cmd")
   else if string match -q "* " "$cmd"
     commandline -r "$cmd(fzf)"
