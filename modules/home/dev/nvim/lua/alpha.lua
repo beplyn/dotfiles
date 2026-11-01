@@ -24,7 +24,7 @@ if ok and vim.fn.argc() == 0 then
   vim.api.nvim_set_hl(0, "DashboardRandomLogo", { fg = chosen_color_hex, bold = true })
   vim.api.nvim_set_hl(0, "DashboardHeader", { fg = "@cyan@" })
   vim.api.nvim_set_hl(0, "DashboardCenter", { fg = "@subtext@" })
-  vim.api.nvim_set_hl(0, "DashboardShortcut", { fg = "@purple@" })
+  vim.api.nvim_set_hl(0, "DashboardShortcut", { fg = "@accent@" })
 
   dashboard.section.header.val = random_logo.get_header()
   dashboard.section.header.opts.hl = "DashboardRandomLogo"
