@@ -1,12 +1,6 @@
 #!/usr/bin/env bash
-# Bootstraps a fresh NixOS install from this repo:
-#   1. copies (or clones) the repo to ~/<reponame>
-#   2. asks for the host and theme
-#   3. generates a hardware config for hosts that don't have a real one yet
-#   4. links ~/<reponame> to /etc/nixos and optionally rebuilds
-#
-# A fresh NixOS has no git, so one is pulled from the Nix store on demand.
-# Works when run from a checkout (./install.sh) or piped (curl ... | bash).
+# Fresh NixOS install: repo to ~/<reponame>, pick host and theme, generate
+# hardware config, link /etc/nixos, build. Works from a checkout or `curl | bash`.
 set -euo pipefail
 
 REPO_URL="${REPO_URL:-https://codeberg.org/beplyn/dotfiles.git}"
@@ -119,8 +113,7 @@ hw="$host_dir/hardware.nix"
 
 # --- 3. Hardware config -----------------------------------------------------
 
-# A real hardware config is nixos-generate-config output (compass, shulker);
-# anything else is a placeholder or hand-written tuning without filesystems.
+# real = nixos-generate-config output; else a placeholder or hand tuning
 is_generated() { [[ -f "$1" ]] && grep -q 'Do not modify this file' "$1"; }
 
 regenerate=false
@@ -142,8 +135,7 @@ if $regenerate; then
       cp "$hw" "$hw.bak"
       info "Old config saved to $hw.bak (untracked)"
     elif ! grep -q 'PLACEHOLDER' "$hw"; then
-      # Hand-written settings (e.g. anvil's GPU/zram tuning) are kept and
-      # imported next to the generated file.
+      # keep hand tuning (e.g. anvil's) beside the generated file
       mv "$hw" "$host_dir/hardware-extra.nix"
       sed -i 's|\./hardware\.nix|./hardware.nix ./hardware-extra.nix|' "$host_dir/default.nix"
       git add "$host_dir/hardware-extra.nix"
@@ -151,9 +143,7 @@ if $regenerate; then
     fi
   fi
 
-  # modules/nixos/base/encryption.nix owns the LUKS device as "cryptroot".
-  # With a single LUKS device, hand it to that module (like compass does)
-  # instead of letting the generated config declare it a second time.
+  # a single LUKS device goes to encryption.nix (as cryptroot), not hardware.nix
   mapfile -t luks < <(grep -E '^\s*boot\.initrd\.luks\.devices\.' <<< "$generated" || true)
   sed -i '/^\s*encryption\.\(enable\|device\)\s*=/d' "$host_dir/default.nix"
   if (( ${#luks[@]} == 1 )); then
@@ -191,8 +181,7 @@ user="$(sed -n 's/^\s*username = "\([^"]*\)";.*/\1/p' flake.nix | head -n1)"
 
 target="$host-$theme"
 echo
-# Switching live from the installer's minimal system to the full config
-# fails, so build it, make it the system profile and activate on next boot.
+# switching live from the installer fails; install for the next boot
 built=false
 if confirm "Build $target and install it for the next boot? [Y/n]" y; then
   info "Building $target"

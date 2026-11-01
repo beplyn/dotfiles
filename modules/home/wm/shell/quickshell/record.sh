@@ -1,6 +1,4 @@
-# Screen recorder, ported from hakuspace's record_ctl.sh.
-# Wrapped by writeShellApplication, which supplies the shebang, strict mode
-# and every dependency on PATH.
+# Screen recorder, ported from hakuspace's record_ctl.sh (deps via writeShellApplication).
 
 SAVE_DIR=${SCREENREC_SAVE_DIR:-"$HOME/Videos/Recordings"}
 STATE_DIR="${XDG_RUNTIME_DIR:-/tmp}/haku-record"
@@ -123,8 +121,7 @@ teardown_virtual_audio() {
   rm -f "$AUDIO_MODULES_FILE"
 }
 
-# A fixed graph rate and a silent stream keep the recorded audio in sync
-# when nothing else is playing.
+# fixed rate + silent stream keep audio in sync when nothing plays
 lock_pipewire_rate() {
   pw-metadata -n settings 0 clock.force-rate "$LOCKED_SAMPLE_RATE" >/dev/null 2>&1 || true
   pw-metadata -n settings 0 clock.force-quantum "$LOCKED_QUANTUM" >/dev/null 2>&1 || true
@@ -136,7 +133,7 @@ unlock_pipewire_rate() {
 }
 
 start_keepalive() {
-  pacat --device="$1" --raw --rate=48000 --channels=2 --format=s16le </dev/zero 2>/dev/null &
+  pacat --device="$1" --raw --rate="$LOCKED_SAMPLE_RATE" --channels=2 --format=s16le </dev/zero 2>/dev/null &
   echo $! >"$KEEPALIVE_PID_FILE"
 }
 

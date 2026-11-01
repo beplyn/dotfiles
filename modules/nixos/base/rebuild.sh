@@ -1,5 +1,6 @@
 theme="${1:-@themeName@}"
 flake=/etc/nixos
+cache="${XDG_CACHE_HOME:-$HOME/.cache}"
 # per-host identities, kept in ~/.ssh and the gpg keyring, never in the repo
 uid="@username@ (@hostName@) <@email@>"
 sshKey="$HOME/.ssh/id_ed25519"
@@ -62,27 +63,43 @@ if ! fj -H @forgejoHost@ auth list 2>/dev/null | grep -qF "@forgejoHost@"; then
   unset token
 fi
 
-# new wallpapers join the repo before the build; existing ones are never overwritten
+# copy new wallpapers into the repo, never overwrite
 wallpapers="$HOME/Pictures/Wallpapers"
 if [ -d "$wallpapers" ]; then
   cp -r --update=none "$wallpapers/." "$flake/modules/home/wm/shell/quickshell/wallpapers/"
 fi
 
-git -C "$flake" add .
+# profile picture for hyprlock and the greeter (desktop hosts only)
+if @desktop@; then
+  if [ -e "$HOME/.pfp" ]; then keep="keep the current one"; else keep="snowflake"; fi
+  read -erp "Picture to copy to ~/.pfp (empty: $keep): " pic || pic=
+  pic="${pic/#\~/$HOME}"
+  if [ -n "$pic" ] && ! [ "$pic" -ef "$HOME/.pfp" ]; then
+    if magick identify "${pic}[0]" >/dev/null 2>&1; then
+      cp -f "$pic" "$HOME/.pfp"
+    else
+      echo "$pic is not a readable image, ~/.pfp unchanged" >&2
+    fi
+  fi
+  unset keep pic
+fi
+
+# new files reach the flake; nothing else gets staged
+git -C "$flake" add --intent-to-add .
 sudo nixos-rebuild switch --flake "$flake#@hostName@-$theme"
 
 # new random wallpaper in the theme's colours (desktop hosts only)
 if command -v wallpaper-pick >/dev/null; then
   if wallpaper-pick; then
-    # blurred copy for the greeter: it can't read ~/.cache and has no blur of its own
-    magick "$HOME/.cache/wallpaper/current.png" -resize 1920x1080^ -filter Gaussian -blur 0x20 -level 0%,100%,0.85 png24:- \
+    # blurred copy for the greeter (can't read homes, no blur)
+    magick "$cache/wallpaper/current.png" -resize 1920x1080^ -filter Gaussian -blur 0x20 -level 0%,100%,0.85 png24:- \
       | sudo install -Dm644 /dev/stdin /var/lib/wallpaper/current.png
   else
     echo "wallpaper-pick failed, keeping the current wallpaper" >&2
   fi
 fi
 
-# ~/.pfp (or the snowflake) for the greeter, which can't read homes
+# rendered ~/.pfp (or the snowflake) for the greeter, which can't read homes
 if command -v pfp >/dev/null && pfp; then
-  sudo install -Dm644 "$HOME/.cache/pfp.png" /var/lib/AccountsService/icons/@username@
+  sudo install -Dm644 "$cache/pfp.png" /var/lib/AccountsService/icons/@username@
 fi
