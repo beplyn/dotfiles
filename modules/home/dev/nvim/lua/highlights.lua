@@ -13,20 +13,17 @@ function()
   hl(0, "LineNrAbove", { fg = "@subtext@" })
   hl(0, "LineNrBelow", { fg = "@subtext@" })
 
-  -- 3. Active Line Number: Bright accent with bold styling
-  hl(0, "CursorLineNr", { fg = "@purple@", bold = true })
-
-  -- 4. CursorLine: no fill, so the terminal's opacity shows through
+  -- no cursorline fill: terminal opacity shows through
   hl(0, "CursorLine", {})
 
   -- popup menus
   hl(0, "Pmenu", { bg = "@mantle@", fg = "@foreground@" })
-  hl(0, "PmenuSel", { bg = "@purple@", fg = "@background@", bold = true })
+  hl(0, "PmenuSel", { bg = "@accent@", fg = "@background@", bold = true })
   hl(0, "PmenuSbar", { bg = "@mantle@" })
-  hl(0, "PmenuThumb", { bg = "@purple@" })
-  hl(0, "WildMenu", { bg = "@purple@", fg = "@background@", bold = true })
+  hl(0, "PmenuThumb", { bg = "@accent@" })
+  hl(0, "WildMenu", { bg = "@accent@", fg = "@background@", bold = true })
 
-  -- 6. Floating Windows
-  hl(0, "NormalFloat", { bg = "@mantle@", fg = "@foreground@" })
-  hl(0, "FloatBorder", { fg = "@blue@", bg = "@mantle@" })
+  -- floats: transparent, like the main window
+  hl(0, "NormalFloat", { bg = "NONE", fg = "@foreground@" })
+  hl(0, "FloatBorder", { bg = "NONE", fg = "@blue@" })
 end
