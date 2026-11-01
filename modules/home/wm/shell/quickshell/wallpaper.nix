@@ -23,6 +23,8 @@ let
   # uncoloured sources; git skips an empty folder
   sources = lib.optionalString (builtins.pathExists ./wallpapers) "${./wallpapers}";
   cache = "${config.xdg.cacheHome}/wallpaper";
+  # rebuild copies new ones from here into ./wallpapers
+  folder = "${config.home.homeDirectory}/Pictures/Wallpapers";
 
   # recolor [-o DIR] IMAGE...: one copy per theme
   recolor = pkgs.writeShellApplication
@@ -88,7 +90,7 @@ in
     Settings =
     {
       backend = "awww";
-      folder = "~/Pictures/Wallpapers";
+      inherit folder;
       fill = "fill";
       sort = "name";
       color = p.background;
@@ -128,6 +130,6 @@ in
   };
 
   home.activation.wallpaperDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    run mkdir -p "$HOME/Pictures/Wallpapers"
+    run mkdir -p "${folder}"
   '';
 }
