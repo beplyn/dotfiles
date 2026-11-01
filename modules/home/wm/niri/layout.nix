@@ -12,6 +12,8 @@ in
     layout =
     {
       gaps = 3;
+      # the wallpaper lives in the backdrop (kdl.nix), so let it show through workspaces
+      background-color = "transparent";
 
       preset-column-widths =
       [

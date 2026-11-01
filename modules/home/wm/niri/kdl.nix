@@ -61,6 +61,12 @@ in
           (node "background-effect" [ ] [ (leaf "blur" true) ])
         ])
       ])
+      # wallpaper stays put behind the overview instead of zooming out with each workspace
+      (node "layer-rule" [ ]
+      [
+        (leaf "match" { namespace = "^awww-daemon$"; })
+        (leaf "place-within-backdrop" true)
+      ])
       # quickshell requests its own blur; no xray
       (node "layer-rule" [ ]
       [
