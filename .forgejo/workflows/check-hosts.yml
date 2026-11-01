@@ -7,14 +7,32 @@ on:
   workflow_dispatch:
 
 jobs:
+  hosts:
+    name: list hosts
+    runs-on: codeberg-medium
+    outputs:
+      hosts: ${{ steps.list.outputs.hosts }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      # every directory in hosts/ except common, like flake.nix
+      - name: List hosts
+        id: list
+        shell: bash
+        run: |
+          hosts="$(find hosts -mindepth 1 -maxdepth 1 -type d ! -name common -printf '"%f"\n' | sort | paste -sd,)"
+          echo "hosts=[$hosts]" >> "$GITHUB_OUTPUT"
+
   eval:
     name: eval ${{ matrix.host }}
+    needs: hosts
     runs-on: codeberg-medium
     strategy:
       fail-fast: false
       matrix:
-        # one job per directory in hosts/ (minus common); each evaluates every theme
-        host: [anvil, beacon, compass, shulker]
+        # each job evaluates every theme of its host
+        host: ${{ fromJSON(needs.hosts.outputs.hosts) }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
