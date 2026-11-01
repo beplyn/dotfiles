@@ -20,7 +20,7 @@ Panel {
         Text {
             Layout.fillWidth: true
             text: "Notifications"
-            color: Theme.text
+            color: Theme.foreground
             font.family: Theme.font
             font.pointSize: Theme.popupFontSize + 4
             font.bold: true
@@ -64,7 +64,7 @@ Panel {
             anchors.centerIn: parent
             visible: Notifs.count === 0
             text: Icons.bell + "  All caught up"
-            color: Theme.overlay
+            color: Theme.muted
             font.family: Theme.font
             font.pointSize: Theme.popupFontSize + 1
         }

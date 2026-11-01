@@ -35,7 +35,7 @@ Rectangle {
         anchors.fill: parent
         anchors.bottomMargin: 3
         radius: Theme.radius
-        color: Theme.alpha(Theme.base, popup ? 0.9 : 0.8)
+        color: Theme.alpha(Theme.background, popup ? 0.9 : 0.8)
 
         MouseArea {
             anchors.fill: parent
@@ -98,7 +98,7 @@ Rectangle {
                     Text {
                         anchors.verticalCenter: parent.verticalCenter
                         text: Notifs.age(root.notif?.id)
-                        color: Theme.overlay
+                        color: Theme.muted
                         font.family: Theme.font
                         font.pointSize: Theme.popupFontSize
                     }
@@ -129,7 +129,7 @@ Rectangle {
                 wrapMode: Text.Wrap
                 maximumLineCount: root.popup ? 4 : 6
                 elide: Text.ElideRight
-                color: Theme.text
+                color: Theme.foreground
                 linkColor: Theme.blue
                 font.family: Theme.font
                 font.pointSize: Theme.popupFontSize + 1
@@ -157,7 +157,7 @@ Rectangle {
                             id: label
                             anchors.centerIn: parent
                             text: parent.modelData.text
-                            color: actionHover.containsMouse ? Theme.base : Theme.accent
+                            color: actionHover.containsMouse ? Theme.background : Theme.accent
                             font.family: Theme.font
                             font.pointSize: Theme.popupFontSize
                             font.bold: true

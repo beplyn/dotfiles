@@ -74,7 +74,7 @@ Rectangle {
         anchors.centerIn: parent
         visible: root.player === null
         text: Icons.music + "  Nothing playing"
-        color: Theme.overlay
+        color: Theme.muted
         font.family: Theme.font
         font.pointSize: Theme.popupFontSize + 1
     }
@@ -95,7 +95,7 @@ Rectangle {
             Text {
                 anchors.centerIn: parent
                 text: Icons.music
-                color: Theme.overlay
+                color: Theme.muted
                 font.family: Theme.font
                 font.pointSize: Theme.popupFontSize + 14
             }
@@ -117,7 +117,7 @@ Rectangle {
                 Layout.fillWidth: true
                 text: root.player?.trackTitle || "Unknown track"
                 elide: Text.ElideRight
-                color: Theme.text
+                color: Theme.foreground
                 font.family: Theme.font
                 font.pointSize: Theme.popupFontSize + 2
                 font.bold: true

@@ -70,7 +70,7 @@ Panel {
             Text {
                 anchors.centerIn: parent
                 text: Icons.logo
-                color: Theme.base
+                color: Theme.background
                 font.family: Theme.font
                 font.pointSize: Theme.popupFontSize + 6
             }
@@ -82,7 +82,7 @@ Panel {
 
             Text {
                 text: Quickshell.env("USER") ?? ""
-                color: Theme.text
+                color: Theme.foreground
                 font.family: Theme.font
                 font.pointSize: Theme.popupFontSize + 2
                 font.bold: true
@@ -291,7 +291,7 @@ Panel {
 
                         Text {
                             text: Icons.level(Icons.wifiLevels, entry.modelData.signalStrength * 100)
-                            color: entry.modelData.connected ? Theme.accent : Theme.text
+                            color: entry.modelData.connected ? Theme.accent : Theme.foreground
                             font.family: Theme.font
                             font.pointSize: Theme.popupFontSize + 2
                         }
@@ -299,7 +299,7 @@ Panel {
                             Layout.fillWidth: true
                             text: entry.modelData.name
                             elide: Text.ElideRight
-                            color: entry.modelData.connected ? Theme.accent : Theme.text
+                            color: entry.modelData.connected ? Theme.accent : Theme.foreground
                             font.family: Theme.font
                             font.pointSize: Theme.popupFontSize
                             font.bold: entry.modelData.connected
@@ -336,7 +336,7 @@ Panel {
                     visible: entry.asking
                     implicitHeight: 34
                     radius: Theme.innerRadius - 2
-                    color: Theme.alpha(Theme.base, 0.6)
+                    color: Theme.alpha(Theme.background, 0.6)
                     border.color: psk.activeFocus ? Theme.accent : Theme.surface
                     border.width: 1
 
@@ -347,7 +347,7 @@ Panel {
                         anchors.rightMargin: 10
                         verticalAlignment: TextInput.AlignVCenter
                         echoMode: TextInput.Password
-                        color: Theme.text
+                        color: Theme.foreground
                         font.family: Theme.font
                         font.pointSize: Theme.popupFontSize
                         clip: true
@@ -364,7 +364,7 @@ Panel {
                             anchors.verticalCenter: parent.verticalCenter
                             visible: psk.text === ""
                             text: "Password, then Enter"
-                            color: Theme.overlay
+                            color: Theme.muted
                             font: psk.font
                         }
                     }

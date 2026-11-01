@@ -124,7 +124,7 @@ PanelWindow {
                 Layout.preferredWidth: 38
                 horizontalAlignment: Text.AlignRight
                 text: Math.round(root.value * 100) + "%"
-                color: Theme.text
+                color: Theme.foreground
                 font.family: Theme.font
                 font.pointSize: Theme.popupFontSize
                 font.bold: true
