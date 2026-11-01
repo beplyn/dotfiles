@@ -24,7 +24,7 @@ in
       {
         npm = "@ai-sdk/openai-compatible";
         name = "Ollama (local)";
-        options.baseURL = "http://127.0.0.1:11434/v1";
+        options.baseURL = "http://127.0.0.1:${toString osConfig.services.ollama.port}/v1";
         models.${llm.model} =
         {
           name = llm.model;
