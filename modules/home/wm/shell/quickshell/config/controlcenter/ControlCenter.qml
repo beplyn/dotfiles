@@ -26,6 +26,8 @@ Panel {
         .filter(n => n.name !== "")
         .sort((a, b) => (b.connected - a.connected) || (b.signalStrength - a.signalStrength))
         .slice(0, 8)
+    // Network list stays folded so it doesn't push the sliders off screen.
+    property bool networksOpen: false
     // The secured network waiting for a password, if any.
     property var pskTarget: null
     property string wifiError: ""
@@ -35,11 +37,12 @@ Panel {
     Binding {
         target: root.wifi
         property: "scannerEnabled"
-        value: root.open && Networking.wifiEnabled
+        value: root.open && root.networksOpen && Networking.wifiEnabled
         when: root.wifi !== null
     }
     onOpenChanged: {
         sessionOpen = false
+        networksOpen = false
         pskTarget = null
     }
     readonly property var adapter: Bluetooth.defaultAdapter
@@ -242,10 +245,39 @@ Panel {
         visible: root.wifi !== null && Networking.wifiEnabled
         spacing: 2
 
-        Heading { text: "Wi-Fi networks" }
+        // Click to fold the list open.
+        Item {
+            Layout.fillWidth: true
+            implicitHeight: networksHeader.implicitHeight
+
+            RowLayout {
+                id: networksHeader
+                anchors.fill: parent
+
+                Heading {
+                    Layout.fillWidth: true
+                    text: "Wi-Fi networks"
+                }
+                Text {
+                    text: root.networksOpen ? Icons.chevronUp : Icons.chevronDown
+                    color: Theme.subtext
+                    font.family: Theme.font
+                    font.pointSize: Theme.popupFontSize
+                }
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    root.networksOpen = !root.networksOpen
+                    root.pskTarget = null
+                }
+            }
+        }
 
         Text {
-            visible: root.wifiNetworks.length === 0
+            visible: root.networksOpen && root.wifiNetworks.length === 0
             Layout.topMargin: 4
             text: "Scanning…"
             color: Theme.subtext
@@ -254,7 +286,7 @@ Panel {
         }
 
         Repeater {
-            model: root.wifiNetworks
+            model: root.networksOpen ? root.wifiNetworks : []
 
             ColumnLayout {
                 id: entry
