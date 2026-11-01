@@ -1,0 +1,41 @@
+diff --git a/internal/providers/clipboard/clipboard.go b/internal/providers/clipboard/clipboard.go
+index 563dc0b..0c221fe 100644
+--- a/internal/providers/clipboard/clipboard.go
++++ b/internal/providers/clipboard/clipboard.go
+@@ -135,7 +135,10 @@ func updateImage(out []byte) {
+ 		}
+ 	}
+ 
+-	saveFileChan <- struct{}{}
++	select {
++	case saveFileChan <- struct{}{}:
++	default:
++	}
+ }
+ 
+ func updateText(text string) bool {
+@@ -210,7 +213,10 @@ func updateText(text string) bool {
+ 		}
+ 	}
+ 
+-	saveFileChan <- struct{}{}
++	select {
++	case saveFileChan <- struct{}{}:
++	default:
++	}
+ 	return true
+ }
+ 
+diff --git a/internal/providers/clipboard/types.go b/internal/providers/clipboard/types.go
+index e66898a..c5e8cb6 100644
+--- a/internal/providers/clipboard/types.go
++++ b/internal/providers/clipboard/types.go
+@@ -33,7 +33,7 @@ var symbolsdata string
+ 
+ var (
+ 	paused       atomic.Bool
+-	saveFileChan = make(chan struct{})
++	saveFileChan = make(chan struct{}, 1)
+ )
+ 
+ const StateEditable = "editable"

@@ -1,5 +1,6 @@
 {
   config,
+  pkgs,
   subst,
   ...
 }:
@@ -12,6 +13,12 @@ in
   services.elephant =
   {
     enable = true;
+    # clipboard provider signals its save loop while holding the history lock;
+    # an unbuffered send deadlocks it and history stops updating
+    package = pkgs.elephant.overrideAttrs (old:
+    {
+      patches = (old.patches or [ ]) ++ [ ./elephant-clipboard-deadlock.patch ];
+    });
   };
 
   services.walker =
