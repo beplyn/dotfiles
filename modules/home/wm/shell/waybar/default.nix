@@ -160,7 +160,13 @@ in
       # AMD CPU sensor
       temperature =
       {
-        hwmon-path-abs = "/sys/devices/pci0000:00/0000:00:18.3/hwmon";
+        # CPU package sensor, first that exists: AMD k10temp, Intel coretemp; without
+        # either waybar falls back to thermal_zone0, a fixed 20° ACPI zone on compass
+        hwmon-path-abs =
+        [
+          "/sys/devices/pci0000:00/0000:00:18.3/hwmon"
+          "/sys/devices/platform/coretemp.0/hwmon"
+        ];
         input-filename = "temp1_input";
         critical-threshold = 85;
         format = "${glyph 62153} {temperatureC}°";
