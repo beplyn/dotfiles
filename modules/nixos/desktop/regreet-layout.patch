@@ -1,0 +1,429 @@
+diff -ru a/src/gui/component.rs b/src/gui/component.rs
+--- a/src/gui/component.rs	2026-11-01 16:47:38.375883123 +0100
++++ b/src/gui/component.rs	2026-11-01 16:48:11.749328733 +0100
+@@ -182,11 +182,6 @@
+                     set_label: model.config.get_default_message(),
+                 },
+                 #[template_child]
+-                session_label {
+-                    #[track(model.updates.changed(Updates::input_mode()))]
+-                    set_visible: !model.updates.is_input(),
+-                },
+-                #[template_child]
+                 usernames_box {
+                     #[track(
+                         model.updates.changed(Updates::manual_user_mode())
+@@ -200,11 +195,18 @@
+                         username_entry = ui.username_entry.clone(),
+                         sessions_box = ui.sessions_box.clone(),
+                         session_entry = ui.session_entry.clone(),
+-                    ] => move |this| sender.input(
+-                        Self::Input::UserChanged(
+-                            UserSessInfo::extract(this, &username_entry, &sessions_box, &session_entry)
++                        avatar = ui.avatar.clone(),
++                    ] => move |this| {
++                        // rebuild installs each user's picture here; the greeter can't read homes
++                        if let Some(user) = this.active_id() {
++                            avatar.set_filename(Some(format!("/var/lib/AccountsService/icons/{user}")));
++                        }
++                        sender.input(
++                            Self::Input::UserChanged(
++                                UserSessInfo::extract(this, &username_entry, &sessions_box, &session_entry)
++                            )
+                         )
+-                    ),
++                    },
+                 },
+                 #[template_child]
+                 username_entry {
+@@ -222,7 +224,7 @@
+                         model.updates.changed(Updates::manual_sess_mode())
+                         || model.updates.changed(Updates::input_mode())
+                     )]
+-                    set_visible: !model.updates.manual_sess_mode && !model.updates.is_input(),
++                    set_visible: !model.updates.manual_sess_mode,
+                     #[track(model.updates.changed(Updates::active_session_id()))]
+                     set_active_id: model.updates.active_session_id.as_deref(),
+                 },
+@@ -232,7 +234,7 @@
+                         model.updates.changed(Updates::manual_sess_mode())
+                         || model.updates.changed(Updates::input_mode())
+                     )]
+-                    set_visible: model.updates.manual_sess_mode && !model.updates.is_input(),
++                    set_visible: model.updates.manual_sess_mode,
+                 },
+                 #[template_child]
+                 input_label {
+@@ -301,8 +303,6 @@
+                 },
+                 #[template_child]
+                 sess_toggle {
+-                    #[track(model.updates.changed(Updates::input_mode()))]
+-                    set_visible: !model.updates.is_input(),
+                     connect_clicked => Self::Input::ToggleManualSess,
+                 },
+                 #[template_child]
+diff -ru a/src/gui/templates.rs b/src/gui/templates.rs
+--- a/src/gui/templates.rs	2026-11-01 16:47:38.375977736 +0100
++++ b/src/gui/templates.rs	2026-11-01 16:47:57.480754630 +0100
+@@ -39,116 +39,103 @@
+             #[name = "background"]
+             gtk::Picture,
+ 
+-            /// Main login box
+-            add_overlay = &gtk::Frame {
++            /// Login card with the avatar on its right
++            add_overlay = &gtk::Box {
+                 set_halign: gtk::Align::Center,
+                 set_valign: gtk::Align::Center,
+-                add_css_class: "background",
++                set_spacing: 20,
++                add_css_class: "login-row",
+ 
+-                gtk::Grid {
+-                    set_column_spacing: 15,
+-                    set_margin_bottom: 15,
+-                    set_margin_end: 15,
+-                    set_margin_start: 15,
+-                    set_margin_top: 15,
+-                    set_row_spacing: 15,
+-                    set_width_request: 500,
+-
+-                    /// Widget to display messages to the user
+-                    #[name = "message_label"]
+-                    attach[0, 0, 3, 1] = &gtk::Label {
+-                        set_margin_bottom: 15,
+-
+-                        // Format all messages in boldface.
+-                        #[wrap(Some)]
+-                        set_attributes = &gtk::pango::AttrList {
+-                            insert: {
+-                                let mut font_desc = gtk::pango::FontDescription::new();
+-                                font_desc.set_weight(gtk::pango::Weight::Bold);
+-                                gtk::pango::AttrFontDesc::new(&font_desc)
+-                            },
++                gtk::Frame {
++                    add_css_class: "login-card",
++
++                    gtk::Grid {
++                        set_column_spacing: 10,
++                        set_margin_bottom: 24,
++                        set_margin_end: 24,
++                        set_margin_start: 24,
++                        set_margin_top: 24,
++                        set_row_spacing: 12,
++                        set_width_request: 360,
++
++                        /// Widget to display messages to the user
++                        #[name = "message_label"]
++                        attach[0, 0, 2, 1] = &gtk::Label {
++                            set_margin_bottom: 6,
++                            add_css_class: "greeting",
+                         },
+-                    },
+ 
+-                    #[template]
+-                    attach[0, 1, 1, 1] = &EntryLabel {
+-                        set_label: "User:",
+-                        set_height_request: 45,
+-                    },
++                        /// Widget containing the usernames
++                        #[name = "usernames_box"]
++                        attach[0, 1, 1, 1] = &gtk::ComboBoxText { set_hexpand: true },
++
++                        /// Widget where the user enters the username
++                        #[name = "username_entry"]
++                        attach[0, 1, 1, 1] = &gtk::Entry {
++                            set_hexpand: true,
++                            set_placeholder_text: Some("Username"),
++                        },
+ 
+-                    /// Label for the sessions widget
+-                    #[name = "session_label"]
+-                    #[template]
+-                    attach[0, 2, 1, 1] = &EntryLabel {
+-                        set_label: "Session:",
+-                        set_height_request: 45,
+-                    },
++                        /// Button to toggle manual user entry
++                        #[name = "user_toggle"]
++                        attach[1, 1, 1, 1] = &gtk::ToggleButton {
++                            set_icon_name: "document-edit-symbolic",
++                            set_tooltip_text: Some("Manually enter username"),
++                            add_css_class: "flat",
++                        },
+ 
+-                    /// Widget containing the usernames
+-                    #[name = "usernames_box"]
+-                    attach[1, 1, 1, 1] = &gtk::ComboBoxText { set_hexpand: true },
+-
+-                    /// Widget where the user enters the username
+-                    #[name = "username_entry"]
+-                    attach[1, 1, 1, 1] = &gtk::Entry { set_hexpand: true },
+-
+-                    /// Widget containing the sessions
+-                    #[name = "sessions_box"]
+-                    attach[1, 2, 1, 1] = &gtk::ComboBoxText,
+-
+-                    /// Widget where the user enters the session
+-                    #[name = "session_entry"]
+-                    attach[1, 2, 1, 1] = &gtk::Entry,
+-
+-                    /// Label for the password widget
+-                    #[name = "input_label"]
+-                    #[template]
+-                    attach[0, 2, 1, 1] = &EntryLabel {
+-                        set_height_request: 45,
+-                    },
++                        /// Label for the password widget (the PAM prompt)
++                        #[name = "input_label"]
++                        attach[0, 2, 2, 1] = &gtk::Label {
++                            set_xalign: 0.0,
++                            add_css_class: "dim-label",
++                        },
+ 
+-                    /// Widget where the user enters a secret
+-                    #[name = "secret_entry"]
+-                    attach[1, 2, 1, 1] = &gtk::PasswordEntry { set_show_peek_icon: true },
+-
+-                    /// Widget where the user enters something visible
+-                    #[name = "visible_entry"]
+-                    attach[1, 2, 1, 1] = &gtk::Entry,
+-
+-                    /// Button to toggle manual user entry
+-                    #[name = "user_toggle"]
+-                    attach[2, 1, 1, 1] = &gtk::ToggleButton {
+-                        set_icon_name: "document-edit-symbolic",
+-                        set_tooltip_text: Some("Manually enter username"),
+-                    },
++                        /// Widget where the user enters a secret
++                        #[name = "secret_entry"]
++                        attach[0, 3, 2, 1] = &gtk::PasswordEntry { set_show_peek_icon: true },
++
++                        /// Widget where the user enters something visible
++                        #[name = "visible_entry"]
++                        attach[0, 3, 2, 1] = &gtk::Entry,
++
++                        /// Collection of action buttons (eg. Login)
++                        attach[0, 4, 2, 1] = &gtk::Box {
++                            set_homogeneous: true,
++                            set_margin_top: 6,
++                            set_spacing: 10,
++
++                            /// Button to cancel password entry
++                            #[name = "cancel_button"]
++                            gtk::Button {
++                                set_focusable: true,
++                                set_label: "Cancel",
++                            },
+ 
+-                    /// Button to toggle manual session entry
+-                    #[name = "sess_toggle"]
+-                    attach[2, 2, 1, 1] = &gtk::ToggleButton {
+-                        set_icon_name: "document-edit-symbolic",
+-                        set_tooltip_text: Some("Manually enter session command"),
++                            /// Button to enter the password and login
++                            #[name = "login_button"]
++                            gtk::Button {
++                                set_focusable: true,
++                                set_label: "Login",
++                                set_receives_default: true,
++                                add_css_class: "suggested-action",
++                                add_css_class: "login-button",
++                            },
++                        },
+                     },
++                },
+ 
+-                    /// Collection of action buttons (eg. Login)
+-                    attach[1, 3, 2, 1] = &gtk::Box {
+-                        set_halign: gtk::Align::End,
+-                        set_spacing: 15,
+-
+-                        /// Button to cancel password entry
+-                        #[name = "cancel_button"]
+-                        gtk::Button {
+-                            set_focusable: true,
+-                            set_label: "Cancel",
+-                        },
+-
+-                        /// Button to enter the password and login
+-                        #[name = "login_button"]
+-                        gtk::Button {
+-                            set_focusable: true,
+-                            set_label: "Login",
+-                            set_receives_default: true,
+-                            add_css_class: "suggested-action",
+-                        },
++                /// Circular profile picture of the selected user
++                gtk::Frame {
++                    set_valign: gtk::Align::Center,
++                    set_overflow: gtk::Overflow::Hidden,
++                    add_css_class: "avatar",
++
++                    #[name = "avatar"]
++                    gtk::Picture {
++                        set_size_request: (160, 160),
++                        set_content_fit: gtk::ContentFit::Cover,
++                        set_can_shrink: true,
+                     },
+                 },
+             },
+@@ -156,68 +143,93 @@
+             /// Clock widget
+             #[name = "clock_frame"]
+             add_overlay = &gtk::Frame {
+-                set_halign: gtk::Align::Center,
++                set_halign: gtk::Align::End,
+                 set_valign: gtk::Align::Start,
++                set_margin_end: 40,
++                set_margin_top: 30,
++                add_css_class: "clock",
++            },
+ 
+-                add_css_class: "background",
+-
+-                // Make it fit cleanly onto the top edge of the screen.
++            /// Notification bar for messages
++            add_overlay = &gtk::Frame {
++                set_halign: gtk::Align::Center,
++                set_valign: gtk::Align::End,
++                set_margin_bottom: 15,
+                 inline_css: "
+-                    border-top-right-radius: 0px;
+-                    border-top-left-radius: 0px;
+-                    border-top-width: 0px;
++                    border: none;
+                 ",
++
++                #[name = "notif_info"]
++                gtk::InfoBar {
++                    // During init, the info bar closing animation is shown. To hide that, make
++                    // it invisible. Later, the code will permanently make it visible, so that
++                    // `InfoBar::set_revealed` will work properly with animations.
++                    set_visible: false,
++                    set_message_type: gtk::MessageType::Info,
++
++                    /// The actual notification message
++                    #[name = "notif_label"]
++                    gtk::Label {
++                        set_halign: gtk::Align::Center,
++                        set_margin_top: 10,
++                        set_margin_bottom: 10,
++                        set_margin_start: 10,
++                        set_margin_end: 10,
++                    },
++                }
+             },
+ 
+-            /// Collection of widgets appearing at the bottom
++            /// Session gear and power buttons, icon-only in the bottom-right corner
+             add_overlay = &gtk::Box {
+-                set_orientation: gtk::Orientation::Vertical,
+-                set_halign: gtk::Align::Center,
++                set_halign: gtk::Align::End,
+                 set_valign: gtk::Align::End,
+-                set_margin_bottom: 15,
+-                set_spacing: 15,
+-
+-                gtk::Frame {
+-                    inline_css: "
+-                        border: none;
+-                    ",
+-
+-                    /// Notification bar for messages
+-                    #[name = "notif_info"]
+-                    gtk::InfoBar {
+-                        // During init, the info bar closing animation is shown. To hide that, make
+-                        // it invisible. Later, the code will permanently make it visible, so that
+-                        // `InfoBar::set_revealed` will work properly with animations.
+-                        set_visible: false,
+-                        set_message_type: gtk::MessageType::Info,
+-
+-                        /// The actual notification message
+-                        #[name = "notif_label"]
+-                        gtk::Label {
+-                            set_halign: gtk::Align::Center,
+-                            set_margin_top: 10,
+-                            set_margin_bottom: 10,
+-                            set_margin_start: 10,
+-                            set_margin_end: 10,
++                set_margin_bottom: 20,
++                set_margin_end: 20,
++                set_spacing: 10,
++                add_css_class: "corner",
++
++                gtk::MenuButton {
++                    set_icon_name: "emblem-system-symbolic",
++                    set_tooltip_text: Some("Session"),
++                    set_direction: gtk::ArrowType::Up,
++
++                    #[wrap(Some)]
++                    set_popover = &gtk::Popover {
++                        gtk::Box {
++                            set_spacing: 10,
++
++                            /// Widget containing the sessions
++                            #[name = "sessions_box"]
++                            gtk::ComboBoxText,
++
++                            /// Widget where the user enters the session
++                            #[name = "session_entry"]
++                            gtk::Entry,
++
++                            /// Button to toggle manual session entry
++                            #[name = "sess_toggle"]
++                            gtk::ToggleButton {
++                                set_icon_name: "document-edit-symbolic",
++                                set_tooltip_text: Some("Manually enter session command"),
++                            },
+                         },
+-                    }
++                    },
++                },
++
++                /// Button to reboot
++                #[name = "reboot_button"]
++                #[template]
++                EndButton {
++                    set_icon_name: "system-reboot-symbolic",
++                    set_tooltip_text: Some("Reboot"),
+                 },
+ 
+-                /// Collection of buttons that close the greeter (eg. Reboot)
+-                gtk::Box {
+-                    set_halign: gtk::Align::Center,
+-                    set_homogeneous: true,
+-                    set_spacing: 15,
+-
+-                    /// Button to reboot
+-                    #[name = "reboot_button"]
+-                    #[template]
+-                    EndButton { set_label: "Reboot" },
+-
+-                    /// Button to power-off
+-                    #[name = "poweroff_button"]
+-                    #[template]
+-                    EndButton { set_label: "Power Off" },
++                /// Button to power-off
++                #[name = "poweroff_button"]
++                #[template]
++                EndButton {
++                    set_icon_name: "system-shutdown-symbolic",
++                    set_tooltip_text: Some("Power Off"),
+                 },
+             },
+         }
+diff -ru a/src/gui/widget/clock.rs b/src/gui/widget/clock.rs
+--- a/src/gui/widget/clock.rs	2026-11-01 16:47:38.376011120 +0100
++++ b/src/gui/widget/clock.rs	2026-11-01 16:48:17.529089918 +0100
+@@ -177,7 +177,8 @@
+     view! {
+         gtk::Label {
+             set_width_request: label_width.min(i32::MAX as u32) as i32,
+-            set_justify: gtk::Justification::Center,
++            set_justify: gtk::Justification::Right,
++            set_xalign: 1.0,
+ 
+             #[watch]
+             set_markup: &model.current_time
