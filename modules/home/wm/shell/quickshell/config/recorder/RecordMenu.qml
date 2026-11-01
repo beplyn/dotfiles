@@ -47,7 +47,7 @@ PanelWindow {
         width: parent.width
         implicitHeight: col.implicitHeight + 24
         radius: Theme.radius
-        color: Theme.alpha(Theme.base, 0.92)
+        color: Theme.alpha(Theme.background, 0.92)
         border.color: Theme.alpha(Theme.accent, 0.5)
 
         focus: true
@@ -100,7 +100,7 @@ PanelWindow {
                         width: parent.width - 24
                         elide: Text.ElideMiddle
                         text: modelData.label
-                        color: parent.selected ? Theme.base : Theme.accent
+                        color: parent.selected ? Theme.background : Theme.accent
                         font.family: Theme.font
                         font.pointSize: Theme.popupFontSize + 2
                         font.bold: true

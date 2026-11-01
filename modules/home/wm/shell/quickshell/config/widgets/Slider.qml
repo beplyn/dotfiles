@@ -21,7 +21,7 @@ RowLayout {
         Layout.preferredWidth: 24
         horizontalAlignment: Text.AlignHCenter
         text: root.icon
-        color: root.dimmed ? Theme.overlay : Theme.accent
+        color: root.dimmed ? Theme.muted : Theme.accent
         font.family: Theme.font
         font.pointSize: Theme.popupFontSize + 4
 
@@ -48,7 +48,7 @@ RowLayout {
                 width: Math.max(height, track.width * root.clamped)
                 height: parent.height
                 radius: parent.radius
-                color: root.dimmed ? Theme.overlay : Theme.accent
+                color: root.dimmed ? Theme.muted : Theme.accent
 
                 Behavior on width {
                     enabled: !drag.pressed
@@ -64,7 +64,7 @@ RowLayout {
             height: width
             radius: width / 2
             color: Theme.bright
-            border.color: root.dimmed ? Theme.overlay : Theme.accent
+            border.color: root.dimmed ? Theme.muted : Theme.accent
             border.width: 2
 
             Behavior on width {

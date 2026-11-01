@@ -6,20 +6,20 @@ import Quickshell
 Singleton {
     id: root
 
-    readonly property color base: Stylix.base00
-    readonly property color mantle: Stylix.base01
-    readonly property color surface: Stylix.base02
-    readonly property color overlay: Stylix.base03
-    readonly property color subtext: Stylix.base04
-    readonly property color text: Stylix.base05
-    readonly property color bright: Stylix.base06
-    readonly property color red: Stylix.base08
-    readonly property color orange: Stylix.base09
-    readonly property color yellow: Stylix.base0A
-    readonly property color green: Stylix.base0B
-    readonly property color cyan: Stylix.base0C
-    readonly property color blue: Stylix.base0D
-    readonly property color accent: Stylix.base0E
+    readonly property color background: Stylix.background
+    readonly property color mantle: Stylix.mantle
+    readonly property color surface: Stylix.surface
+    readonly property color muted: Stylix.muted
+    readonly property color subtext: Stylix.subtext
+    readonly property color foreground: Stylix.foreground
+    readonly property color bright: Stylix.bright
+    readonly property color red: Stylix.red
+    readonly property color orange: Stylix.orange
+    readonly property color yellow: Stylix.yellow
+    readonly property color green: Stylix.green
+    readonly property color cyan: Stylix.cyan
+    readonly property color blue: Stylix.blue
+    readonly property color accent: Stylix.accent
 
     readonly property string font: Stylix.monoFont
     readonly property real fontSize: Stylix.fontSize
@@ -45,7 +45,7 @@ Singleton {
     readonly property int slow: 420
 
     // Card look shared by every panel and the OSD.
-    readonly property color cardColor: alpha(base, glass)
+    readonly property color cardColor: alpha(background, glass)
     readonly property color cardBorder: alpha(surface, 0.9)
     readonly property color well: alpha(surface, 0.45)
 

@@ -26,7 +26,7 @@ Canvas {
         const pad = 2
 
         // Quarter gridlines.
-        ctx.strokeStyle = Theme.alpha(Theme.overlay, 0.35)
+        ctx.strokeStyle = Theme.alpha(Theme.muted, 0.35)
         ctx.lineWidth = 1
         ctx.setLineDash([3, 4])
         for (let i = 1; i < 4; i++) {

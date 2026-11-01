@@ -36,7 +36,7 @@ ColumnLayout {
         Text {
             Layout.fillWidth: true
             text: Qt.formatDate(root.month, "MMMM yyyy")
-            color: Theme.text
+            color: Theme.foreground
             font.family: Theme.font
             font.pointSize: Theme.popupFontSize + 2
             font.bold: true
@@ -92,7 +92,7 @@ ColumnLayout {
                 text: weekNumber
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignRight
-                color: Theme.overlay
+                color: Theme.muted
                 font.family: Theme.font
                 font.pointSize: Theme.popupFontSize - 2
             }
@@ -125,7 +125,7 @@ ColumnLayout {
                 Text {
                     anchors.centerIn: parent
                     text: day.model.day
-                    color: day.isToday ? Theme.base : Theme.text
+                    color: day.isToday ? Theme.background : Theme.foreground
                     opacity: day.inMonth ? 1 : 0.3
                     font.family: Theme.font
                     font.pointSize: Theme.popupFontSize

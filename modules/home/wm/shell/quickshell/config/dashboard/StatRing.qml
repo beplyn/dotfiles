@@ -73,7 +73,7 @@ ColumnLayout {
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: root.text
-                color: Theme.text
+                color: Theme.foreground
                 font.family: Theme.font
                 font.pointSize: Theme.popupFontSize
                 font.bold: true
