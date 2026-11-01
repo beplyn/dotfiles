@@ -1,8 +1,9 @@
-# awww draws, waypaper picks and restores.
+# awww draws, waypaper picks and restores; rebuild runs wallpaper-pick.
 {
   config,
   lib,
   pkgs,
+  themeName,
   ...
 }:
 
@@ -10,11 +11,76 @@ let
   p = config.themes.palette;
   waypaper = lib.getExe pkgs.waypaper;
   awww = config.services.awww.package;
+
+  # lutgen palette per theme, matching the Stylix schemes
+  palettes =
+  {
+    catppuccin = "catppuccin-mocha";
+    gruvbox = "gruvbox-dark-hard";
+    nord = "nord";
+  };
+
+  # uncoloured sources; git skips an empty folder
+  sources = lib.optionalString (builtins.pathExists ./wallpapers) "${./wallpapers}";
+  cache = "${config.xdg.cacheHome}/wallpaper";
+
+  # recolor [-o DIR] IMAGE...: one copy per theme
+  recolor = pkgs.writeShellApplication
+  {
+    name = "recolor";
+    runtimeInputs = [ pkgs.lutgen ];
+    text = ''
+      out=
+      if [ "''${1:-}" = "-o" ]; then
+        out="$2"
+        shift 2
+        mkdir -p "$out"
+      fi
+      if [ $# -eq 0 ]; then
+        echo "usage: recolor [-o DIR] IMAGE..." >&2
+        exit 1
+      fi
+      for img in "$@"; do
+        stem="$(basename "''${img%.*}")"
+        dir="''${out:-$(dirname "$img")}"
+        ${lib.concatLines (lib.mapAttrsToList (theme: palette: ''
+          lutgen apply -p ${palette} -o "$dir/$stem-${theme}.png" "$img"
+        '') palettes)}
+      done
+    '';
+  };
+
+  # random source in the current theme's colours, else the Stylix wallpaper
+  wallpaper-pick = pkgs.writeShellApplication
+  {
+    name = "wallpaper-pick";
+    runtimeInputs = [ pkgs.lutgen pkgs.waypaper awww pkgs.coreutils pkgs.findutils ];
+    text = ''
+      mkdir -p "${cache}"
+      src=
+      if [ -n "${sources}" ]; then
+        src="$(find -L "${sources}" -type f \
+          \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) | shuf -n1)"
+      fi
+      if [ -n "$src" ]; then
+        img="${cache}/$(basename "''${src%.*}")-${themeName}.png"
+        # cached per source and theme
+        [ -e "$img" ] || lutgen apply -p ${palettes.${themeName}} -o "$img" "$src"
+      else
+        img="${config.stylix.image}"
+      fi
+      ln -sfn "$img" "${cache}/current.png"
+      # no session (e.g. a TTY): the lock screen still follows the symlink
+      if awww query >/dev/null 2>&1; then
+        waypaper --wallpaper "${cache}/current.png"
+      fi
+    '';
+  };
 in
 {
   services.awww.enable = true;
 
-  home.packages = [ pkgs.waypaper ];
+  home.packages = [ pkgs.waypaper pkgs.lutgen recolor wallpaper-pick ];
 
   # writable: waypaper rewrites it on exit
   xdg.configFile."waypaper/config.ini".source = (pkgs.formats.ini { }).generate "waypaper-config"
