@@ -4,10 +4,8 @@ import Quickshell
 import Quickshell.Wayland
 import qs.services
 
-// Volume / brightness capsule at the bottom of the focused output, shown
-// for a moment whenever either changes: media keys, scrolling waybar's
-// volume pill, other apps. Click-through; quiet while the control center
-// (which has its own sliders) is open.
+// Volume / brightness capsule on any change; click-through, quiet while the
+// control center is open.
 PanelWindow {
     id: root
 

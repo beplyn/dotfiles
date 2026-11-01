@@ -5,8 +5,7 @@
   ...
 }:
 
-# Replaces fastfetch (still there as `ff`). Shown on first shell per login,
-# over ssh, else 1 in `chance`.
+# replaces fastfetch (`ff`); first shell per login, over ssh, else 1 in `chance`
 let
   vars = lib.mapAttrs (_: lib.removePrefix "#") config.themes.palette // {
     chance = "4";

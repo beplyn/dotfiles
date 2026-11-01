@@ -5,9 +5,7 @@ import Quickshell.Widgets
 import qs.services
 import qs.widgets
 
-// The followed MPRIS player: art, track, seekable progress and controls,
-// with a cava spectrum rising behind it. cava only runs while the
-// dashboard is open and something plays.
+// MPRIS player over a cava spectrum (cava only runs while open and playing).
 Rectangle {
     id: root
 

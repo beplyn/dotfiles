@@ -3,10 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Which panel is open: "control", "dashboard", "notifications", "power", one of
-// the monitors ("cpu", "memory", "temperature") or "".
-// One at a time, so opening one closes the other. Waybar and the niri
-// binds drive it with `qs -c haku ipc call panels toggle <name>`.
+// The one open panel (or ""); driven by `qs -c haku ipc call panels toggle <name>`.
 Singleton {
     id: root
 

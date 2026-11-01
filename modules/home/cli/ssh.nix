@@ -13,7 +13,7 @@ in
   {
     enable = true;
     enableDefaultConfig = false;
-    # one key per host (beplyn@<host>), made by `rebuild`; upload ~/.ssh/id_ed25519.pub to each
+    # per-host key from `rebuild`; upload its .pub to each
     settings = lib.genAttrs gitHosts (host:
     {
       hostname = host;

@@ -70,7 +70,7 @@ in
   # servers: terminal targets only
   home-manager.sharedModules = lib.optional headless
   {
-    # no dconf service without a session; other targets (eog, text editor) still write to it
+    # no dconf without a session, but some targets still write to it
     dconf.enable = false;
     stylix.targets =
     {
