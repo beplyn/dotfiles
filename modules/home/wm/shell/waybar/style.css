@@ -3,8 +3,8 @@
  * palette (@background, @surface, @accent, ...), @glass, fonts and the corner
  * radius, so nothing here hardcodes a color or a font.
  *
- * Inside the capsule, modules are flat labels that light up as small
- * pills on hover; related modules share a tinted sub-pill (group/ modules).
+ * Inside the capsule, every module is its own pill on see-through grey;
+ * grouped modules just sit a little closer together.
  */
 
 * {
@@ -34,14 +34,50 @@ window#waybar > box {
 #mpris,
 #clock,
 #custom-recorder,
-#hardware,
 #idle_inhibitor,
-#status,
+#privacy,
 #tray,
 #custom-notifications,
 #custom-control {
   margin: 5px 0;
   border-radius: 8px;
+}
+
+/* grouped modules are separate pills, a little closer together */
+#cpu,
+#memory,
+#temperature,
+#network,
+#bluetooth,
+#wireplumber,
+#battery,
+#power-profiles-daemon {
+  margin: 5px 2px;
+}
+
+/* every pill sits on see-through grey so it reads over any wallpaper */
+#custom-launcher,
+#workspaces,
+#window,
+#mpris,
+#clock,
+#cpu,
+#memory,
+#temperature,
+#idle_inhibitor,
+#privacy,
+#network,
+#bluetooth,
+#wireplumber,
+#battery,
+#power-profiles-daemon,
+#tray,
+#custom-notifications {
+  background: alpha(@surface, 0.75);
+}
+
+#privacy {
+  padding: 0 10px;
 }
 
 #custom-launcher,
@@ -78,7 +114,7 @@ window#waybar > box {
 #battery:hover,
 #power-profiles-daemon:hover,
 #custom-notifications:hover {
-  background: alpha(@accent, 0.18);
+  background: alpha(mix(@surface, @accent, 0.35), 0.75);
 }
 
 /* --- left ---------------------------------------------------------------- */
@@ -90,7 +126,6 @@ window#waybar > box {
 }
 
 #workspaces {
-  background: alpha(@mantle, 0.6);
   padding: 0 3px;
 }
 
@@ -157,11 +192,6 @@ window#waybar > box {
 }
 
 /* --- right ------------------------------------------------------------- */
-
-#hardware,
-#status {
-  background: alpha(@mantle, 0.6);
-}
 
 #cpu {
   color: @blue;
