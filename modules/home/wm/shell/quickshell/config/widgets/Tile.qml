@@ -33,7 +33,7 @@ Rectangle {
 
         Text {
             text: root.icon
-            color: root.active ? Theme.base : Theme.accent
+            color: root.active ? Theme.background : Theme.accent
             font.family: Theme.font
             font.pointSize: Theme.popupFontSize + 5
         }
@@ -46,7 +46,7 @@ Rectangle {
                 Layout.fillWidth: true
                 text: root.title
                 elide: Text.ElideRight
-                color: root.active ? Theme.base : Theme.text
+                color: root.active ? Theme.background : Theme.foreground
                 font.family: Theme.font
                 font.pointSize: Theme.popupFontSize
                 font.bold: true
@@ -56,7 +56,7 @@ Rectangle {
                 visible: text !== ""
                 text: root.subtitle
                 elide: Text.ElideRight
-                color: root.active ? Theme.alpha(Theme.base, 0.75) : Theme.subtext
+                color: root.active ? Theme.alpha(Theme.background, 0.75) : Theme.subtext
                 font.family: Theme.font
                 font.pointSize: Theme.popupFontSize - 1
             }

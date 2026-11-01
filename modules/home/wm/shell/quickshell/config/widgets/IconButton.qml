@@ -15,7 +15,7 @@ Rectangle {
     signal clicked(var mouse)
 
     readonly property bool hovered: mouse.containsMouse
-    readonly property color fg: filled ? Theme.base : hovered ? tint : Theme.text
+    readonly property color fg: filled ? Theme.background : hovered ? tint : Theme.foreground
 
     implicitWidth: label === "" ? size : row.implicitWidth + 24
     implicitHeight: size

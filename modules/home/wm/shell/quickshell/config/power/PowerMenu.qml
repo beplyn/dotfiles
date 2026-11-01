@@ -69,7 +69,7 @@ PanelWindow {
     Rectangle {
         id: backdrop
         anchors.fill: parent
-        color: Theme.alpha(Theme.base, 0.55)
+        color: Theme.alpha(Theme.background, 0.55)
         opacity: root.open ? 1 : 0
 
         Behavior on opacity {
@@ -119,7 +119,7 @@ PanelWindow {
                 Text {
                     Layout.alignment: Qt.AlignHCenter
                     text: "Goodbye, " + (Quickshell.env("USER") ?? "")
-                    color: Theme.text
+                    color: Theme.foreground
                     font.family: Theme.font
                     font.pointSize: Theme.popupFontSize + 10
                     font.bold: true
@@ -179,7 +179,7 @@ PanelWindow {
                                 implicitWidth: 64
                                 implicitHeight: 64
                                 radius: 32
-                                color: tile.isArmed ? Theme.alpha(Theme.base, 0.2)
+                                color: tile.isArmed ? Theme.alpha(Theme.background, 0.2)
                                     : Theme.alpha(tile.tint, tile.selected ? 0.25 : 0.12)
 
                                 Behavior on color {
@@ -189,7 +189,7 @@ PanelWindow {
                                 Text {
                                     anchors.centerIn: parent
                                     text: tile.modelData.icon
-                                    color: tile.isArmed ? Theme.base : tile.tint
+                                    color: tile.isArmed ? Theme.background : tile.tint
                                     font.family: Theme.font
                                     font.pointSize: Theme.popupFontSize + 14
                                 }
@@ -198,7 +198,7 @@ PanelWindow {
                             Text {
                                 Layout.alignment: Qt.AlignHCenter
                                 text: tile.isArmed ? "Confirm?" : tile.modelData.label
-                                color: tile.isArmed ? Theme.base : Theme.text
+                                color: tile.isArmed ? Theme.background : Theme.foreground
                                 font.family: Theme.font
                                 font.pointSize: Theme.popupFontSize + 1
                                 font.bold: true
@@ -210,12 +210,12 @@ PanelWindow {
                                 implicitWidth: 22
                                 implicitHeight: 20
                                 radius: 6
-                                color: tile.isArmed ? Theme.alpha(Theme.base, 0.2) : Theme.well
+                                color: tile.isArmed ? Theme.alpha(Theme.background, 0.2) : Theme.well
 
                                 Text {
                                     anchors.centerIn: parent
                                     text: tile.modelData.key
-                                    color: tile.isArmed ? Theme.base : Theme.subtext
+                                    color: tile.isArmed ? Theme.background : Theme.subtext
                                     font.family: Theme.font
                                     font.pointSize: Theme.popupFontSize - 2
                                     font.bold: true

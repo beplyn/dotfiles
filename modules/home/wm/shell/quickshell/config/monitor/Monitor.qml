@@ -59,7 +59,7 @@ Panel {
 
             Text {
                 text: root.title
-                color: Theme.text
+                color: Theme.foreground
                 font.family: Theme.font
                 font.pointSize: Theme.popupFontSize + 2
                 font.bold: true
@@ -128,7 +128,7 @@ Panel {
                 Label { text: modelData.label }
                 Text {
                     text: modelData.value
-                    color: Theme.text
+                    color: Theme.foreground
                     font.family: Theme.font
                     font.pointSize: Theme.popupFontSize + 1
                     font.bold: true
