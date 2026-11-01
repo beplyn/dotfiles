@@ -9,10 +9,10 @@ if [ "$(id -un)" != "@username@" ]; then
   exit 1
 fi
 
-# an expired key is replaced, not renewed
+# an expired or revoked key is replaced, not renewed
 for fpr in $(gpg --with-colons --list-secret-keys "=$uid" 2>/dev/null \
-    | awk -F: '$1 == "sec" { dead = ($2 == "e") } $1 == "fpr" && dead { print $10; dead = 0 }'); do
-  echo "GPG key $fpr for $uid expired, replacing it."
+    | awk -F: '$1 == "sec" { dead = ($2 == "e" || $2 == "r") } $1 == "fpr" && dead { print $10; dead = 0 }'); do
+  echo "GPG key $fpr for $uid expired or revoked, replacing it."
   gpg --batch --yes --delete-secret-and-public-key "$fpr"
 done
 
