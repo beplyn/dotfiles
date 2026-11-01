@@ -207,7 +207,7 @@ window#waybar > box {
 }
 
 #wireplumber {
-  color: @accent;
+  color: @green;
 }
 
 #wireplumber.muted {
