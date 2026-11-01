@@ -66,6 +66,7 @@ in
       [
         "group/hardware"
         "idle_inhibitor"
+        "privacy"
         "group/status"
         "tray"
         "custom/notifications"
@@ -185,6 +186,18 @@ in
         tooltip-format-deactivated = "Idle allowed";
       };
 
+      # only shown while mic or screen is in use
+      privacy =
+      {
+        icon-size = 14;
+        icon-spacing = 6;
+        modules =
+        [
+          { type = "audio-in"; }
+          { type = "screenshare"; }
+        ];
+      };
+
       "group/status" =
       {
         orientation = "horizontal";
@@ -223,10 +236,12 @@ in
         tooltip-format-disabled = "Offline";
         on-click = panel "control";
       };
+      # only shown while a device is connected
       bluetooth =
       {
-        format = glyph 983215; # bluetooth
-        format-disabled = glyph 983218; # bluetooth-off
+        format = "";
+        format-disabled = "";
+        format-off = "";
         format-connected = "${glyph 983217} {num_connections}";
         format-no-controller = "";
         tooltip-format-connected = "{device_enumerate}";
@@ -298,9 +313,10 @@ in
         return-type = "json";
         signal = signals.notifications;
         format = "{icon}";
+        # hidden when empty; dnd stays visible
         format-icons =
         {
-          none = glyph 983194; # bell
+          none = "";
           notification = glyph 983198; # bell-ring
           dnd-none = glyph 983195; # bell-off
           dnd-notification = glyph 983195;
