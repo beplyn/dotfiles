@@ -15,7 +15,8 @@ hostname: themeName:
 let
   inherit (inputs) nixpkgs home-manager;
   headless = builtins.elem hostname headlessHosts;
-  specialArgs = {
+  specialArgs =
+  {
     inherit
       inputs
       username
@@ -28,9 +29,11 @@ let
     subst = import ./subst.nix { inherit (nixpkgs) lib; };
   };
 in
-nixpkgs.lib.nixosSystem {
+nixpkgs.lib.nixosSystem
+{
   inherit specialArgs;
-  modules = [
+  modules =
+  [
     { nixpkgs.hostPlatform = "x86_64-linux"; }
     ../hosts/common
     ../hosts/${hostname}
@@ -41,7 +44,8 @@ nixpkgs.lib.nixosSystem {
     { nixpkgs.overlays = [ inputs.millennium.overlays.default ]; }
     inputs.niri.nixosModules.niri
   ]
-  ++ [
+  ++
+  [
     inputs.stylix.nixosModules.stylix
     home-manager.nixosModules.home-manager
     {
@@ -51,7 +55,8 @@ nixpkgs.lib.nixosSystem {
       home-manager.backupFileExtension = "bk";
       home-manager.overwriteBackup = true;
 
-      home-manager.sharedModules = [
+      home-manager.sharedModules =
+      [
         inputs.nixvim.homeModules.nixvim
         inputs.areofyl-fetch.homeManagerModules.default
       ];
