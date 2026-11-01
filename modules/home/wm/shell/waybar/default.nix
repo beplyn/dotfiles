@@ -103,7 +103,6 @@ in
         player-icons.default = glyph 984922; # music
         status-icons.paused = glyph 61516; # pause
         tooltip-format = "{artist} — {album}";
-        # play/pause, prev, next
       };
 
       clock =
@@ -158,11 +157,9 @@ in
         };
         on-click = panel "memory";
       };
-      # AMD CPU sensor
       temperature =
       {
-        # CPU package sensor, first that exists: AMD k10temp, Intel coretemp; without
-        # either waybar falls back to thermal_zone0, a fixed 20° ACPI zone on compass
+        # CPU package: k10temp (AMD) or coretemp (Intel); thermal_zone0 is a fixed 20° on compass
         hwmon-path-abs =
         [
           "/sys/devices/pci0000:00/0000:00:18.3/hwmon"

@@ -3,9 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Front end for the `record` script (wl-screenrec). Recordings started
-// here are owned by `session`; ones started elsewhere are picked up by
-// polling `record status`.
+// Front end for `record`; outside recordings are picked up by polling `record status`.
 Singleton {
     id: root
 

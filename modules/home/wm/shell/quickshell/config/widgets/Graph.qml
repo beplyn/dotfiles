@@ -1,9 +1,7 @@
 import QtQuick
 import qs.services
 
-// Line graph of `values` scaled between `min` and `max`, newest on the
-// right. `length` samples span the full width, so a short history fills
-// in from the right edge.
+// Line graph of `values` in [min, max]; `length` samples fill the width from the right.
 Canvas {
     id: root
 

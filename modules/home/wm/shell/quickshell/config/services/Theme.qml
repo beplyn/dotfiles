@@ -2,9 +2,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-// Roles over the generated Stylix singleton (services/Stylix.qml). Roles
-// follow the shared shell theme (themes.shell): base0E is the accent, as in
-// waybar and walker. Components use these and never a literal color.
+// The palette (themes.palette) from the generated Stylix.qml; components never use a literal color.
 Singleton {
     id: root
 

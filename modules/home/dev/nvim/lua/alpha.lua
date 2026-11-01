@@ -1,4 +1,4 @@
--- inlined into init.lua: a top-level `return` here would skip the rest of the config
+-- inlined into init.lua: no top-level `return`
 local ok, alpha = pcall(require, "alpha")
 if ok and vim.fn.argc() == 0 then
   local dashboard = require("alpha.themes.dashboard")

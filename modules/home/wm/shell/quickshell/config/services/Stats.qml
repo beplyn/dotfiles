@@ -3,9 +3,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// cpu / memory / temperature / uptime for the dashboard and the monitor
-// panels, read straight from procfs and sysfs every 2s like hakuspace's
-// monitor_module. The last two minutes of each are kept for the graphs.
+// cpu / memory / temperature / uptime from procfs and sysfs every 2s;
+// two minutes of history for the graphs.
 Singleton {
     id: root
 
