@@ -32,7 +32,6 @@
         ];
         # never preselect; <CR> only confirms a <Tab> pick
         preselect = "cmp.PreselectMode.None";
-        completion.completeopt = "menu,menuone,noselect";
         mapping =
         {
           "<Down>" = "cmp.mapping.select_next_item()";

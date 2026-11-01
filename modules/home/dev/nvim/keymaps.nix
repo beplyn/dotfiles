@@ -100,7 +100,7 @@
     {
       mode = "n";
       key = "<leader>tc";
-      action = "<cmd>TSContextToggle<cr>";
+      action = "<cmd>TSContext toggle<cr>";
       options.desc = "Toggle Treesitter Context";
     }
     {

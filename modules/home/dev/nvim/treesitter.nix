@@ -14,9 +14,11 @@
 
   programs.nixvim.plugins.treesitter-context =
   {
-    enable = false;
+    enable = true;
     settings =
     {
+      # off until <leader>tc
+      enable = false;
       max_lines = 3;
       min_rows = 2;
       multiline_threshold = 1;
