@@ -28,6 +28,13 @@ let
     text = builtins.readFile ./record.sh;
   };
 
+  eapConnect = pkgs.writeShellApplication
+  {
+    name = "eap-connect";
+    runtimeInputs = [ osConfig.networking.networkmanager.package ];
+    text = builtins.readFile ./eap-connect.sh;
+  };
+
   cavaConfig = (pkgs.formats.ini { }).generate "haku-cava.conf"
   {
     general =
@@ -50,6 +57,7 @@ let
   bin =
   {
     record = lib.getExe record;
+    eapConnect = lib.getExe eapConnect;
     cava = lib.getExe pkgs.cava;
     inherit cavaConfig;
     niri = lib.getExe osConfig.programs.niri.package;

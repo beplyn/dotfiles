@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Bluetooth
+import Quickshell.Io
 import Quickshell.Networking
 import Quickshell.Services.UPower
 import qs.services
@@ -40,6 +41,25 @@ Panel {
         value: root.open && root.networksOpen && Networking.wifiEnabled
         when: root.wifi !== null
     }
+
+    // Quickshell only does PSK, so enterprise (username) networks go through nmcli.
+    Process {
+        id: eapJoin
+        property string ssid: ""
+        stderr: StdioCollector { id: eapErr }
+        onExited: code => {
+            if (code !== 0)
+                root.wifiError = ssid + ": " + (eapErr.text.trim().split("\n").pop() || "authentication failed")
+        }
+    }
+    function joinEap(network, identity, password) {
+        wifiError = ""
+        eapJoin.ssid = network.name
+        eapJoin.environment = { EAP_IDENTITY: identity, EAP_PASSWORD: password }
+        eapJoin.command = [Theme.bin.eapConnect, network.name]
+        eapJoin.running = true
+    }
+
     onOpenChanged: {
         sessionOpen = false
         networksOpen = false
@@ -57,6 +77,45 @@ Panel {
         font.bold: true
         font.capitalization: Font.AllUppercase
         font.letterSpacing: 1
+    }
+
+    // One line of the wi-fi credential prompt.
+    component Field: Rectangle {
+        property alias input: field
+        property alias hint: hintText.text
+        property alias echoMode: field.echoMode
+        signal accepted()
+        signal escaped()
+
+        Layout.fillWidth: true
+        implicitHeight: 34
+        radius: Theme.innerRadius - 2
+        color: Theme.alpha(Theme.background, 0.6)
+        border.color: field.activeFocus ? Theme.accent : Theme.surface
+        border.width: 1
+
+        TextInput {
+            id: field
+            anchors.fill: parent
+            anchors.leftMargin: 10
+            anchors.rightMargin: 10
+            verticalAlignment: TextInput.AlignVCenter
+            color: Theme.foreground
+            font.family: Theme.font
+            font.pointSize: Theme.popupFontSize
+            clip: true
+            onVisibleChanged: if (visible) text = ""
+            onAccepted: parent.accepted()
+            Keys.onEscapePressed: parent.escaped()
+
+            Text {
+                id: hintText
+                anchors.verticalCenter: parent.verticalCenter
+                visible: field.text === ""
+                color: Theme.muted
+                font: field.font
+            }
+        }
     }
 
     // --- header: who, how long, lock / power ------------------------------
@@ -293,6 +352,10 @@ Panel {
                 required property var modelData
                 readonly property bool secured: modelData.security !== WifiSecurityType.Open
                     && modelData.security !== WifiSecurityType.Owe
+                // 802.1X: wants a username as well as a password.
+                readonly property bool enterprise: modelData.security === WifiSecurityType.Wpa2Eap
+                    || modelData.security === WifiSecurityType.WpaEap
+                readonly property bool joining: eapJoin.running && eapJoin.ssid === modelData.name
                 readonly property bool asking: root.pskTarget === modelData
 
                 Layout.fillWidth: true
@@ -337,7 +400,7 @@ Panel {
                             font.bold: entry.modelData.connected
                         }
                         Text {
-                            text: entry.modelData.stateChanging ? "…"
+                            text: entry.modelData.stateChanging || entry.joining ? "…"
                                 : entry.modelData.connected ? Icons.check
                                 : entry.modelData.known ? "Saved"
                                 : entry.secured ? Icons.lock : ""
@@ -354,6 +417,7 @@ Panel {
                         cursorShape: Qt.PointingHandCursor
                         onClicked: {
                             const n = entry.modelData
+                            if (entry.joining) return
                             root.wifiError = ""
                             if (n.connected) n.disconnect()
                             else if (n.known || !entry.secured) n.connect()
@@ -362,44 +426,36 @@ Panel {
                     }
                 }
 
-                // Password prompt for a new secured network.
-                Rectangle {
-                    Layout.fillWidth: true
-                    visible: entry.asking
-                    implicitHeight: 34
-                    radius: Theme.innerRadius - 2
-                    color: Theme.alpha(Theme.background, 0.6)
-                    border.color: psk.activeFocus ? Theme.accent : Theme.surface
-                    border.width: 1
-
-                    TextInput {
-                        id: psk
-                        anchors.fill: parent
-                        anchors.leftMargin: 10
-                        anchors.rightMargin: 10
-                        verticalAlignment: TextInput.AlignVCenter
-                        echoMode: TextInput.Password
-                        color: Theme.foreground
-                        font.family: Theme.font
-                        font.pointSize: Theme.popupFontSize
-                        clip: true
-                        focus: entry.asking
-                        onVisibleChanged: if (visible) { text = ""; forceActiveFocus() }
-                        onAccepted: {
-                            if (text === "") return
-                            entry.modelData.connectWithPsk(text)
-                            root.pskTarget = null
-                        }
-                        Keys.onEscapePressed: root.pskTarget = null
-
-                        Text {
-                            anchors.verticalCenter: parent.verticalCenter
-                            visible: psk.text === ""
-                            text: "Password, then Enter"
-                            color: Theme.muted
-                            font: psk.font
-                        }
+                // Credential prompt for a new secured network; enterprise ones get a username first.
+                function submit() {
+                    const pass = psk.input.text
+                    if (pass === "") return
+                    if (entry.enterprise) {
+                        const user = identity.input.text
+                        if (user === "") { identity.input.forceActiveFocus(); return }
+                        root.joinEap(entry.modelData, user, pass)
+                    } else {
+                        entry.modelData.connectWithPsk(pass)
                     }
+                    root.pskTarget = null
+                }
+
+                onAskingChanged: if (asking) Qt.callLater(() => (enterprise ? identity : psk).input.forceActiveFocus())
+
+                Field {
+                    id: identity
+                    visible: entry.asking && entry.enterprise
+                    hint: "Username, then Enter"
+                    onAccepted: if (input.text !== "") psk.input.forceActiveFocus()
+                    onEscaped: root.pskTarget = null
+                }
+                Field {
+                    id: psk
+                    visible: entry.asking
+                    echoMode: TextInput.Password
+                    hint: "Password, then Enter"
+                    onAccepted: entry.submit()
+                    onEscaped: root.pskTarget = null
                 }
             }
         }
