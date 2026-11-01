@@ -10,6 +10,10 @@ in
     enableFishIntegration = true;
     settings =
     {
+      mgr =
+      {
+        show_hidden = true;
+      };
       opener =
       {
         edit =
