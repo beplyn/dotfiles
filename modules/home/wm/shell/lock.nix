@@ -17,8 +17,7 @@ let
   niri = lib.getExe osConfig.programs.niri.package;
   avatar = "${config.xdg.cacheHome}/pfp.png";
 
-  # ~/.pfp in any format ImageMagick reads (first frame of a gif), square-cropped
-  # to a png for hyprlock; the stock blue snowflake if it's missing or unreadable
+  # ~/.pfp (any image, set at rebuild) -> square png; snowflake if missing or unreadable
   pfp = pkgs.writeShellApplication
   {
     name = "pfp";

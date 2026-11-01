@@ -1,4 +1,4 @@
-# Quickshell panels, notifications, OSD, recorder. Nix only generates services/Stylix.qml.
+# Quickshell panels, notifications, OSD, recorder; Nix only writes Stylix.qml.
 {
   config,
   lib,

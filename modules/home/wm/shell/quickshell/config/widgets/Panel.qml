@@ -4,11 +4,8 @@ import Quickshell
 import Quickshell.Wayland
 import qs.services
 
-// One floating card dropped from waybar. The window covers the output
-// (below waybar's exclusive zone) only to catch clicks outside the card;
-// those, and Escape, close it. niri blurs exactly the card through
-// ext-background-effect. The window stays mapped until the card has
-// faded out, and takes no input while it does.
+// Floating card under waybar. The full-output window only catches outside
+// clicks (and Escape) to close; it stays mapped, inert, while fading out.
 PanelWindow {
     id: root
 

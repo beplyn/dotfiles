@@ -4,10 +4,8 @@ import Quickshell
 import Quickshell.Wayland
 import qs.services
 
-// Session menu over a dimmed, blurred desktop: lock, sleep, log out,
-// reboot, shut down. Arrows / Tab move, Enter or the action's letter
-// picks, Escape or a click outside cancels. The last three ask twice, so a
-// stray key can't end the session.
+// Session menu: arrows/Tab move, Enter or a letter picks, Escape cancels.
+// Log out, reboot and shut down ask twice.
 PanelWindow {
     id: root
 

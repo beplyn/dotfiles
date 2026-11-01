@@ -1,5 +1,4 @@
-# greetd + ReGreet in cage, themed by Stylix. Patched for the layout: clock top right, card
-# with the avatar on its right, session gear and power icons in the bottom-right corner.
+# greetd + ReGreet in cage, Stylix-themed; patched layout (clock top right, avatar by the card)
 {
   config,
   lib,
@@ -20,8 +19,7 @@ let
   snowflake = "${pkgs.nixos-icons}/share/icons/hicolor/256x256/apps/nix-snowflake.png";
 in
 {
-  # rebuild copies a blurred wallpaper-pick result and the rendered ~/.pfp here (the greeter
-  # can't read homes); the blurred Stylix wallpaper and the snowflake until then
+  # rebuild fills these (greeter can't read homes); Stylix wallpaper and snowflake until then
   systemd.tmpfiles.rules =
   [
     "d /var/lib/wallpaper 0755 root root -"

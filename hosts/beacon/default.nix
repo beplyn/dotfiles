@@ -10,7 +10,7 @@
 
   environment.systemPackages = [ pkgs.kitty.terminfo ];
 
-  # wake-on-lan (magic packet) on every wired NIC; also needs WoL enabled in the BIOS
+  # wake-on-lan on every wired NIC (also enable it in the BIOS)
   services.udev.extraRules = ''
     ACTION=="add", SUBSYSTEM=="net", KERNEL=="en*", RUN+="${pkgs.ethtool}/bin/ethtool -s $name wol g"
   '';

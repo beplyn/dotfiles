@@ -1,15 +1,14 @@
 function()
   local hl = vim.api.nvim_set_hl
 
-  -- 1. Comments: Use base0C (Frost Cyan in Nord / Teal in Catppuccin)
-  -- Distinct from standard text (base05) and highly legible on dark backgrounds
+  -- comments
   hl(0, "Comment", { fg = "@cyan@", italic = true })
   hl(0, "@comment", { fg = "@cyan@", italic = true })
   hl(0, "@comment.documentation", { fg = "@cyan@", italic = true })
   hl(0, "gitcommitComment", { fg = "@cyan@", italic = true })
   hl(0, "SpecialComment", { fg = "@blue@", italic = true })
 
-  -- 2. Relative Line Numbers: Explicitly style all three gutter groups
+  -- line numbers
   hl(0, "LineNr", { fg = "@subtext@" })
   hl(0, "LineNrAbove", { fg = "@subtext@" })
   hl(0, "LineNrBelow", { fg = "@subtext@" })
@@ -20,7 +19,7 @@ function()
   -- 4. CursorLine: no fill, so the terminal's opacity shows through
   hl(0, "CursorLine", {})
 
-  -- 5. Native Cmdline Popup (wildoptions=pum) & Menus
+  -- popup menus
   hl(0, "Pmenu", { bg = "@mantle@", fg = "@foreground@" })
   hl(0, "PmenuSel", { bg = "@purple@", fg = "@background@", bold = true })
   hl(0, "PmenuSbar", { bg = "@mantle@" })
