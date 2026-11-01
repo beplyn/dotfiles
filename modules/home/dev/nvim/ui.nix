@@ -21,9 +21,7 @@ in
     opts.termguicolors = true;
     highlightOverride =
     {
-      # --- Comments ---
-      "@comment".fg = p.muted;
-      "@comment".italic = true;
+      # --- Punctuation (comments: lua/highlights.lua) ---
       "@punctuation.delimiter".fg = p.subtext;
       "@punctuation.bracket".fg = p.cyan;
       "@punctuation.special".fg = p.purple;
@@ -69,16 +67,7 @@ in
         bg = transparent;
         ctermbg = transparent;
       };
-      NormalFloat =
-      {
-        bg = transparent;
-        ctermbg = transparent;
-      };
-      FloatBorder =
-      {
-        bg = transparent;
-        fg = p.muted;
-      };
+      # NormalFloat, FloatBorder: lua/highlights.lua
       FoldColumn.bg = transparent;
       EndOfBuffer.bg = transparent;
       WinSeparator =
@@ -124,7 +113,7 @@ in
       CursorLineNr =
       {
         bg = transparent;
-        fg = p.purple;
+        fg = p.accent;
         bold = true;
       };
       CursorLineSign.bg = transparent;
@@ -134,7 +123,7 @@ in
       TabLineSel =
       {
         bg = transparent;
-        fg = p.purple;
+        fg = p.accent;
       };
 
       BufferLineDevIconNix.bg = transparent;
@@ -210,7 +199,7 @@ in
               };
             in
             {
-              normal = mode p.purple;
+              normal = mode p.accent;
               insert = mode p.green;
               visual = mode p.yellow;
               replace = mode p.red;
@@ -246,7 +235,7 @@ in
           tab_selected =
           {
             bg = "NONE";
-            fg = p.purple;
+            fg = p.accent;
           };
           separator_selected =
           {
@@ -261,7 +250,7 @@ in
           buffer_selected =
           {
             bg = "NONE";
-            fg = p.purple;
+            fg = p.accent;
             bold = true;
           };
           buffer_visible.bg = "NONE";
