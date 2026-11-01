@@ -58,10 +58,10 @@ let
     text = ''
       mkdir -p "${cache}"
       src=
-      if [ -n "${sources}" ]; then
+      ${lib.optionalString (sources != "") ''
         src="$(find -L "${sources}" -type f \
           \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) | shuf -n1)"
-      fi
+      ''}
       if [ -n "$src" ]; then
         img="${cache}/$(basename "''${src%.*}")-${themeName}.png"
         # cached per source and theme
