@@ -62,6 +62,12 @@ if ! fj -H @forgejoHost@ auth list 2>/dev/null | grep -qF "@forgejoHost@"; then
   unset token
 fi
 
+# new wallpapers join the repo before the build; existing ones are never overwritten
+wallpapers="$HOME/Pictures/Wallpapers"
+if [ -d "$wallpapers" ]; then
+  cp -r --update=none "$wallpapers/." "$flake/modules/home/wm/shell/quickshell/wallpapers/"
+fi
+
 git -C "$flake" add .
 sudo nixos-rebuild switch --flake "$flake#@hostName@-$theme"
 
