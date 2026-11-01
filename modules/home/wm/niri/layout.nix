@@ -22,7 +22,7 @@ in
       default-column-width.proportion = 0.5;
       center-focused-column = "never";
 
-      # active border: base0E accent
+      # active border: accent
       border =
       {
         enable = true;
@@ -70,13 +70,13 @@ in
       };
     };
 
-    # 12px corners, hollow borders
+    # shell-radius corners, hollow borders
     window-rules =
     [
       {
         geometry-corner-radius =
           let
-            r = 12.0;
+            r = config.themes.shell.radius * 1.0;
           in
           {
             top-left = r;
