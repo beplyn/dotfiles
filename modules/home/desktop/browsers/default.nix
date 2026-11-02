@@ -29,6 +29,7 @@ let
     protondb-for-steam = "{30280527-c46c-4e03-bb16-2e3ed94fa57c}";
     steamartworkhubessentials = "{bb53f7e1-a291-485a-88d7-2dca7b20c3a7}";
     catppuccin-web-file-icons = "{bbb880ce-43c9-47ae-b746-c3e0096c5b76}";
+    vimium-ff = "{d7742d87-e61d-4b78-b8a1-b469842139fa}";
   };
 
   policies.ExtensionSettings = lib.mapAttrs' (slug: id: lib.nameValuePair id
@@ -139,4 +140,13 @@ in
     };
   };
   stylix.targets.librewolf.profileNames = [ "default" ];
+
+  # Vimium keeps settings in sync storage only: restore this from its options page
+  xdg.configFile."vimium/catppuccin.json".text = builtins.toJSON
+  {
+    settingsVersion = "2.4.2";
+    userDefinedLinkHintCss =
+      ctp.recolor "${inputs.catppuccin-vimium}/themes/vimium/catppuccin-vimium-mocha.css"
+      + ctp.override ./vimium.css;
+  };
 }
