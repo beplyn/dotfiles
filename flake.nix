@@ -74,6 +74,12 @@
       flake = false;
     };
 
+    glass-firefox =
+    {
+      url = "github:ChaosMx11/Glass-Firefox-Theme";
+      flake = false;
+    };
+
     zen-browser =
     {
       url = "github:0xc000022070/zen-browser-flake";

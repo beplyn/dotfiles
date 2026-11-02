@@ -233,6 +233,22 @@
         "type": "github"
       }
     },
+    "glass-firefox": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1792340659,
+        "narHash": "sha256-qgj/Mg+xcGLz133MIrXVKOIplR38ewmKQlj/ZcaGKfQ=",
+        "owner": "ChaosMx11",
+        "repo": "Glass-Firefox-Theme",
+        "rev": "f0c5b8c0a6831877641b09c27f1e02878f99b8d2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ChaosMx11",
+        "repo": "Glass-Firefox-Theme",
+        "type": "github"
+      }
+    },
     "gnome-shell": {
       "flake": false,
       "locked": {
@@ -571,6 +587,7 @@
         "catppuccin-vimium": "catppuccin-vimium",
         "catppuccin-zen": "catppuccin-zen",
         "forgejo-cli": "forgejo-cli",
+        "glass-firefox": "glass-firefox",
         "home-manager": "home-manager",
         "millennium": "millennium",
         "netspd": "netspd",
