@@ -1,0 +1,8 @@
+/* on top of catppuccin/vimium */
+
+/* upstream drops two semicolons, swallowing subtext0/1 and surface2 */
+:root {
+  --vimium-subtext0: @subtext@;
+  --vimium-subtext1: color-mix(in srgb, @foreground@, @subtext@);
+  --vimium-surface2: color-mix(in srgb, @surface@, @muted@);
+}

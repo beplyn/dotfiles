@@ -88,6 +88,22 @@
         "type": "github"
       }
     },
+    "catppuccin-vimium": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787467336,
+        "narHash": "sha256-Nuijt4Se3lnUZ/gHC+jAUBbf1KEROT/y2kaOdob/6So=",
+        "owner": "catppuccin",
+        "repo": "vimium",
+        "rev": "cec820c38e2e7f589de141edc3459bdf12afb576",
+        "type": "github"
+      },
+      "original": {
+        "owner": "catppuccin",
+        "repo": "vimium",
+        "type": "github"
+      }
+    },
     "catppuccin-zen": {
       "flake": false,
       "locked": {
@@ -552,6 +568,7 @@
     "root": {
       "inputs": {
         "areofyl-fetch": "areofyl-fetch",
+        "catppuccin-vimium": "catppuccin-vimium",
         "catppuccin-zen": "catppuccin-zen",
         "forgejo-cli": "forgejo-cli",
         "home-manager": "home-manager",
