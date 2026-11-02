@@ -6,5 +6,6 @@
     ./nvim
     ./toolchains.nix
     ./opencode.nix
+    ./claude.nix
   ];
 }

@@ -150,6 +150,49 @@ in
   {
     networking.firewall.allowedTCPPorts = [ 80 443 ];
 
+    # rebuild asks for whichever are missing
+    rebuild.secrets =
+    {
+      "${secrets}/cloudflare-ddns.token" =
+      {
+        description = "Cloudflare API token (Zone.DNS edit) for dyndns";
+        restart = [ "cloudflare-dyndns.service" ];
+      };
+    }
+    // lib.optionalAttrs (cfg.tls == "acme")
+    {
+      "${secrets}/acme-cloudflare.env" =
+      {
+        description = "Cloudflare API token (Zone.DNS edit) for ACME DNS-01";
+        prefix = "CF_DNS_API_TOKEN=";
+        restart = [ "acme-order-renew-${cfg.domain}.service" ];
+      };
+    }
+    // lib.optionalAttrs (cfg.tls == "origin")
+    {
+      "${secrets}/certs/cert.pem" =
+      {
+        description = "Cloudflare Origin CA certificate";
+        file = true;
+        restart = [ "nginx.service" ];
+      };
+      "${secrets}/certs/key.pem" =
+      {
+        description = "Cloudflare Origin CA private key";
+        file = true;
+        restart = [ "nginx.service" ];
+      };
+    }
+    // lib.optionalAttrs cfg.originPulls
+    {
+      "${secrets}/certs/origin-pull-ca.pem" =
+      {
+        description = "Cloudflare Authenticated Origin Pulls CA";
+        file = true;
+        restart = [ "nginx.service" ];
+      };
+    };
+
     services.cloudflare-dyndns =
     {
       enable = true;
