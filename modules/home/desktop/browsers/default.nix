@@ -80,7 +80,11 @@ let
   };
 in
 {
-  imports = [ inputs.zen-browser.homeModules.beta ];
+  imports =
+  [
+    inputs.zen-browser.homeModules.beta
+    ./sine.nix
+  ];
 
   # Zen: default browser
   programs.zen-browser =
@@ -93,6 +97,8 @@ in
       id = 0;
       isDefault = true;
       inherit extensions;
+      # Sine mod manager, pinned and non-updating
+      sine.enable = true;
       settings."toolkit.legacyUserProfileCustomizations.stylesheets" = true;
       # upstream catppuccin/zen-browser recoloured, local overrides after it
       userChrome = theme.catppuccin "${zenTheme}/userChrome.css" + theme.override ./zen/userChrome.css;
