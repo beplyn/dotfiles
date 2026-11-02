@@ -10,7 +10,7 @@
 let
   p = config.themes.palette;
 
-  ctp = import ./catppuccin.nix { inherit lib subst; palette = p; };
+  theme = import ./recolor.nix { inherit lib subst; palette = p; };
   zenTheme = "${inputs.catppuccin-zen}/themes/Mocha/Mauve";
 
   # AMO slug -> addon id; force-installed from AMO, auto-updating
@@ -95,12 +95,12 @@ in
       inherit extensions;
       settings."toolkit.legacyUserProfileCustomizations.stylesheets" = true;
       # upstream catppuccin/zen-browser recoloured, local overrides after it
-      userChrome = ctp.recolor "${zenTheme}/userChrome.css" + ctp.override ./zen/userChrome.css;
-      userContent = ctp.recolor "${zenTheme}/userContent.css" + ctp.override ./zen/userContent.css;
+      userChrome = theme.catppuccin "${zenTheme}/userChrome.css" + theme.override ./zen/userChrome.css;
+      userContent = theme.catppuccin "${zenTheme}/userContent.css" + theme.override ./zen/userContent.css;
     };
   };
   home.file."${config.programs.zen-browser.profilesPath}/default/chrome/zen-logo-mocha.svg".text =
-    ctp.recolor "${zenTheme}/zen-logo-mocha.svg";
+    theme.catppuccin "${zenTheme}/zen-logo-mocha.svg";
   stylix.targets.zen-browser =
   {
     profileNames = [ "default" ];
@@ -119,8 +119,15 @@ in
       id = 0;
       isDefault = true;
       inherit extensions;
+      # upstream Glass-Firefox-Theme recoloured, local overrides after it
+      userChrome = theme.glass "${inputs.glass-firefox}/chrome/userChrome.css" + theme.override ./glass/userChrome.css;
+      userContent = theme.glass "${inputs.glass-firefox}/chrome/userContent.css" + theme.override ./glass/userContent.css;
       settings =
       {
+        "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+        # see-through content area for the glass look
+        "browser.tabs.allow_transparent_browser" = true;
+
         "places.history.enabled" = false;
         "browser.formfill.enable" = false;
         "signon.rememberSignons" = false;
@@ -146,7 +153,7 @@ in
   {
     settingsVersion = "2.4.2";
     userDefinedLinkHintCss =
-      ctp.recolor "${inputs.catppuccin-vimium}/themes/vimium/catppuccin-vimium-mocha.css"
-      + ctp.override ./vimium.css;
+      theme.catppuccin "${inputs.catppuccin-vimium}/themes/vimium/catppuccin-vimium-mocha.css"
+      + theme.override ./vimium.css;
   };
 }

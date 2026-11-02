@@ -1,9 +1,11 @@
-# Upstream Catppuccin Mocha files -> Stylix scheme; overrides get the same names via subst.
+# Upstream themes -> Stylix scheme; overrides get the same names via subst.
 { lib, subst, palette }:
 
 let
   channels = hex: map (i: lib.fromHexString (builtins.substring i 2 (lib.removePrefix "#" hex))) [ 0 2 4 ];
   toHex = cs: "#" + lib.concatMapStrings (c: lib.fixedWidthString 2 "0" (lib.toLower (lib.toHexString c))) cs;
+  # "r, g, b" for rgba()
+  rgb = hex: lib.concatMapStringsSep ", " toString (channels hex);
 
   # pct of a, rest of b, per channel
   mix = pct: a: b: toHex (lib.zipListsWith (x: y: (x * pct + y * (100 - pct)) / 100) (channels a) (channels b));
@@ -16,8 +18,17 @@ let
     crust = mix 57 p.background "#000000";
   };
 
-  # every Mocha colour; ones base16 lacks are blends of their neighbours
-  mocha = with colors;
+  # literal -> replacement, upper-case hex too
+  replace = table: file:
+    let
+      from = lib.attrNames table;
+      to = lib.attrValues table;
+    in
+    lib.replaceStrings (from ++ map lib.toUpper from) (to ++ to) (builtins.readFile file);
+in
+{
+  # catppuccin/*: every Mocha colour; ones base16 lacks are blends of their neighbours
+  catppuccin = replace (with colors;
   {
     "#f5e0dc" = bright; # rosewater
     "#f2cdcd" = brown; # flamingo
@@ -45,13 +56,31 @@ let
     "#1e1e2e" = background; # base
     "#181825" = shade; # mantle
     "#11111b" = crust;
-  };
-  from = lib.attrNames mocha ++ map lib.toUpper (lib.attrNames mocha);
-  to = lib.attrValues mocha ++ lib.attrValues mocha;
-in
-{
-  # upstream file, recoloured
-  recolor = file: lib.replaceStrings from to (builtins.readFile file);
+  });
+
+  # Glass-Firefox-Theme: navy -> background, gold -> accent, alpha kept
+  glass = replace (with colors;
+  {
+    "#10263f" = background; # ink
+    "rgba(16, 38, 63," = "rgba(${rgb background},";
+    "rgba(7, 17, 30," = "rgba(${rgb shade},";
+    "rgba(4, 10, 18," = "rgba(${rgb crust},";
+    "#9c6b1f" = accent; # gold
+    "rgba(156, 107, 31," = "rgba(${rgb accent},";
+    # gold shades: lighter towards text, darker towards black
+    "#a8792d" = mix 90 accent foreground;
+    "#b27d26" = mix 80 accent foreground;
+    "#b6822b" = mix 80 accent foreground;
+    "#c99a43" = mix 65 accent foreground;
+    "#d7ad5e" = mix 50 accent foreground;
+    "#f4d28a" = mix 30 accent foreground;
+    "#805817" = mix 80 accent "#000000";
+    "#805718" = mix 80 accent "#000000";
+    "#f4f7fb" = foreground; # text
+    "#ffffff" = mix 60 foreground "#ffffff"; # emphasised text
+    "#c8d2df" = subtext; # muted
+  });
+
   # local overrides: @name@ placeholders from the palette (+ shade, crust)
   override = file: subst colors (builtins.readFile file);
 }

@@ -1,0 +1,9 @@
+
+/* on top of Glass-Firefox-Theme: stylix accents are light, so text on them is dark */
+
+@-moz-document url-prefix("about:newtab"), url-prefix("about:home") {
+  .topsite-form moz-button[type="primary"] {
+    --button-text-color: @background@ !important;
+    --button-text-color-hover: @background@ !important;
+  }
+}
