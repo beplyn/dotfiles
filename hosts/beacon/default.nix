@@ -8,6 +8,13 @@
   encryption.enable = false;
   services.openssh.enable = true;
 
+  # no hosts yet: dyndns keeps only the apex pointed here
+  proxy =
+  {
+    enable = true;
+    domain = "beplyn.dev";
+  };
+
   environment.systemPackages = [ pkgs.kitty.terminfo ];
 
   # wake-on-lan on every wired NIC (also enable it in the BIOS)

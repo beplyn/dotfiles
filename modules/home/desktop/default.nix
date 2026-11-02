@@ -5,7 +5,6 @@
     ./gaming.nix
     ./gtk.nix
     ./protonmail.nix
-    ./claude.nix
     ./virtualization.nix
     ./equibop
     ./browsers
