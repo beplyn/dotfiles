@@ -1,0 +1,7 @@
+/* on top of catppuccin/zen-browser: upstream literals the recolouring can't reach */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --tab-selected-textcolor: color-mix(in srgb, @accent@ 60%, @foreground@) !important;
+  }
+}
