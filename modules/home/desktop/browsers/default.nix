@@ -3,6 +3,7 @@
   inputs,
   lib,
   subst,
+  themeName,
   ...
 }:
 
@@ -27,6 +28,7 @@ let
     steam-database = "firefox-extension@steamdb.info";
     protondb-for-steam = "{30280527-c46c-4e03-bb16-2e3ed94fa57c}";
     steamartworkhubessentials = "{bb53f7e1-a291-485a-88d7-2dca7b20c3a7}";
+    catppuccin-web-file-icons = "{bbb880ce-43c9-47ae-b746-c3e0096c5b76}";
   };
 
   policies.ExtensionSettings = lib.mapAttrs' (slug: id: lib.nameValuePair id
@@ -35,10 +37,16 @@ let
     install_url = "https://addons.mozilla.org/firefox/downloads/latest/${slug}/latest.xpi";
   }) addons;
 
-  # Dark Reader follows the Stylix scheme
   extensions =
   {
     force = true;
+    # forge icons: mocha on catppuccin, single neutral colour on the others
+    settings."{bbb880ce-43c9-47ae-b746-c3e0096c5b76}".settings =
+    {
+      flavor = "mocha";
+      monochrome = themeName != "catppuccin";
+    };
+    # Dark Reader follows the Stylix scheme
     settings."addon@darkreader.org".settings =
     {
       # local storage only, sync would shadow these
