@@ -155,7 +155,7 @@ in
     extraFiles =
     {
       "logos".source = ./logos;
-      "lua/random_logo.lua".source = ./lua/random_logo.lua;
+      "lua/random-logo.lua".source = ./lua/random-logo.lua;
     };
 
     plugins =

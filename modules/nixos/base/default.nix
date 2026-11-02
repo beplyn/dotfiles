@@ -6,10 +6,10 @@
     ./locale.nix
     ./networking.nix
     ./ssh.nix
-    ./shell.nix
-    ./rebuild.nix
+    ./shell
+    ./rebuild
     ./starship.nix
-    ./greeting.nix
+    ./greeting
     ./packages.nix
   ];
 

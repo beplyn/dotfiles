@@ -1,0 +1,71 @@
+/* on top of catppuccin/zen-browser: upstream literals the recolouring can't reach */
+
+@media (prefers-color-scheme: dark) {
+
+  @-moz-document url-prefix("about:") {
+    :root {
+      --color-accent-primary-hover: color-mix(in srgb, @accent@ 80%, @foreground@) !important;
+      --color-accent-primary-active: color-mix(in srgb, @accent@ 80%, @red@) !important;
+    }
+  }
+
+  @-moz-document url("about:newtab"), url("about:home") {
+    /* recoloured local logo only, no fetch from github */
+    .search-wrapper .logo-and-wordmark .logo {
+      background: url("zen-logo-mocha.svg") no-repeat center !important;
+    }
+  }
+
+  @-moz-document url-prefix("about:preferences") {
+    :root {
+      --link-color-hover: color-mix(in srgb, @accent@ 80%, @foreground@) !important;
+    }
+
+    /* upstream ships macchiato here */
+    .identity-color-blue {
+      --identity-tab-color: @blue@ !important;
+      --identity-icon-color: @blue@ !important;
+    }
+
+    .identity-color-turquoise {
+      --identity-tab-color: @cyan@ !important;
+      --identity-icon-color: @cyan@ !important;
+    }
+
+    .identity-color-green {
+      --identity-tab-color: @green@ !important;
+      --identity-icon-color: @green@ !important;
+    }
+
+    .identity-color-yellow {
+      --identity-tab-color: @yellow@ !important;
+      --identity-icon-color: @yellow@ !important;
+    }
+
+    .identity-color-orange {
+      --identity-tab-color: @orange@ !important;
+      --identity-icon-color: @orange@ !important;
+    }
+
+    .identity-color-red {
+      --identity-tab-color: @red@ !important;
+      --identity-icon-color: @red@ !important;
+    }
+
+    .identity-color-pink {
+      --identity-tab-color: color-mix(in srgb, @red@, @purple@) !important;
+      --identity-icon-color: color-mix(in srgb, @red@, @purple@) !important;
+    }
+
+    .identity-color-purple {
+      --identity-tab-color: @purple@ !important;
+      --identity-icon-color: @purple@ !important;
+    }
+  }
+
+  @-moz-document url-prefix("about:protections") {
+    :root {
+      --in-content-primary-button-background-hover: color-mix(in srgb, @surface@ 85%, @foreground@) !important;
+    }
+  }
+}

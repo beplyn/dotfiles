@@ -2,8 +2,8 @@
   imports =
   [
     ./audio.nix
-    ./desktop.nix
-    ./display-manager.nix
+    ./session.nix
+    ./display-manager
     ./kdeconnect.nix
     ./fonts.nix
     ./gaming.nix

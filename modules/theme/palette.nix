@@ -21,6 +21,7 @@ in
     subtext = c.base04;
     foreground = c.base05;
     bright = c.base06;
+    brightest = c.base07;
     red = c.base08;
     orange = c.base09;
     yellow = c.base0A;

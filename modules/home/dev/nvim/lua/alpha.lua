@@ -2,7 +2,7 @@
 local ok, alpha = pcall(require, "alpha")
 if ok and vim.fn.argc() == 0 then
   local dashboard = require("alpha.themes.dashboard")
-  local random_logo = require("random_logo")
+  local random_logo = require("random-logo")
 
   local function button(sc, txt, keybind)
     local b = dashboard.button(sc, txt, keybind)

@@ -1,0 +1,19 @@
+
+/* on top of Glass-Firefox-Theme: stylix accents are light, so text on them is dark */
+
+@-moz-document url("chrome://global/content/commonDialog.xhtml") {
+  :root,
+  #commonDialogWindow,
+  #commonDialog {
+    --in-content-primary-button-text-color: @background@ !important;
+    --in-content-primary-button-text-color-hover: @background@ !important;
+    --in-content-primary-button-text-color-active: @background@ !important;
+  }
+
+  button[dlgtype="accept"],
+  button[default="true"],
+  button[dlgtype="accept"]:hover,
+  button[default="true"]:hover {
+    color: @background@ !important;
+  }
+}
