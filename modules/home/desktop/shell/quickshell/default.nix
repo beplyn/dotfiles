@@ -77,7 +77,7 @@ let
     recorder = 9;
   };
 
-  laptop = osConfig.laptop;
+  laptop = osConfig.laptop.enable;
 
   # Stylix.qml: one property per value, strings via toJSON
   prop = type: name: value: "    readonly property ${type} ${name}: ${value}";

@@ -12,7 +12,7 @@ let
   gap = config.programs.niri.settings.layout.gaps;
   niri = lib.getExe osConfig.programs.niri.package;
   signals = config.lib.haku.waybarSignals;
-  laptop = osConfig.laptop;
+  laptop = osConfig.laptop.enable;
 
   # qs ipc call as an on-click string
   ipc = target: fn: args: lib.escapeShellArgs (config.lib.haku.ipc target fn ++ args);
@@ -335,14 +335,16 @@ in
       ${t.css}
       @define-color glass alpha(@background, ${toString (t.glass - 0.17)});
 
-      * {
+      *
+      {
         font-family: ${t.font};
         font-size: ${toString t.fontSize}pt;
       }
 
       window#waybar > box,
       tooltip,
-      menu {
+      menu
+      {
         border-radius: ${toString t.radius}px;
       }
     ''

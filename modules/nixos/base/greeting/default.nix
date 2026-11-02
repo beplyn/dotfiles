@@ -7,7 +7,8 @@
 
 # replaces fastfetch (`ff`); first shell per login, over ssh, else 1 in `chance`
 let
-  vars = lib.mapAttrs (_: lib.removePrefix "#") config.themes.palette // {
+  vars = lib.mapAttrs (_: lib.removePrefix "#") config.themes.palette //
+  {
     chance = "4";
     diskWarn = "85"; # percent
   };

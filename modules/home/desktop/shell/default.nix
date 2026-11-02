@@ -3,9 +3,9 @@
   [
     ./quickshell
     ./waybar
-    ./walker.nix
+    ./walker
     ./clipboard.nix
-    ./screenshot.nix
+    ./screenshot
     ./lock.nix
   ];
 }

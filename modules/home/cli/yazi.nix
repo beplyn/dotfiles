@@ -8,11 +8,22 @@ in
   {
     enable = true;
     enableFishIntegration = true;
+    keymap =
+    {
+      mgr.prepend_keymap =
+      [
+        {
+          on = "<C-h>";
+          run = "hidden toggle";
+          desc = "Toggle hidden files";
+        }
+      ];
+    };
     settings =
     {
       mgr =
       {
-        show_hidden = true;
+        show_hidden = false;
       };
       opener =
       {

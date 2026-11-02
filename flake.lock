@@ -88,6 +88,38 @@
         "type": "github"
       }
     },
+    "catppuccin-vimium": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787467336,
+        "narHash": "sha256-Nuijt4Se3lnUZ/gHC+jAUBbf1KEROT/y2kaOdob/6So=",
+        "owner": "catppuccin",
+        "repo": "vimium",
+        "rev": "cec820c38e2e7f589de141edc3459bdf12afb576",
+        "type": "github"
+      },
+      "original": {
+        "owner": "catppuccin",
+        "repo": "vimium",
+        "type": "github"
+      }
+    },
+    "catppuccin-zen": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1759018582,
+        "narHash": "sha256-5A57Lyctq497SSph7B+ucuEyF1gGVTsuI3zuBItGfg4=",
+        "owner": "catppuccin",
+        "repo": "zen-browser",
+        "rev": "c855685442c6040c4dda9c8d3ddc7b708de1cbaa",
+        "type": "github"
+      },
+      "original": {
+        "owner": "catppuccin",
+        "repo": "zen-browser",
+        "type": "github"
+      }
+    },
     "firefox-gnome-theme": {
       "flake": false,
       "locked": {
@@ -198,6 +230,22 @@
       "original": {
         "owner": "SenchoPens",
         "repo": "fromYaml",
+        "type": "github"
+      }
+    },
+    "glass-firefox": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1792340659,
+        "narHash": "sha256-qgj/Mg+xcGLz133MIrXVKOIplR38ewmKQlj/ZcaGKfQ=",
+        "owner": "ChaosMx11",
+        "repo": "Glass-Firefox-Theme",
+        "rev": "f0c5b8c0a6831877641b09c27f1e02878f99b8d2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ChaosMx11",
+        "repo": "Glass-Firefox-Theme",
         "type": "github"
       }
     },
@@ -536,7 +584,10 @@
     "root": {
       "inputs": {
         "areofyl-fetch": "areofyl-fetch",
+        "catppuccin-vimium": "catppuccin-vimium",
+        "catppuccin-zen": "catppuccin-zen",
         "forgejo-cli": "forgejo-cli",
+        "glass-firefox": "glass-firefox",
         "home-manager": "home-manager",
         "millennium": "millennium",
         "netspd": "netspd",
