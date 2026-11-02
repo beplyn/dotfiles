@@ -67,8 +67,13 @@ in
     };
   };
 
+  home-manager.sharedModules =
+  [
+    # no rofi (walker); its target sets the renamed programs.rofi.font
+    { stylix.targets.rofi.enable = false; }
+  ]
   # servers: terminal targets only
-  home-manager.sharedModules = lib.optional headless
+  ++ lib.optional headless
   {
     # no dconf without a session, but some targets still write to it
     dconf.enable = false;

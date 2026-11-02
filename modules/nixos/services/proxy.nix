@@ -194,7 +194,8 @@ in
         ${lib.concatMapStrings (ip: "set_real_ip_from ${ip};\n") cloudflareIPs}
         real_ip_header CF-Connecting-IP;
 
-        geo $realip_remote_addr $from_cloudflare {
+        geo $realip_remote_addr $from_cloudflare
+        {
           default 0;
         ${lib.concatMapStrings (ip: "  ${ip} 1;\n") cloudflareIPs}
         }

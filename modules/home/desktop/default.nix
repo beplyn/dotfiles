@@ -11,5 +11,7 @@
     ./browsers.nix
     ./office.nix
     ./media.nix
+    ./niri
+    ./shell
   ];
 }

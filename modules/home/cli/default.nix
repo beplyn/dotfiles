@@ -8,15 +8,15 @@
     ./eza.nix
     ./ripgrep.nix
     ./lazyclis.nix
-    ./fetch.nix
-    ./gitui.nix
+    ./fetch
+    ./gitui
     ./tmux.nix
     ./yazi.nix
     ./tools.nix
     ./forgejo.nix
     ./fastfetch.nix
     ./bottom.nix
-    ./btop.nix
-    ./netspd.nix
+    ./btop
+    ./netspd
   ];
 }
