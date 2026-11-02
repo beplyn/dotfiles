@@ -1,0 +1,216 @@
+{
+  config,
+  lib,
+  email,
+  ...
+}:
+
+# nginx behind Cloudflare, no tunnel; secrets stay in /var/secrets, out of the store
+let
+  cfg = config.proxy;
+  secrets = "/var/secrets";
+  # nginx isn't root; systemd copies root-only files here
+  creds = "/run/credentials/nginx.service";
+
+  # https://www.cloudflare.com/ips/
+  cloudflareIPs =
+  [
+    "173.245.48.0/20"
+    "103.21.244.0/22"
+    "103.22.200.0/22"
+    "103.31.4.0/22"
+    "141.101.64.0/18"
+    "108.162.192.0/18"
+    "190.93.240.0/20"
+    "188.114.96.0/20"
+    "197.234.240.0/22"
+    "198.41.128.0/17"
+    "162.158.0.0/15"
+    "104.16.0.0/13"
+    "104.24.0.0/14"
+    "172.64.0.0/13"
+    "131.0.72.0/22"
+    "2400:cb00::/32"
+    "2606:4700::/32"
+    "2803:f800::/32"
+    "2405:b500::/32"
+    "2405:8100::/32"
+    "2a06:98c0::/29"
+    "2c0f:f248::/32"
+  ];
+
+  # "@" is the apex
+  fqdn = name: if name == "@" then cfg.domain else "${name}.${cfg.domain}";
+
+  tls =
+    if cfg.tls == "acme" then
+      { useACMEHost = cfg.domain; }
+    else
+      {
+        sslCertificate = "${creds}/cert.pem";
+        sslCertificateKey = "${creds}/key.pem";
+      };
+
+  vhost = name: host:
+  {
+    name = fqdn name;
+    value = tls //
+    {
+      forceSSL = true;
+      # Host, X-Real-IP, X-Forwarded-* via recommendedProxySettings
+      locations."/" =
+      {
+        proxyPass = "http://${host.address}:${toString host.port}";
+        # Upgrade + Connection
+        proxyWebsockets = host.websockets;
+      };
+      extraConfig = ''
+        # skipped Cloudflare
+        if ($from_cloudflare = 0) { return 444; }
+      ''
+      + lib.optionalString cfg.originPulls ''
+        ssl_client_certificate ${creds}/origin-pull-ca.pem;
+        ssl_verify_client on;
+      '';
+    };
+  };
+in
+{
+  options.proxy =
+  {
+    enable = lib.mkEnableOption "Nginx behind Cloudflare's proxy, with Cloudflare dynamic DNS";
+
+    domain = lib.mkOption
+    {
+      type = lib.types.str;
+      example = "example.com";
+      description = "Cloudflare zone the services live under.";
+    };
+
+    tls = lib.mkOption
+    {
+      type = lib.types.enum [ "acme" "origin" ];
+      default = "acme";
+      description = ''
+        Origin certificate for Cloudflare's Full (Strict) mode.
+        acme: Let's Encrypt wildcard via DNS-01, token in ${secrets}/acme-cloudflare.env.
+        origin: Cloudflare Origin CA at ${secrets}/certs/{cert,key}.pem.
+      '';
+    };
+
+    originPulls = lib.mkOption
+    {
+      type = lib.types.bool;
+      default = false;
+      description = ''
+        Require Cloudflare's Authenticated Origin Pulls client certificate,
+        CA at ${secrets}/certs/origin-pull-ca.pem.
+      '';
+    };
+
+    ipv6 = lib.mkOption
+    {
+      type = lib.types.bool;
+      default = false;
+      description = "Also keep AAAA records updated.";
+    };
+
+    hosts = lib.mkOption
+    {
+      type = lib.types.attrsOf (lib.types.submodule
+      {
+        options =
+        {
+          port = lib.mkOption
+          {
+            type = lib.types.port;
+            description = "Upstream port.";
+          };
+          address = lib.mkOption
+          {
+            type = lib.types.str;
+            default = "127.0.0.1";
+            description = "Upstream address.";
+          };
+          websockets = lib.mkOption
+          {
+            type = lib.types.bool;
+            default = true;
+            description = "Pass WebSocket upgrades through.";
+          };
+        };
+      });
+      default = { };
+      example = { git.port = 3000; };
+      description = "Subdomains (\"@\" for the apex) to reverse proxy, each to a local upstream.";
+    };
+  };
+
+  config = lib.mkIf cfg.enable
+  {
+    networking.firewall.allowedTCPPorts = [ 80 443 ];
+
+    services.cloudflare-dyndns =
+    {
+      enable = true;
+      apiTokenFile = "${secrets}/cloudflare-ddns.token";
+      domains = if cfg.hosts == { } then [ cfg.domain ] else map fqdn (lib.attrNames cfg.hosts);
+      proxied = true;
+      inherit (cfg) ipv6;
+    };
+
+    security.acme = lib.mkIf (cfg.tls == "acme")
+    {
+      acceptTerms = true;
+      defaults.email = email;
+      certs.${cfg.domain} =
+      {
+        extraDomainNames = [ "*.${cfg.domain}" ];
+        dnsProvider = "cloudflare";
+        # CF_DNS_API_TOKEN=...
+        environmentFile = "${secrets}/acme-cloudflare.env";
+        group = config.services.nginx.group;
+      };
+    };
+
+    systemd.services.nginx.serviceConfig.LoadCredential =
+      lib.optionals (cfg.tls == "origin")
+      [
+        "cert.pem:${secrets}/certs/cert.pem"
+        "key.pem:${secrets}/certs/key.pem"
+      ]
+      ++ lib.optional cfg.originPulls "origin-pull-ca.pem:${secrets}/certs/origin-pull-ca.pem";
+
+    services.nginx =
+    {
+      enable = true;
+      recommendedProxySettings = true;
+      recommendedTlsSettings = true;
+      recommendedOptimisation = true;
+      recommendedGzipSettings = true;
+
+      # real client IP; $from_cloudflare checks the actual peer
+      commonHttpConfig = ''
+        ${lib.concatMapStrings (ip: "set_real_ip_from ${ip};\n") cloudflareIPs}
+        real_ip_header CF-Connecting-IP;
+
+        geo $realip_remote_addr $from_cloudflare {
+          default 0;
+        ${lib.concatMapStrings (ip: "  ${ip} 1;\n") cloudflareIPs}
+        }
+      '';
+
+      virtualHosts =
+      {
+        # bare IP / unknown Host: drop, no cert handed out
+        "_" =
+        {
+          default = true;
+          rejectSSL = true;
+          locations."/".return = "444";
+        };
+      }
+      // lib.mapAttrs' vhost cfg.hosts;
+    };
+  };
+}

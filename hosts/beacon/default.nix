@@ -1,7 +1,11 @@
 { pkgs, ... }:
 
 {
-  imports = [ ./hardware.nix ];
+  imports =
+  [
+    ./hardware.nix
+    ./proxy.nix
+  ];
 
   networking.hostName = "beacon";
   docker.enable = true;
