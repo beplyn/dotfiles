@@ -1,4 +1,10 @@
 {
+  # clangd formats C/C++ with the nearest .clang-format; this is the default for anything under ~
+  home.file.".clang-format".text = ''
+    BasedOnStyle: LLVM
+    BreakBeforeBraces: Allman
+  '';
+
   programs.nixvim.plugins.conform-nvim =
   {
     enable = true;
