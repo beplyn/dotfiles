@@ -2,7 +2,7 @@ name: Check hosts
 
 on:
   push:
-    branches: [master]
+    branches: [stage]
   pull_request:
   workflow_dispatch:
 
