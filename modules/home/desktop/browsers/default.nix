@@ -53,6 +53,8 @@ let
       # local storage only, sync would shadow these
       syncSettings = false;
       enabled = true;
+      # else it backs off on sites with their own dark mode, dropping the stylix colours
+      detectDarkTheme = false;
       theme =
       {
         mode = 1;
