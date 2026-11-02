@@ -63,6 +63,42 @@ if ! fj -H @forgejoHost@ auth list 2>/dev/null | grep -qF "@forgejoHost@"; then
   unset token
 fi
 
+# host secrets (rebuild.secrets): root-only, never in the repo; delete one to be asked again
+restart=()
+# shellcheck disable=SC2329 # no calls on hosts without secrets
+host_secret() {
+  local path="$1" what="$2" prefix="$3" kind="$4" units="$5" value
+  sudo test -s "$path" && return
+  # umask reaches sudo, so new dirs are 0700
+  (umask 077 && sudo mkdir -p "${path%/*}")
+  if [ "$kind" = file ]; then
+    read -erp "File with the $what for $path (empty to skip): " value || value=
+    value="${value/#\~/$HOME}"
+    if [ -z "$value" ]; then
+      echo "$path still missing" >&2
+      return
+    elif [ ! -r "$value" ]; then
+      echo "$value is not readable, $path still missing" >&2
+      return
+    fi
+    sudo install -m 0400 -o root -g root "$value" "$path"
+  else
+    read -rsp "$what for $path (empty to skip): " value; echo
+    if [ -z "$value" ]; then
+      echo "$path still missing" >&2
+      return
+    fi
+    # via stdin, keeps it out of argv
+    printf '%s%s\n' "$prefix" "$value" | sudo install -m 0400 -o root -g root /dev/stdin "$path"
+  fi
+  if [ -n "$units" ]; then
+    # shellcheck disable=SC2206 # space-separated unit names
+    restart+=($units)
+  fi
+}
+@hostSecrets@
+unset -f host_secret
+
 # copy new wallpapers into the repo, never overwrite
 wallpapers="$HOME/Pictures/Wallpapers"
 if [ -d "$wallpapers" ]; then
@@ -87,6 +123,11 @@ fi
 # new files reach the flake; nothing else gets staged
 git -C "$flake" add --intent-to-add .
 sudo nixos-rebuild switch --flake "$flake#@hostName@-$theme"
+
+# units that were waiting on a new secret
+if [ ${#restart[@]} -gt 0 ]; then
+  sudo systemctl restart "${restart[@]}" || echo "restarting ${restart[*]} failed, see journalctl" >&2
+fi
 
 # new random wallpaper in the theme's colours (desktop hosts only)
 if command -v wallpaper-pick >/dev/null; then
