@@ -8,7 +8,7 @@
     ./claude.nix
     ./virtualization.nix
     ./equibop
-    ./browsers.nix
+    ./browsers
     ./office.nix
     ./media.nix
     ./niri
