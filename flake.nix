@@ -61,6 +61,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # upstream themes, recoloured to the Stylix scheme at build time
+    catppuccin-zen =
+    {
+      url = "github:catppuccin/zen-browser";
+      flake = false;
+    };
+
     zen-browser =
     {
       url = "github:0xc000022070/zen-browser-flake";

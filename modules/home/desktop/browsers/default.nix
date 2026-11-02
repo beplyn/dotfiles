@@ -2,11 +2,15 @@
   config,
   inputs,
   lib,
+  subst,
   ...
 }:
 
 let
   p = config.themes.palette;
+
+  ctp = import ./catppuccin.nix { inherit lib subst; palette = p; };
+  zenTheme = "${inputs.catppuccin-zen}/themes/Mocha/Mauve";
 
   # AMO slug -> addon id; force-installed from AMO, auto-updating
   addons =
@@ -80,9 +84,20 @@ in
       id = 0;
       isDefault = true;
       inherit extensions;
+      settings."toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+      # upstream catppuccin/zen-browser recoloured, local overrides after it
+      userChrome = ctp.recolor "${zenTheme}/userChrome.css" + ctp.override ./zen/userChrome.css;
+      userContent = ctp.recolor "${zenTheme}/userContent.css" + ctp.override ./zen/userContent.css;
     };
   };
-  stylix.targets.zen-browser.profileNames = [ "default" ];
+  home.file."${config.programs.zen-browser.profilesPath}/default/chrome/zen-logo-mocha.svg".text =
+    ctp.recolor "${zenTheme}/zen-logo-mocha.svg";
+  stylix.targets.zen-browser =
+  {
+    profileNames = [ "default" ];
+    # own userChrome/userContent above
+    enableCss = false;
+  };
 
   # LibreWolf: throwaway, wipes everything on close
   programs.librewolf =
