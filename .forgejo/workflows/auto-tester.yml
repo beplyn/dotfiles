@@ -1,9 +1,8 @@
-name: Check hosts
+name: Auto - tester
 
 on:
-  push:
-    branches: [stage]
   pull_request:
+    branches: [master]
   workflow_dispatch:
 
 jobs:
