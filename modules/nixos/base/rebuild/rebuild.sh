@@ -102,7 +102,7 @@ unset -f host_secret
 # copy new wallpapers into the repo, never overwrite
 wallpapers="$HOME/Pictures/Wallpapers"
 if [ -d "$wallpapers" ]; then
-  cp -r --update=none "$wallpapers/." "$flake/modules/home/wm/shell/quickshell/wallpapers/"
+  cp -r --update=none "$wallpapers/." "$flake/modules/home/desktop/shell/quickshell/wallpapers/"
 fi
 
 # profile picture for hyprlock and the greeter (desktop hosts only)

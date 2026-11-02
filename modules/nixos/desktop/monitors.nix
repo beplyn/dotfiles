@@ -37,5 +37,5 @@ in
   };
 
   # battery and backlight widgets in the shell
-  options.laptop = lib.mkEnableOption "laptop-only shell widgets";
+  options.laptop.enable = lib.mkEnableOption "laptop-only shell widgets";
 }

@@ -7,9 +7,5 @@
     ./cli
     ../theme
   ]
-  ++ lib.optionals (!headless)
-  [
-    ./desktop
-    ./wm
-  ];
+  ++ lib.optional (!headless) ./desktop;
 }

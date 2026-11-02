@@ -2,7 +2,7 @@
   imports = [ ./hardware.nix ];
 
   networking.hostName = "compass";
-  laptop = true;
+  laptop.enable = true;
   # early KMS: native-res Plymouth unlock (here, hardware.nix gets regenerated)
   boot.initrd.kernelModules = [ "i915" ];
   services.xserver.xkb.layout = "us";
