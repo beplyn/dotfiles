@@ -83,6 +83,14 @@ let
         (show "Consume / expel window right" (Mod "bracketright" "scroller_stack,right"))
       ];
     }
+    {
+      # what niri has no bind for
+      name = "Mango only";
+      binds =
+      [
+        (show "Toggle scrolling / tiling" (Mod "t" "switch_layout"))
+      ];
+    }
   ];
   titled = lib.concatMap (s: s.binds) sections;
 
