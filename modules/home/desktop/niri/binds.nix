@@ -10,7 +10,7 @@ let
   ModCtrl = k: "Mod+Ctrl+${k}";
   ModAlt = k: "Mod+Alt+${k}";
 
-  kitty = lib.getExe config.programs.kitty.package;
+  wezterm = lib.getExe config.programs.wezterm.package;
   walker = lib.getExe config.services.walker.package;
   ipc = config.lib.haku.ipc;
   # through hypridle, whose lock_cmd skips an already running hyprlock
@@ -55,7 +55,7 @@ in
   programs.niri.settings.binds = workspaces //
   {
     # --- apps and shell ---------------------------------------------------
-    ${Mod "Return"} = spawn "Terminal" [ kitty ];
+    ${Mod "Return"} = spawn "Terminal" [ wezterm ];
     ${Mod "Space"} = spawn "Launcher" [ walker ];
     ${Mod "V"} = spawn "Clipboard history"
     [
