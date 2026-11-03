@@ -7,5 +7,6 @@
     ./clipboard.nix
     ./screenshot
     ./lock.nix
+    ./wm
   ];
 }
