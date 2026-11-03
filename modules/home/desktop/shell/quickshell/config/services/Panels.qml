@@ -9,8 +9,8 @@ Singleton {
 
     property string current: ""
 
-    // The output niri has focused, for surfaces that follow focus (OSD).
-    readonly property ShellScreen focusedScreen: Quickshell.screens.find(s => s.name === Niri.focusedOutput) ?? Quickshell.screens[0] ?? null
+    // The output the compositor has focused, for surfaces that follow focus (OSD).
+    readonly property ShellScreen focusedScreen: Quickshell.screens.find(s => s.name === Wm.focusedOutput) ?? Quickshell.screens[0] ?? null
 
     // Pinned when a panel opens, so it doesn't jump outputs while open.
     property ShellScreen screen: focusedScreen
