@@ -162,7 +162,9 @@ window#waybar > box
   color: @foreground;
 }
 
-#workspaces button.active
+/* niri marks a workspace shown on its output active, sway visible */
+#workspaces button.active,
+#workspaces button.visible
 {
   min-width: 34px;
   background: @accent;
@@ -178,6 +180,16 @@ window#waybar > box
 #window
 {
   color: @subtext;
+}
+
+/* sway binding mode, e.g. resize */
+#mode
+{
+  margin: 5px 0;
+  padding: 0 10px;
+  border-radius: 8px;
+  background: @accent;
+  color: @background;
 }
 
 /* --- center ---------------------------------------------------------------- */

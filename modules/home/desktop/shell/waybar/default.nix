@@ -30,6 +30,42 @@ let
       if cp < 65536 then u cp else u (55296 + v / 1024) + u (56320 + lib.mod v 1024)
     }"'';
   glyphs = map glyph;
+
+  # the same bar with sway's modules on the left; niri's stay empty under sway
+  swayConfig = (pkgs.formats.json { }).generate "waybar-sway.json"
+  [
+    (config.programs.waybar.settings.main //
+    {
+      modules-left =
+      [
+        "custom/launcher"
+        "sway/workspaces"
+        "sway/mode"
+        "sway/window"
+      ];
+
+      # scrolling switches workspaces by default
+      "sway/workspaces".format = "{name}";
+
+      # only shown outside the default mode, e.g. resize
+      "sway/mode".format = "{}";
+
+      "sway/window" =
+      {
+        format = "{title}";
+        max-length = 48;
+      };
+    })
+  ];
+
+  # niri first, as in quickshell's Wm: niri-session unsets its socket on exit, sway's doesn't
+  launch = pkgs.writeShellScript "waybar-launch" ''
+    if [ -z "''${NIRI_SOCKET:-}" ] && [ -n "''${SWAYSOCK:-}" ]; then
+      exec ${waybar} -c ${swayConfig}
+    fi
+    exec ${waybar}
+  '';
+  waybar = lib.getExe config.programs.waybar.package;
 in
 {
   # Stylix's waybar CSS fights the capsule
@@ -350,4 +386,6 @@ in
     ''
     + builtins.readFile ./style.css;
   };
+
+  systemd.user.services.waybar.Service.ExecStart = lib.mkForce "${launch}";
 }
