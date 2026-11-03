@@ -21,6 +21,10 @@ in
       user = "git";
       identityFile = key;
       identitiesOnly = true;
+      # forges only take keys; never fall through to a prompt
+      preferredAuthentications = "publickey";
+      passwordAuthentication = false;
+      kbdInteractiveAuthentication = false;
     })
     //
     {
