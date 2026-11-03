@@ -116,15 +116,16 @@ hw="$host_dir/hardware.nix"
 # real = nixos-generate-config output; else a placeholder or hand tuning
 is_generated() { [[ -f "$1" ]] && grep -q 'Do not modify this file' "$1"; }
 
+echo
 regenerate=false
 if is_generated "$hw"; then
-  echo
   info "$host already has a generated hardware config."
   warn "If this disk was reformatted the UUIDs in it are stale and the system won't boot."
   confirm "Regenerate it from this machine? [y/N]" n && regenerate=true
 else
-  info "$host has no real hardware config yet, generating one from this machine"
-  regenerate=true
+  info "$host has no generated hardware config yet."
+  warn "Without one it has no file systems or kernel modules for this machine and won't boot."
+  confirm "Generate it from this machine? [Y/n]" y && regenerate=true
 fi
 
 if $regenerate; then
