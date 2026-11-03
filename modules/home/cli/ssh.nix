@@ -6,7 +6,7 @@
 }:
 
 let
-  gitHosts = [ forgejoHost "gitlab.com" ];
+  gitHosts = [ forgejoHost "gitlab.com" "github.com" ];
   # per-host key from `rebuild`; upload its .pub to each
   key = "${config.home.homeDirectory}/.ssh/id_ed25519";
 in
