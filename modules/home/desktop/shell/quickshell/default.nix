@@ -23,7 +23,7 @@ let
       libnotify
       jq
       procps
-      osConfig.programs.niri.package
+      config.lib.haku.wm
     ];
     text = builtins.readFile ./record.sh;
   };
