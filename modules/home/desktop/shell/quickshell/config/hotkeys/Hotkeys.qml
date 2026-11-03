@@ -20,7 +20,10 @@ PanelWindow {
         bracketright: "]",
         minus: "-",
         equal: "=",
-        slash: "/"
+        slash: "/",
+        grave: "`",
+        comma: ",",
+        period: "."
     })
 
     function keys(combo) {
