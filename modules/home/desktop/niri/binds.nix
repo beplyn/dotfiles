@@ -94,7 +94,7 @@ in
     ${ModShift "E"} = show "Quit niri" { quit = [ ]; };
     ${ModAlt "L"} = spawn "Lock screen" [ loginctl "lock-session" ];
     ${Mod "X"} = spawn "Power menu" (ipc "panels" "toggle" ++ [ "power" ]);
-    ${ModShift "Slash"} = show "Show hotkeys" { show-hotkey-overlay = [ ]; };
+    ${Mod "Slash"} = show "Show hotkeys" { show-hotkey-overlay = [ ]; };
     ${Mod "Tab"} = show "Overview" { toggle-overview = [ ]; } // { repeat = false; };
 
     # --- window sizing ----------------------------------------------------
