@@ -191,7 +191,7 @@ let
 in
 {
   # read by the quickshell hotkey overlay
-  lib.haku.hotkeys = map
+  lib.haku.swayHotkeys = map
     (s:
     {
       inherit (s) name;
