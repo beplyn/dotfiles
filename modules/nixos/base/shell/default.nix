@@ -14,7 +14,7 @@
       g = "git";
       tree = "eza --icons --tree --color=auto";
       trel = "eza --icons --tree -a -I \".git\" --color=auto --level=2";
-      icat = "kitty +kitten icat";
+      icat = "wezterm imgcat";
       # manual gc, also cleans the boot menu
       gc = "sudo nix-collect-garbage ${config.nix.gc.options} && sudo /run/current-system/bin/switch-to-configuration boot";
 
