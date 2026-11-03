@@ -4,14 +4,14 @@ import Quickshell
 import Quickshell.Wayland
 import qs.services
 
-// sway's stand-in for niri's hotkey overlay: the titled binds from
-// sway/binds.nix, by section. Any key or click closes it, as in niri.
+// sway's and mango's stand-in for niri's hotkey overlay: the titled binds
+// from their binds.nix, by section. Any key or click closes it, as in niri.
 PanelWindow {
     id: root
 
     readonly property bool open: Panels.current === "hotkeys"
 
-    // sway keysyms as niri prints them
+    // keysyms as niri prints them
     readonly property var names: ({
         Mod4: "Super",
         space: "Space",
@@ -32,7 +32,7 @@ PanelWindow {
     readonly property var columns: {
         const cols = [[], []]
         const rows = [0, 0]
-        for (const s of Theme.hotkeys) {
+        for (const s of Theme.hotkeys[Wm.currentCompositor] ?? []) {
             const c = rows[1] < rows[0] ? 1 : 0
             rows[c] += s.binds.length + 1
             cols[c].push({ kind: "header", text: s.name })
