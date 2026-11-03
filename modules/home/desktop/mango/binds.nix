@@ -89,6 +89,19 @@ let
       binds =
       [
         (show "Toggle scrolling / tiling" (Mod "t" "switch_layout"))
+        (show "Jump to window" (ModShift "Tab" "togglejump"))
+        (show "Show scratchpad" (Mod "grave" "toggle_scratchpad"))
+        (show "Send to scratchpad" (ModShift "grave" "minimized"))
+        # tag 0: a tiled layer over the current tag
+        (show "Toggle special tag" (Mod "o" "toggle_special_tag"))
+        (show "Move to special tag" (ModShift "o" "tag_special_tag"))
+        (show "Pin to all tags" (Mod "p" "toggleglobal"))
+        (show "Keep above others" (ModShift "p" "toggleoverlay"))
+        # tabbed groups
+        (show "Group with window left" (Mod "g" "groupjoin,left"))
+        (show "Leave group" (ModShift "g" "groupleave"))
+        (show "Previous in group" (Mod "comma" "groupfocus,prev"))
+        (show "Next in group" (Mod "period" "groupfocus,next"))
       ];
     }
   ];
