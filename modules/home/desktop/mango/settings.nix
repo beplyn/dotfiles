@@ -64,8 +64,8 @@ in
       scroller_proportion_preset=${lib.concatStringsSep "," presets}
       scroller_focus_center=0
       scroller_prefer_center=0
-      # switch_layout (Mod+T) flips between columns and master/stack
-      circle_layout=scroller,tile
+      # switch_layout (Mod+T) cycles columns, master/stack, splits, grid, deck, fullscreen
+      circle_layout=scroller,tile,dwindle,grid,deck,monocle
 
       # rules
       windowrule=focused_opacity:0.75,unfocused_opacity:0.75,appid:^equibop$

@@ -160,7 +160,7 @@ let
       name = "Mango only";
       binds =
       [
-        (show "Toggle scrolling / tiling" (Mod "t" "switch_layout"))
+        (show "Cycle layout" (Mod "t" "switch_layout"))
         (show "Jump to window" (ModShift "Tab" "togglejump"))
         (show "Show scratchpad" (Mod "grave" "toggle_scratchpad"))
         (show "Send to scratchpad" (ModShift "grave" "minimized"))
