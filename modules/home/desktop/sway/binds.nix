@@ -82,6 +82,22 @@ let
         (show (Mod "bracketright") "Split horizontally" "splith")
       ];
     }
+    {
+      # what niri has no bind for
+      name = "Sway only";
+      binds =
+      [
+        (show (Mod "t") "Toggle stacked layout" "layout toggle stacking split")
+        (show (Mod "e") "Toggle split direction" "layout toggle split")
+        (show (ModShift "Tab") "Focus floating / tiling" "focus mode_toggle")
+        (show (Mod "grave") "Show scratchpad" "scratchpad show")
+        (show (ModShift "grave") "Send to scratchpad" "move scratchpad")
+        # floating windows only
+        (show (Mod "p") "Pin to all workspaces" "sticky toggle")
+        (show (Mod "g") "Focus parent" "focus parent")
+        (show (ModShift "g") "Focus child" "focus child")
+      ];
+    }
   ];
   titled = lib.listToAttrs (
     map (b: lib.nameValuePair b.key b.command) (lib.concatMap (s: s.binds) sections)
