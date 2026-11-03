@@ -111,6 +111,16 @@ theme="$(choose "Theme: " "${themes[@]}")"
 host_dir="hosts/$host"
 hw="$host_dir/hardware.nix"
 
+# unfree.enable (on by default) lives in the host's default.nix
+echo
+sed -i '/^\s*unfree\.enable\s*=/d' "$host_dir/default.nix"
+if confirm "Allow the unfree software in the repo (claude-code, MS Office fonts, Steam)? [Y/n]" y; then
+  info "Unfree software allowed"
+else
+  sed -i '/networking\.hostName/a\  unfree.enable = false;' "$host_dir/default.nix"
+  info "Unfree software left out"
+fi
+
 # --- 3. Hardware config -----------------------------------------------------
 
 # real = nixos-generate-config output; else a placeholder or hand tuning
