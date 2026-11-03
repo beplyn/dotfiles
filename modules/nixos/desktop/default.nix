@@ -9,5 +9,6 @@
     ./gaming.nix
     ./monitors.nix
     ./niri.nix
+    ./sway.nix
   ];
 }

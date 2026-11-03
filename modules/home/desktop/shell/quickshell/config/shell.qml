@@ -2,6 +2,7 @@
 import Quickshell
 import qs.controlcenter
 import qs.dashboard
+import qs.hotkeys
 import qs.monitor
 import qs.notifications
 import qs.osd
@@ -19,6 +20,7 @@ ShellRoot {
     Osd {}
     RecordMenu {}
     PowerMenu {}
+    Hotkeys {}
 
     // One per waybar hardware pill.
     Monitor {
