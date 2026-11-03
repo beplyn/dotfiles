@@ -12,11 +12,13 @@ let
   [
     "settings"
     "outputs"
+    "binds"
   ];
 in
 {
   imports =
   [
+    ./binds.nix
     ./outputs.nix
     ./settings.nix
   ];
