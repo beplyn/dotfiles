@@ -206,6 +206,18 @@ else
   info "Later, run: sudo nixos-rebuild boot --flake /etc/nixos#$target"
 fi
 
+# keys, host secrets (rebuild.secrets) and ~/.pfp come from rebuild, not from here
+# shellcheck disable=SC2016 # nix expression, not shell
+mapfile -t secrets < <(nix eval --raw "$repo_dir#nixosConfigurations.$target.config.rebuild.secrets" \
+  --apply 's: builtins.concatStringsSep "\n" (map (p: "${p}: ${s.${p}.description}") (builtins.attrNames s))' \
+  2> /dev/null || true)
+echo
+info "After the reboot, run \`rebuild\` to set up the GPG and SSH keys and switch to $target."
+if (( ${#secrets[@]} )); then
+  warn "$host needs these secrets; rebuild asks for them, and their services fail until then:"
+  printf '     %s\n' "${secrets[@]}"
+fi
+
 if [[ -n "$(git status --porcelain)" ]]; then
   echo
   info "The repo has changes from this install; commit them when you're ready:"
