@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  osConfig,
   pkgs,
   ...
 }:
@@ -14,7 +13,7 @@ let
   hyprlock = lib.getExe config.programs.hyprlock.package;
   pidof = lib.getExe' pkgs.procps "pidof";
   loginctl = lib.getExe' pkgs.systemd "loginctl";
-  niri = lib.getExe osConfig.programs.niri.package;
+  wm = lib.getExe config.lib.haku.wm;
   avatar = "${config.xdg.cacheHome}/pfp.png";
 
   # ~/.pfp (any image, set at rebuild) -> square png; snowflake if missing or unreadable
@@ -134,7 +133,7 @@ in
         # pfp re-renders first, so a changed ~/.pfp shows on the next lock
         lock_cmd = "${pidof} hyprlock || { ${lib.getExe pfp}; ${hyprlock}; }";
         before_sleep_cmd = "${loginctl} lock-session";
-        after_sleep_cmd = "${niri} msg action power-on-monitors";
+        after_sleep_cmd = "${wm} dpms on";
         inhibit_sleep = 3;
       };
       listener =
@@ -145,8 +144,8 @@ in
         }
         {
           timeout = 600;
-          on-timeout = "${niri} msg action power-off-monitors";
-          on-resume = "${niri} msg action power-on-monitors";
+          on-timeout = "${wm} dpms off";
+          on-resume = "${wm} dpms on";
         }
       ];
     };
