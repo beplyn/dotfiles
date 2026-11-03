@@ -30,6 +30,63 @@ let
   # niri's move-column-to-workspace follows the window
   moveTo = ws: "move container to workspace ${ws}, workspace ${ws}";
 
+  # titled binds, by section, for the hotkey overlay (Mod+/); the rest
+  # (navigation, media keys) is untitled, as in niri's
+  show = key: title: command: { inherit key title command; };
+  sections =
+  [
+    {
+      name = "Apps and shell";
+      binds =
+      [
+        (show (Mod "Return") "Terminal" (exec wezterm))
+        (show (Mod "space") "Launcher" (exec walker))
+        (show (Mod "v") "Clipboard history" (exec "${walker} -m clipboard"))
+        (show (Mod "a") "Control center" (exec (ipc "panels" "toggle" [ "control" ])))
+        (show (Mod "d") "Dashboard" (exec (ipc "panels" "toggle" [ "dashboard" ])))
+        (show (Mod "n") "Notification center" (exec (ipc "notifications" "toggle" [ ])))
+        (show (ModShift "n") "Toggle do not disturb" (exec (ipc "notifications" "toggleDnd" [ ])))
+        (show (ModShift "r") "Screen recorder" (exec (ipc "recorder" "toggle" [ ])))
+        (show (Mod "w") "Wallpaper picker" (exec (lib.getExe pkgs.waypaper)))
+        (show "Print" "Screenshot area" (exec "screenshot area"))
+        (show "Shift+Print" "Screenshot screen" (exec "screenshot output"))
+      ];
+    }
+    {
+      name = "Session";
+      binds =
+      [
+        (show (Mod "q") "Close window" "kill")
+        # niri asks before quitting too
+        (show (ModShift "e") "Quit sway" (exec "swaynag -t warning -m 'Quit sway?' -B 'Quit' 'swaymsg exit'"))
+        (show (ModAlt "l") "Lock screen" (exec "${loginctl} lock-session"))
+        (show (Mod "x") "Power menu" (exec (ipc "panels" "toggle" [ "power" ])))
+        (show (Mod "slash") "Show hotkeys" (exec (ipc "panels" "toggle" [ "hotkeys" ])))
+        # no overview; jump to the previous workspace
+        (show (Mod "Tab") "Previous workspace" "workspace back_and_forth")
+      ];
+    }
+    {
+      name = "Window sizing";
+      binds =
+      [
+        # no maximize-column; tabbed fills the workspace and keeps the bar
+        (show (Mod "f") "Toggle tabbed layout" "layout toggle tabbed split")
+        (show (ModShift "f") "Fullscreen window" "fullscreen toggle")
+        (show (ModAlt "x") "Toggle floating" "floating toggle")
+        (show (Mod "r") "Resize mode" "mode resize")
+        (show (Mod "minus") "Shrink width" "resize shrink width 10 ppt")
+        (show (Mod "equal") "Grow width" "resize grow width 10 ppt")
+        # consume / expel: the next window opens stacked, or beside
+        (show (Mod "bracketleft") "Split vertically" "splitv")
+        (show (Mod "bracketright") "Split horizontally" "splith")
+      ];
+    }
+  ];
+  titled = lib.listToAttrs (
+    map (b: lib.nameValuePair b.key b.command) (lib.concatMap (s: s.binds) sections)
+  );
+
   # Mod(+Shift)+1..9: focus / move to workspace
   workspaces = lib.listToAttrs (
     lib.concatMap
@@ -51,6 +108,15 @@ let
   );
 in
 {
+  # read by the quickshell hotkey overlay
+  lib.haku.hotkeys = map
+    (s:
+    {
+      inherit (s) name;
+      binds = map (b: { inherit (b) key title; }) s.binds;
+    })
+    sections;
+
   wayland.windowManager.sway.config =
   {
     modifier = mod;
@@ -70,46 +136,14 @@ in
       ${Mod "r"} = "mode default";
     };
 
-    keybindings = workspaces //
+    keybindings = workspaces // titled //
     {
-      # --- apps and shell -------------------------------------------------
-      ${Mod "Return"} = exec wezterm;
-      ${Mod "space"} = exec walker;
-      ${Mod "v"} = exec "${walker} -m clipboard";
-      ${Mod "a"} = exec (ipc "panels" "toggle" [ "control" ]);
-      ${Mod "d"} = exec (ipc "panels" "toggle" [ "dashboard" ]);
-      ${Mod "n"} = exec (ipc "notifications" "toggle" [ ]);
-      ${ModShift "n"} = exec (ipc "notifications" "toggleDnd" [ ]);
-      ${ModShift "r"} = exec (ipc "recorder" "toggle" [ ]);
-      ${Mod "w"} = exec (lib.getExe pkgs.waypaper);
-      "Print" = exec "screenshot area";
+      # same as Print, so untitled
       ${ModShift "s"} = exec "screenshot area";
-      "Shift+Print" = exec "screenshot output";
-
-      # --- session --------------------------------------------------------
-      ${Mod "q"} = "kill";
-      # niri asks before quitting too
-      ${ModShift "e"} = exec "swaynag -t warning -m 'Quit sway?' -B 'Quit' 'swaymsg exit'";
-      ${ModAlt "l"} = exec "${loginctl} lock-session";
-      ${Mod "x"} = exec (ipc "panels" "toggle" [ "power" ]);
-      # no overview; jump to the previous workspace
-      ${Mod "Tab"} = "workspace back_and_forth";
-
-      # --- window sizing --------------------------------------------------
-      # no maximize-column; tabbed fills the workspace and keeps the bar
-      ${Mod "f"} = "layout toggle tabbed split";
-      ${ModShift "f"} = "fullscreen toggle";
-      ${ModAlt "x"} = "floating toggle";
-      ${Mod "r"} = "mode resize";
-      ${Mod "minus"} = "resize shrink width 10 ppt";
-      ${Mod "equal"} = "resize grow width 10 ppt";
+      # other variants of Mod+Minus / Mod+Equal
       ${ModShift "equal"} = "resize grow width 10 ppt";
       ${Mod "KP_Subtract"} = "resize shrink width 10 ppt";
       ${Mod "KP_Add"} = "resize grow width 10 ppt";
-
-      # consume / expel: the next window opens stacked, or beside
-      ${Mod "bracketleft"} = "splitv";
-      ${Mod "bracketright"} = "splith";
 
       # --- navigation -----------------------------------------------------
       ${Mod "h"} = "focus left";
