@@ -2,6 +2,7 @@
   config,
   lib,
   osConfig,
+  pkgs,
   ...
 }:
 
@@ -15,6 +16,14 @@ let
   # niri's preset column widths, as scroller proportions
   presets = map (w: lib.substring 0 5 (toString w.proportion)) niri.layout.preset-column-widths;
   toasts = ''appid:^steam$,title:^notificationtoasts_\d+_desktop$'';
+  systemctl = lib.getExe' pkgs.systemd "systemctl";
+  # sway leaves graphical-session.target up, so mango-session.target alone doesn't
+  # restart quickshell and co. that died with it; cycle the session onto mango
+  session = pkgs.writeShellScript "mango-session" ''
+    ${systemctl} --user stop graphical-session.target
+    ${systemctl} --user reset-failed
+    ${systemctl} --user start mango-session.target
+  '';
 in
 {
   xdg.configFile."mango/settings.conf".source = config.lib.haku.mangoConf "settings" (
@@ -27,6 +36,9 @@ in
     ''
     + ''
       sloppyfocus=1
+
+      # session
+      exec-once=${session}
 
       # gaps, borders, corners, shadows
       gappih=${toString niri.layout.gaps}
