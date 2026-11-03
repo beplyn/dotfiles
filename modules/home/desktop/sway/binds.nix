@@ -24,15 +24,14 @@ let
   brightnessctl = lib.getExe pkgs.brightnessctl;
 
   exec = cmd: "exec ${cmd}";
-  # work while locked
-  media = k: "--locked ${k}";
 
   # niri's move-column-to-workspace follows the window
   moveTo = ws: "move container to workspace ${ws}, workspace ${ws}";
 
-  # titled binds, by section, for the hotkey overlay (Mod+/); the rest
-  # (navigation, media keys) is untitled, as in niri's
+  # every bind titled, by section, for the hotkey overlay (Mod+/), as in niri's
   show = key: title: command: { inherit key title command; };
+  # work while locked
+  locked = b: b // { flags = "--locked "; };
   sections =
   [
     {
@@ -49,6 +48,7 @@ let
         (show (ModShift "r") "Screen recorder" (exec (ipc "recorder" "toggle" [ ])))
         (show (Mod "w") "Wallpaper picker" (exec (lib.getExe pkgs.waypaper)))
         (show "Print" "Screenshot area" (exec "screenshot area"))
+        (show (ModShift "s") "Screenshot area" (exec "screenshot area"))
         (show "Shift+Print" "Screenshot screen" (exec "screenshot output"))
       ];
     }
@@ -77,9 +77,93 @@ let
         (show (Mod "r") "Resize mode" "mode resize")
         (show (Mod "minus") "Shrink width" "resize shrink width 10 ppt")
         (show (Mod "equal") "Grow width" "resize grow width 10 ppt")
+        # "+" is on equal
+        (show (ModShift "equal") "Grow width" "resize grow width 10 ppt")
+        (show (Mod "KP_Subtract") "Shrink width" "resize shrink width 10 ppt")
+        (show (Mod "KP_Add") "Grow width" "resize grow width 10 ppt")
         # consume / expel: the next window opens stacked, or beside
         (show (Mod "bracketleft") "Split vertically" "splitv")
         (show (Mod "bracketright") "Split horizontally" "splith")
+      ];
+    }
+    {
+      # Mod+R: no preset widths, so a resize mode instead
+      name = "Resize mode";
+      mode = "resize";
+      binds =
+      [
+        (show "h" "Shrink width" "resize shrink width 10 ppt")
+        (show "l" "Grow width" "resize grow width 10 ppt")
+        (show "k" "Shrink height" "resize shrink height 10 ppt")
+        (show "j" "Grow height" "resize grow height 10 ppt")
+        (show "Return" "Leave resize mode" "mode default")
+        (show "Escape" "Leave resize mode" "mode default")
+        (show (Mod "r") "Leave resize mode" "mode default")
+      ];
+    }
+    {
+      name = "Navigation";
+      binds =
+      [
+        (show (Mod "h") "Focus left" "focus left")
+        (show (Mod "l") "Focus right" "focus right")
+        (show (Mod "k") "Focus up" "focus up")
+        (show (Mod "j") "Focus down" "focus down")
+
+        (show (Mod "u") "Next workspace" "workspace next_on_output")
+        (show (Mod "i") "Previous workspace" "workspace prev_on_output")
+
+        (show (ModShift "h") "Move window left" "move left")
+        (show (ModShift "l") "Move window right" "move right")
+        (show (ModShift "k") "Move window up" "move up")
+        (show (ModShift "j") "Move window down" "move down")
+
+        # workspaces can't be reordered; send this one to the next output
+        (show (ModShift "u") "Move workspace to output right" "move workspace to output right")
+        (show (ModShift "i") "Move workspace to output left" "move workspace to output left")
+
+        (show (ModCtrl "h") "Focus output left" "focus output left")
+        (show (ModCtrl "l") "Focus output right" "focus output right")
+
+        (show (ModCtrl "u") "Move window to next workspace" (moveTo "next_on_output"))
+        (show (ModCtrl "i") "Move window to previous workspace" (moveTo "prev_on_output"))
+      ];
+    }
+    {
+      name = "Workspaces";
+      binds = lib.concatMap
+        (i:
+        let
+          n = toString i;
+        in
+        [
+          (show (Mod n) "Focus workspace ${n}" "workspace number ${n}")
+          (show (ModShift n) "Move window to workspace ${n}" (moveTo "number ${n}"))
+        ])
+        (lib.range 1 9);
+      # one overlay row each
+      rows =
+      [
+        {
+          key = Mod "1-9";
+          title = "Focus workspace";
+        }
+        {
+          key = ModShift "1-9";
+          title = "Move window to workspace";
+        }
+      ];
+    }
+    {
+      name = "Media keys";
+      binds = map locked
+      [
+        (show "XF86AudioRaiseVolume" "Volume up" (exec "${wpctl} set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+"))
+        (show "XF86AudioLowerVolume" "Volume down" (exec "${wpctl} set-volume @DEFAULT_AUDIO_SINK@ 5%-"))
+        (show "XF86AudioMute" "Mute" (exec "${wpctl} set-mute @DEFAULT_AUDIO_SINK@ toggle"))
+        (show "XF86AudioMicMute" "Mute microphone" (exec "${wpctl} set-mute @DEFAULT_AUDIO_SOURCE@ toggle"))
+        (show "XF86MonBrightnessUp" "Brightness up" (exec "${brightnessctl} set 5%+"))
+        (show "XF86MonBrightnessDown" "Brightness down" (exec "${brightnessctl} set 5%-"))
       ];
     }
     {
@@ -99,28 +183,10 @@ let
       ];
     }
   ];
-  titled = lib.listToAttrs (
-    map (b: lib.nameValuePair b.key b.command) (lib.concatMap (s: s.binds) sections)
-  );
 
-  # Mod(+Shift)+1..9: focus / move to workspace
-  workspaces = lib.listToAttrs (
-    lib.concatMap
-      (i:
-      let
-        n = toString i;
-      in
-      [
-        {
-          name = Mod n;
-          value = "workspace number ${n}";
-        }
-        {
-          name = ModShift n;
-          value = moveTo "number ${n}";
-        }
-      ])
-      (lib.range 1 9)
+  # sway's key -> command attrs
+  toAttrs = binds: lib.listToAttrs (
+    map (b: lib.nameValuePair "${b.flags or ""}${b.key}" b.command) binds
   );
 in
 {
@@ -129,7 +195,7 @@ in
     (s:
     {
       inherit (s) name;
-      binds = map (b: { inherit (b) key title; }) s.binds;
+      binds = s.rows or (map (b: { inherit (b) key title; }) s.binds);
     })
     sections;
 
@@ -140,58 +206,9 @@ in
     menu = walker;
     floating.modifier = mod;
 
-    # Mod+R: no preset widths, so a resize mode instead
-    modes.resize =
-    {
-      "h" = "resize shrink width 10 ppt";
-      "l" = "resize grow width 10 ppt";
-      "k" = "resize shrink height 10 ppt";
-      "j" = "resize grow height 10 ppt";
-      "Return" = "mode default";
-      "Escape" = "mode default";
-      ${Mod "r"} = "mode default";
-    };
-
-    keybindings = workspaces // titled //
-    {
-      # same as Print, so untitled
-      ${ModShift "s"} = exec "screenshot area";
-      # other variants of Mod+Minus / Mod+Equal
-      ${ModShift "equal"} = "resize grow width 10 ppt";
-      ${Mod "KP_Subtract"} = "resize shrink width 10 ppt";
-      ${Mod "KP_Add"} = "resize grow width 10 ppt";
-
-      # --- navigation -----------------------------------------------------
-      ${Mod "h"} = "focus left";
-      ${Mod "l"} = "focus right";
-      ${Mod "k"} = "focus up";
-      ${Mod "j"} = "focus down";
-
-      ${Mod "u"} = "workspace next_on_output";
-      ${Mod "i"} = "workspace prev_on_output";
-
-      ${ModShift "h"} = "move left";
-      ${ModShift "l"} = "move right";
-      ${ModShift "k"} = "move up";
-      ${ModShift "j"} = "move down";
-
-      # workspaces can't be reordered; send this one to the next output
-      ${ModShift "u"} = "move workspace to output right";
-      ${ModShift "i"} = "move workspace to output left";
-
-      ${ModCtrl "h"} = "focus output left";
-      ${ModCtrl "l"} = "focus output right";
-
-      ${ModCtrl "u"} = moveTo "next_on_output";
-      ${ModCtrl "i"} = moveTo "prev_on_output";
-
-      # --- media keys -----------------------------------------------------
-      ${media "XF86AudioRaiseVolume"} = exec "${wpctl} set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+";
-      ${media "XF86AudioLowerVolume"} = exec "${wpctl} set-volume @DEFAULT_AUDIO_SINK@ 5%-";
-      ${media "XF86AudioMute"} = exec "${wpctl} set-mute @DEFAULT_AUDIO_SINK@ toggle";
-      ${media "XF86AudioMicMute"} = exec "${wpctl} set-mute @DEFAULT_AUDIO_SOURCE@ toggle";
-      ${media "XF86MonBrightnessUp"} = exec "${brightnessctl} set 5%+";
-      ${media "XF86MonBrightnessDown"} = exec "${brightnessctl} set 5%-";
-    };
+    modes = lib.listToAttrs (
+      map (s: lib.nameValuePair s.mode (toAttrs s.binds)) (lib.filter (s: s ? mode) sections)
+    );
+    keybindings = toAttrs (lib.concatMap (s: s.binds) (lib.filter (s: !(s ? mode)) sections));
   };
 }
