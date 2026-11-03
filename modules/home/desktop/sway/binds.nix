@@ -171,7 +171,7 @@ let
       name = "Sway only";
       binds =
       [
-        (show (Mod "t") "Toggle stacked layout" "layout toggle stacking split")
+        (show (Mod "t") "Cycle layout" "layout toggle splith splitv stacking tabbed")
         (show (Mod "e") "Toggle split direction" "layout toggle split")
         (show (ModShift "Tab") "Focus floating / tiling" "focus mode_toggle")
         (show (Mod "grave") "Show scratchpad" "scratchpad show")
