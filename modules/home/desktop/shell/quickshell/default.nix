@@ -108,9 +108,10 @@ let
         (num "opacity" t.glass)
         (num "gap" config.programs.niri.settings.layout.gaps)
         (prop "bool" "laptop" (lib.boolToString laptop))
-        # titled binds for the hotkey overlay, by compositor; niri has its own
+        # titled binds for the hotkey overlay, by compositor
         (prop "var" "hotkeys" (builtins.toJSON
         {
+          niri = config.lib.haku.niriHotkeys;
           sway = config.lib.haku.swayHotkeys;
           mango = config.lib.haku.mangoHotkeys;
         }))

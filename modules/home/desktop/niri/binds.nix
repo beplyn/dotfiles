@@ -4,6 +4,9 @@
   pkgs,
   ...
 }:
+
+# every bind titled, by section, for the quickshell hotkey overlay (Mod+/),
+# which stands in for niri's own as in sway and mango
 let
   Mod = k: "Mod+${k}";
   ModShift = k: "Mod+Shift+${k}";
@@ -18,168 +21,198 @@ let
   wpctl = lib.getExe' pkgs.wireplumber "wpctl";
   brightnessctl = lib.getExe pkgs.brightnessctl;
 
-  # all binds titled in the overlay; navigation hidden
-  show = title: action:
-  {
-    inherit action;
-    hotkey-overlay.title = title;
-  };
-  hide = action:
-  {
-    inherit action;
-    hotkey-overlay.hidden = true;
-  };
-  spawn = title: args: show title { spawn = args; };
-
+  # a bind: key, title, and niri's action
+  bind = key: title: action: { inherit key title action; };
+  spawn = key: title: args: bind key title { spawn = args; };
+  noRepeat = b: b // { repeat = false; };
   # work while locked
-  media = args: hide { spawn = args; } // { allow-when-locked = true; };
+  media = key: title: args: spawn key title args // { allow-when-locked = true; };
 
-  # Mod(+Shift)+1..9: focus / move to workspace
-  workspaces = lib.listToAttrs (
-    lib.concatMap
-      (i:
+  sections =
+  [
+    {
+      name = "Apps and shell";
+      binds =
+      [
+        (spawn (Mod "Return") "Terminal" [ wezterm ])
+        (spawn (Mod "Space") "Launcher" [ walker ])
+        (spawn (Mod "V") "Clipboard history"
+        [
+          walker
+          "-m"
+          "clipboard"
+        ])
+        (spawn (Mod "A") "Control center" (ipc "panels" "toggle" ++ [ "control" ]))
+        (spawn (Mod "D") "Dashboard" (ipc "panels" "toggle" ++ [ "dashboard" ]))
+        (spawn (Mod "N") "Notification center" (ipc "notifications" "toggle"))
+        (spawn (ModShift "N") "Toggle do not disturb" (ipc "notifications" "toggleDnd"))
+        (spawn (ModShift "R") "Screen recorder" (ipc "recorder" "toggle"))
+        (spawn (Mod "W") "Wallpaper picker" [ (lib.getExe pkgs.waypaper) ])
+        (spawn "Print" "Screenshot area"
+        [
+          "screenshot"
+          "area"
+        ])
+        (spawn (ModShift "S") "Screenshot area"
+        [
+          "screenshot"
+          "area"
+        ])
+        (spawn "Shift+Print" "Screenshot screen"
+        [
+          "screenshot"
+          "output"
+        ])
+      ];
+    }
+    {
+      name = "Session";
+      binds =
+      [
+        (noRepeat (bind (Mod "Q") "Close window" { close-window = [ ]; }))
+        (bind (ModShift "E") "Quit niri" { quit = [ ]; })
+        (spawn (ModAlt "L") "Lock screen" [ loginctl "lock-session" ])
+        (spawn (Mod "X") "Power menu" (ipc "panels" "toggle" ++ [ "power" ]))
+        (spawn (Mod "Slash") "Show hotkeys" (ipc "panels" "toggle" ++ [ "hotkeys" ]))
+        (noRepeat (bind (Mod "Tab") "Overview" { toggle-overview = [ ]; }))
+      ];
+    }
+    {
+      name = "Window sizing";
+      binds =
+      [
+        (bind (Mod "F") "Maximize column" { maximize-column = [ ]; })
+        (bind (ModShift "F") "Fullscreen window" { fullscreen-window = [ ]; })
+        (bind (ModAlt "X") "Toggle floating" { toggle-window-floating = [ ]; })
+        (bind (Mod "R") "Cycle column width" { switch-preset-column-width = [ ]; })
+        (bind (Mod "Minus") "Shrink column" { set-column-width = "-10%"; })
+        (bind (Mod "Equal") "Grow column" { set-column-width = "+10%"; })
+        # "+" is on Equal
+        (bind (ModShift "Equal") "Grow column" { set-column-width = "+10%"; })
+        (bind (Mod "KP_Subtract") "Shrink column" { set-column-width = "-10%"; })
+        (bind (Mod "KP_Add") "Grow column" { set-column-width = "+10%"; })
+        (bind (Mod "BracketLeft") "Consume / expel window left" { consume-or-expel-window-left = [ ]; })
+        (bind (Mod "BracketRight") "Consume / expel window right" { consume-or-expel-window-right = [ ]; })
+      ];
+    }
+    {
+      name = "Navigation";
+      binds =
+      [
+        (bind (Mod "H") "Focus column left" { focus-column-left = [ ]; })
+        (bind (Mod "L") "Focus column right" { focus-column-right = [ ]; })
+        (bind (Mod "K") "Focus window or workspace up" { focus-window-or-workspace-up = [ ]; })
+        (bind (Mod "J") "Focus window or workspace down" { focus-window-or-workspace-down = [ ]; })
+
+        (bind (Mod "U") "Next workspace" { focus-workspace-down = [ ]; })
+        (bind (Mod "I") "Previous workspace" { focus-workspace-up = [ ]; })
+
+        (bind (ModShift "H") "Move column left" { move-column-left = [ ]; })
+        (bind (ModShift "L") "Move column right" { move-column-right = [ ]; })
+        (bind (ModShift "K") "Move window up" { move-window-up = [ ]; })
+        (bind (ModShift "J") "Move window down" { move-window-down = [ ]; })
+
+        (bind (ModShift "U") "Move workspace down" { move-workspace-down = [ ]; })
+        (bind (ModShift "I") "Move workspace up" { move-workspace-up = [ ]; })
+
+        (bind (ModCtrl "H") "Focus monitor left" { focus-monitor-left = [ ]; })
+        (bind (ModCtrl "L") "Focus monitor right" { focus-monitor-right = [ ]; })
+
+        (bind (ModCtrl "U") "Move column to next workspace" { move-column-to-workspace-down = [ ]; })
+        (bind (ModCtrl "I") "Move column to previous workspace" { move-column-to-workspace-up = [ ]; })
+      ];
+    }
+    {
+      name = "Workspaces";
+      binds = lib.concatMap
+        (i:
+        let
+          n = toString i;
+        in
+        [
+          (bind (Mod n) "Focus workspace ${n}" { focus-workspace = i; })
+          (bind (ModShift n) "Move column to workspace ${n}" { move-column-to-workspace = i; })
+        ])
+        (lib.range 1 9);
+      # one overlay row each
+      rows =
       [
         {
-          name = Mod (toString i);
-          value = hide { focus-workspace = i; };
+          key = Mod "1-9";
+          title = "Focus workspace";
         }
         {
-          name = ModShift (toString i);
-          value = hide { move-column-to-workspace = i; };
+          key = ModShift "1-9";
+          title = "Move column to workspace";
         }
-      ])
-      (lib.range 1 9)
-  );
+      ];
+    }
+    {
+      name = "Media keys";
+      binds =
+      [
+        (media "XF86AudioRaiseVolume" "Volume up"
+        [
+          wpctl
+          "set-volume"
+          "-l"
+          "1.0"
+          "@DEFAULT_AUDIO_SINK@"
+          "5%+"
+        ])
+        (media "XF86AudioLowerVolume" "Volume down"
+        [
+          wpctl
+          "set-volume"
+          "@DEFAULT_AUDIO_SINK@"
+          "5%-"
+        ])
+        (media "XF86AudioMute" "Mute"
+        [
+          wpctl
+          "set-mute"
+          "@DEFAULT_AUDIO_SINK@"
+          "toggle"
+        ])
+        (media "XF86AudioMicMute" "Mute microphone"
+        [
+          wpctl
+          "set-mute"
+          "@DEFAULT_AUDIO_SOURCE@"
+          "toggle"
+        ])
+        (media "XF86MonBrightnessUp" "Brightness up"
+        [
+          brightnessctl
+          "set"
+          "5%+"
+        ])
+        (media "XF86MonBrightnessDown" "Brightness down"
+        [
+          brightnessctl
+          "set"
+          "5%-"
+        ])
+      ];
+    }
+  ];
 in
 {
-  programs.niri.settings.binds = workspaces //
-  {
-    # --- apps and shell ---------------------------------------------------
-    ${Mod "Return"} = spawn "Terminal" [ wezterm ];
-    ${Mod "Space"} = spawn "Launcher" [ walker ];
-    ${Mod "V"} = spawn "Clipboard history"
-    [
-      walker
-      "-m"
-      "clipboard"
-    ];
-    ${Mod "A"} = spawn "Control center" (ipc "panels" "toggle" ++ [ "control" ]);
-    ${Mod "D"} = spawn "Dashboard" (ipc "panels" "toggle" ++ [ "dashboard" ]);
-    ${Mod "N"} = spawn "Notification center" (ipc "notifications" "toggle");
-    ${ModShift "N"} = spawn "Toggle do not disturb" (ipc "notifications" "toggleDnd");
-    ${ModShift "R"} = spawn "Screen recorder" (ipc "recorder" "toggle");
-    ${Mod "W"} = spawn "Wallpaper picker" [ (lib.getExe pkgs.waypaper) ];
-    "Print" = spawn "Screenshot area"
-    [
-      "screenshot"
-      "area"
-    ];
-    # same as Print, so hidden
-    ${ModShift "S"} = hide
+  # read by the quickshell hotkey overlay
+  lib.haku.niriHotkeys = map
+    (s:
     {
-      spawn =
-      [
-        "screenshot"
-        "area"
-      ];
-    };
-    "Shift+Print" = spawn "Screenshot screen"
-    [
-      "screenshot"
-      "output"
-    ];
+      inherit (s) name;
+      binds = s.rows or (map (b: { inherit (b) key title; }) s.binds);
+    })
+    sections;
 
-    # --- session ----------------------------------------------------------
-    ${Mod "Q"} = show "Close window" { close-window = [ ]; } // { repeat = false; };
-    ${ModShift "E"} = show "Quit niri" { quit = [ ]; };
-    ${ModAlt "L"} = spawn "Lock screen" [ loginctl "lock-session" ];
-    ${Mod "X"} = spawn "Power menu" (ipc "panels" "toggle" ++ [ "power" ]);
-    ${Mod "Slash"} = show "Show hotkeys" { show-hotkey-overlay = [ ]; };
-    ${Mod "Tab"} = show "Overview" { toggle-overview = [ ]; } // { repeat = false; };
+  # the overlay replaces niri's own
+  programs.niri.settings.hotkey-overlay.skip-at-startup = true;
 
-    # --- window sizing ----------------------------------------------------
-    ${Mod "F"} = show "Maximize column" { maximize-column = [ ]; };
-    ${ModShift "F"} = show "Fullscreen window" { fullscreen-window = [ ]; };
-    ${ModAlt "X"} = show "Toggle floating" { toggle-window-floating = [ ]; };
-    ${Mod "R"} = show "Cycle column width" { switch-preset-column-width = [ ]; };
-    # "+" is bound on Equal; other variants hidden
-    ${Mod "Minus"} = show "Shrink column" { set-column-width = "-10%"; };
-    ${Mod "Equal"} = show "Grow column" { set-column-width = "+10%"; };
-    ${ModShift "Equal"} = hide { set-column-width = "+10%"; };
-    ${Mod "KP_Subtract"} = hide { set-column-width = "-10%"; };
-    ${Mod "KP_Add"} = hide { set-column-width = "+10%"; };
-
-    ${Mod "BracketLeft"} = show "Consume / expel window left" { consume-or-expel-window-left = [ ]; };
-    ${Mod "BracketRight"} = show "Consume / expel window right"
-    {
-      consume-or-expel-window-right = [ ];
-    };
-
-    # --- navigation (hidden) ----------------------------------------------
-    ${Mod "H"} = hide { focus-column-left = [ ]; };
-    ${Mod "L"} = hide { focus-column-right = [ ]; };
-    ${Mod "K"} = hide { focus-window-or-workspace-up = [ ]; };
-    ${Mod "J"} = hide { focus-window-or-workspace-down = [ ]; };
-
-    ${Mod "U"} = hide { focus-workspace-down = [ ]; };
-    ${Mod "I"} = hide { focus-workspace-up = [ ]; };
-
-    ${ModShift "H"} = hide { move-column-left = [ ]; };
-    ${ModShift "L"} = hide { move-column-right = [ ]; };
-    ${ModShift "K"} = hide { move-window-up = [ ]; };
-    ${ModShift "J"} = hide { move-window-down = [ ]; };
-
-    ${ModShift "U"} = hide { move-workspace-down = [ ]; };
-    ${ModShift "I"} = hide { move-workspace-up = [ ]; };
-
-    ${ModCtrl "H"} = hide { focus-monitor-left = [ ]; };
-    ${ModCtrl "L"} = hide { focus-monitor-right = [ ]; };
-
-    ${ModCtrl "U"} = hide { move-column-to-workspace-down = [ ]; };
-    ${ModCtrl "I"} = hide { move-column-to-workspace-up = [ ]; };
-
-    # --- media keys (hidden) ----------------------------------------------
-    "XF86AudioRaiseVolume" = media
-    [
-      wpctl
-      "set-volume"
-      "-l"
-      "1.0"
-      "@DEFAULT_AUDIO_SINK@"
-      "5%+"
-    ];
-    "XF86AudioLowerVolume" = media
-    [
-      wpctl
-      "set-volume"
-      "@DEFAULT_AUDIO_SINK@"
-      "5%-"
-    ];
-    "XF86AudioMute" = media
-    [
-      wpctl
-      "set-mute"
-      "@DEFAULT_AUDIO_SINK@"
-      "toggle"
-    ];
-    "XF86AudioMicMute" = media
-    [
-      wpctl
-      "set-mute"
-      "@DEFAULT_AUDIO_SOURCE@"
-      "toggle"
-    ];
-    "XF86MonBrightnessUp" = media
-    [
-      brightnessctl
-      "set"
-      "5%+"
-    ];
-    "XF86MonBrightnessDown" = media
-    [
-      brightnessctl
-      "set"
-      "5%-"
-    ];
-  };
+  programs.niri.settings.binds = lib.listToAttrs (
+    map
+      (b: lib.nameValuePair b.key (removeAttrs b [ "key" "title" ] // { hotkey-overlay.title = b.title; }))
+      (lib.concatMap (s: s.binds) sections)
+  );
 }
