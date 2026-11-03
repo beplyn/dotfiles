@@ -5,10 +5,12 @@
   {
     PAGER = "bat --paging=always";
     MANPAGER = "sh -c 'col -bx | bat -l man -p'";
+    MANROFFOPT = "-c";
   };
   home.file.".config/fish/conf.d/home-manager-session-vars.fish".text = ''
     set -gx PAGER ${builtins.toJSON config.home.sessionVariables.PAGER}
     set -gx MANPAGER ${builtins.toJSON config.home.sessionVariables.MANPAGER}
+    set -gx MANROFFOPT ${builtins.toJSON config.home.sessionVariables.MANROFFOPT}
   '';
   programs.bat =
   {
