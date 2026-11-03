@@ -61,6 +61,7 @@ let
     cava = lib.getExe pkgs.cava;
     inherit cavaConfig;
     niri = lib.getExe osConfig.programs.niri.package;
+    swaymsg = lib.getExe' osConfig.programs.sway.package "swaymsg";
     # via hypridle, which skips an already running hyprlock
     lock = "${lib.getExe' pkgs.systemd "loginctl"} lock-session";
     brightnessctl = lib.getExe pkgs.brightnessctl;
