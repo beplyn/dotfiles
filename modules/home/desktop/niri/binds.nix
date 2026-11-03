@@ -93,6 +93,7 @@ let
         (bind (Mod "KP_Add") "Grow column" { set-column-width = "+10%"; })
         (bind (Mod "BracketLeft") "Consume / expel window left" { consume-or-expel-window-left = [ ]; })
         (bind (Mod "BracketRight") "Consume / expel window right" { consume-or-expel-window-right = [ ]; })
+        (bind (Mod "T") "Toggle tabbed column" { toggle-column-tabbed-display = [ ]; })
       ];
     }
     {
