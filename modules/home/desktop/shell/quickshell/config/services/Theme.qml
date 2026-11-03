@@ -38,7 +38,7 @@ Singleton {
 
     readonly property var bin: Stylix.bin
     readonly property var signals: Stylix.signals
-    // [{ name, binds: [{ key, title }] }], sway's titled binds by section
+    // { sway, mango: [{ name, binds: [{ key, title }] }] }, titled binds by section
     readonly property var hotkeys: Stylix.hotkeys
 
     // hakuspace eases everything with cubic-bezier(0, 0.5, 0.35, 1).

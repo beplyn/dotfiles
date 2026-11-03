@@ -108,8 +108,12 @@ let
         (num "opacity" t.glass)
         (num "gap" config.programs.niri.settings.layout.gaps)
         (prop "bool" "laptop" (lib.boolToString laptop))
-        # sway's titled binds for the hotkey overlay; niri has its own
-        (prop "var" "hotkeys" (builtins.toJSON config.lib.haku.hotkeys))
+        # titled binds for the hotkey overlay, by compositor; niri has its own
+        (prop "var" "hotkeys" (builtins.toJSON
+        {
+          sway = config.lib.haku.swayHotkeys;
+          mango = config.lib.haku.mangoHotkeys;
+        }))
         ""
         "    readonly property QtObject signals: QtObject {"
       ]
