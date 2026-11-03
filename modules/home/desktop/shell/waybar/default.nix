@@ -30,6 +30,98 @@ let
       if cp < 65536 then u cp else u (55296 + v / 1024) + u (56320 + lib.mod v 1024)
     }"'';
   glyphs = map glyph;
+
+  # the same bar with another compositor's modules on the left; niri's stay
+  # empty elsewhere, so each gets its own config
+  variant = name: left: modules: (pkgs.formats.json { }).generate "waybar-${name}.json"
+  [
+    (config.programs.waybar.settings.main // modules // { modules-left = [ "custom/launcher" ] ++ left; })
+  ];
+
+  swayConfig = variant "sway"
+    [
+      "sway/workspaces"
+      "sway/mode"
+      "sway/window"
+    ]
+    {
+      # scrolling switches workspaces by default
+      "sway/workspaces".format = "{name}";
+
+      # only shown outside the default mode, e.g. resize
+      "sway/mode".format = "{}";
+
+      "sway/window" =
+      {
+        format = "{title}";
+        max-length = 48;
+      };
+    };
+
+  hyprlandConfig = variant "hyprland"
+    [
+      "hyprland/workspaces"
+      "hyprland/window"
+    ]
+    {
+      "hyprland/workspaces".format = "{name}";
+
+      "hyprland/window" =
+      {
+        format = "{title}";
+        max-length = 48;
+        separate-outputs = true;
+      };
+    };
+
+  # river classic's status protocol: all nine tags, occupied ones brighter
+  riverConfig = variant "river"
+    [
+      "river/tags"
+      "river/window"
+    ]
+    {
+      "river/window" =
+      {
+        format = "{}";
+        max-length = 48;
+      };
+    };
+
+  # mango and any other compositor: ext-workspace and foreign-toplevel, where
+  # it has them
+  genericConfig = variant "generic"
+    [
+      "ext/workspaces"
+      "wlr/taskbar"
+    ]
+    {
+      "ext/workspaces" =
+      {
+        format = "{name}";
+        on-click = "activate";
+      };
+
+      "wlr/taskbar" =
+      {
+        format = "{icon}";
+        icon-size = 16;
+        tooltip-format = "{title}";
+        on-click = "activate";
+      };
+    };
+
+  # `wm name` skips a stale SWAYSOCK, which sway leaves behind
+  launch = pkgs.writeShellScript "waybar-launch" ''
+    case "$(${lib.getExe config.lib.haku.wm} name)" in
+      niri) exec ${waybar} ;;
+      sway) exec ${waybar} -c ${swayConfig} ;;
+      hyprland) exec ${waybar} -c ${hyprlandConfig} ;;
+      river) exec ${waybar} -c ${riverConfig} ;;
+      *) exec ${waybar} -c ${genericConfig} ;;
+    esac
+  '';
+  waybar = lib.getExe config.programs.waybar.package;
 in
 {
   # Stylix's waybar CSS fights the capsule
@@ -350,4 +442,6 @@ in
     ''
     + builtins.readFile ./style.css;
   };
+
+  systemd.user.services.waybar.Service.ExecStart = lib.mkForce "${launch}";
 }

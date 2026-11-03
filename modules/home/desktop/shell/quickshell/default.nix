@@ -23,7 +23,7 @@ let
       libnotify
       jq
       procps
-      osConfig.programs.niri.package
+      config.lib.haku.wm
     ];
     text = builtins.readFile ./record.sh;
   };
@@ -61,8 +61,11 @@ let
     cava = lib.getExe pkgs.cava;
     inherit cavaConfig;
     niri = lib.getExe osConfig.programs.niri.package;
+    swaymsg = lib.getExe' osConfig.programs.sway.package "swaymsg";
+    wm = lib.getExe config.lib.haku.wm;
     # via hypridle, which skips an already running hyprlock
     lock = "${lib.getExe' pkgs.systemd "loginctl"} lock-session";
+    loginctl = lib.getExe' pkgs.systemd "loginctl";
     brightnessctl = lib.getExe pkgs.brightnessctl;
     mixer = lib.getExe pkgs.pavucontrol;
     wallpaper = lib.getExe pkgs.waypaper;
@@ -105,6 +108,13 @@ let
         (num "opacity" t.glass)
         (num "gap" config.programs.niri.settings.layout.gaps)
         (prop "bool" "laptop" (lib.boolToString laptop))
+        # titled binds for the hotkey overlay, by compositor
+        (prop "var" "hotkeys" (builtins.toJSON
+        {
+          niri = config.lib.haku.niriHotkeys;
+          sway = config.lib.haku.swayHotkeys;
+          mango = config.lib.haku.mangoHotkeys;
+        }))
         ""
         "    readonly property QtObject signals: QtObject {"
       ]

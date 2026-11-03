@@ -12,6 +12,8 @@
     ./office.nix
     ./media.nix
     ./niri
+    ./sway
+    ./mango
     ./shell
   ];
 }

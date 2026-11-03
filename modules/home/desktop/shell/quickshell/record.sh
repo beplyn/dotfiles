@@ -205,7 +205,7 @@ start_recording() {
   fi
 
   local display
-  display=$(niri msg --json focused-output | jq -r '.name')
+  display=$(wm focused-output) || { echo "record: no output picked" >&2; return 1; }
 
   mkdir -p "$SAVE_DIR" "$STATE_DIR"
   local file
