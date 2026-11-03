@@ -2,6 +2,7 @@
   imports =
   [
     ./kitty.nix
+    ./wezterm
     ./gaming.nix
     ./gtk.nix
     ./protonmail.nix
