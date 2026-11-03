@@ -14,7 +14,7 @@ case "$mode" in
     grim -g "$geometry" "$file"
     ;;
   output)
-    output="$(niri msg --json focused-output | jq -r '.name')"
+    output="$(wm focused-output)" || exit 0
     grim -o "$output" "$file"
     ;;
   *)

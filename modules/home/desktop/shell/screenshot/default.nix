@@ -21,7 +21,7 @@ let
       libnotify
       satty
       xdg-utils
-      jq
+      config.lib.haku.wm
     ];
     text = subst { inherit (p) background accent; } (builtins.readFile ./screenshot.sh);
   };
