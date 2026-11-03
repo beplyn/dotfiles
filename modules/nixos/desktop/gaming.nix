@@ -11,9 +11,10 @@
 
   config = lib.mkIf config.gaming.enable
   {
+    # unfree; gamemode and gamescope stay either way
     programs.steam =
     {
-      enable = true;
+      enable = config.unfree.enable;
       package = pkgs.millennium-steam;
     };
 

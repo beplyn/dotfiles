@@ -1,7 +1,12 @@
-{ pkgs, ... }:
+{
+  lib,
+  pkgs,
+  osConfig,
+  ...
+}:
 
 {
-  home.packages =
+  home.packages = lib.optionals osConfig.unfree.enable
   [
     pkgs.claude-code
   ];
