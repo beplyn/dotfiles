@@ -33,7 +33,9 @@ window#waybar > box
 
 #custom-launcher,
 #workspaces,
+#tags,
 #window,
+#taskbar,
 #mpris,
 #clock,
 #custom-recorder,
@@ -63,7 +65,9 @@ window#waybar > box
 /* every pill sits on see-through grey so it reads over any wallpaper */
 #custom-launcher,
 #workspaces,
+#tags,
 #window,
+#taskbar,
 #mpris,
 #clock,
 #cpu,
@@ -135,12 +139,14 @@ window#waybar > box
   padding: 0 12px 0 10px;
 }
 
-#workspaces
+#workspaces,
+#tags
 {
   padding: 0 3px;
 }
 
-#workspaces button
+#workspaces button,
+#tags button
 {
   min-width: 20px;
   padding: 0 4px;
@@ -151,27 +157,31 @@ window#waybar > box
   transition: all 250ms cubic-bezier(0, 0.5, 0.35, 1);
 }
 
-#workspaces button.empty
+#workspaces button.empty,
+#tags button:not(.occupied):not(.focused)
 {
   color: alpha(@foreground, 0.25);
 }
 
-#workspaces button:hover
+#workspaces button:hover,
+#tags button:hover
 {
   background: alpha(@accent, 0.18);
   color: @foreground;
 }
 
-/* niri marks a workspace shown on its output active, sway visible */
+/* shown on its output: niri and ext active, sway visible, river focused */
 #workspaces button.active,
-#workspaces button.visible
+#workspaces button.visible,
+#tags button.focused
 {
   min-width: 34px;
   background: @accent;
   color: @background;
 }
 
-#workspaces button.urgent
+#workspaces button.urgent,
+#tags button.urgent
 {
   background: @red;
   color: @background;
@@ -180,6 +190,25 @@ window#waybar > box
 #window
 {
   color: @subtext;
+}
+
+/* wlr/taskbar: the window list where no title module fits the compositor */
+#taskbar
+{
+  padding: 0 3px;
+}
+
+#taskbar button
+{
+  padding: 0 6px;
+  margin: 3px 1px;
+  border-radius: 6px;
+  background: transparent;
+}
+
+#taskbar button.active
+{
+  background: alpha(@accent, 0.35);
 }
 
 /* sway binding mode, e.g. resize */
