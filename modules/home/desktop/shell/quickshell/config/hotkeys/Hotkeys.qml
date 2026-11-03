@@ -4,16 +4,31 @@ import Quickshell
 import Quickshell.Wayland
 import qs.services
 
-// sway's and mango's stand-in for niri's hotkey overlay: the titled binds
-// from their binds.nix, by section. Any key or click closes it, as in niri.
+// The hotkey overlay for niri, sway and mango: the titled binds from their
+// binds.nix, by section. Any key or click closes it, as in niri.
 PanelWindow {
     id: root
 
     readonly property bool open: Panels.current === "hotkeys"
 
-    // keysyms as niri prints them
+    // keysyms as niri prints them; niri's own spellings too
     readonly property var names: ({
         Mod4: "Super",
+        Mod: "Super",
+        Space: "Space",
+        BracketLeft: "[",
+        BracketRight: "]",
+        Minus: "-",
+        Equal: "=",
+        Slash: "/",
+        KP_Add: "Keypad +",
+        KP_Subtract: "Keypad -",
+        XF86AudioRaiseVolume: "Volume Up",
+        XF86AudioLowerVolume: "Volume Down",
+        XF86AudioMute: "Mute",
+        XF86AudioMicMute: "Mic Mute",
+        XF86MonBrightnessUp: "Brightness Up",
+        XF86MonBrightnessDown: "Brightness Down",
         space: "Space",
         Return: "Enter",
         bracketleft: "[",
@@ -30,13 +45,16 @@ PanelWindow {
         return combo.split("+").map(k => names[k] ?? (k.length === 1 ? k.toUpperCase() : k))
     }
 
-    // Sections into two columns, each to the shorter one, flattened into
-    // grid cells: a header spanning both, then keys and title per bind.
+    // Sections into columns, each to the shortest one, flattened into grid
+    // cells: a header spanning both, then keys and title per bind. A long
+    // list (niri's, all binds) gets three columns to fit the screen height.
     readonly property var columns: {
-        const cols = [[], []]
-        const rows = [0, 0]
-        for (const s of Theme.hotkeys[Wm.currentCompositor] ?? []) {
-            const c = rows[1] < rows[0] ? 1 : 0
+        const sections = Theme.hotkeys[Wm.currentCompositor] ?? []
+        const total = sections.reduce((n, s) => n + s.binds.length + 1, 0)
+        const cols = total > 45 ? [[], [], []] : [[], []]
+        const rows = cols.map(() => 0)
+        for (const s of sections) {
+            const c = rows.indexOf(Math.min(...rows))
             rows[c] += s.binds.length + 1
             cols[c].push({ kind: "header", text: s.name })
             for (const b of s.binds) {
@@ -117,7 +135,7 @@ PanelWindow {
                 spacing: 18
 
                 Text {
-                    text: "Important Hotkeys"
+                    text: "Hotkeys"
                     color: Theme.foreground
                     font.family: Theme.font
                     font.pointSize: Theme.popupFontSize + 6
