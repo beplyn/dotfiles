@@ -2,6 +2,7 @@
   config,
   inputs,
   lib,
+  pkgs,
   subst,
   themeName,
   ...
@@ -52,6 +53,41 @@ let
     # the "Default font" is the serif one, which Stylix sets to its serif
     "font.name.serif.x-western" = lib.mkForce config.stylix.fonts.monospace.name;
   };
+
+  # DuckDuckGo, Startpage and nixpkgs; the browser's other built-ins hidden by id
+  search = engines:
+  {
+    force = true;
+    default = "ddg";
+    privateDefault = "ddg";
+    engines =
+    {
+      ddg.metaData.alias = "@dg";
+      nixpkgs =
+      {
+        name = "Nix Packages";
+        urls = [
+        {
+          template = "https://search.nixos.org/packages";
+          params =
+          [
+            { name = "channel"; value = "unstable"; }
+            { name = "query"; value = "{searchTerms}"; }
+          ];
+        }];
+        icon = "${pkgs.nixos-icons}/share/icons/hicolor/64x64/apps/nix-snowflake.png";
+        definedAliases = [ "@nx" ];
+      };
+      startpage =
+      {
+        name = "Startpage";
+        urls = [ { template = "https://www.startpage.com/sp/search?query={searchTerms}"; } ];
+        icon = "https://www.startpage.com/favicon.ico";
+        definedAliases = [ "@sp" ];
+      };
+    } // engines;
+  };
+  hidden = ids: lib.genAttrs ids (_: { metaData.hidden = true; });
 
   extensions =
   {
@@ -116,6 +152,7 @@ in
       inherit extensions;
       # Sine mod manager, pinned and non-updating
       sine.enable = true;
+      search = search (hidden [ "google" "bing" "perplexity" "wikipedia" ]);
       settings = settings //
       {
         "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
@@ -149,6 +186,7 @@ in
       # upstream Glass-Firefox-Theme recoloured, local overrides after it
       userChrome = theme.glass "${inputs.glass-firefox}/chrome/userChrome.css" + theme.override ./glass/userChrome.css;
       userContent = theme.glass "${inputs.glass-firefox}/chrome/userContent.css" + theme.override ./glass/userContent.css;
+      search = search (hidden [ "mojeek" "wikipedia" ]);
       settings = settings //
       {
         "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
