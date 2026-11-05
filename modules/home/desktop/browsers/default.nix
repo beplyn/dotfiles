@@ -32,11 +32,16 @@ let
     vimium-ff = "{d7742d87-e61d-4b78-b8a1-b469842139fa}";
   };
 
-  policies.ExtensionSettings = lib.mapAttrs' (slug: id: lib.nameValuePair id
+  policies =
   {
-    installation_mode = "force_installed";
-    install_url = "https://addons.mozilla.org/firefox/downloads/latest/${slug}/latest.xpi";
-  }) addons;
+    ExtensionSettings = lib.mapAttrs' (slug: id: lib.nameValuePair id
+    {
+      installation_mode = "force_installed";
+      install_url = "https://addons.mozilla.org/firefox/downloads/latest/${slug}/latest.xpi";
+    }) addons;
+    # Bitwarden instead
+    PasswordManagerEnabled = false;
+  };
 
   extensions =
   {
