@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 
 let
   p = config.themes.palette;
@@ -12,6 +12,34 @@ in
   {
     enable = true;
     enableFishIntegration = true;
+    extraPackages = with pkgs;
+    [
+      glow
+      lazygit
+      ouch
+      starship
+      wl-clipboard
+    ];
+    plugins = with pkgs.yaziPlugins;
+    {
+      inherit chmod jump-to-char lazygit mount ouch piper smart-enter smart-filter toggle-pane wl-clipboard;
+      full-border =
+      {
+        package = full-border;
+        setup = true;
+      };
+      git =
+      {
+        package = git;
+        setup = true;
+        settings.order = 1500;
+      };
+      starship =
+      {
+        package = starship;
+        setup = true;
+      };
+    };
     keymap =
     {
       mgr.prepend_keymap =
@@ -20,6 +48,46 @@ in
           on = "<C-h>";
           run = "hidden toggle";
           desc = "Toggle hidden files";
+        }
+        {
+          on = "l";
+          run = "plugin smart-enter";
+          desc = "Enter the child directory, or open the file";
+        }
+        {
+          on = "f";
+          run = "plugin jump-to-char";
+          desc = "Jump to char";
+        }
+        {
+          on = "F";
+          run = "plugin smart-filter";
+          desc = "Smart filter";
+        }
+        {
+          on = "T";
+          run = "plugin toggle-pane max-preview";
+          desc = "Maximize or restore the preview pane";
+        }
+        {
+          on = "M";
+          run = "plugin mount";
+          desc = "Mount manager";
+        }
+        {
+          on = [ "c" "m" ];
+          run = "plugin chmod";
+          desc = "Chmod on selected files";
+        }
+        {
+          on = [ "g" "i" ];
+          run = "plugin lazygit";
+          desc = "Lazygit";
+        }
+        {
+          on = "<C-y>";
+          run = "plugin wl-clipboard";
+          desc = "Copy files to the system clipboard";
         }
       ] ++ helpKeys "help";
       tasks.prepend_keymap = helpKeys "help";
@@ -32,6 +100,33 @@ in
       mgr =
       {
         show_hidden = false;
+      };
+      plugin =
+      {
+        prepend_fetchers =
+        [
+          {
+            url = "*";
+            run = "git";
+            group = "git";
+          }
+          {
+            url = "*/";
+            run = "git";
+            group = "git";
+          }
+        ];
+        prepend_previewers =
+        [
+          {
+            url = "*.md";
+            run = ''piper -- CLICOLOR_FORCE=1 glow -w=$w -s="${config.xdg.configHome}/glow/stylix.json" "$1"'';
+          }
+          {
+            mime = "application/{*zip,tar,bzip2,7z*,rar,xz,zstd,java-archive}";
+            run = "ouch";
+          }
+        ];
       };
       opener =
       {
@@ -173,6 +268,17 @@ in
             bg = p.error;
             bold = true;
           };
+        };
+
+        git =
+        {
+          added.fg = p.success;
+          staged.fg = p.success;
+          unstaged.fg = p.warning;
+          updated.fg = p.warning;
+          untracked.fg = p.blue;
+          deleted.fg = p.error;
+          ignored.fg = p.muted;
         };
 
         status =
