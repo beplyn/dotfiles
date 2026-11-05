@@ -2,6 +2,10 @@
 
 let
   p = config.themes.palette;
+
+  # ctrl+/ arrives as <C-/> with the kitty protocol, as <C-7> (0x1f) without
+  helpKeys = run:
+    map (on: { inherit on run; desc = "Keybinds"; }) [ "<C-/>" "<C-7>" ];
 in
 {
   programs.yazi =
@@ -17,7 +21,11 @@ in
           run = "hidden toggle";
           desc = "Toggle hidden files";
         }
-      ];
+      ] ++ helpKeys "help";
+      tasks.prepend_keymap = helpKeys "help";
+      spot.prepend_keymap = helpKeys "help";
+      pick.prepend_keymap = helpKeys "help";
+      help.prepend_keymap = helpKeys "close";
     };
     settings =
     {
