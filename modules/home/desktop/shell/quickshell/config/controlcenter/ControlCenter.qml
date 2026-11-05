@@ -345,7 +345,10 @@ Panel {
         }
 
         Repeater {
-            model: root.networksOpen ? root.wifiNetworks : []
+            // ScriptModel keeps rows (and a half-typed password) across scan updates.
+            model: ScriptModel {
+                values: root.networksOpen ? root.wifiNetworks : []
+            }
 
             ColumnLayout {
                 id: entry
