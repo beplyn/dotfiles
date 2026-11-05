@@ -43,6 +43,16 @@ let
     PasswordManagerEnabled = false;
   };
 
+  # prefs both browsers share
+  settings =
+  {
+    # Ctrl+Tab cycles through recently used tabs
+    "browser.ctrlTab.sortByRecentlyUsed" = true;
+    "browser.contentblocking.category" = "strict";
+    # the "Default font" is the serif one, which Stylix sets to its serif
+    "font.name.serif.x-western" = lib.mkForce config.stylix.fonts.monospace.name;
+  };
+
   extensions =
   {
     force = true;
@@ -106,7 +116,11 @@ in
       inherit extensions;
       # Sine mod manager, pinned and non-updating
       sine.enable = true;
-      settings."toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+      settings = settings //
+      {
+        "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+        "zen.urlbar.behavior" = "float";
+      };
       # upstream catppuccin/zen-browser recoloured, local overrides after it
       userChrome = theme.catppuccin "${zenTheme}/userChrome.css" + theme.override ./zen/userChrome.css;
       userContent = theme.catppuccin "${zenTheme}/userContent.css" + theme.override ./zen/userContent.css;
@@ -135,7 +149,7 @@ in
       # upstream Glass-Firefox-Theme recoloured, local overrides after it
       userChrome = theme.glass "${inputs.glass-firefox}/chrome/userChrome.css" + theme.override ./glass/userChrome.css;
       userContent = theme.glass "${inputs.glass-firefox}/chrome/userContent.css" + theme.override ./glass/userContent.css;
-      settings =
+      settings = settings //
       {
         "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
         # see-through content area for the glass look
