@@ -13,7 +13,8 @@ nmcli connection add type wifi con-name "$ssid" ssid "$ssid" \
   802-1x.password-flags 0 >/dev/null
 
 # Secrets handed over at activation get saved, since password-flags 0 is system owned.
-if ! printf '802-1x.password:%s\n' "$EAP_PASSWORD" \
+# nmcli's agent asks for the identity too and fails the whole request without it.
+if ! printf '802-1x.identity:%s\n802-1x.password:%s\n' "$EAP_IDENTITY" "$EAP_PASSWORD" \
   | nmcli --wait 45 connection up id "$ssid" passwd-file /dev/stdin >/dev/null
 then
   # Drop the half-made profile so the network isn't "Saved" with no password.
