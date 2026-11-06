@@ -108,6 +108,13 @@ in
       '';
     };
 
+    dyndns = lib.mkOption
+    {
+      type = lib.types.bool;
+      default = true;
+      description = "Keep the records pointed here with cloudflare-dyndns; off when something else does it.";
+    };
+
     ipv6 = lib.mkOption
     {
       type = lib.types.bool;
@@ -152,13 +159,14 @@ in
 
     # rebuild asks for whichever are missing
     rebuild.secrets =
-    {
-      "${secrets}/cloudflare-ddns.token" =
+      lib.optionalAttrs cfg.dyndns
       {
-        description = "Cloudflare API token (Zone.DNS edit) for dyndns";
-        restart = [ "cloudflare-dyndns.service" ];
-      };
-    }
+        "${secrets}/cloudflare-ddns.token" =
+        {
+          description = "Cloudflare API token (Zone.DNS edit) for dyndns";
+          restart = [ "cloudflare-dyndns.service" ];
+        };
+      }
     // lib.optionalAttrs (cfg.tls == "acme")
     {
       "${secrets}/acme-cloudflare.env" =
@@ -195,7 +203,7 @@ in
 
     services.cloudflare-dyndns =
     {
-      enable = true;
+      enable = cfg.dyndns;
       apiTokenFile = "${secrets}/cloudflare-ddns.token";
       domains = if cfg.hosts == { } then [ cfg.domain ] else map fqdn (lib.attrNames cfg.hosts);
       proxied = true;
