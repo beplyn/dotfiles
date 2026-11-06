@@ -63,12 +63,21 @@ if ! fj -H @forgejoHost@ auth list 2>/dev/null | grep -qF "@forgejoHost@"; then
   unset token
 fi
 
+# gated hosts: the gate reports missing secrets, so a signed rebuild needs no sudo password
+if @gated@; then
+  gateState="$(sudo @gate@ state)"
+fi
+
 # host secrets (rebuild.secrets): root-only, never in the repo; delete one to be asked again
 restart=()
 # shellcheck disable=SC2329 # no calls on hosts without secrets
 host_secret() {
   local path="$1" what="$2" prefix="$3" kind="$4" units="$5" value
-  sudo test -s "$path" && return
+  if @gated@; then
+    grep -qxF "missing $path" <<<"$gateState" || return
+  else
+    sudo test -s "$path" && return
+  fi
   # umask reaches sudo, so new dirs are 0700
   (umask 077 && sudo mkdir -p "${path%/*}")
   if [ "$kind" = file ]; then
@@ -120,9 +129,26 @@ if @desktop@; then
   unset keep pic
 fi
 
-# new files reach the flake; nothing else gets staged
-git -C "$flake" add --intent-to-add .
-sudo nixos-rebuild switch --flake "$flake#@hostName@-$theme"
+if @gated@; then
+  # the gate builds commits, not the working tree: send the ones it lacks, it checks the signature
+  if [ -n "$(git -C "$flake" status --porcelain)" ]; then
+    echo "uncommitted changes in $flake are not deployed; commit (and sign) them first" >&2
+  fi
+  rev="$(git -C "$flake" rev-parse HEAD)"
+  base="$(sed -n 's/^deployed //p' <<<"$gateState")"
+  if [ "$base" = "$rev" ]; then
+    sudo @gate@ deploy "$theme" "$rev" </dev/null
+  elif [ -n "$base" ] && git -C "$flake" merge-base --is-ancestor "$base" "$rev" 2>/dev/null; then
+    git -C "$flake" bundle create -q - HEAD "^$base" | sudo @gate@ deploy "$theme" "$rev"
+  else
+    git -C "$flake" bundle create -q - HEAD | sudo @gate@ deploy "$theme" "$rev"
+  fi
+  unset rev base
+else
+  # new files reach the flake; nothing else gets staged
+  git -C "$flake" add --intent-to-add .
+  sudo nixos-rebuild switch --flake "$flake#@hostName@-$theme"
+fi
 
 # units that were waiting on a new secret
 if [ ${#restart[@]} -gt 0 ]; then
