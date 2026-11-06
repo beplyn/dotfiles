@@ -17,6 +17,7 @@
 
   # phase 2: k3s.ddns.enable = true; once the token is sealed (takes over the proxy's dyndns)
   k3s.enable = true;
+  k3s.ddns.enable = true;
 
   environment.systemPackages = [ pkgs.kitty.terminfo ];
 
