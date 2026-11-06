@@ -21,6 +21,7 @@
       "networkmanager"
       "wheel"
     ]
-    ++ lib.optional config.docker.enable "docker";
+    # docker is root without sudo, so not on gated hosts
+    ++ lib.optional (config.docker.enable && !config.rebuildGate.enable) "docker";
   };
 }

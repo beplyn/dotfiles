@@ -44,6 +44,8 @@ let
         inherit username email forgejoHost themeName;
         hostName = config.networking.hostName;
         desktop = lib.boolToString (!headless);
+        gated = lib.boolToString config.rebuildGate.enable;
+        gate = lib.optionalString config.rebuildGate.enable "${config.rebuildGate.package}/bin/rebuild-gate";
         hostSecrets = secretLines;
       }
       (builtins.readFile ./rebuild.sh);
