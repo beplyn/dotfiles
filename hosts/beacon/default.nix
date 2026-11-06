@@ -15,6 +15,9 @@
     domain = "beplyn.dev";
   };
 
+  # phase 2: k3s.ddns.enable = true; once the token is sealed (takes over the proxy's dyndns)
+  k3s.enable = true;
+
   environment.systemPackages = [ pkgs.kitty.terminfo ];
 
   # wake-on-lan on every wired NIC (also enable it in the BIOS)
