@@ -54,7 +54,7 @@ in
           };
           spec =
           {
-            repo = "https://bitnami-labs.github.io/sealed-secrets";
+            repo = "https://bitnami.github.io/sealed-secrets";
             chart = "sealed-secrets";
             targetNamespace = "kube-system";
             # kubeseal's default controller name
