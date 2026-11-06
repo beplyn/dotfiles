@@ -66,8 +66,8 @@ in
     keysDir = lib.mkOption
     {
       type = lib.types.str;
-      default = "/var/lib/deploy-keys";
-      description = "Root-only home of the master public key (allowed_signers or a GPG keyring).";
+      default = "/var/lib/rebuild-gate/keys";
+      description = "Root-only home of the master public key (allowed_signers or a GPG keyring), pasted at init.";
     };
 
     stateDir = lib.mkOption
@@ -177,8 +177,8 @@ in
 
     systemd.tmpfiles.rules =
     [
-      "d ${cfg.keysDir} 0700 root root -"
       "d ${cfg.stateDir} 0700 root root -"
+      "d ${cfg.keysDir} 0700 root root -"
       "d ${dirOf cfg.totpSecret} 0700 root root -"
     ];
 

@@ -27,12 +27,13 @@ in
     {
       enable = true;
       role = "server";
-      # kubectl without sudo for wheel
+      # kubectl without sudo for wheel, except on gated hosts: cluster-admin is root
       extraFlags =
-      [
-        "--write-kubeconfig-mode=0640"
-        "--write-kubeconfig-group=wheel"
-      ]
+        lib.optionals (!config.rebuildGate.enable)
+        [
+          "--write-kubeconfig-mode=0640"
+          "--write-kubeconfig-group=wheel"
+        ]
       # nginx already owns 80/443
       ++ lib.optionals config.proxy.enable
       [

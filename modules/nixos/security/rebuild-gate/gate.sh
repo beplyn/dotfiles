@@ -2,7 +2,7 @@
 #   state                 deployed rev and missing host secrets       (sudo, no password)
 #   deploy <theme> <rev>  git bundle of new commits on stdin, by rebuild (sudo, no password)
 #   fetch                 the auto-deploy timer: signed only, never prompts
-#   init                  enrol the TOTP seed, import the master key   (sudo: password + TOTP)
+#   init                  enrol the TOTP seed, paste the master key    (sudo: password + TOTP)
 
 # nothing from the caller: not its PATH, not its git config
 export PATH="@path@"
@@ -98,42 +98,75 @@ totp_ok() {
   return 1
 }
 
-# the public half only: one SSH key line, or one GPG key without secret parts
-import_key() {
-  local file type blob rest line fpr answer
-  read -erp "Master public key file, absolute path (e.g. on the USB stick; empty to skip): " file </dev/tty || file=
-  [ -n "$file" ] || return 1
-  if [ ! -f "$file" ] || [ ! -r "$file" ]; then
-    echo "$file is not a readable file" >&2
-    return 1
-  fi
-  install -d -m 0700 "@keysDir@" "$GNUPGHOME"
+# rest of a paste (a private key's body, a stray newline): not for the prompt or the shell
+drain_tty() {
+  while IFS= read -r -t 0.5 _; do :; done </dev/tty || true
+}
 
-  read -r type blob rest <"$file" || true
-  if [[ "$type" =~ ^(ssh-|ecdsa-|sk-) ]]; then
+# pasted into the terminal, beacon never sees the stick: one ssh-... line, or a whole armored block
+read_paste() {
+  local line
+  IFS= read -r line || line=
+  line="${line%$'\r'}"
+  printf '%s\n' "$line"
+  if [ "$line" = "-----BEGIN PGP PUBLIC KEY BLOCK-----" ]; then
+    while IFS= read -r line; do
+      line="${line%$'\r'}"
+      printf '%s\n' "$line"
+      [ "$line" = "-----END PGP PUBLIC KEY BLOCK-----" ] && break
+    done
+  fi
+}
+
+# the public half only: one SSH key, or one GPG key without secret parts
+import_key() {
+  local paste type blob rest line='' fpr answer
+  install -d -m 0700 "@keysDir@" "$GNUPGHOME"
+  paste="$(mktemp)"
+  echo "Paste the master public key: the ssh-... line from the .pub, or the whole PGP PUBLIC KEY BLOCK (empty to skip)." >&2
+  read_paste </dev/tty >"$paste"
+  drain_tty
+
+  read -r type blob rest <"$paste" || true
+  if [ -z "$type" ]; then
+    rm -f "$paste"
+    return 1
+  elif grep -q PRIVATE "$paste"; then
+    echo "that is a private key: it stays on the stick, paste the public one" >&2
+    rm -f "$paste"
+    return 1
+  elif [[ "$type" =~ ^(ssh-|ecdsa-|sk-) ]]; then
     line="master namespaces=\"git\" $type $blob"
     if ! fpr="$(ssh-keygen -l -f /dev/stdin <<<"$type $blob" 2>/dev/null)"; then
-      echo "$file is not an SSH public key" >&2
+      echo "not an SSH public key" >&2
+      rm -f "$paste"
       return 1
     fi
-    echo "SSH key: $fpr"
-  elif [ "$(gpg --show-keys --with-colons "$file" 2>/dev/null | grep -c '^pub:')" -eq 1 ] \
-      && ! gpg --show-keys --with-colons "$file" 2>/dev/null | grep -q '^sec:'; then
-    fpr="$(gpg --show-keys --with-colons "$file" | awk -F: '$1 == "fpr" { print $10; exit }')"
-    echo "GPG key: $fpr"
+    echo "SSH key: $fpr" >&2
+    echo "compare with \`ssh-keygen -lf <key>.pub\` on the workstation" >&2
+  elif [ "$(gpg --show-keys --with-colons "$paste" 2>/dev/null | grep -c '^pub:')" -eq 1 ] \
+      && ! gpg --show-keys --with-colons "$paste" 2>/dev/null | grep -q '^sec:'; then
+    fpr="$(gpg --show-keys --with-colons "$paste" | awk -F: '$1 == "fpr" { print $10; exit }')"
+    echo "GPG key: $fpr ($(gpg --show-keys --with-colons "$paste" | awk -F: '$1 == "uid" { print $10; exit }'))" >&2
+    echo "compare with \`gpg --fingerprint\` on the workstation" >&2
   else
-    echo "$file is neither one SSH public key nor one GPG public key" >&2
+    echo "neither one SSH public key nor one GPG public key" >&2
+    rm -f "$paste"
     return 1
   fi
 
-  read -rp "Same fingerprint as on the stick's machine? [y/N] " answer </dev/tty || answer=
-  [[ "$answer" == [yY]* ]] || return 1
-  if [ -n "${line:-}" ]; then
+  read -rp "Same fingerprint as on the workstation? [y/N] " answer </dev/tty || answer=
+  if [[ "$answer" != [yY]* ]]; then
+    rm -f "$paste"
+    return 1
+  fi
+  if [ -n "$line" ]; then
     printf '%s\n' "$line" | install -m 0600 /dev/stdin "$signers"
   else
-    gpg --batch --quiet --import "$file"
+    gpg --batch --quiet --import "$paste"
     echo "$fpr:6:" | gpg --batch --quiet --import-ownertrust
   fi
+  rm -f "$paste"
   log "master key imported: $fpr"
 }
 
@@ -224,7 +257,7 @@ case "${1:-}" in
 
   init)
     [ $# -eq 1 ] || die "usage: sudo rebuild-gate init"
-    has_tty || die "init is interactive"
+    has_tty || die "init is interactive: ssh -t @hostName@ sudo rebuild-gate init"
     lock
     if [ -s "$seed" ]; then
       echo "TOTP seed already at $seed (delete it to enrol a new one)"
