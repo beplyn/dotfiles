@@ -12,6 +12,8 @@
   rebuildGate =
   {
     enable = true;
+    # password-only sudo until `sudo rebuild-gate init` has a TOTP seed; false after that
+    allowUnenrolled = true;
     autoDeploy =
     {
       enable = true;
