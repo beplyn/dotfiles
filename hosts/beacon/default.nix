@@ -8,6 +8,17 @@
   encryption.enable = false;
   services.openssh.enable = true;
 
+  # switches only to master-signed commits (else a TOTP code); sudo needs password + TOTP
+  rebuildGate =
+  {
+    enable = true;
+    autoDeploy =
+    {
+      enable = true;
+      remote = "https://codeberg.org/beplyn/dotfiles.git";
+    };
+  };
+
   # no hosts yet: dyndns keeps only the apex pointed here
   proxy =
   {
