@@ -11,6 +11,7 @@
     ./browsers
     ./office.nix
     ./media.nix
+    ./hyprland
     ./niri
     ./sway
     ./mango
