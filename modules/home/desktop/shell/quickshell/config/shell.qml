@@ -5,6 +5,7 @@ import qs.clipboard
 import qs.controlcenter
 import qs.dashboard
 import qs.hotkeys
+import qs.launcher
 import qs.monitor
 import qs.notifications
 import qs.osd
@@ -25,6 +26,7 @@ ShellRoot {
     Hotkeys {}
     BatteryMenu {}
     ClipboardMenu {}
+    LauncherMenu {}
 
     // One per waybar hardware pill.
     Monitor {

@@ -115,6 +115,13 @@ let
     swaymsg = lib.getExe' osConfig.programs.sway.package "swaymsg";
     wm = lib.getExe config.lib.haku.wm;
     clipboard = lib.getExe config.lib.haku.clipboard;
+    # the launcher (launcher/LauncherMenu.qml); apps start in a scope of
+    # their own, out of quickshell.service
+    systemdRun = lib.getExe' osConfig.systemd.package "systemd-run";
+    env = lib.getExe' pkgs.coreutils "env";
+    terminal = lib.getExe config.programs.wezterm.package;
+    xdgOpen = lib.getExe' pkgs.xdg-utils "xdg-open";
+    wlCopy = lib.getExe' pkgs.wl-clipboard "wl-copy";
     # via hypridle, which skips an already running hyprlock
     lock = "${lib.getExe' pkgs.systemd "loginctl"} lock-session";
     loginctl = lib.getExe' pkgs.systemd "loginctl";
