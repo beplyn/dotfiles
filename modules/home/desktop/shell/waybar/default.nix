@@ -456,8 +456,6 @@ in
         border-radius: ${toString t.radius}px;
       }
 
-      # Cava is intentionally compact: a live accent-coloured waveform
-      # between the player and clock, with a soft palette-matched glow.
       #custom-cava
       {
         min-width: 196px;
