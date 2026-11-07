@@ -122,6 +122,9 @@ let
     wallpaper = lib.getExe pkgs.waypaper;
     systemctl = lib.getExe' osConfig.systemd.package "systemctl";
     pkill = lib.getExe' pkgs.procps "pkill";
+    # stay awake (services/Awake.qml)
+    systemdInhibit = lib.getExe' osConfig.systemd.package "systemd-inhibit";
+    sleep = lib.getExe' pkgs.coreutils "sleep";
   };
 
   # SIGRTMIN+n to refresh a waybar module

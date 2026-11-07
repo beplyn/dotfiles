@@ -27,6 +27,12 @@ Singleton {
     readonly property string performance: g(0xF0E7)
     readonly property string balanced: g(0xF24E)
     readonly property string powerSaver: g(0xF06C)
+    // empty to full, as waybar's battery pill
+    readonly property var battery: [0xF008E, 0xF007A, 0xF007B, 0xF007C, 0xF007D, 0xF007E, 0xF007F, 0xF0080, 0xF0081, 0xF0082, 0xF0079].map(c => g(c))
+    readonly property string batteryCharging: g(0xF0084)
+    readonly property string batteryHealth: g(0xF120F)
+    readonly property string awake: g(0xF0176)
+    readonly property string idle: g(0xF04B2)
 
     // audio
     readonly property var volume: [0xF026, 0xF027, 0xF028].map(c => g(c))
