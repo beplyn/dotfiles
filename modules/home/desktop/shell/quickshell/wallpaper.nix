@@ -28,7 +28,7 @@ let
   # uncoloured sources; git skips an empty folder
   sources = lib.optionalString (builtins.pathExists ./wallpapers) "${./wallpapers}";
   cache = "${config.xdg.cacheHome}/wallpaper";
-  # rebuild copies new ones from here into ./wallpapers
+  # links to ./wallpapers in the checkout, so new ones land in the repo
   folder = "${config.home.homeDirectory}/Pictures/Wallpapers";
 
   # recolor [-o DIR] IMAGE...: one copy per theme
@@ -163,7 +163,6 @@ in
     Install.WantedBy = [ "awww.service" ];
   };
 
-  home.activation.wallpaperDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    run mkdir -p "${folder}"
-  '';
+  home.file."Pictures/Wallpapers".source =
+    config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/desktop/shell/quickshell/wallpapers";
 }
