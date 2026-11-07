@@ -14,7 +14,7 @@
     ./tmux.nix
     ./yazi.nix
     ./tools.nix
-    ./fun.nix
+    ./fun
     ./forgejo.nix
     ./fastfetch.nix
     ./bottom.nix
