@@ -9,6 +9,7 @@
     toilet
     figlet
     cowsay
+    ponysay
     fortune
     cmatrix
     pipes-rs
