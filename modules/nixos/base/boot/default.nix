@@ -1,4 +1,10 @@
-# GRUB theme: stylix.targets.grub
+{
+  config,
+  pkgs,
+  subst,
+  ...
+}:
+
 {
   boot.loader.systemd-boot.enable = false;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -15,5 +21,6 @@
     useOSProber = true;
     # anything with an EFI loader, found at boot time (USB sticks too)
     extraEntries = builtins.readFile ./grub-removable.cfg;
+    theme = import ./grub-theme.nix { inherit config pkgs subst; };
   };
 }

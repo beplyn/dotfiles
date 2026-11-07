@@ -33,7 +33,8 @@ in
     base16Scheme = base16Schemes.${themeName};
     targets = lib.mkMerge
     [
-      { grub.enable = true; }
+      # own theme: modules/nixos/base/boot/grub-theme.nix
+      { grub.enable = false; }
       # only with a display
       (lib.mkIf headless
       {

@@ -1,0 +1,97 @@
+# @name@ comes from grub-theme.nix
+title-text: ""
+desktop-image: "background.png"
+desktop-image-scale-method: "crop"
+desktop-color: "@background@"
+
+terminal-font: "Maple Regular 16"
+terminal-box: "panel_*.png"
+terminal-left: "8%"
+terminal-top: "12%"
+terminal-width: "84%"
+terminal-height: "72%"
+
++ label
+{
+  left = 8%
+  top = 16%
+  width = 40%
+  height = 56
+  text = "@host@"
+  font = "Maple Bold 48"
+  color = "@accent@"
+}
+
++ label
+{
+  left = 8%+4
+  top = 16%+64
+  width = 40%
+  height = 24
+  text = "choose a system"
+  font = "Maple Regular 20"
+  color = "@subtext@"
+}
+
++ boot_menu
+{
+  left = 8%
+  top = 30%
+  width = 36%
+  height = 44%
+  menu_pixmap_style = "panel_*.png"
+
+  item_font = "Maple Regular 20"
+  item_color = "@foreground@"
+  selected_item_font = "Maple Regular 20"
+  selected_item_color = "@brightest@"
+  selected_item_pixmap_style = "select_*.png"
+
+  icon_width = 36
+  icon_height = 36
+  item_height = 40
+  item_padding = 8
+  item_icon_space = 16
+  item_spacing = 10
+  item_pixmap_style = "item_*.png"
+
+  scrollbar = true
+  scrollbar_width = 6
+  scrollbar_frame = "track_*.png"
+  scrollbar_thumb = "thumb_*.png"
+}
+
++ progress_bar
+{
+  id = "__timeout__"
+  left = 8%+24
+  top = 74%+12
+  width = 36%-48
+  height = 28
+  bar_style = "track_*.png"
+  highlight_style = "fill_*.png"
+  highlight_overlay = true
+}
+
++ label
+{
+  id = "__timeout__"
+  left = 8%+24
+  top = 74%+44
+  width = 36%-48
+  height = 24
+  text = "booting in %d s"
+  font = "Maple Regular 16"
+  color = "@muted@"
+}
+
++ label
+{
+  left = 8%
+  top = 100%-64
+  width = 84%
+  height = 24
+  text = "↑↓ select   •   enter boot   •   e edit   •   c console"
+  font = "Maple Regular 16"
+  color = "@muted@"
+}
