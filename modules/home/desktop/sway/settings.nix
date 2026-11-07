@@ -76,4 +76,9 @@ in
       no_focus [${toasts}]
     '';
   };
+
+  # sway's exit stops sway-session.target but left graphical-session.target
+  # up: waybar and co. crash-looped into start-limit-hit, and the next
+  # session found the target active and never brought them back
+  systemd.user.targets.sway-session.Unit.PropagatesStopTo = [ "graphical-session.target" ];
 }
