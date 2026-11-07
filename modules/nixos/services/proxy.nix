@@ -115,6 +115,17 @@ in
       description = "Keep the records pointed here with cloudflare-dyndns; off when something else does it.";
     };
 
+    acmeEnvFile = lib.mkOption
+    {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      example = "/run/acme-cloudflare/env";
+      description = ''
+        Env file with CF_DNS_API_TOKEN provided by something else.
+        null: rebuild asks for it at ''${secrets}/acme-cloudflare.env.
+      '';
+    };
+
     ipv6 = lib.mkOption
     {
       type = lib.types.bool;
@@ -167,7 +178,7 @@ in
           restart = [ "cloudflare-dyndns.service" ];
         };
       }
-    // lib.optionalAttrs (cfg.tls == "acme")
+    // lib.optionalAttrs (cfg.tls == "acme" && cfg.acmeEnvFile == null)
     {
       "${secrets}/acme-cloudflare.env" =
       {
@@ -219,7 +230,7 @@ in
         extraDomainNames = [ "*.${cfg.domain}" ];
         dnsProvider = "cloudflare";
         # CF_DNS_API_TOKEN=...
-        environmentFile = "${secrets}/acme-cloudflare.env";
+        environmentFile = if cfg.acmeEnvFile == null then "${secrets}/acme-cloudflare.env" else cfg.acmeEnvFile;
         group = config.services.nginx.group;
       };
     };
