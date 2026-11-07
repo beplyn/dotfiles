@@ -5,6 +5,7 @@
   [
     ./base
     ./services
+    ./security
     ../theme
   ]
   # servers: no GUI

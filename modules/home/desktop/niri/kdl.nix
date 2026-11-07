@@ -25,6 +25,7 @@ in
       (node "window-rule" [ ]
       [
         (leaf "match" { app-id = "^kitty$"; })
+        (leaf "match" { app-id = "^org\\.wezfurlong\\.wezterm$"; })
         (node "background-effect" [ ]
         [
           # no xray: blur what's behind; saturation 0 keeps it grey

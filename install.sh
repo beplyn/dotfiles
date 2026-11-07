@@ -111,20 +111,31 @@ theme="$(choose "Theme: " "${themes[@]}")"
 host_dir="hosts/$host"
 hw="$host_dir/hardware.nix"
 
+# unfree.enable (on by default) lives in the host's default.nix
+echo
+sed -i '/^\s*unfree\.enable\s*=/d' "$host_dir/default.nix"
+if confirm "Allow the unfree software in the repo (claude-code, MS Office fonts, Steam)? [Y/n]" y; then
+  info "Unfree software allowed"
+else
+  sed -i '/networking\.hostName/a\  unfree.enable = false;' "$host_dir/default.nix"
+  info "Unfree software left out"
+fi
+
 # --- 3. Hardware config -----------------------------------------------------
 
 # real = nixos-generate-config output; else a placeholder or hand tuning
 is_generated() { [[ -f "$1" ]] && grep -q 'Do not modify this file' "$1"; }
 
+echo
 regenerate=false
 if is_generated "$hw"; then
-  echo
   info "$host already has a generated hardware config."
   warn "If this disk was reformatted the UUIDs in it are stale and the system won't boot."
   confirm "Regenerate it from this machine? [y/N]" n && regenerate=true
 else
-  info "$host has no real hardware config yet, generating one from this machine"
-  regenerate=true
+  info "$host has no generated hardware config yet."
+  warn "Without one it has no file systems or kernel modules for this machine and won't boot."
+  confirm "Generate it from this machine? [Y/n]" y && regenerate=true
 fi
 
 if $regenerate; then
@@ -193,6 +204,18 @@ if confirm "Build $target and install it for the next boot? [Y/n]" y; then
   built=true
 else
   info "Later, run: sudo nixos-rebuild boot --flake /etc/nixos#$target"
+fi
+
+# keys, host secrets (rebuild.secrets) and ~/.pfp come from rebuild, not from here
+# shellcheck disable=SC2016 # nix expression, not shell
+mapfile -t secrets < <(nix eval --raw "$repo_dir#nixosConfigurations.$target.config.rebuild.secrets" \
+  --apply 's: builtins.concatStringsSep "\n" (map (p: "${p}: ${s.${p}.description}") (builtins.attrNames s))' \
+  2> /dev/null || true)
+echo
+info "After the reboot, run \`rebuild\` to set up the GPG and SSH keys and switch to $target."
+if (( ${#secrets[@]} )); then
+  warn "$host needs these secrets; rebuild asks for them, and their services fail until then:"
+  printf '     %s\n' "${secrets[@]}"
 fi
 
 if [[ -n "$(git status --porcelain)" ]]; then

@@ -4,8 +4,9 @@
     ./quickshell
     ./waybar
     ./walker
-    ./clipboard.nix
+    ./clipboard
     ./screenshot
     ./lock.nix
+    ./wm
   ];
 }

@@ -7,6 +7,6 @@
   programs.nirimation =
   {
     enable = true;
-    animation = "glitch-cyberpunk";
+    animation = "swipe-window";
   };
 }

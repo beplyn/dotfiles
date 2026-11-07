@@ -164,17 +164,6 @@ row:selected .item-text
   font-size: 24px;
 }
 
-/* clipboard entries: show the timestamp quieter than the content */
-.clipboard .item-text
-{
-  font-family: @font@;
-}
-
-.clipboard .item-subtext
-{
-  color: @muted;
-}
-
 .keybinds
 {
   margin-top: 10px;

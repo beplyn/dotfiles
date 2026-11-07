@@ -1,8 +1,8 @@
 {
   imports =
   [
-    ./boot.nix
-    ./encryption.nix
+    ./boot
+    ./encryption
     ./locale.nix
     ./networking.nix
     ./ssh.nix
@@ -11,9 +11,9 @@
     ./starship.nix
     ./greeting
     ./packages.nix
+    ./unfree.nix
   ];
 
-  nixpkgs.config.allowUnfree = true;
   nix.settings.experimental-features =
   [
     "nix-command"

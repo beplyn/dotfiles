@@ -8,12 +8,28 @@
   encryption.enable = false;
   services.openssh.enable = true;
 
+  # switches only to master-signed commits (else a TOTP code); sudo needs password + TOTP
+  rebuildGate =
+  {
+    enable = true;
+    # password-only sudo until `sudo rebuild-gate init` has a TOTP seed; false after that
+    allowUnenrolled = true;
+    autoDeploy =
+    {
+      enable = true;
+      remote = "https://codeberg.org/beplyn/dotfiles.git";
+    };
+  };
+
   # no hosts yet: dyndns keeps only the apex pointed here
   proxy =
   {
     enable = true;
     domain = "beplyn.dev";
   };
+
+  k3s.enable = true;
+  k3s.ddns.enable = true;
 
   environment.systemPackages = [ pkgs.kitty.terminfo ];
 

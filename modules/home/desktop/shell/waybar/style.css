@@ -33,11 +33,12 @@ window#waybar > box
 
 #custom-launcher,
 #workspaces,
+#tags,
 #window,
+#taskbar,
 #mpris,
 #clock,
 #custom-recorder,
-#idle_inhibitor,
 #privacy,
 #tray,
 #custom-notifications,
@@ -53,9 +54,7 @@ window#waybar > box
 #temperature,
 #network,
 #bluetooth,
-#wireplumber,
-#battery,
-#power-profiles-daemon
+#battery
 {
   margin: 5px 2px;
 }
@@ -63,19 +62,18 @@ window#waybar > box
 /* every pill sits on see-through grey so it reads over any wallpaper */
 #custom-launcher,
 #workspaces,
+#tags,
 #window,
+#taskbar,
 #mpris,
 #clock,
 #cpu,
 #memory,
 #temperature,
-#idle_inhibitor,
 #privacy,
 #network,
 #bluetooth,
-#wireplumber,
 #battery,
-#power-profiles-daemon,
 #tray,
 #custom-notifications
 {
@@ -95,12 +93,9 @@ window#waybar > box
 #cpu,
 #memory,
 #temperature,
-#idle_inhibitor,
 #network,
 #bluetooth,
-#wireplumber,
 #battery,
-#power-profiles-daemon,
 #custom-notifications,
 #custom-control
 {
@@ -115,12 +110,9 @@ window#waybar > box
 #cpu:hover,
 #memory:hover,
 #temperature:hover,
-#idle_inhibitor:hover,
 #network:hover,
 #bluetooth:hover,
-#wireplumber:hover,
 #battery:hover,
-#power-profiles-daemon:hover,
 #custom-notifications:hover
 {
   background: alpha(mix(@surface, @accent, 0.35), 0.75);
@@ -135,12 +127,14 @@ window#waybar > box
   padding: 0 12px 0 10px;
 }
 
-#workspaces
+#workspaces,
+#tags
 {
   padding: 0 3px;
 }
 
-#workspaces button
+#workspaces button,
+#tags button
 {
   min-width: 20px;
   padding: 0 4px;
@@ -151,25 +145,31 @@ window#waybar > box
   transition: all 250ms cubic-bezier(0, 0.5, 0.35, 1);
 }
 
-#workspaces button.empty
+#workspaces button.empty,
+#tags button:not(.occupied):not(.focused)
 {
   color: alpha(@foreground, 0.25);
 }
 
-#workspaces button:hover
+#workspaces button:hover,
+#tags button:hover
 {
   background: alpha(@accent, 0.18);
   color: @foreground;
 }
 
-#workspaces button.active
+/* shown on its output: niri and ext active, sway visible, river focused */
+#workspaces button.active,
+#workspaces button.visible,
+#tags button.focused
 {
   min-width: 34px;
   background: @accent;
   color: @background;
 }
 
-#workspaces button.urgent
+#workspaces button.urgent,
+#tags button.urgent
 {
   background: @red;
   color: @background;
@@ -178,6 +178,35 @@ window#waybar > box
 #window
 {
   color: @subtext;
+}
+
+/* wlr/taskbar: the window list where no title module fits the compositor */
+#taskbar
+{
+  padding: 0 3px;
+}
+
+#taskbar button
+{
+  padding: 0 6px;
+  margin: 3px 1px;
+  border-radius: 6px;
+  background: transparent;
+}
+
+#taskbar button.active
+{
+  background: alpha(@accent, 0.35);
+}
+
+/* sway binding mode, e.g. resize */
+#mode
+{
+  margin: 5px 0;
+  padding: 0 10px;
+  border-radius: 8px;
+  background: @accent;
+  color: @background;
 }
 
 /* --- center ---------------------------------------------------------------- */
@@ -244,16 +273,6 @@ window#waybar > box
   color: @red;
 }
 
-#idle_inhibitor
-{
-  color: @subtext;
-}
-
-#idle_inhibitor.activated
-{
-  color: @yellow;
-}
-
 #network,
 #bluetooth
 {
@@ -264,16 +283,6 @@ window#waybar > box
 #network.disabled,
 #bluetooth.disabled,
 #bluetooth.off
-{
-  color: @muted;
-}
-
-#wireplumber
-{
-  color: @green;
-}
-
-#wireplumber.muted
 {
   color: @muted;
 }
@@ -296,21 +305,6 @@ window#waybar > box
 #battery.critical:not(.charging)
 {
   color: @red;
-}
-
-#power-profiles-daemon
-{
-  color: @subtext;
-}
-
-#power-profiles-daemon.performance
-{
-  color: @orange;
-}
-
-#power-profiles-daemon.power-saver
-{
-  color: @green;
 }
 
 #tray

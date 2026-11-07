@@ -2,6 +2,7 @@
   imports =
   [
     ./kitty.nix
+    ./wezterm
     ./gaming.nix
     ./gtk.nix
     ./protonmail.nix
@@ -11,6 +12,9 @@
     ./office.nix
     ./media.nix
     ./niri
+    ./sway
+    ./mango
+    ./hyprland
     ./shell
   ];
 }

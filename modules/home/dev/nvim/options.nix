@@ -1,10 +1,12 @@
+{ osConfig, ... }:
+
 {
   programs.nixvim =
   {
     enable = true;
     defaultEditor = true;
 
-    nixpkgs.config.allowUnfree = true;
+    nixpkgs.config.allowUnfree = osConfig.unfree.enable;
 
     opts =
     {
