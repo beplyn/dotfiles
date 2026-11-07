@@ -8,7 +8,6 @@
     ./fonts.nix
     ./gaming.nix
     ./flatpak.nix
-    ./flatpak.nix
     ./monitors.nix
     ./touchpad.nix
     ./niri.nix
