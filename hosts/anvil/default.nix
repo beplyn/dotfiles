@@ -7,6 +7,7 @@
   qbittorrent.openWebUI = false;
   gaming.enable = true;
   llm.enable = true;
+  toolbox.enable = true;
 
   # connector names unverified (niri msg outputs); 1080p sits left
   monitors =

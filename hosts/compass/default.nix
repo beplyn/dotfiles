@@ -5,6 +5,7 @@
 
   networking.hostName = "compass";
   laptop.enable = true;
+  toolbox.enable = true;
   # early KMS: native-res Plymouth unlock (here, hardware.nix gets regenerated)
   boot.initrd.kernelModules = [ "i915" ];
 
