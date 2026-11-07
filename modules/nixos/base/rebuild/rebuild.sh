@@ -47,7 +47,8 @@ elif [ "$(cut -d' ' -f3- "$sshKey.pub")" != "@username@@@hostName@" ]; then
   ssh-keygen -q -c -f "$sshKey" -C "@username@@@hostName@"
 fi
 
-if ! fj -H @forgejoHost@ auth list 2>/dev/null | grep -qF "@forgejoHost@"; then
+# hosts without fj skip the token
+if @forgejo@ && ! fj -H @forgejoHost@ auth list 2>/dev/null | grep -qF "@forgejoHost@"; then
   read -rsp "Forgejo token for @forgejoHost@ (empty to skip): " token; echo
   if [ -n "$token" ]; then
     printf '%s' "$token" | fj -H @forgejoHost@ auth add-token
