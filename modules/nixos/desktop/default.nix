@@ -7,6 +7,7 @@
     ./kdeconnect.nix
     ./fonts.nix
     ./gaming.nix
+    ./openrgb
     ./flatpak.nix
     ./monitors.nix
     ./touchpad.nix
