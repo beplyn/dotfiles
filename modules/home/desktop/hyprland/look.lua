@@ -28,6 +28,12 @@ hl.config({
         follow_focus = true,
     },
 
+    -- the tiling layout on Mod+T
+    dwindle = {
+        preserve_split = true,
+        smart_resizing = true,
+    },
+
     decoration = {
         rounding = t.radius,
         -- squircle corners

@@ -165,6 +165,8 @@ let
       name = "Hyprland only";
       binds =
       [
+        # niri's columns or classic tiling, as mango's Mod+T cycles its layouts
+        (show "Toggle scrolling / tiling" (Mod "t" "haku.cycle_layout" [ "scrolling" "dwindle" ]))
         (show "Cycle windows" (ModShift "Tab" "window.cycle_next" { next = false; }))
         (show "Show scratchpad" (Mod "grave" "workspace.toggle_special" "scratch"))
         (show "Send to scratchpad" (ModShift "grave" "window.move" { workspace = "special:scratch"; follow = false; }))
