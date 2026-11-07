@@ -38,8 +38,10 @@ let
       openssh
       inputs.forgejo-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
     ]
-    # ~/.pfp picker and the greeter's wallpaper
-    ++ lib.optionals (!headless) [ fzf imagemagick ];
+    # ~/.pfp picker and file secrets
+    ++ lib.optional (!headless || lib.any (s: s.file) (lib.attrValues secrets)) fzf
+    # ~/.pfp and the greeter's wallpaper
+    ++ lib.optional (!headless) imagemagick;
     text = subst
       {
         inherit username email forgejoHost themeName;
