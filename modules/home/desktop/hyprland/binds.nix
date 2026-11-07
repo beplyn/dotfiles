@@ -29,7 +29,21 @@ let
   None = bind [ ];
   Shift = bind [ "SHIFT" ];
   exec = "exec_cmd";
-  layout = "layout";
+  # a scrolling layout message, which other layouts reject; there the
+  # tiling dispatcher instead, or nothing
+  scrolling = msg: tiling: { inherit msg tiling; };
+  scroll = "haku.scrolling";
+  # dwindle has no columns: the window by this many pixels
+  resizeBy = x:
+  {
+    dsp = "window.resize";
+    arg =
+    {
+      inherit x;
+      y = 0;
+      relative = true;
+    };
+  };
 
   # niri asks before quitting too; hyprshutdown closes apps first
   quit = "[ \"$(printf 'Quit\\nCancel\\n' | ${walker} -d -p 'Quit Hyprland?')\" = Quit ] && ${hyprshutdown} -t 'Quitting Hyprland…'";
@@ -82,16 +96,16 @@ let
         (show "Maximize window" (Mod "f" "window.fullscreen" { mode = "maximized"; }))
         (show "Fullscreen window" (ModShift "f" "window.fullscreen" { mode = "fullscreen"; }))
         (show "Toggle floating" (ModAlt "x" "window.float" { action = "toggle"; }))
-        (show "Cycle column width" (Mod "r" layout "colresize +conf"))
+        (show "Cycle column width" (Mod "r" scroll (scrolling "colresize +conf" null)))
         # set-column-width ±10%
-        (show "Shrink column" (Mod "minus" layout "colresize -0.1"))
-        (show "Grow column" (Mod "equal" layout "colresize +0.1"))
+        (show "Shrink column" (Mod "minus" scroll (scrolling "colresize -0.1" (resizeBy (-100)))))
+        (show "Grow column" (Mod "equal" scroll (scrolling "colresize +0.1" (resizeBy 100))))
         # "+" is on equal
-        (show "Grow column" (ModShift "equal" layout "colresize +0.1"))
-        (show "Shrink column" (Mod "KP_Subtract" layout "colresize -0.1"))
-        (show "Grow column" (Mod "KP_Add" layout "colresize +0.1"))
-        (show "Consume / expel window left" (Mod "bracketleft" layout "consume_or_expel prev"))
-        (show "Consume / expel window right" (Mod "bracketright" layout "consume_or_expel next"))
+        (show "Grow column" (ModShift "equal" scroll (scrolling "colresize +0.1" (resizeBy 100))))
+        (show "Shrink column" (Mod "KP_Subtract" scroll (scrolling "colresize -0.1" (resizeBy (-100)))))
+        (show "Grow column" (Mod "KP_Add" scroll (scrolling "colresize +0.1" (resizeBy 100))))
+        (show "Consume / expel window left" (Mod "bracketleft" scroll (scrolling "consume_or_expel prev" null)))
+        (show "Consume / expel window right" (Mod "bracketright" scroll (scrolling "consume_or_expel next" null)))
       ];
     }
     {
