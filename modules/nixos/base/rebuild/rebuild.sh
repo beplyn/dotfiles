@@ -99,12 +99,13 @@ host_secret() {
 }
 @hostSecrets@
 
-# profile picture for hyprlock and the greeter (desktop hosts only)
-if @desktop@; then
-  if [ -e "$HOME/.pfp" ]; then keep="keep the current one"; else keep="snowflake"; fi
-  read -erp "Picture to copy to ~/.pfp (empty: $keep): " pic || pic=
-  pic="${pic/#\~/$HOME}"
-  if [ -n "$pic" ] && ! [ "$pic" -ef "$HOME/.pfp" ]; then
+# profile picture for hyprlock and the greeter (desktop hosts only); asked for until there is one
+if @desktop@ && [ ! -e "$HOME/.pfp" ]; then
+  # images under ~, hidden dirs skipped; find gets SIGPIPE once fzf exits, so no `|| pic=`
+  pic="$(find "$HOME" -name '.*' -prune -o -type f \
+      \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' -o -iname '*.gif' \) -print 2>/dev/null \
+    | fzf --prompt 'Profile picture for ~/.pfp (Esc: snowflake)> ')" || true
+  if [ -n "$pic" ]; then
     if magick identify "${pic}[0]" >/dev/null 2>&1; then
       cp -f "$pic" "$HOME/.pfp"
     else
