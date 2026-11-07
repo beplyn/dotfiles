@@ -114,6 +114,7 @@ let
     niri = lib.getExe osConfig.programs.niri.package;
     swaymsg = lib.getExe' osConfig.programs.sway.package "swaymsg";
     wm = lib.getExe config.lib.haku.wm;
+    clipboard = lib.getExe config.lib.haku.clipboard;
     # via hypridle, which skips an already running hyprlock
     lock = "${lib.getExe' pkgs.systemd "loginctl"} lock-session";
     loginctl = lib.getExe' pkgs.systemd "loginctl";
