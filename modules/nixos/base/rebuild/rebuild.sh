@@ -34,14 +34,14 @@ if ! gpg --list-secret-keys "=$uid" >/dev/null 2>&1; then
   printf '%s' "$pass" | gpg --batch --pinentry-mode loopback --passphrase-fd 0 \
     --quick-generate-key "$uid" ed25519 sign 6m
   unset pass pass2
-  echo "Upload the output of \`gpg --armor --export '=$uid'\` to @forgejoHost@ and GitLab."
+  echo "Upload the output of \`gpg --armor --export '=$uid'\` to @forgejoHost@."
 fi
 
 if [ ! -e "$sshKey" ]; then
   echo "No SSH key at $sshKey, generating one."
   mkdir -p "$(dirname "$sshKey")"
   ssh-keygen -q -t ed25519 -f "$sshKey" -N "" -C "@username@@@hostName@"
-  echo "Upload $sshKey.pub to @forgejoHost@ and GitLab."
+  echo "Upload $sshKey.pub to @forgejoHost@."
 elif [ "$(cut -d' ' -f3- "$sshKey.pub")" != "@username@@@hostName@" ]; then
   # an older key: only its comment is changed
   ssh-keygen -q -c -f "$sshKey" -C "@username@@@hostName@"
@@ -98,12 +98,6 @@ host_secret() {
   fi
 }
 @hostSecrets@
-
-# copy new wallpapers into the repo, never overwrite
-wallpapers="$HOME/Pictures/Wallpapers"
-if [ -d "$wallpapers" ]; then
-  cp -r --update=none "$wallpapers/." "$flake/modules/home/desktop/shell/quickshell/wallpapers/"
-fi
 
 # profile picture for hyprlock and the greeter (desktop hosts only)
 if @desktop@; then
