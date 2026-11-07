@@ -4,8 +4,8 @@ import Quickshell
 import Quickshell.Io
 
 // The running compositor behind one interface; nothing else in the shell
-// talks to WM IPC. A backend (NiriBackend.qml, SwayBackend.qml, or
-// GenericBackend.qml over Wayland protocols) provides workspaces,
+// talks to WM IPC. A backend (NiriBackend.qml, SwayBackend.qml,
+// HyprlandBackend.qml, or GenericBackend.qml over Wayland protocols) provides workspaces,
 // activeWindowTitle, focusedOutput, focusWorkspace(id) and quit(); adding
 // one is a case in `wm name` and a Loader below.
 Singleton {
@@ -14,7 +14,7 @@ Singleton {
     // from `wm name`, as the scripts see it; empty until it answers
     property string currentCompositor: ""
 
-    readonly property var backend: niri.item ?? sway.item ?? generic.item
+    readonly property var backend: niri.item ?? sway.item ?? hyprland.item ?? generic.item
 
     // [{ id, idx, name, output, isFocused, isActive, isUrgent }], by output then idx.
     readonly property var workspaces: backend?.workspaces ?? []
@@ -51,8 +51,14 @@ Singleton {
     }
 
     Loader {
+        id: hyprland
+        active: root.currentCompositor === "hyprland"
+        sourceComponent: HyprlandBackend {}
+    }
+
+    Loader {
         id: generic
-        active: root.currentCompositor !== "" && !niri.active && !sway.active
+        active: root.currentCompositor !== "" && !niri.active && !sway.active && !hyprland.active
         sourceComponent: GenericBackend {}
     }
 }
