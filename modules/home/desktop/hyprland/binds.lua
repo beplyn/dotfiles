@@ -14,6 +14,21 @@ function haku.overview()
     end
 end
 
+-- the next of these layouts, for every workspace; a reload starts over at
+-- look.lua's
+function haku.cycle_layout(layouts)
+    return function()
+        local current = hl.get_config("general.layout")
+        local next = layouts[1]
+        for i, name in ipairs(layouts) do
+            if name == current then
+                next = layouts[i % #layouts + 1]
+            end
+        end
+        hl.config({ general = { layout = next } })
+    end
+end
+
 -- hyprsunset at this temperature, or back to none
 local night = false
 function haku.night_light(temperature)
