@@ -1,12 +1,14 @@
 {
   pkgs,
+  lib,
   inputs,
-  config,
+  osConfig,
   username,
   forgejoHost,
   ...
 }:
 
+lib.mkIf osConfig.forgejo.enable
 {
   home.packages =
   [
