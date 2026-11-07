@@ -5,6 +5,7 @@
   docker.enable = true;
   qbittorrent.enable = true;
   encryption.enable = false;
+  forgejo.enable = false;
   services.openssh.enable = true;
   # no monitors: follows the VM window
 

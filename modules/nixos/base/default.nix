@@ -13,6 +13,7 @@
     ./packages.nix
     ./toolbox.nix
     ./unfree.nix
+    ./forgejo.nix
   ];
 
   nix.settings.experimental-features =
