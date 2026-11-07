@@ -44,7 +44,7 @@ let
       binds =
       [
         (show "Terminal" (Mod "Return" (spawn wezterm)))
-        (show "Launcher" (Mod "space" (spawn walker)))
+        (show "Launcher" (Mod "space" (spawn (ipc "panels" "toggle" [ "launcher" ]))))
         (show "Clipboard" (Mod "v" (spawn (ipc "panels" "toggle" [ "clipboard" ]))))
         (show "Control center" (Mod "a" (spawn (ipc "panels" "toggle" [ "control" ]))))
         (show "Dashboard" (Mod "d" (spawn (ipc "panels" "toggle" [ "dashboard" ]))))

@@ -9,8 +9,8 @@ let
   t = config.themes.shell;
 in
 {
-  # walker backend: apps and commands; the clipboard is cliphist and the
-  # quickshell panel (shell/clipboard), so elephant has no provider watching it
+  # walker backend: now only the dmenu prompts (quit confirm, sway menu); the
+  # launcher (Mod+Space) and the clipboard are quickshell panels
   services.elephant =
   {
     enable = true;
