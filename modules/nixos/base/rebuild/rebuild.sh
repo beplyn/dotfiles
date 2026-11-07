@@ -24,24 +24,16 @@ if ! gpg --list-secret-keys "=$uid" >/dev/null 2>&1; then
     if [ -z "$pass" ]; then
       read -rp "Key will be stored unencrypted. Continue? [y/N] " insecure
       [[ "$insecure" == [yY]* ]] && break
-      continue
-    fi
-    read -rsp "Repeat passphrase: " pass2; echo
-    if [ "$pass" != "$pass2" ]; then
-      echo "passphrases do not match" >&2
     else
-      break
+      read -rsp "Repeat passphrase: " pass2; echo
+      [ "$pass" = "$pass2" ] && break
+      echo "passphrases do not match" >&2
     fi
   done
-  if [ -z "$pass" ]; then
-    gpg --batch --pinentry-mode loopback --passphrase '' \
-      --quick-generate-key "$uid" ed25519 sign 6m
-  else
-    # via stdin, keeps it out of argv
-    printf '%s' "$pass" | gpg --batch --pinentry-mode loopback --passphrase-fd 0 \
-      --quick-generate-key "$uid" ed25519 sign 6m
-  fi
-  unset pass pass2 insecure
+  # via stdin, keeps it out of argv; an empty one leaves the key unprotected
+  printf '%s' "$pass" | gpg --batch --pinentry-mode loopback --passphrase-fd 0 \
+    --quick-generate-key "$uid" ed25519 sign 6m
+  unset pass pass2
   echo "Upload the output of \`gpg --armor --export '=$uid'\` to @forgejoHost@ and GitLab."
 fi
 
@@ -106,7 +98,6 @@ host_secret() {
   fi
 }
 @hostSecrets@
-unset -f host_secret
 
 # copy new wallpapers into the repo, never overwrite
 wallpapers="$HOME/Pictures/Wallpapers"
@@ -126,7 +117,6 @@ if @desktop@; then
       echo "$pic is not a readable image, ~/.pfp unchanged" >&2
     fi
   fi
-  unset keep pic
 fi
 
 if @gated@; then
@@ -143,7 +133,6 @@ if @gated@; then
   else
     git -C "$flake" bundle create -q - HEAD | sudo @gate@ deploy "$theme" "$rev"
   fi
-  unset rev base
 else
   # new files reach the flake; nothing else gets staged
   git -C "$flake" add --intent-to-add .
