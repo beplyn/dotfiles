@@ -45,7 +45,8 @@ dpms()
   case "$(name)" in
     niri) niri msg action "power-$1-monitors" ;;
     sway) swaymsg "output * power $1" ;;
-    hyprland) hyprctl dispatch dpms "$1" ;;
+    # dispatch takes a Lua dispatcher under the Lua config
+    hyprland) hyprctl dispatch "hl.dsp.dpms({ action = \"$1\" })" ;;
     *) wlopm "--$1" '*' ;;
   esac
 }
