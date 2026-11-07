@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  subst,
   ...
 }:
 
@@ -24,7 +25,7 @@ in
     {
       type = lib.types.bool;
       default = true;
-      description = "LUKS-encrypted root, unlocked from a Stylix-themed Plymouth prompt.";
+      description = "LUKS-encrypted root, unlocked from a palette-themed Plymouth prompt.";
     };
 
     device = lib.mkOption
@@ -62,8 +63,13 @@ in
     {
       enable = true;
       font = "${plymouthFont}";
+      theme = "palette";
+      themePackages =
+      [
+        (import ./plymouth-theme.nix { inherit config lib pkgs subst; fontFile = plymouthFont; })
+      ];
     };
-    stylix.targets.plymouth.enable = true;
+    stylix.targets.plymouth.enable = false;
 
     # quiet splash
     boot.consoleLogLevel = 3;
