@@ -1,0 +1,137 @@
+# Plymouth unlock screen; @name@ comes from plymouth-theme.nix
+# booting: pulsing snowflake over a wave of palette dots
+# passphrase: lock, host, prompt, box filling with palette-coloured bullets
+
+w = Window.GetWidth();
+h = Window.GetHeight();
+cx = w / 2;
+cy = h / 2;
+font = "@font@";
+
+Window.SetBackgroundTopColor(@backgroundRgb@);
+Window.SetBackgroundBottomColor(@backgroundRgb@);
+
+bg.sprite = Sprite(Image("background.png").Scale(w, h));
+bg.sprite.SetZ(-100);
+
+# snowflake sits higher while the prompt is up
+logo.image = Image("logo.png");
+glow.image = Image("glow.png");
+logo.sprite = Sprite(logo.image);
+glow.sprite = Sprite(glow.image);
+logo.y = cy - logo.image.GetHeight() / 2 - 40;
+fun place_logo(y)
+{
+  logo.sprite.SetPosition(cx - logo.image.GetWidth() / 2, y, 2);
+  glow.sprite.SetPosition(cx - glow.image.GetWidth() / 2, y - (glow.image.GetHeight() - logo.image.GetHeight()) / 2, 1);
+}
+place_logo(logo.y);
+
+for (i = 0; i < 7; i++)
+{
+  dot[i] = Image("dot-" + i + ".png");
+  spinner[i] = Sprite(dot[i]);
+}
+dot.size = dot[0].GetWidth();
+spinner.gap = 14;
+spinner.y = logo.y + logo.image.GetHeight() + 70;
+spinner.x = cx - (7 * dot.size + 6 * spinner.gap) / 2;
+spinner.shown = 1;
+
+t = 0;
+fun refresh()
+{
+  t++;
+  glow.sprite.SetOpacity(0.55 + 0.35 * Math.Sin(t / 30));
+  for (i = 0; i < 7; i++)
+  {
+    wave = Math.Sin(t / 9 - i * 0.6);
+    lift = Math.Max(wave, 0);
+    spinner[i].SetPosition(spinner.x + i * (dot.size + spinner.gap), spinner.y - lift * 14, 3);
+    spinner[i].SetOpacity(spinner.shown * (0.35 + 0.65 * lift));
+  }
+}
+Plymouth.SetRefreshFunction(refresh);
+
+# passphrase
+lock.image = Image("lock.png");
+box.image = Image("box.png");
+title.image = Image.Text("unlock @host@", @accentRgb@, 1, font + " 28");
+form_y = cy - 10;
+# globals, so the sprites outlive the callbacks
+form = null;
+bullets = null;
+
+fun show_form(prompt_text)
+{
+  spinner.shown = 0;
+  logo.y = form_y - logo.image.GetHeight() - 120;
+  place_logo(logo.y);
+
+  form.lock = Sprite(lock.image);
+  form.lock.SetPosition(cx - lock.image.GetWidth() / 2, form_y - 90, 5);
+  form.title = Sprite(title.image);
+  form.title.SetPosition(cx - title.image.GetWidth() / 2, form_y - 40, 5);
+  form.prompt_image = Image.Text(prompt_text, @subtextRgb@, 1, font + " 14");
+  form.prompt = Sprite(form.prompt_image);
+  form.prompt.SetPosition(cx - form.prompt_image.GetWidth() / 2, form_y + 6, 5);
+  form.box = Sprite(box.image);
+  form.box.SetPosition(cx - box.image.GetWidth() / 2, form_y + 40, 4);
+}
+
+fun password(prompt_text, count)
+{
+  show_form(prompt_text);
+
+  # newest bullets stay visible once the box is full
+  max = Math.Int((box.image.GetWidth() - 40) / (dot.size + 8));
+  shown = Math.Min(count, max);
+  first = count - shown;
+  x = cx - (shown * (dot.size + 8) - 8) / 2;
+  bullets = null;
+  for (i = 0; i < shown; i++)
+  {
+    bullets[i] = Sprite(dot[(first + i) % 7]);
+    bullets[i].SetPosition(x + i * (dot.size + 8), form_y + 40 + (box.image.GetHeight() - dot.size) / 2, 6);
+  }
+}
+Plymouth.SetDisplayPasswordFunction(password);
+
+fun question(prompt_text, entry)
+{
+  show_form(prompt_text);
+  answer.image = Image.Text(entry, @foregroundRgb@, 1, font + " 18");
+  bullets = null;
+  bullets[0] = Sprite(answer.image);
+  bullets[0].SetPosition(cx - answer.image.GetWidth() / 2, form_y + 40 + (box.image.GetHeight() - answer.image.GetHeight()) / 2, 6);
+}
+Plymouth.SetDisplayQuestionFunction(question);
+
+# systemd status lines, e.g. a wrong passphrase
+message = null;
+fun show_message(text)
+{
+  message.image = Image.Text(text, @warningRgb@, 1, font + " 14");
+  message.sprite = Sprite(message.image);
+  message.sprite.SetPosition(cx - message.image.GetWidth() / 2, form_y + 130, 5);
+}
+Plymouth.SetMessageFunction(show_message);
+
+fun normal()
+{
+  form = null;
+  bullets = null;
+  message = null;
+  spinner.shown = 1;
+  logo.y = cy - logo.image.GetHeight() / 2 - 40;
+  place_logo(logo.y);
+}
+Plymouth.SetDisplayNormalFunction(normal);
+
+fun quit()
+{
+  form = null;
+  bullets = null;
+  spinner.shown = 0;
+}
+Plymouth.SetQuitFunction(quit);
