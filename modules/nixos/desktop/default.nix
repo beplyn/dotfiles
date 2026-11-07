@@ -11,5 +11,6 @@
     ./niri.nix
     ./sway.nix
     ./mango.nix
+    ./hyprland.nix
   ];
 }
