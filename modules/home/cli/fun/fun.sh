@@ -1,5 +1,5 @@
 # fun: roll a random terminal toy, alone or as a pipeline like
-# `fortune | cowsay -f stegosaurus | lolcat`. -n prints the roll without running it
+# `fortune | cowsay | lolcat`. -n prints the roll without running it
 pick()
 {
   local items=("$@")
@@ -42,15 +42,14 @@ short_sources=(
   "echo moo"
 )
 
-cows=(default stegosaurus dragon tux sheep turtle koala kitty bunny llama alpaca fox moose skeleton vader sus)
 figlets=(standard slant small shadow big banner block bubble digital lean doom starwars isometric1 graffiti)
 toilets=(future mono9 pagga smblock emboss emboss2 circle bigmono9 smmono9)
 
 speaker()
 {
   case $((RANDOM % 4)) in
-    0) printf 'cowsay -f %s' "$(pick "${cows[@]}")" ;;
-    1) printf 'cowthink -f %s' "$(pick "${cows[@]}")" ;;
+    0) printf cowsay ;;
+    1) printf cowthink ;;
     2) printf 'ponysay' ;;
     3) printf 'ponythink' ;;
   esac
