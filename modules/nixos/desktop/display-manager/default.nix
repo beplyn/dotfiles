@@ -1,4 +1,4 @@
-# greetd + ReGreet in cage, Stylix-themed; patched layout (clock top right, avatar by the card)
+# greetd + ReGreet in cage, Stylix-themed; patched layout (clock top right, avatar and session picker on the card)
 {
   config,
   lib,
