@@ -1,5 +1,7 @@
 //@ pragma UseQApplication
 import Quickshell
+import qs.battery
+import qs.clipboard
 import qs.controlcenter
 import qs.dashboard
 import qs.hotkeys
@@ -21,6 +23,8 @@ ShellRoot {
     RecordMenu {}
     PowerMenu {}
     Hotkeys {}
+    BatteryMenu {}
+    ClipboardMenu {}
 
     // One per waybar hardware pill.
     Monitor {

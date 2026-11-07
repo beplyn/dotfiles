@@ -12,6 +12,7 @@ let
   gap = config.programs.niri.settings.layout.gaps;
   niri = lib.getExe osConfig.programs.niri.package;
   signals = config.lib.haku.waybarSignals;
+  cava = lib.getExe config.lib.haku.cava.cavaVisualizer;
   laptop = osConfig.laptop.enable;
 
   # qs ipc call as an on-click string
@@ -31,11 +32,18 @@ let
     }"'';
   glyphs = map glyph;
 
+  # after the workspaces and window title, whichever compositor's
+  media =
+  [
+    "mpris"
+    "custom/cava"
+  ];
+
   # the same bar with another compositor's modules on the left; niri's stay
   # empty elsewhere, so each gets its own config
   variant = name: left: modules: (pkgs.formats.json { }).generate "waybar-${name}.json"
   [
-    (config.programs.waybar.settings.main // modules // { modules-left = [ "custom/launcher" ] ++ left; })
+    (config.programs.waybar.settings.main // modules // { modules-left = [ "custom/launcher" ] ++ left ++ media; })
   ];
 
   swayConfig = variant "sway"
@@ -58,13 +66,19 @@ let
       };
     };
 
+  # hyprland/workspaces clicks send hyprlang dispatches, which the Lua config
+  # rejects; ext-workspace switches over the protocol
   hyprlandConfig = variant "hyprland"
     [
-      "hyprland/workspaces"
+      "ext/workspaces"
       "hyprland/window"
     ]
     {
-      "hyprland/workspaces".format = "{name}";
+      "ext/workspaces" =
+      {
+        format = "{name}";
+        on-click = "activate";
+      };
 
       "hyprland/window" =
       {
@@ -142,22 +156,20 @@ in
       margin-right = gap;
       spacing = 4;
 
+      # the clock alone in the middle, so music starting or a recording
+      # can't push it off centre
       modules-left =
       [
         "custom/launcher"
         "niri/workspaces"
         "niri/window"
-      ];
-      modules-center =
-      [
-        "mpris"
-        "clock"
-        "custom/recorder"
-      ];
+      ]
+      ++ media;
+      modules-center = [ "clock" ];
       modules-right =
       [
+        "custom/recorder"
         "group/hardware"
-        "idle_inhibitor"
         "privacy"
         "group/status"
         "tray"
@@ -195,6 +207,14 @@ in
         player-icons.default = glyph 984922; # music
         status-icons.paused = glyph 61516; # pause
         tooltip-format = "{artist} — {album}";
+      };
+
+      "custom/cava" =
+      {
+        exec = cava;
+        format = "{}";
+        tooltip = false;
+        return-type = "text";
       };
 
       clock =
@@ -263,26 +283,13 @@ in
         on-click = panel "temperature";
       };
 
-      idle_inhibitor =
-      {
-        format = "{icon}";
-        format-icons =
-        {
-          activated = glyph 983414; # coffee
-          deactivated = glyph 984242; # sleep
-        };
-        tooltip-format-activated = "Staying awake";
-        tooltip-format-deactivated = "Idle allowed";
-      };
-
-      # only shown while mic or screen is in use
+      # only shown while the screen is shared; the mic lives in the control center
       privacy =
       {
         icon-size = 14;
         icon-spacing = 6;
         modules =
         [
-          { type = "audio-in"; }
           { type = "screenshare"; }
         ];
       };
@@ -294,13 +301,8 @@ in
         [
           "network"
           "bluetooth"
-          "wireplumber"
         ]
-        ++ lib.optionals laptop
-        [
-          "battery"
-          "power-profiles-daemon"
-        ];
+        ++ lib.optional laptop "battery";
       };
       # type only; details in the control center
       network =
@@ -337,20 +339,6 @@ in
         tooltip-format-enumerate-connected = "{device_alias}";
         on-click = panel "control";
       };
-      wireplumber =
-      {
-        format = "{icon} {volume}%";
-        format-muted = glyph 984927; # volume-off
-        format-icons = glyphs
-        [
-          61478
-          61479
-          61480
-        ];
-        scroll-step = 5;
-        on-click = panel "control";
-        on-click-right = lib.getExe pkgs.pavucontrol;
-      };
       battery =
       {
         format = "{icon} {capacity}%";
@@ -374,20 +362,8 @@ in
           critical = 15;
         };
         tooltip-format = "{timeTo}";
-        on-click = panel "control";
-      };
-      # click cycles profiles
-      power-profiles-daemon =
-      {
-        format = "{icon}";
-        format-icons =
-        {
-          power-saver = glyph 61548; # leaf
-          balanced = glyph 62030; # balance-scale
-          performance = glyph 61671; # bolt
-          default = glyph 62030;
-        };
-        tooltip-format = "Power mode: {profile}";
+        # charge and its last hours (quickshell battery panel)
+        on-click = panel "battery";
       };
 
       tray =
@@ -438,6 +414,14 @@ in
       menu
       {
         border-radius: ${toString t.radius}px;
+      }
+
+      #custom-cava
+      {
+        min-width: 196px;
+        color: @accent;
+        text-shadow: 0 0 8px alpha(@accent, 0.65);
+        letter-spacing: 1px;
       }
     ''
     + builtins.readFile ./style.css;

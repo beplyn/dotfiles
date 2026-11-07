@@ -30,6 +30,12 @@ in
         xkb_layout = xkb.layout;
       }
       // lib.optionalAttrs (xkb.variant != "") { xkb_variant = xkb.variant; };
+      # the host's touchpad scrolling (nixos/desktop/touchpad.nix)
+      input."type:touchpad" =
+      {
+        natural_scroll = if osConfig.touchpad.naturalScroll then "enabled" else "disabled";
+        scroll_factor = toString osConfig.touchpad.scrollFactor;
+      };
       focus.followMouse = "yes";
 
       gaps.inner = niri.layout.gaps;
@@ -76,4 +82,9 @@ in
       no_focus [${toasts}]
     '';
   };
+
+  # sway's exit stops sway-session.target but left graphical-session.target
+  # up: waybar and co. crash-looped into start-limit-hit, and the next
+  # session found the target active and never brought them back
+  systemd.user.targets.sway-session.Unit.PropagatesStopTo = [ "graphical-session.target" ];
 }

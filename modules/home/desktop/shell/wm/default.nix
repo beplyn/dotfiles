@@ -24,9 +24,25 @@ let
     ];
     text = builtins.readFile ./wm.sh;
   };
+
+  # started by sessions whose exit leaves graphical-session.target up
+  session-watch = pkgs.writeShellApplication
+  {
+    name = "session-watch";
+    runtimeInputs = with pkgs;
+    [
+      bash
+      coreutils
+      gnugrep
+      iproute2
+      systemd
+    ];
+    text = builtins.readFile ./session-watch.sh;
+  };
 in
 {
   home.packages = [ wm ];
 
   lib.haku.wm = wm;
+  lib.haku.sessionWatch = session-watch;
 }
