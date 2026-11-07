@@ -29,6 +29,79 @@ function haku.cycle_layout(layouts)
     end
 end
 
+local function scrolling()
+    return hl.get_config("general.layout") == "scrolling"
+end
+
+-- the windows of w's column, top to bottom; just w outside scrolling
+local function column(w)
+    local l = w.layout
+    if scrolling() and type(l) == "table" and l.column then
+        return l.column.windows
+    end
+    return { w }
+end
+
+local function address(w)
+    return w and w.address
+end
+
+-- niri's focus-window-or-workspace: up and down the column, then on past
+-- its end to the workspace above or below
+function haku.focus_or_workspace(direction)
+    local workspace = direction == "down" and "r+1" or "r-1"
+    return function()
+        local before = address(hl.get_active_window())
+        hl.dispatch(hl.dsp.focus({ direction = direction }))
+        if address(hl.get_active_window()) == before then
+            hl.dispatch(hl.dsp.focus({ workspace = workspace }))
+        end
+    end
+end
+
+-- niri's move-column-left/right: swap the whole column with its neighbour;
+-- the window alone in tiling
+function haku.move_column(direction)
+    return function()
+        if scrolling() then
+            hl.dispatch(hl.dsp.layout("swapcol " .. direction:sub(1, 1)))
+        else
+            hl.dispatch(hl.dsp.window.move({ direction = direction }))
+        end
+    end
+end
+
+-- niri's move-column-to-workspace: the focused window's whole column, still
+-- stacked, to { workspace = n } or { offset = ±1 }; focus follows it
+function haku.move_column_to_workspace(target)
+    return function()
+        local focused = hl.get_active_window()
+        if not focused then
+            return
+        end
+        local workspace = target.workspace or (focused.workspace.id + target.offset)
+        if workspace < 1 or workspace == focused.workspace.id then
+            return
+        end
+        local windows = column(focused)
+        for _, w in ipairs(windows) do
+            hl.dispatch(hl.dsp.window.move({
+                workspace = workspace,
+                follow = false,
+                window = "address:" .. w.address,
+            }))
+        end
+        hl.dispatch(hl.dsp.focus({ workspace = workspace }))
+        -- they land as columns of their own, in order: stack each onto the
+        -- one before
+        for i = 2, #windows do
+            hl.dispatch(hl.dsp.focus({ window = "address:" .. windows[i].address }))
+            hl.dispatch(hl.dsp.layout("consume_or_expel prev"))
+        end
+        hl.dispatch(hl.dsp.focus({ window = "address:" .. focused.address }))
+    end
+end
+
 -- hyprsunset at this temperature, or back to none
 local night = false
 function haku.night_light(temperature)
@@ -63,3 +136,5 @@ hl.bind("SUPER + mouse_down", hl.dsp.focus({ workspace = "r+1" }))
 hl.bind("SUPER + mouse_up", hl.dsp.focus({ workspace = "r-1" }))
 hl.bind("SUPER + SHIFT + mouse_down", hl.dsp.layout("move +col"))
 hl.bind("SUPER + SHIFT + mouse_up", hl.dsp.layout("move -col"))
+
+return haku

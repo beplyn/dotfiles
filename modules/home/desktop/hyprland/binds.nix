@@ -36,9 +36,10 @@ let
 
   # every bind titled, by section, for the hotkey overlay (Mod+/), as in niri's
   show = title: b: b // { inherit title; };
-  # work while locked, repeat while held
-  locked = b: b // { opts = { locked = true; repeating = true; }; };
-  repeating = b: b // { opts = { repeating = true; }; };
+  # held keys repeat, as in niri, but for these
+  noRepeat = b: b // { repeat = false; };
+  # work while locked
+  locked = b: b // { opts = { locked = true; }; };
   sections =
   [
     {
@@ -64,13 +65,13 @@ let
       name = "Session";
       binds =
       [
-        (show "Close window" (Mod "q" "window.close" null))
-        (show "Quit Hyprland" (ModShift "e" exec quit))
+        (show "Close window" (noRepeat (Mod "q" "window.close" null)))
+        (show "Quit Hyprland" (noRepeat (ModShift "e" exec quit)))
         (show "Lock screen" (ModAlt "l" exec "${loginctl} lock-session"))
         (show "Power menu" (Mod "x" exec (ipc "panels" "toggle" [ "power" ])))
         (show "Show hotkeys" (Mod "slash" exec (ipc "panels" "toggle" [ "hotkeys" ])))
         # the scrolling layout zoomed out to every column
-        (show "Overview" (Mod "Tab" "haku.overview" null))
+        (show "Overview" (noRepeat (Mod "Tab" "haku.overview" null)))
       ];
     }
     {
@@ -83,12 +84,12 @@ let
         (show "Toggle floating" (ModAlt "x" "window.float" { action = "toggle"; }))
         (show "Cycle column width" (Mod "r" layout "colresize +conf"))
         # set-column-width ±10%
-        (show "Shrink column" (repeating (Mod "minus" layout "colresize -0.1")))
-        (show "Grow column" (repeating (Mod "equal" layout "colresize +0.1")))
+        (show "Shrink column" (Mod "minus" layout "colresize -0.1"))
+        (show "Grow column" (Mod "equal" layout "colresize +0.1"))
         # "+" is on equal
-        (show "Grow column" (repeating (ModShift "equal" layout "colresize +0.1")))
-        (show "Shrink column" (repeating (Mod "KP_Subtract" layout "colresize -0.1")))
-        (show "Grow column" (repeating (Mod "KP_Add" layout "colresize +0.1")))
+        (show "Grow column" (ModShift "equal" layout "colresize +0.1"))
+        (show "Shrink column" (Mod "KP_Subtract" layout "colresize -0.1"))
+        (show "Grow column" (Mod "KP_Add" layout "colresize +0.1"))
         (show "Consume / expel window left" (Mod "bracketleft" layout "consume_or_expel prev"))
         (show "Consume / expel window right" (Mod "bracketright" layout "consume_or_expel next"))
       ];
@@ -99,15 +100,15 @@ let
       [
         (show "Focus left" (Mod "h" "focus" { direction = "left"; }))
         (show "Focus right" (Mod "l" "focus" { direction = "right"; }))
-        (show "Focus up" (Mod "k" "focus" { direction = "up"; }))
-        (show "Focus down" (Mod "j" "focus" { direction = "down"; }))
+        (show "Focus window or workspace up" (Mod "k" "haku.focus_or_workspace" "up"))
+        (show "Focus window or workspace down" (Mod "j" "haku.focus_or_workspace" "down"))
 
         # r±1 reaches the empty workspace past the last, like niri's
         (show "Next workspace" (Mod "u" "focus" { workspace = "r+1"; }))
         (show "Previous workspace" (Mod "i" "focus" { workspace = "r-1"; }))
 
-        (show "Move window left" (ModShift "h" "window.move" { direction = "left"; }))
-        (show "Move window right" (ModShift "l" "window.move" { direction = "right"; }))
+        (show "Move column left" (ModShift "h" "haku.move_column" "left"))
+        (show "Move column right" (ModShift "l" "haku.move_column" "right"))
         (show "Move window up" (ModShift "k" "window.move" { direction = "up"; }))
         (show "Move window down" (ModShift "j" "window.move" { direction = "down"; }))
 
@@ -119,8 +120,8 @@ let
         (show "Focus monitor right" (ModCtrl "l" "focus" { monitor = "r"; }))
 
         # follows the window, like move-column-to-workspace
-        (show "Move window to next workspace" (ModCtrl "u" "window.move" { workspace = "r+1"; }))
-        (show "Move window to previous workspace" (ModCtrl "i" "window.move" { workspace = "r-1"; }))
+        (show "Move column to next workspace" (ModCtrl "u" "haku.move_column_to_workspace" { offset = 1; }))
+        (show "Move column to previous workspace" (ModCtrl "i" "haku.move_column_to_workspace" { offset = -1; }))
       ];
     }
     {
@@ -132,7 +133,7 @@ let
         in
         [
           (show "Focus workspace ${n}" (Mod n "focus" { workspace = i; }))
-          (show "Move window to workspace ${n}" (ModShift n "window.move" { workspace = i; }))
+          (show "Move column to workspace ${n}" (ModShift n "haku.move_column_to_workspace" { workspace = i; }))
         ])
         (lib.range 1 9);
       # one overlay row each
@@ -144,7 +145,7 @@ let
         }
         {
           key = "Super+Shift+1-9";
-          title = "Move window to workspace";
+          title = "Move column to workspace";
         }
       ];
     }
@@ -163,6 +164,8 @@ let
     {
       # what niri has no bind for, on the keys mango uses for its own
       name = "Hyprland only";
+      # toggles, which a held key would flip back and forth
+      repeat = false;
       binds =
       [
         # niri's columns or classic tiling, as mango's Mod+T cycles its layouts
@@ -193,11 +196,11 @@ let
     ALT = "Alt";
   };
   overlayKey = b: lib.concatStringsSep "+" (map (m: modName.${m}) b.mods ++ [ b.key ]);
-  luaBind = b:
+  luaBind = s: b:
   {
     key = lib.concatStringsSep " + " (b.mods ++ [ b.key ]);
     inherit (b) dsp arg;
-    opts = b.opts or { };
+    opts = { repeating = b.repeat or s.repeat or true; } // b.opts or { };
   };
 in
 {
@@ -217,5 +220,5 @@ in
     sections;
 
   wayland.windowManager.hyprland.extraLuaFiles = config.lib.haku.hyprlandData "binds"
-    (map luaBind (lib.concatMap (s: s.binds) sections));
+    (lib.concatMap (s: map (luaBind s) s.binds) sections);
 }
