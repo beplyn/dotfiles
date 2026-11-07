@@ -1,6 +1,6 @@
 diff -ru a/src/gui/component.rs b/src/gui/component.rs
---- a/src/gui/component.rs	2026-11-01 16:47:38.375883123 +0100
-+++ b/src/gui/component.rs	2026-11-01 16:48:11.749328733 +0100
+--- a/src/gui/component.rs	2026-11-07 14:46:41.629919246 +0100
++++ b/src/gui/component.rs	2026-11-07 14:46:41.637786650 +0100
 @@ -182,11 +182,6 @@
                      set_label: model.config.get_default_message(),
                  },
@@ -64,9 +64,9 @@ diff -ru a/src/gui/component.rs b/src/gui/component.rs
                  },
                  #[template_child]
 diff -ru a/src/gui/templates.rs b/src/gui/templates.rs
---- a/src/gui/templates.rs	2026-11-01 16:47:38.375977736 +0100
-+++ b/src/gui/templates.rs	2026-11-01 16:47:57.480754630 +0100
-@@ -39,116 +39,103 @@
+--- a/src/gui/templates.rs	2026-11-07 14:46:41.629988616 +0100
++++ b/src/gui/templates.rs	2026-11-07 14:46:56.422285354 +0100
+@@ -39,185 +39,188 @@
              #[name = "background"]
              gtk::Picture,
  
@@ -175,11 +175,15 @@ diff -ru a/src/gui/templates.rs b/src/gui/templates.rs
 -                    attach[0, 2, 1, 1] = &EntryLabel {
 -                        set_height_request: 45,
 -                    },
-+                        /// Label for the password widget (the PAM prompt)
-+                        #[name = "input_label"]
-+                        attach[0, 2, 2, 1] = &gtk::Label {
-+                            set_xalign: 0.0,
-+                            add_css_class: "dim-label",
++                        /// Widget containing the sessions
++                        #[name = "sessions_box"]
++                        attach[0, 2, 1, 1] = &gtk::ComboBoxText { set_hexpand: true },
++
++                        /// Widget where the user enters the session
++                        #[name = "session_entry"]
++                        attach[0, 2, 1, 1] = &gtk::Entry {
++                            set_hexpand: true,
++                            set_placeholder_text: Some("Session command"),
 +                        },
  
 -                    /// Widget where the user enters a secret
@@ -196,16 +200,37 @@ diff -ru a/src/gui/templates.rs b/src/gui/templates.rs
 -                        set_icon_name: "document-edit-symbolic",
 -                        set_tooltip_text: Some("Manually enter username"),
 -                    },
++                        /// Button to toggle manual session entry
++                        #[name = "sess_toggle"]
++                        attach[1, 2, 1, 1] = &gtk::ToggleButton {
++                            set_icon_name: "document-edit-symbolic",
++                            set_tooltip_text: Some("Manually enter session command"),
++                            add_css_class: "flat",
++                        },
+ 
+-                    /// Button to toggle manual session entry
+-                    #[name = "sess_toggle"]
+-                    attach[2, 2, 1, 1] = &gtk::ToggleButton {
+-                        set_icon_name: "document-edit-symbolic",
+-                        set_tooltip_text: Some("Manually enter session command"),
+-                    },
++                        /// Label for the password widget (the PAM prompt)
++                        #[name = "input_label"]
++                        attach[0, 3, 2, 1] = &gtk::Label {
++                            set_xalign: 0.0,
++                            add_css_class: "dim-label",
++                        },
++
 +                        /// Widget where the user enters a secret
 +                        #[name = "secret_entry"]
-+                        attach[0, 3, 2, 1] = &gtk::PasswordEntry { set_show_peek_icon: true },
++                        attach[0, 4, 2, 1] = &gtk::PasswordEntry { set_show_peek_icon: true },
 +
 +                        /// Widget where the user enters something visible
 +                        #[name = "visible_entry"]
-+                        attach[0, 3, 2, 1] = &gtk::Entry,
++                        attach[0, 4, 2, 1] = &gtk::Entry,
 +
 +                        /// Collection of action buttons (eg. Login)
-+                        attach[0, 4, 2, 1] = &gtk::Box {
++                        attach[0, 5, 2, 1] = &gtk::Box {
 +                            set_homogeneous: true,
 +                            set_margin_top: 6,
 +                            set_spacing: 10,
@@ -216,24 +241,6 @@ diff -ru a/src/gui/templates.rs b/src/gui/templates.rs
 +                                set_focusable: true,
 +                                set_label: "Cancel",
 +                            },
- 
--                    /// Button to toggle manual session entry
--                    #[name = "sess_toggle"]
--                    attach[2, 2, 1, 1] = &gtk::ToggleButton {
--                        set_icon_name: "document-edit-symbolic",
--                        set_tooltip_text: Some("Manually enter session command"),
-+                            /// Button to enter the password and login
-+                            #[name = "login_button"]
-+                            gtk::Button {
-+                                set_focusable: true,
-+                                set_label: "Login",
-+                                set_receives_default: true,
-+                                add_css_class: "suggested-action",
-+                                add_css_class: "login-button",
-+                            },
-+                        },
-                     },
-+                },
  
 -                    /// Collection of action buttons (eg. Login)
 -                    attach[1, 3, 2, 1] = &gtk::Box {
@@ -254,7 +261,19 @@ diff -ru a/src/gui/templates.rs b/src/gui/templates.rs
 -                            set_label: "Login",
 -                            set_receives_default: true,
 -                            add_css_class: "suggested-action",
--                        },
++                            /// Button to enter the password and login
++                            #[name = "login_button"]
++                            gtk::Button {
++                                set_focusable: true,
++                                set_label: "Login",
++                                set_receives_default: true,
++                                add_css_class: "suggested-action",
++                                add_css_class: "login-button",
++                            },
+                         },
+                     },
+                 },
++
 +                /// Circular profile picture of the selected user
 +                gtk::Frame {
 +                    set_valign: gtk::Align::Center,
@@ -266,10 +285,10 @@ diff -ru a/src/gui/templates.rs b/src/gui/templates.rs
 +                        set_size_request: (160, 160),
 +                        set_content_fit: gtk::ContentFit::Cover,
 +                        set_can_shrink: true,
-                     },
-                 },
++                    },
++                },
              },
-@@ -156,68 +143,93 @@
+ 
              /// Clock widget
              #[name = "clock_frame"]
              add_overlay = &gtk::Frame {
@@ -317,7 +336,7 @@ diff -ru a/src/gui/templates.rs b/src/gui/templates.rs
              },
  
 -            /// Collection of widgets appearing at the bottom
-+            /// Session gear and power buttons, icon-only in the bottom-right corner
++            /// Power buttons, icon-only in the bottom-right corner
              add_overlay = &gtk::Box {
 -                set_orientation: gtk::Orientation::Vertical,
 -                set_halign: gtk::Align::Center,
@@ -348,39 +367,12 @@ diff -ru a/src/gui/templates.rs b/src/gui/templates.rs
 -                            set_margin_bottom: 10,
 -                            set_margin_start: 10,
 -                            set_margin_end: 10,
+-                        },
+-                    }
 +                set_margin_bottom: 20,
 +                set_margin_end: 20,
 +                set_spacing: 10,
 +                add_css_class: "corner",
-+
-+                gtk::MenuButton {
-+                    set_icon_name: "emblem-system-symbolic",
-+                    set_tooltip_text: Some("Session"),
-+                    set_direction: gtk::ArrowType::Up,
-+
-+                    #[wrap(Some)]
-+                    set_popover = &gtk::Popover {
-+                        gtk::Box {
-+                            set_spacing: 10,
-+
-+                            /// Widget containing the sessions
-+                            #[name = "sessions_box"]
-+                            gtk::ComboBoxText,
-+
-+                            /// Widget where the user enters the session
-+                            #[name = "session_entry"]
-+                            gtk::Entry,
-+
-+                            /// Button to toggle manual session entry
-+                            #[name = "sess_toggle"]
-+                            gtk::ToggleButton {
-+                                set_icon_name: "document-edit-symbolic",
-+                                set_tooltip_text: Some("Manually enter session command"),
-+                            },
-                         },
--                    }
-+                    },
-+                },
 +
 +                /// Button to reboot
 +                #[name = "reboot_button"]
@@ -415,8 +407,8 @@ diff -ru a/src/gui/templates.rs b/src/gui/templates.rs
              },
          }
 diff -ru a/src/gui/widget/clock.rs b/src/gui/widget/clock.rs
---- a/src/gui/widget/clock.rs	2026-11-01 16:47:38.376011120 +0100
-+++ b/src/gui/widget/clock.rs	2026-11-01 16:48:17.529089918 +0100
+--- a/src/gui/widget/clock.rs	2026-11-07 14:46:41.630026596 +0100
++++ b/src/gui/widget/clock.rs	2026-11-07 14:46:41.638202478 +0100
 @@ -177,7 +177,8 @@
      view! {
          gtk::Label {
