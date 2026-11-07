@@ -60,11 +60,12 @@ roll()
   case $((RANDOM % 6)) in
     # a toy on its own
     0 | 1) pick "${solo[@]}" ;;
-    # something says something, maybe in rainbow
+    # something says something, maybe in rainbow; ponies bring their own colours
     2 | 3)
-      local cmd
-      cmd="$(pick "${sources[@]}") | $(speaker)"
-      ((RANDOM % 2)) && cmd+=" | lolcat"
+      local cmd who
+      who="$(speaker)"
+      cmd="$(pick "${sources[@]}") | $who"
+      [[ $who != pony* ]] && ((RANDOM % 2)) && cmd+=" | lolcat"
       printf '%s' "$cmd"
       ;;
     # banner text
