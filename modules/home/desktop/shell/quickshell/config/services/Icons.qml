@@ -70,6 +70,12 @@ Singleton {
     readonly property var wifiLevels: [0xF092F, 0xF091F, 0xF0922, 0xF0925, 0xF0928].map(c => g(c))
     readonly property string check: g(0xF012C)
 
+    // launcher
+    readonly property string apps: g(0xF003B)
+    readonly property string calculator: g(0xF00EC)
+    readonly property string terminal: g(0xF018D)
+    readonly property string web: g(0xF059F)
+
     // clipboard
     readonly property string clipboard: g(0xF0A38)
     readonly property string clipboardEmpty: g(0xF161B)
