@@ -45,7 +45,7 @@ let
       [
         (show "Terminal" (Mod "Return" (spawn wezterm)))
         (show "Launcher" (Mod "space" (spawn walker)))
-        (show "Clipboard history" (Mod "v" (spawn "${walker} -m clipboard")))
+        (show "Clipboard" (Mod "v" (spawn (ipc "panels" "toggle" [ "clipboard" ]))))
         (show "Control center" (Mod "a" (spawn (ipc "panels" "toggle" [ "control" ]))))
         (show "Dashboard" (Mod "d" (spawn (ipc "panels" "toggle" [ "dashboard" ]))))
         (show "Notification center" (Mod "n" (spawn (ipc "notifications" "toggle" [ ]))))
