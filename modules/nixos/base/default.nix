@@ -11,6 +11,7 @@
     ./starship.nix
     ./greeting
     ./packages.nix
+    ./toolbox.nix
     ./unfree.nix
   ];
 
