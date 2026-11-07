@@ -8,6 +8,7 @@
     ./fonts.nix
     ./gaming.nix
     ./monitors.nix
+    ./touchpad.nix
     ./niri.nix
     ./sway.nix
     ./mango.nix
