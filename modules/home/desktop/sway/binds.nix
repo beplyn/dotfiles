@@ -40,7 +40,7 @@ let
       [
         (show (Mod "Return") "Terminal" (exec wezterm))
         (show (Mod "space") "Launcher" (exec walker))
-        (show (Mod "v") "Clipboard history" (exec "${walker} -m clipboard"))
+        (show (Mod "v") "Clipboard" (exec (ipc "panels" "toggle" [ "clipboard" ])))
         (show (Mod "a") "Control center" (exec (ipc "panels" "toggle" [ "control" ])))
         (show (Mod "d") "Dashboard" (exec (ipc "panels" "toggle" [ "dashboard" ])))
         (show (Mod "n") "Notification center" (exec (ipc "notifications" "toggle" [ ])))
