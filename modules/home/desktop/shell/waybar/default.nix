@@ -59,13 +59,19 @@ let
       };
     };
 
+  # hyprland/workspaces clicks send hyprlang dispatches, which the Lua config
+  # rejects; ext-workspace switches over the protocol
   hyprlandConfig = variant "hyprland"
     [
-      "hyprland/workspaces"
+      "ext/workspaces"
       "hyprland/window"
     ]
     {
-      "hyprland/workspaces".format = "{name}";
+      "ext/workspaces" =
+      {
+        format = "{name}";
+        on-click = "activate";
+      };
 
       "hyprland/window" =
       {
