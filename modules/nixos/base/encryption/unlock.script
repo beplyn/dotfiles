@@ -57,7 +57,8 @@ Plymouth.SetRefreshFunction(refresh);
 lock.image = Image("lock.png");
 box.image = Image("box.png");
 title.image = Image.Text("unlock @host@", @accentRgb@, 1, font + " 28");
-form_y = cy - 10;
+# low enough that the raised snowflake stays on short screens
+form_y = Math.Max(cy - 10, logo.image.GetHeight() + 160);
 # globals, so the sprites outlive the callbacks
 form = null;
 bullets = null;
