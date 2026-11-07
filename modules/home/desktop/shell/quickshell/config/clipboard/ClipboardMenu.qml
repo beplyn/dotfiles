@@ -12,7 +12,10 @@ Panel {
 
     name: "clipboard"
     align: Qt.AlignHCenter
-    cardWidth: 800
+    // nothing copied and nothing pinned: only the title line
+    readonly property bool minimal: Clipboard.history.length === 0 && Clipboard.pinned.length === 0 && !showKeys
+
+    cardWidth: minimal ? 420 : 800
     spacing: 12
 
     property string tab: "history"
@@ -338,7 +341,7 @@ Panel {
                 font.bold: true
             }
             Caption {
-                text: Clipboard.history.length + (Clipboard.history.length === 1 ? " entry" : " entries") + "  ·  " + Clipboard.pinned.length + " pinned"
+                text: root.minimal ? "Empty, anything you copy shows up here" : Clipboard.history.length + (Clipboard.history.length === 1 ? " entry" : " entries") + "  ·  " + Clipboard.pinned.length + " pinned"
             }
         }
 
@@ -349,6 +352,7 @@ Panel {
         // History | Pinned | (i), the highlight sliding between them
         Rectangle {
             id: tabs
+            visible: !root.minimal
             readonly property var items: [
                 { key: "history", icon: Icons.history, label: "History", count: Clipboard.history.length, width: 132 },
                 { key: "pinned", icon: Icons.pin, label: "Pinned", count: Clipboard.pinned.length, width: 132 },
@@ -451,6 +455,7 @@ Panel {
         }
 
         IconButton {
+            visible: !root.minimal
             icon: Icons.clearAll
             label: root.armed ? "Clear all?" : ""
             tint: Theme.red
@@ -467,6 +472,7 @@ Panel {
     // --- mode and search ---------------------------------------------------
     Rectangle {
         Layout.fillWidth: true
+        visible: !root.minimal
         implicitHeight: 40
         radius: Theme.innerRadius
         color: Theme.alpha(Theme.background, 0.6)
@@ -575,6 +581,7 @@ Panel {
     // --- list and preview, or the keys --------------------------------------
     Item {
         Layout.fillWidth: true
+        visible: !root.minimal
         Layout.preferredHeight: 440
 
         RowLayout {
@@ -1040,6 +1047,7 @@ Panel {
     // --- footer: the main keys, or the D waiting for its second press -------
     Item {
         Layout.fillWidth: true
+        visible: !root.minimal
         implicitHeight: hints.implicitHeight
 
         Row {
