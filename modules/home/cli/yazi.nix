@@ -89,6 +89,11 @@ in
           run = "plugin wl-clipboard";
           desc = "Copy files to the system clipboard";
         }
+        {
+          on = "C";
+          run = "plugin ouch tar.gz";
+          desc = "Compress, tar.gz unless the name says otherwise";
+        }
       ] ++ helpKeys "help";
       tasks.prepend_keymap = helpKeys "help";
       spot.prepend_keymap = helpKeys "help";
