@@ -15,6 +15,7 @@
     ./yazi.nix
     ./tools.nix
     ./fun
+    ./tldr.nix
     ./forgejo.nix
     ./fastfetch.nix
     ./bottom.nix
