@@ -24,5 +24,8 @@ in
       niri.layout.preset-column-widths;
     kb_layout = xkb.layout;
     kb_variant = xkb.variant;
+    # the host's (nixos/desktop/touchpad.nix), as in every session
+    natural_scroll = osConfig.touchpad.naturalScroll;
+    scroll_factor = osConfig.touchpad.scrollFactor;
   };
 }

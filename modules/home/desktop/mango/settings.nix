@@ -38,6 +38,10 @@ in
     ''
     + ''
       sloppyfocus=1
+      # the host's touchpad scrolling (nixos/desktop/touchpad.nix); mango's
+      # factor scales every scroll axis, the mouse wheel's too
+      trackpad_natural_scrolling=${if osConfig.touchpad.naturalScroll then "1" else "0"}
+      axis_scroll_factor=${toString osConfig.touchpad.scrollFactor}
 
       # session
       exec-once=${session}

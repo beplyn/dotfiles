@@ -14,6 +14,10 @@ hl.config({
         kb_variant = t.kb_variant,
         -- niri's focus-follows-mouse
         follow_mouse = 1,
+        touchpad = {
+            natural_scroll = t.natural_scroll,
+            scroll_factor = t.scroll_factor,
+        },
     },
     cursor = {
         hide_on_key_press = true,
