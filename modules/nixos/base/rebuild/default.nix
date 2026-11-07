@@ -36,8 +36,8 @@ let
       git
       gnupg
       openssh
-      inputs.forgejo-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
     ]
+    ++ lib.optional config.forgejo.enable inputs.forgejo-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
     # ~/.pfp picker and file secrets
     ++ lib.optional (!headless || lib.any (s: s.file) (lib.attrValues secrets)) fzf
     # ~/.pfp and the greeter's wallpaper
@@ -48,6 +48,7 @@ let
         hostName = config.networking.hostName;
         desktop = lib.boolToString (!headless);
         gated = lib.boolToString config.rebuildGate.enable;
+        forgejo = lib.boolToString config.forgejo.enable;
         gate = lib.optionalString config.rebuildGate.enable "${config.rebuildGate.package}/bin/rebuild-gate";
         hostSecrets = secretLines;
       }
