@@ -2,7 +2,7 @@
   imports =
   [
     ./boot
-    ./encryption.nix
+    ./encryption
     ./locale.nix
     ./networking.nix
     ./ssh.nix
