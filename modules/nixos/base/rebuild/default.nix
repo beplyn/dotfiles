@@ -35,10 +35,11 @@ let
     [
       git
       gnupg
-      imagemagick
       openssh
       inputs.forgejo-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
-    ];
+    ]
+    # ~/.pfp picker and the greeter's wallpaper
+    ++ lib.optionals (!headless) [ fzf imagemagick ];
     text = subst
       {
         inherit username email forgejoHost themeName;
