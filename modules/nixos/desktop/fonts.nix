@@ -16,6 +16,9 @@
     liberation_ttf
     carlito
     caladea
+    dejavu_fonts
+    noto-fonts
+    noto-fonts-color-emoji
   ]
   # the MS Office fonts themselves are unfree
   ++ lib.optionals config.unfree.enable
