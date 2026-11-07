@@ -39,9 +39,18 @@ let
   {
     general =
     {
-      bars = 32;
+      bars = 28;
       framerate = 60;
-      sleep_timer = 2;
+      sleep_timer = 1;
+      autosens = true;
+      sensitivity = 100;
+      lower_cutoff_freq = 50;
+      higher_cutoff_freq = 12000;
+    };
+    input =
+    {
+      method = "pipewire";
+      source = "auto";
     };
     output =
     {
@@ -52,6 +61,47 @@ let
       bar_delimiter = 59; # ';'
       frame_delimiter = 10; # '\n'
     };
+    smoothing =
+    {
+      noise_reduction = 0.77;
+      monstercat = true;
+      waves = true;
+    };
+  };
+
+  cavaVisualizer = pkgs.writeShellApplication
+  {
+    name = "cava-visualizer";
+    runtimeInputs =
+    [
+      pkgs.cava
+      pkgs.gawk
+    ];
+    text = ''
+      exec cava -p ${cavaConfig} | awk -F';' '
+        BEGIN {
+          glyphs[0] = " ";
+          glyphs[1] = "▁";
+          glyphs[2] = "▂";
+          glyphs[3] = "▃";
+          glyphs[4] = "▄";
+          glyphs[5] = "▅";
+          glyphs[6] = "▆";
+          glyphs[7] = "█";
+        }
+        {
+          frame = "";
+          for (i = 1; i <= NF; i++) {
+            value = $i + 0;
+            if (value < 0) value = 0;
+            if (value > 7) value = 7;
+            frame = frame glyphs[value];
+          }
+          print frame;
+          fflush();
+        }
+      '
+    '';
   };
 
   bin =
@@ -59,6 +109,7 @@ let
     record = lib.getExe record;
     eapConnect = lib.getExe eapConnect;
     cava = lib.getExe pkgs.cava;
+    cavaVisualizer = lib.getExe cavaVisualizer;
     inherit cavaConfig;
     niri = lib.getExe osConfig.programs.niri.package;
     swaymsg = lib.getExe' osConfig.programs.sway.package "swaymsg";
@@ -114,6 +165,7 @@ let
           niri = config.lib.haku.niriHotkeys;
           sway = config.lib.haku.swayHotkeys;
           mango = config.lib.haku.mangoHotkeys;
+          hyprland = config.lib.haku.hyprlandHotkeys;
         }))
         ""
         "    readonly property QtObject signals: QtObject {"
@@ -160,6 +212,10 @@ in
   home.packages = [ record ];
 
   lib.haku.waybarSignals = waybarSignals;
+  lib.haku.cava =
+  {
+    inherit cavaConfig cavaVisualizer;
+  };
 
   # argv for `qs ipc call`
   lib.haku.ipc = target: fn:
