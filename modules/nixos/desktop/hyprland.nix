@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 # fourth session next to niri, sway and mango; config lives in home-manager
 # (desktop/hyprland). The module brings the portal (xdph) and the session file.
@@ -8,6 +8,19 @@
     enable = true;
     xwayland.enable = true;
   };
+
+  # the package also ships hyprland-uwsm.desktop; hm's systemd integration
+  # runs the session, so hide that entry. Earlier dirs win and ReGreet skips
+  # Hidden ones
+  environment.sessionVariables.XDG_DATA_DIRS = lib.mkBefore
+  [
+    "${pkgs.writeTextDir "share/wayland-sessions/hyprland-uwsm.desktop" ''
+      [Desktop Entry]
+      Name=Hyprland (uwsm-managed)
+      Type=Application
+      Hidden=true
+    ''}/share"
+  ];
 
   # the rest of the hypr ecosystem the session binds to; hyprlock, hypridle,
   # hyprpaper, hyprsunset and hyprpolkitagent run from home-manager
