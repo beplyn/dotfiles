@@ -14,6 +14,7 @@
     ./niri
     ./sway
     ./mango
+    ./hyprland
     ./shell
   ];
 }
