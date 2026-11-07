@@ -5,5 +5,6 @@
     ./qbittorrent.nix
     ./llm.nix
     ./proxy.nix
+    ./k3s.nix
   ];
 }

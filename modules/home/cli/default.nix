@@ -3,6 +3,7 @@
   [
     ./ssh.nix
     ./bat.nix
+    ./glow.nix
     ./fzf.nix
     ./fd.nix
     ./eza.nix

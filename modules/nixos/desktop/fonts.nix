@@ -1,4 +1,9 @@
-{ pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 # Maple Mono NF (the Stylix monospace) is installed by Stylix itself.
 {
@@ -7,11 +12,15 @@
     jetbrains-mono
     nerd-fonts.jetbrains-mono
 
-    # MS Office fonts and metric-compatible stand-ins
-    corefonts
-    vista-fonts
+    # metric-compatible stand-ins for the MS Office fonts
     liberation_ttf
     carlito
     caladea
+  ]
+  # the MS Office fonts themselves are unfree
+  ++ lib.optionals config.unfree.enable
+  [
+    corefonts
+    vista-fonts
   ];
 }

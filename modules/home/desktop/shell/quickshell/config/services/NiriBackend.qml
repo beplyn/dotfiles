@@ -1,55 +1,60 @@
-pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Workspace model fed by `niri msg -j event-stream`, adapted from
-// hakuspace's Hikai NiriBackend.
-Singleton {
+// Wm's niri backend, fed by `niri msg -j event-stream`, adapted from
+// hakuspace's Hikai NiriBackend. Loaded by Wm only; use Wm instead.
+Scope {
     id: root
 
-    property var workspaces: []
+    // niri's own workspace and window objects, kept as the stream sends them.
+    property var rawWorkspaces: []
     property var windows: ({})
+    property var focusedWindowId: null
 
-    readonly property string focusedOutput: workspaces.find(ws => ws.is_focused)?.output ?? ""
-
-    // Workspaces on one output, ordered as niri shows them.
-    function workspacesOn(output) {
-        return workspaces
-            .filter(ws => ws.output === output)
-            .sort((a, b) => a.idx - b.idx)
-    }
-
-    function windowCount(workspaceId) {
-        let n = 0
-        for (const id in windows)
-            if (windows[id].workspace_id === workspaceId) n++
-        return n
-    }
+    readonly property var workspaces: rawWorkspaces
+        .map(ws => ({
+            id: ws.id,
+            idx: ws.idx,
+            name: ws.name ?? "",
+            output: ws.output ?? "",
+            isFocused: ws.is_focused,
+            isActive: ws.is_active,
+            isUrgent: ws.is_urgent ?? false
+        }))
+        .sort((a, b) => a.output.localeCompare(b.output) || a.idx - b.idx)
+    readonly property string activeWindowTitle: windows[focusedWindowId]?.title ?? ""
+    readonly property string focusedOutput: rawWorkspaces.find(ws => ws.is_focused)?.output ?? ""
 
     function action(...args) {
         Quickshell.execDetached([Theme.bin.niri, "msg", "action", ...args])
     }
 
-    // Indices are output-local, so focus the output first.
-    function focus(ws) {
+    // focus-workspace takes an output-local index, so focus the output first.
+    function focusWorkspace(id) {
+        const ws = rawWorkspaces.find(ws => ws.id === id)
+        if (!ws) return
         Quickshell.execDetached(["sh", "-c",
             '"$0" msg action focus-monitor "$1" && "$0" msg action focus-workspace "$2"',
             Theme.bin.niri, ws.output, String(ws.idx)])
     }
 
+    function quit() {
+        action("quit", "--skip-confirmation")
+    }
+
     function patch(id, fields) {
-        workspaces = workspaces.map(ws => ws.id === id ? Object.assign({}, ws, fields) : ws)
+        rawWorkspaces = rawWorkspaces.map(ws => ws.id === id ? Object.assign({}, ws, fields) : ws)
     }
 
     function handle(event) {
         if (event.WorkspacesChanged) {
-            workspaces = event.WorkspacesChanged.workspaces
+            rawWorkspaces = event.WorkspacesChanged.workspaces
         } else if (event.WorkspaceActivated) {
             const ev = event.WorkspaceActivated
-            const target = workspaces.find(ws => ws.id === ev.id)
+            const target = rawWorkspaces.find(ws => ws.id === ev.id)
             if (!target) return
-            workspaces = workspaces.map(ws => {
+            rawWorkspaces = rawWorkspaces.map(ws => {
                 const next = Object.assign({}, ws)
                 if (ws.output === target.output) next.is_active = ws.id === ev.id
                 if (ev.focused) next.is_focused = ws.id === ev.id
@@ -64,15 +69,20 @@ Singleton {
             const map = {}
             for (const w of event.WindowsChanged.windows) map[w.id] = w
             windows = map
+            focusedWindowId = event.WindowsChanged.windows.find(w => w.is_focused)?.id ?? null
         } else if (event.WindowOpenedOrChanged) {
             const w = event.WindowOpenedOrChanged.window
             const map = Object.assign({}, windows)
             map[w.id] = w
             windows = map
+            if (w.is_focused) focusedWindowId = w.id
         } else if (event.WindowClosed) {
             const map = Object.assign({}, windows)
             delete map[event.WindowClosed.id]
             windows = map
+            if (focusedWindowId === event.WindowClosed.id) focusedWindowId = null
+        } else if (event.WindowFocusChanged) {
+            focusedWindowId = event.WindowFocusChanged.id ?? null
         }
     }
 

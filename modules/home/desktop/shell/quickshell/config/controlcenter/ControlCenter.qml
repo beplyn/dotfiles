@@ -275,6 +275,14 @@ Panel {
         }
         Tile {
             Layout.fillWidth: true
+            icon: Awake.active ? Icons.awake : Icons.idle
+            title: "Stay awake"
+            subtitle: Awake.active ? "On" : "Off"
+            active: Awake.active
+            onClicked: Awake.toggle()
+        }
+        Tile {
+            Layout.fillWidth: true
             icon: Icons.record
             title: "Screen record"
             subtitle: Recorder.recording ? Recorder.elapsed : "Off"
@@ -345,7 +353,10 @@ Panel {
         }
 
         Repeater {
-            model: root.networksOpen ? root.wifiNetworks : []
+            // ScriptModel keeps rows (and a half-typed password) across scan updates.
+            model: ScriptModel {
+                values: root.networksOpen ? root.wifiNetworks : []
+            }
 
             ColumnLayout {
                 id: entry

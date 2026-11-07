@@ -1,0 +1,72 @@
+# namespace comes from k3s.nix (phase 1)
+# no Kubernetes API access: no Role, no RoleBinding, no token
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cloudflare-ddns
+  namespace: ddns
+automountServiceAccountToken: false
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudflare-ddns
+  namespace: ddns
+  labels:
+    app: cloudflare-ddns
+spec:
+  replicas: 1
+  # never two updaters at once
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: cloudflare-ddns
+  template:
+    metadata:
+      labels:
+        app: cloudflare-ddns
+    spec:
+      serviceAccountName: cloudflare-ddns
+      automountServiceAccountToken: false
+      # IPv4 only, so the pod network is fine; for AAAA set hostNetwork: true (flannel is IPv4-only)
+      containers:
+        - name: ddns
+          image: favonia/cloudflare-ddns:1
+          env:
+            - name: CLOUDFLARE_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: cloudflare-api-token
+                  key: CLOUDFLARE_API_TOKEN
+            - name: DOMAINS
+              value: "beplyn.dev,*.beplyn.dev"
+            # nginx only answers Cloudflare
+            - name: PROXIED
+              value: "true"
+            - name: IP4_PROVIDER
+              value: "cloudflare.trace"
+            - name: IP6_PROVIDER
+              value: "none"
+            - name: UPDATE_CRON
+              value: "@every 5m"
+            - name: UPDATE_ON_START
+              value: "true"
+            - name: DELETE_ON_STOP
+              value: "false"
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 5m
+              memory: 16Mi
+            limits:
+              memory: 64Mi
