@@ -13,6 +13,9 @@ in
     onefetch
     serie
   ];
+  # k3s TUI; needs KUBECONFIG pointing at a readable kubeconfig
+  programs.k9s.enable = true;
+
   programs.lazygit =
   {
     enable = true;
