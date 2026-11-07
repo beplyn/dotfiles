@@ -65,32 +65,30 @@ ensure_git
 
 # --- 1. Get the repo into ~/<reponame> --------------------------------------
 
-script_dir=""
-if [[ -n "${BASH_SOURCE[0]:-}" && -f "${BASH_SOURCE[0]}" ]]; then
-  script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# the checkout this runs from; empty under `curl | bash`
+src=""
+if [[ -n "${BASH_SOURCE[0]:-}" && -f "$(dirname "${BASH_SOURCE[0]}")/flake.nix" ]]; then
+  src="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 fi
+repo_dir="$HOME/$(basename "${src:-${REPO_URL%.git}}")"
 
-if [[ -n "$script_dir" && -f "$script_dir/flake.nix" ]]; then
-  repo_name="$(basename "$script_dir")"
-else
-  repo_name="$(basename "$REPO_URL" .git)"
-fi
-repo_dir="$HOME/$repo_name"
-
-if [[ -n "$script_dir" && "$script_dir" == "$repo_dir" ]]; then
+if [[ "$src" == "$repo_dir" ]]; then
   info "Running from $repo_dir, nothing to copy"
 elif [[ -e "$repo_dir" ]]; then
   [[ -f "$repo_dir/flake.nix" ]] || die "$repo_dir exists but is not this repo; move it out of the way first."
   warn "$repo_dir already exists, using it as is"
-elif [[ -n "$script_dir" && -f "$script_dir/flake.nix" ]]; then
-  info "Copying $script_dir to $repo_dir"
-  cp -a "$script_dir" "$repo_dir"
+elif [[ -n "$src" ]]; then
+  info "Copying $src to $repo_dir"
+  cp -a "$src" "$repo_dir"
 else
   info "Cloning $REPO_URL to $repo_dir"
   git clone "$REPO_URL" "$repo_dir"
 fi
 
 cd "$repo_dir"
+
+user="$(sed -n 's/^\s*username = "\([^"]*\)";.*/\1/p' flake.nix | head -n1)"
+[[ "$USER" == "$user" ]] || warn "You are '$USER', but the config sets up the user '$user'."
 
 # --- 2. Host and theme ------------------------------------------------------
 
@@ -141,17 +139,15 @@ fi
 if $regenerate; then
   generated="$(sudo nixos-generate-config --show-hardware-config)"
 
-  if [[ -f "$hw" ]]; then
-    if is_generated "$hw"; then
-      cp "$hw" "$hw.bak"
-      info "Old config saved to $hw.bak (untracked)"
-    elif ! grep -q 'PLACEHOLDER' "$hw"; then
-      # keep hand tuning (e.g. anvil's) beside the generated file
-      mv "$hw" "$host_dir/hardware-extra.nix"
-      sed -i 's|\./hardware\.nix|./hardware.nix ./hardware-extra.nix|' "$host_dir/default.nix"
-      git add "$host_dir/hardware-extra.nix"
-      info "Kept hand-written settings as $host_dir/hardware-extra.nix"
-    fi
+  if is_generated "$hw"; then
+    cp "$hw" "$hw.bak"
+    info "Old config saved to $hw.bak (untracked)"
+  elif [[ -f "$hw" ]] && ! grep -q 'PLACEHOLDER' "$hw"; then
+    # keep hand tuning (e.g. anvil's) beside the generated file
+    mv "$hw" "$host_dir/hardware-extra.nix"
+    sed -i 's|\./hardware\.nix|./hardware.nix ./hardware-extra.nix|' "$host_dir/default.nix"
+    git add "$host_dir/hardware-extra.nix"
+    info "Kept hand-written settings as $host_dir/hardware-extra.nix"
   fi
 
   # a single LUKS device goes to encryption.nix (as cryptroot), not hardware.nix
@@ -177,18 +173,19 @@ fi
 
 # --- 4. Link /etc/nixos -----------------------------------------------------
 
-if [[ -L /etc/nixos ]]; then
-  sudo rm /etc/nixos
-elif [[ -e /etc/nixos ]]; then
-  backup="/etc/nixos.bak-$(date +%Y%m%d-%H%M%S)"
-  sudo mv /etc/nixos "$backup"
-  info "Moved the old /etc/nixos to $backup"
+if [[ "$(readlink /etc/nixos)" == "$repo_dir" ]]; then
+  info "/etc/nixos already links to $repo_dir"
+else
+  if [[ -L /etc/nixos ]]; then
+    sudo rm /etc/nixos
+  elif [[ -e /etc/nixos ]]; then
+    backup="/etc/nixos.bak-$(date +%Y%m%d-%H%M%S)"
+    sudo mv /etc/nixos "$backup"
+    info "Moved the old /etc/nixos to $backup"
+  fi
+  sudo ln -s "$repo_dir" /etc/nixos
+  info "Linked /etc/nixos -> $repo_dir"
 fi
-sudo ln -s "$repo_dir" /etc/nixos
-info "Linked /etc/nixos -> $repo_dir"
-
-user="$(sed -n 's/^\s*username = "\([^"]*\)";.*/\1/p' flake.nix | head -n1)"
-[[ "$USER" == "$user" ]] || warn "You are '$USER', but the config sets up the user '$user'."
 
 target="$host-$theme"
 echo
@@ -226,6 +223,9 @@ fi
 
 if $built; then
   echo
-  confirm "Reboot now? [Y/n]" y && sudo reboot
-  info "Reboot when you're ready to start $target."
+  if confirm "Reboot now? [Y/n]" y; then
+    sudo reboot
+  else
+    info "Reboot when you're ready to start $target."
+  fi
 fi
