@@ -5,8 +5,8 @@ local t = require("haku.data.theme")
 
 hl.config({
     general = {
-        -- niri's columns
-        layout = "scrolling",
+        -- tiling; niri's columns (scrolling) on Mod+T
+        layout = "dwindle",
         gaps_in = t.gaps,
         gaps_out = t.gaps,
         gaps_workspaces = 50,
@@ -23,6 +23,7 @@ hl.config({
         },
     },
 
+    -- the scrolling layout on Mod+T
     scrolling = {
         column_width = t.column_width,
         explicit_column_widths = t.column_widths,
