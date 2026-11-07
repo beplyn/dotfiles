@@ -84,7 +84,7 @@ let
         (show "Lock screen" (ModAlt "l" exec "${loginctl} lock-session"))
         (show "Power menu" (Mod "x" exec (ipc "panels" "toggle" [ "power" ])))
         (show "Show hotkeys" (Mod "slash" exec (ipc "panels" "toggle" [ "hotkeys" ])))
-        # the scrolling layout zoomed out to every column
+        # hyprtasking's grid of this monitor's workspaces
         (show "Overview" (noRepeat (Mod "Tab" "haku.overview" null)))
       ];
     }
@@ -117,9 +117,9 @@ let
         (show "Focus window or workspace up" (Mod "k" "haku.focus_or_workspace" "up"))
         (show "Focus window or workspace down" (Mod "j" "haku.focus_or_workspace" "down"))
 
-        # r±1 reaches the empty workspace past the last, like niri's
-        (show "Next workspace" (Mod "u" "focus" { workspace = "r+1"; }))
-        (show "Previous workspace" (Mod "i" "focus" { workspace = "r-1"; }))
+        # on this monitor, as niri's; hyprsplit (workspaces.lua)
+        (show "Next workspace" (Mod "u" "split.focus" { workspace = "+1"; }))
+        (show "Previous workspace" (Mod "i" "split.focus" { workspace = "-1"; }))
 
         (show "Move column left" (ModShift "h" "haku.move_column" "left"))
         (show "Move column right" (ModShift "l" "haku.move_column" "right"))
@@ -146,7 +146,7 @@ let
           n = toString i;
         in
         [
-          (show "Focus workspace ${n}" (Mod n "focus" { workspace = i; }))
+          (show "Focus workspace ${n}" (Mod n "split.focus" { workspace = i; }))
           (show "Move column to workspace ${n}" (ModShift n "haku.move_column_to_workspace" { workspace = i; }))
         ])
         (lib.range 1 9);
@@ -197,6 +197,10 @@ let
         (show "System info" (ModShift "y" exec "hyprsysteminfo"))
         (show "Audio mixer" (ModAlt "a" exec "hyprpwcenter"))
         (show "Toggle night light" (ModAlt "n" "haku.night_light" 4000))
+        (show "Dropdown terminal" (ModAlt "Return" exec "pypr toggle term"))
+        (show "Zoom" (ModAlt "z" exec "pypr zoom"))
+        # the palette shader (palette.glsl)
+        (show "Toggle palette shader" (ModAlt "s" exec "hyprshade toggle palette"))
       ];
     }
   ];
