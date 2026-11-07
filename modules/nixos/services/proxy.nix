@@ -229,6 +229,8 @@ in
       {
         extraDomainNames = [ "*.${cfg.domain}" ];
         dnsProvider = "cloudflare";
+        # the LAN resolver caches the missing TXT record past lego's timeout
+        dnsResolver = "1.1.1.1:53";
         # CF_DNS_API_TOKEN=...
         environmentFile = if cfg.acmeEnvFile == null then "${secrets}/acme-cloudflare.env" else cfg.acmeEnvFile;
         group = config.services.nginx.group;
