@@ -2,7 +2,6 @@
 {
   config,
   lib,
-  osConfig,
   pkgs,
   themeName,
   ...
@@ -12,8 +11,6 @@ let
   p = config.themes.palette;
   waypaper = lib.getExe pkgs.waypaper;
   awww = config.services.awww.package;
-  hyprland = osConfig.programs.hyprland.package;
-  wm = lib.getExe config.lib.haku.wm;
 
   # lutgen palette per theme, matching the Stylix schemes
   palettes =
@@ -59,16 +56,7 @@ let
   wallpaper-pick = pkgs.writeShellApplication
   {
     name = "wallpaper-pick";
-    runtimeInputs =
-    [
-      pkgs.lutgen
-      pkgs.waypaper
-      awww
-      pkgs.coreutils
-      pkgs.findutils
-      hyprland
-      wm
-    ];
+    runtimeInputs = [ pkgs.lutgen pkgs.waypaper awww pkgs.coreutils pkgs.findutils ];
     text = ''
       mkdir -p "${cache}"
       src=
@@ -85,32 +73,8 @@ let
       fi
       ln -sfn "$img" "${cache}/current.png"
       # no session (e.g. a TTY): the lock screen still follows the symlink
-      if [ "$(wm name)" = hyprland ]; then
-        waypaper --wallpaper "${cache}/current.png" --backend hyprpaper
-      elif awww query >/dev/null 2>&1; then
+      if awww query >/dev/null 2>&1; then
         waypaper --wallpaper "${cache}/current.png"
-      fi
-    '';
-  };
-
-  wallpaper-restore = pkgs.writeShellApplication
-  {
-    name = "wallpaper-restore";
-    runtimeInputs =
-    [
-      pkgs.waypaper
-      awww
-      pkgs.coreutils
-      hyprland
-      wm
-    ];
-    text = ''
-      if [ "$(wm name)" = hyprland ]; then
-        until hyprctl hyprpaper listloaded >/dev/null 2>&1; do sleep 0.1; done
-        waypaper --restore --backend hyprpaper
-      else
-        until awww query >/dev/null 2>&1; do sleep 0.1; done
-        waypaper --restore
       fi
     '';
   };
@@ -148,18 +112,21 @@ in
     Unit =
     {
       Description = "Restore the last waypaper wallpaper";
-      After = [ "awww.service" "hyprpaper.service" ];
-      PartOf = [ "awww.service" "hyprpaper.service" ];
+      After = [ "awww.service" ];
+      Requires = [ "awww.service" ];
+      PartOf = [ "awww.service" ];
     };
     Service =
     {
       Type = "oneshot";
       Environment = "PATH=${lib.makeBinPath [ awww pkgs.procps pkgs.coreutils ]}";
-      ExecStart = lib.getExe wallpaper-restore;
+      # awww is "started" before its socket is ready
+      ExecStartPre = "${pkgs.bash}/bin/sh -c 'until awww query; do sleep 0.1; done'";
+      ExecStart = "${waypaper} --restore";
       TimeoutStartSec = 30;
     };
     # WantedBy awww, not the session target (avoids a cycle)
-    Install.WantedBy = [ "awww.service" "hyprpaper.service" ];
+    Install.WantedBy = [ "awww.service" ];
   };
 
   home.activation.wallpaperDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
