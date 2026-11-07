@@ -291,7 +291,7 @@
     };
     SilentTyping =
     {
-      enabled = true;
+      enabled = false;
       alwaysEnableInActiveVoiceChat = false;
       chatContextMenu = true;
       chatIcon = true;
