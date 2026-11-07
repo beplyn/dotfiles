@@ -70,6 +70,29 @@ Singleton {
     readonly property var wifiLevels: [0xF092F, 0xF091F, 0xF0922, 0xF0925, 0xF0928].map(c => g(c))
     readonly property string check: g(0xF012C)
 
+    // clipboard
+    readonly property string clipboard: g(0xF0A38)
+    readonly property string clipboardEmpty: g(0xF161B)
+    readonly property string pin: g(0xF0403)
+    readonly property string pinOutline: g(0xF0931)
+    readonly property string pinOff: g(0xF0930)
+    readonly property string trash: g(0xF09E7)
+    readonly property string clearAll: g(0xF05E9)
+    readonly property string search: g(0xF0349)
+    readonly property string close: g(0xF0156)
+    readonly property string history: g(0xF02DA)
+    readonly property string text: g(0xF09AA)
+    readonly property string image: g(0xF0976)
+    readonly property string link: g(0xF0337)
+    readonly property string palette: g(0xF03D8)
+    readonly property string folder: g(0xF024B)
+    readonly property string email: g(0xF01F0)
+    readonly property string code: g(0xF0169)
+    readonly property string number: g(0xF03A0)
+    readonly property string file: g(0xF0224)
+    readonly property string info: g(0xF02FD)
+    readonly property string keyboard: g(0xF097B)
+
     // Picks the entry of `icons` matching a 0..100 level.
     function level(icons, pct) {
         const i = Math.round(Math.max(0, Math.min(100, pct)) / 100 * (icons.length - 1))
