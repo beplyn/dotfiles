@@ -17,4 +17,8 @@
     nyancat
     genact
   ];
+
+  # Stylix colours it; the bar visualiser keeps its own config (quickshell)
+  programs.cava.enable = true;
+  stylix.targets.cava.rainbow.enable = true;
 }
