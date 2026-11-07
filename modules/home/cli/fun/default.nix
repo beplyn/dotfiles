@@ -2,6 +2,19 @@
 
 # toys: `fortune | cowsay | lolcat`, `toilet -f future --gay hi`, or `fun`
 let
+  # cowsay and cowthink roll a random cow every time
+  cowsay = pkgs.symlinkJoin
+  {
+    name = "cowsay-random";
+    paths = [ pkgs.cowsay ];
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      for b in cowsay cowthink; do
+        wrapProgram "$out/bin/$b" --add-flags -r
+      done
+    '';
+  };
+
   toys = with pkgs;
   [
     sl
