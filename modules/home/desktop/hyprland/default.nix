@@ -12,6 +12,7 @@
   [
     ./binds.nix
     ./outputs.nix
+    ./plugins.nix
     ./settings.nix
     ./services.nix
   ];
