@@ -4,13 +4,36 @@ local binds = require("haku.data.binds")
 
 local haku = {}
 
+local dispatcher
+
+local function scrolling()
+    return hl.get_config("general.layout") == "scrolling"
+end
+
 -- Mod+Tab, for niri's overview: the scrolling layout zoomed out to every
--- column, then back to the focused one
+-- column, then back to the focused one; nothing to zoom in tiling
 local overview = false
 function haku.overview()
     return function()
+        if not scrolling() then
+            overview = false
+            return
+        end
         overview = not overview
         hl.dispatch(hl.dsp.layout(overview and "fit all" or "fit active"))
+    end
+end
+
+-- a scrolling layout message, which dwindle rejects with an error; there
+-- the tiling { dsp, arg } instead, if any
+function haku.scrolling(b)
+    local tiling = b.tiling and dispatcher(b.tiling.dsp, b.tiling.arg)
+    return function()
+        if scrolling() then
+            hl.dispatch(hl.dsp.layout(b.msg))
+        elseif tiling then
+            hl.dispatch(tiling)
+        end
     end
 end
 
@@ -27,10 +50,6 @@ function haku.cycle_layout(layouts)
         end
         hl.config({ general = { layout = next } })
     end
-end
-
-local function scrolling()
-    return hl.get_config("general.layout") == "scrolling"
 end
 
 -- the windows of w's column, top to bottom; just w outside scrolling
@@ -111,7 +130,7 @@ function haku.night_light(temperature)
     end
 end
 
-local function dispatcher(path, arg)
+function dispatcher(path, arg)
     local custom = path:match("^haku%.(.+)$")
     if custom then
         return haku[custom](arg)
