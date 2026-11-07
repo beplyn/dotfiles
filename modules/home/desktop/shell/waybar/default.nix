@@ -32,11 +32,18 @@ let
     }"'';
   glyphs = map glyph;
 
+  # after the workspaces and window title, whichever compositor's
+  media =
+  [
+    "mpris"
+    "custom/cava"
+  ];
+
   # the same bar with another compositor's modules on the left; niri's stay
   # empty elsewhere, so each gets its own config
   variant = name: left: modules: (pkgs.formats.json { }).generate "waybar-${name}.json"
   [
-    (config.programs.waybar.settings.main // modules // { modules-left = [ "custom/launcher" ] ++ left; })
+    (config.programs.waybar.settings.main // modules // { modules-left = [ "custom/launcher" ] ++ left ++ media; })
   ];
 
   swayConfig = variant "sway"
@@ -149,21 +156,19 @@ in
       margin-right = gap;
       spacing = 4;
 
+      # the clock alone in the middle, so music starting or a recording
+      # can't push it off centre
       modules-left =
       [
         "custom/launcher"
         "niri/workspaces"
         "niri/window"
-      ];
-      modules-center =
-      [
-        "mpris"
-        "custom/cava"
-        "clock"
-        "custom/recorder"
-      ];
+      ]
+      ++ media;
+      modules-center = [ "clock" ];
       modules-right =
       [
+        "custom/recorder"
         "group/hardware"
         "privacy"
         "group/status"
