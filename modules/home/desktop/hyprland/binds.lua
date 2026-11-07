@@ -1,6 +1,7 @@
 -- Binds from binds.nix: each names an hl.dsp dispatcher by its path, or one
 -- of the functions below, with the argument it takes.
 local binds = require("haku.data.binds")
+local hs = require("hyprsplit")
 
 local haku = {}
 
@@ -10,17 +11,11 @@ local function scrolling()
     return hl.get_config("general.layout") == "scrolling"
 end
 
--- Mod+Tab, for niri's overview: the scrolling layout zoomed out to every
--- column, then back to the focused one; nothing to zoom in tiling
-local overview = false
+-- Mod+Tab, for niri's overview: hyprtasking's grid of this monitor's
+-- workspaces, in either layout (plugins.lua)
 function haku.overview()
     return function()
-        if not scrolling() then
-            overview = false
-            return
-        end
-        overview = not overview
-        hl.dispatch(hl.dsp.layout(overview and "fit all" or "fit active"))
+        hl.plugin.hyprtasking.toggle("cursor")
     end
 end
 
@@ -66,14 +61,14 @@ local function address(w)
 end
 
 -- niri's focus-window-or-workspace: up and down the column, then on past
--- its end to the workspace above or below
+-- its end to the workspace above or below, on this monitor
 function haku.focus_or_workspace(direction)
-    local workspace = direction == "down" and "r+1" or "r-1"
+    local workspace = hs.dsp.focus({ workspace = direction == "down" and "+1" or "-1" })
     return function()
         local before = address(hl.get_active_window())
         hl.dispatch(hl.dsp.focus({ direction = direction }))
         if address(hl.get_active_window()) == before then
-            hl.dispatch(hl.dsp.focus({ workspace = workspace }))
+            workspace()
         end
     end
 end
@@ -91,14 +86,17 @@ function haku.move_column(direction)
 end
 
 -- niri's move-column-to-workspace: the focused window's whole column, still
--- stacked, to { workspace = n } or { offset = ±1 }; focus follows it
+-- stacked, to { workspace = n } or { offset = ±1 } on this monitor (n as
+-- hyprsplit numbers it there); focus follows it
 function haku.move_column_to_workspace(target)
     return function()
         local focused = hl.get_active_window()
         if not focused then
             return
         end
-        local workspace = target.workspace or (focused.workspace.id + target.offset)
+        local workspace = tonumber(hs.get_workspace_string(
+            target.workspace and tostring(target.workspace) or string.format("%+d", target.offset)
+        ))
         if workspace < 1 or workspace == focused.workspace.id then
             return
         end
@@ -130,12 +128,17 @@ function haku.night_light(temperature)
     end
 end
 
+-- "haku.x" from above, "split.x" from hyprsplit's hs.dsp, else hl.dsp
 function dispatcher(path, arg)
     local custom = path:match("^haku%.(.+)$")
     if custom then
         return haku[custom](arg)
     end
     local fn = hl.dsp
+    local split = path:match("^split%.(.+)$")
+    if split then
+        fn, path = hs.dsp, split
+    end
     for part in path:gmatch("[^.]+") do
         fn = fn[part]
     end
@@ -151,9 +154,16 @@ hl.bind("SUPER + mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind("SUPER + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 -- Mod+scroll through workspaces, Mod+Shift+scroll through columns
-hl.bind("SUPER + mouse_down", hl.dsp.focus({ workspace = "r+1" }))
-hl.bind("SUPER + mouse_up", hl.dsp.focus({ workspace = "r-1" }))
+hl.bind("SUPER + mouse_down", hs.dsp.focus({ workspace = "+1" }))
+hl.bind("SUPER + mouse_up", hs.dsp.focus({ workspace = "-1" }))
 hl.bind("SUPER + SHIFT + mouse_down", hl.dsp.layout("move +col"))
 hl.bind("SUPER + SHIFT + mouse_up", hl.dsp.layout("move -col"))
+
+-- Escape closes the overview, and still reaches the window otherwise
+hl.bind("Escape", function()
+    if hl.plugin.hyprtasking.is_active() then
+        hl.plugin.hyprtasking.toggle("all")
+    end
+end, { non_consuming = true })
 
 return haku
