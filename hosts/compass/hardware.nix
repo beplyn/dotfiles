@@ -13,7 +13,7 @@
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
-  # root fs and LUKS: modules/nixos/base/encryption.nix
+  # root fs and LUKS: modules/nixos/base/encryption
 
   fileSystems."/boot" =
     { device = "/dev/disk/by-uuid/3A8D-33AC";
