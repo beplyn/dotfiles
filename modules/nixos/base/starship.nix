@@ -1,5 +1,8 @@
 {
   config,
+  lib,
+  pkgs,
+  subst,
   ...
 }:
 
@@ -13,9 +16,25 @@ let
       shulker = "";
     }
     .${config.networking.hostName} or "󰒋";
+
+  toml = (pkgs.formats.toml { }).generate;
+  full = config.programs.starship.settings;
+  # a narrow terminal: the directory alone (starship-fit.fish)
+  narrow = full //
+  {
+    format = "$directory";
+    right_format = "";
+  };
 in
 
 {
+  programs.fish.interactiveShellInit = lib.mkAfter (subst
+  {
+    narrow = "80";
+    fullConfig = toml "starship.toml" full;
+    narrowConfig = toml "starship-narrow.toml" narrow;
+  } (builtins.readFile ./starship-fit.fish));
+
   programs.starship =
   {
     enable = true;
