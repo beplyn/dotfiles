@@ -23,6 +23,8 @@ let
     ${systemctl} --user stop graphical-session.target
     ${systemctl} --user reset-failed
     ${systemctl} --user start mango-session.target
+    # mango stops nothing on exit
+    ${lib.getExe config.lib.haku.sessionWatch}
   '';
 in
 {
