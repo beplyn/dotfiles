@@ -9,16 +9,41 @@ let
   t = config.themes.shell;
 in
 {
-  # walker backend: apps, commands, clipboard history
+  # walker backend: apps and commands; the clipboard is cliphist and the
+  # quickshell panel (shell/clipboard), so elephant has no provider watching it
   services.elephant =
   {
     enable = true;
-    # clipboard provider signals its save loop while holding the history lock;
-    # an unbuffered send deadlocks it and history stops updating
-    package = pkgs.elephant.overrideAttrs (old:
+    package = pkgs.elephant.override
     {
-      patches = (old.patches or [ ]) ++ [ ./elephant-clipboard-deadlock.patch ];
-    });
+      enabledProviders =
+      [
+        "1password"
+        "aptpackages"
+        "archlinuxpkgs"
+        "bitwarden"
+        "bluetooth"
+        "bookmarks"
+        "calc"
+        "desktopapplications"
+        "dnfpackages"
+        "files"
+        "menus"
+        "niriactions"
+        "nirisessions"
+        "playerctl"
+        "protonpass"
+        "providerlist"
+        "runner"
+        "snippets"
+        "symbols"
+        "todo"
+        "unicode"
+        "websearch"
+        "windows"
+        "wireplumber"
+      ];
+    };
   };
 
   services.walker =
@@ -40,11 +65,6 @@ in
           input = "Search";
           list = "Nothing found";
         };
-        clipboard =
-        {
-          input = "Clipboard";
-          list = "Clipboard is empty";
-        };
       };
 
       providers =
@@ -58,7 +78,6 @@ in
         ];
         empty = [ "desktopapplications" ];
         max_results = 50;
-        clipboard.time_format = "relative";
       };
     };
 
