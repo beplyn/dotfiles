@@ -12,6 +12,7 @@ let
   gap = config.programs.niri.settings.layout.gaps;
   niri = lib.getExe osConfig.programs.niri.package;
   signals = config.lib.haku.waybarSignals;
+  cava = lib.getExe config.lib.haku.cava.cavaVisualizer;
   laptop = osConfig.laptop.enable;
 
   # qs ipc call as an on-click string
@@ -151,6 +152,7 @@ in
       modules-center =
       [
         "mpris"
+        "custom/cava"
         "clock"
         "custom/recorder"
       ];
@@ -195,6 +197,14 @@ in
         player-icons.default = glyph 984922; # music
         status-icons.paused = glyph 61516; # pause
         tooltip-format = "{artist} — {album}";
+      };
+
+      "custom/cava" =
+      {
+        exec = cava;
+        format = "{}";
+        tooltip = false;
+        return-type = "text";
       };
 
       clock =
@@ -438,6 +448,16 @@ in
       menu
       {
         border-radius: ${toString t.radius}px;
+      }
+
+      # Cava is intentionally compact: a live accent-coloured waveform
+      # between the player and clock, with a soft palette-matched glow.
+      #custom-cava
+      {
+        min-width: 196px;
+        color: @accent;
+        text-shadow: 0 0 8px alpha(@accent, 0.65);
+        letter-spacing: 1px;
       }
     ''
     + builtins.readFile ./style.css;
