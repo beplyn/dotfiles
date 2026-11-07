@@ -39,7 +39,7 @@ let
       binds =
       [
         (show (Mod "Return") "Terminal" (exec wezterm))
-        (show (Mod "space") "Launcher" (exec walker))
+        (show (Mod "space") "Launcher" (exec (ipc "panels" "toggle" [ "launcher" ])))
         (show (Mod "v") "Clipboard" (exec (ipc "panels" "toggle" [ "clipboard" ])))
         (show (Mod "a") "Control center" (exec (ipc "panels" "toggle" [ "control" ])))
         (show (Mod "d") "Dashboard" (exec (ipc "panels" "toggle" [ "dashboard" ])))

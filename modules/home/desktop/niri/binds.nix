@@ -14,7 +14,6 @@ let
   ModAlt = k: "Mod+Alt+${k}";
 
   wezterm = lib.getExe config.programs.wezterm.package;
-  walker = lib.getExe config.services.walker.package;
   ipc = config.lib.haku.ipc;
   # through hypridle, whose lock_cmd skips an already running hyprlock
   loginctl = lib.getExe' pkgs.systemd "loginctl";
@@ -35,7 +34,7 @@ let
       binds =
       [
         (spawn (Mod "Return") "Terminal" [ wezterm ])
-        (spawn (Mod "Space") "Launcher" [ walker ])
+        (spawn (Mod "Space") "Launcher" (ipc "panels" "toggle" ++ [ "launcher" ]))
         (spawn (Mod "V") "Clipboard" (ipc "panels" "toggle" ++ [ "clipboard" ]))
         (spawn (Mod "A") "Control center" (ipc "panels" "toggle" ++ [ "control" ]))
         (spawn (Mod "D") "Dashboard" (ipc "panels" "toggle" ++ [ "dashboard" ]))
