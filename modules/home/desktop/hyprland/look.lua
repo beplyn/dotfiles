@@ -12,6 +12,9 @@ hl.config({
         gaps_workspaces = 50,
         border_size = t.border,
         resize_on_border = true,
+        -- focus stops at a column's ends, as in niri, rather than wrapping;
+        -- Mod+J/K then carry on to the next workspace (binds.lua)
+        no_focus_fallback = true,
         snap = {
             enabled = true,
             window_gap = t.gaps,
