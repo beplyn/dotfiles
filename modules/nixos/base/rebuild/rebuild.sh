@@ -60,6 +60,14 @@ if @gated@; then
   gateState="$(sudo @gate@ state)"
 fi
 
+# pick PROMPT [FIND TESTS...]: a file under ~ or a mounted stick (hidden dirs skipped), empty on Esc;
+# find gets SIGPIPE once fzf exits, hence || true
+pick() {
+  local prompt="$1"; shift
+  find "$HOME" "/run/media/@username@" -name '.*' -prune -o -type f "$@" -print 2>/dev/null \
+    | fzf --prompt "$prompt> " || true
+}
+
 # host secrets (rebuild.secrets): root-only, never in the repo; delete one to be asked again
 restart=()
 # shellcheck disable=SC2329 # no calls on hosts without secrets
@@ -73,8 +81,7 @@ host_secret() {
   # umask reaches sudo, so new dirs are 0700
   (umask 077 && sudo mkdir -p "${path%/*}")
   if [ "$kind" = file ]; then
-    read -erp "File with the $what for $path (empty to skip): " value || value=
-    value="${value/#\~/$HOME}"
+    value="$(pick "File with the $what for $path (Esc: skip)")"
     if [ -z "$value" ]; then
       echo "$path still missing" >&2
       return
@@ -101,10 +108,8 @@ host_secret() {
 
 # profile picture for hyprlock and the greeter (desktop hosts only); asked for until there is one
 if @desktop@ && [ ! -e "$HOME/.pfp" ]; then
-  # images under ~, hidden dirs skipped; find gets SIGPIPE once fzf exits, so no `|| pic=`
-  pic="$(find "$HOME" -name '.*' -prune -o -type f \
-      \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' -o -iname '*.gif' \) -print 2>/dev/null \
-    | fzf --prompt 'Profile picture for ~/.pfp (Esc: snowflake)> ')" || true
+  pic="$(pick 'Profile picture for ~/.pfp (Esc: snowflake)' \
+    \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' -o -iname '*.gif' \))"
   if [ -n "$pic" ]; then
     if magick identify "${pic}[0]" >/dev/null 2>&1; then
       cp -f "$pic" "$HOME/.pfp"
