@@ -4,7 +4,7 @@ desktop-image: "background.png"
 desktop-image-scale-method: "crop"
 desktop-color: "@background@"
 
-terminal-font: "Maple Regular 16"
+terminal-font: "Maple Regular @px16@"
 terminal-box: "panel_*.png"
 terminal-left: "8%"
 terminal-top: "12%"
@@ -16,20 +16,20 @@ terminal-height: "72%"
   left = 8%
   top = 16%
   width = 40%
-  height = 56
+  height = @px56@
   text = "@host@"
-  font = "Maple Bold 48"
+  font = "Maple Bold @px48@"
   color = "@accent@"
 }
 
 + label
 {
-  left = 8%+4
-  top = 16%+64
+  left = 8%+@px4@
+  top = 16%+@px64@
   width = 40%
-  height = 24
+  height = @px24@
   text = "choose a system"
-  font = "Maple Regular 20"
+  font = "Maple Regular @px20@"
   color = "@subtext@"
 }
 
@@ -41,22 +41,22 @@ terminal-height: "72%"
   height = 44%
   menu_pixmap_style = "panel_*.png"
 
-  item_font = "Maple Regular 20"
+  item_font = "Maple Regular @px20@"
   item_color = "@foreground@"
-  selected_item_font = "Maple Regular 20"
+  selected_item_font = "Maple Regular @px20@"
   selected_item_color = "@brightest@"
   selected_item_pixmap_style = "select_*.png"
 
-  icon_width = 36
-  icon_height = 36
-  item_height = 40
-  item_padding = 8
-  item_icon_space = 16
-  item_spacing = 10
+  icon_width = @px36@
+  icon_height = @px36@
+  item_height = @px40@
+  item_padding = @px8@
+  item_icon_space = @px16@
+  item_spacing = @px10@
   item_pixmap_style = "item_*.png"
 
   scrollbar = true
-  scrollbar_width = 6
+  scrollbar_width = @px6@
   scrollbar_frame = "track_*.png"
   scrollbar_thumb = "thumb_*.png"
 }
@@ -64,10 +64,10 @@ terminal-height: "72%"
 + progress_bar
 {
   id = "__timeout__"
-  left = 8%+24
-  top = 74%+12
-  width = 36%-48
-  height = 28
+  left = 8%+@px24@
+  top = 74%+@px12@
+  width = 36%-@px48@
+  height = @px28@
   bar_style = "track_*.png"
   highlight_style = "fill_*.png"
   highlight_overlay = true
@@ -76,22 +76,22 @@ terminal-height: "72%"
 + label
 {
   id = "__timeout__"
-  left = 8%+24
-  top = 74%+44
-  width = 36%-48
-  height = 24
+  left = 8%+@px24@
+  top = 74%+@px44@
+  width = 36%-@px48@
+  height = @px24@
   text = "booting in %d s"
-  font = "Maple Regular 16"
+  font = "Maple Regular @px16@"
   color = "@muted@"
 }
 
 + label
 {
   left = 8%
-  top = 100%-64
+  top = 100%-@px64@
   width = 84%
-  height = 24
+  height = @px24@
   text = "↑↓ select   •   enter boot   •   e edit   •   c console"
-  font = "Maple Regular 16"
+  font = "Maple Regular @px16@"
   color = "@muted@"
 }
