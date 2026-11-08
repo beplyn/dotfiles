@@ -1,8 +1,10 @@
-# openrgb-stylix: paint every device the OpenRGB server found in one colour.
-# Static where a device has it, so it sticks in hardware; Direct or Custom
-# (per-LED, e.g. the Red Devil GPU) otherwise.
+# openrgb-stylix: paint every device the OpenRGB server found, keyboards in
+# their own colour. Static where a device has it, so it sticks in hardware;
+# Direct or Custom (per-LED, e.g. the Red Devil GPU) otherwise. Motherboards
+# go Direct first: Gigabyte's IT5701 leaves zones out in Static.
 # --nodetect: only talk to the local server (port 6742), never probe hardware
-colour="${1:?usage: openrgb-stylix RRGGBB}"
+colour="${1:?usage: openrgb-stylix RRGGBB [KEYBOARD_RRGGBB]}"
+keyboard_colour="${2:-$colour}"
 
 # the server answers before detection is done; wait for devices
 list=""
@@ -17,20 +19,26 @@ done
 
 args=()
 dev=""
+type=""
 while read -r line; do
   case $line in
     [0-9]*:\ *) dev="${line%%:*}" ;;
+    Type:*) type="${line#Type:}"; type="${type// /}" ;;
     Modes:*)
       # "Modes: Direct [Static] 'Color Cycle' ..." -> " direct static color cycle ... "
       modes=" ${line#Modes:} "
       modes="${modes//[\[\]\']/}"
       modes="${modes,,}"
-      if [[ $modes == *" static "* ]]; then
-        args+=(--device "$dev" --mode static --color "$colour")
+      c=$colour
+      [[ $type == Keyboard ]] && c=$keyboard_colour
+      if [[ $type == Motherboard && $modes == *" direct "* ]]; then
+        args+=(--device "$dev" --mode direct --color "$c")
+      elif [[ $modes == *" static "* ]]; then
+        args+=(--device "$dev" --mode static --color "$c")
       elif [[ $modes == *" direct "* ]]; then
-        args+=(--device "$dev" --mode direct --color "$colour")
+        args+=(--device "$dev" --mode direct --color "$c")
       elif [[ $modes == *" custom "* ]]; then
-        args+=(--device "$dev" --mode custom --color "$colour")
+        args+=(--device "$dev" --mode custom --color "$c")
       else
         echo "openrgb-stylix: device $dev has no Static, Direct or Custom, skipped" >&2
       fi
