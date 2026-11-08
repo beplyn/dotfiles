@@ -8,6 +8,13 @@
   qbittorrent.openWebUI = false;
   gaming.enable = true;
   llm.enable = true;
+  llm.extraModels =
+  [
+    "qwen2.5-coder:32b-instruct-q4_K_M"
+    "mistral-small:24b"
+  ];
+  # 7900 XTX by uuid, not index: the iGPU is in the ROCm list too
+  llm.gpu = "GPU-9fac555f6cbbbf7b";
   toolbox.enable = true;
   rgb.enable = true;
 
