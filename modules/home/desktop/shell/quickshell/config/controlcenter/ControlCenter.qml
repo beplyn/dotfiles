@@ -267,6 +267,14 @@ Panel {
         }
         Tile {
             Layout.fillWidth: true
+            icon: NightLight.active ? Icons.nightLight : Icons.daylight
+            title: "Night light"
+            subtitle: NightLight.active ? NightLight.temperature + " K" : "Off"
+            active: NightLight.active
+            onClicked: NightLight.toggle()
+        }
+        Tile {
+            Layout.fillWidth: true
             icon: Awake.active ? Icons.awake : Icons.idle
             title: "Stay awake"
             subtitle: Awake.active ? "On" : "Off"
