@@ -37,6 +37,11 @@ Singleton {
     readonly property string nightLight: g(0xF0594)
     readonly property string daylight: g(0xF05A8)
 
+    // screen share picker
+    readonly property string screenShare: g(0xF1483)
+    readonly property string monitor: g(0xF0379)
+    readonly property string window: g(0xF05B6)
+
     // audio
     readonly property var volume: [0xF026, 0xF027, 0xF028].map(c => g(c))
     readonly property string muted: g(0xF075F)
