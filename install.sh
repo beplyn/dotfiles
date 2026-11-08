@@ -155,7 +155,10 @@ if $regenerate; then
   sed -i '/^\s*encryption\.\(enable\|device\)\s*=/d' "$host_dir/default.nix"
   if (( ${#luks[@]} == 1 )); then
     luks_dev="$(sed -n 's/.*\.device\s*=\s*"\([^"]*\)".*/\1/p' <<< "${luks[0]}")"
+    luks_name="$(sed -n 's/.*luks\.devices\."\?\([^".]*\)"\?\.device.*/\1/p' <<< "${luks[0]}")"
     generated="$(grep -vE '^\s*boot\.initrd\.luks\.devices\.' <<< "$generated")"
+    # the module opens it as cryptroot, so the root fs must mount that
+    generated="$(sed "s|/dev/mapper/$luks_name\"|/dev/mapper/cryptroot\"|" <<< "$generated")"
     sed -i "/networking\.hostName/a\\  encryption.device = \"$luks_dev\";" "$host_dir/default.nix"
     info "LUKS root detected ($luks_dev), using the themed unlock prompt"
   else
