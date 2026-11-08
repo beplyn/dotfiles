@@ -32,4 +32,9 @@
     pkgs.hyprshutdown
     pkgs.hyprland-qtutils
   ];
+
+  # radeonsi's compressed (DCC) modifiers can't be fixated for Chromium's
+  # screen share streams, which xdph then drops; plain ones work. Only for the
+  # portal, the desktop keeps DCC
+  systemd.user.services.xdg-desktop-portal-hyprland.environment.AMD_DEBUG = "nodcc";
 }
