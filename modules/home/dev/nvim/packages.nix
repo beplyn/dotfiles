@@ -7,4 +7,7 @@
     fd
     ripgrep
   ];
+
+  # Discord Rich Presence (packaged in nixpkgs as cord-nvim)
+  programs.nixvim.extraPlugins = [ pkgs.vimPlugins.cord-nvim ];
 }
