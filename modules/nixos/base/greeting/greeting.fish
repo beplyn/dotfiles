@@ -57,11 +57,14 @@ function __greeting
   and echo "  $(set_color @red@)$(set_color normal)  $(string join -- $dot $warn)"
 end
 
-# skip in nvim/yazi
+# skip in nvim/yazi; the banner only rolls when the fetch doesn't show
 if not set -q NVIM; and not set -q YAZI_LEVEL
   set -l marker $XDG_RUNTIME_DIR/fish-greeted
   if set -q SSH_CONNECTION; or not test -e $marker; or test (random 1 @chance@) -eq 1
     touch $marker 2>/dev/null
     __greeting
+  else if test (random 1 @bannerChance@) -eq 1
+    set -l font (random choice block simpleBlock simple 3d simple3d chrome shade slick grid pallet tiny)
+    @cfonts@ "nix btw" -f $font -g "#@accent@,#@blue@"
   end
 end
