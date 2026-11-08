@@ -35,6 +35,13 @@ let
     text = builtins.readFile ./eap-connect.sh;
   };
 
+  sharePicker = pkgs.writeShellApplication
+  {
+    name = "share-picker";
+    runtimeInputs = [ config.programs.quickshell.package pkgs.coreutils ];
+    text = builtins.readFile ./share-picker.sh;
+  };
+
   cavaConfig = (pkgs.formats.ini { }).generate "haku-cava.conf"
   {
     general =
@@ -138,6 +145,8 @@ let
     # stay awake (services/Awake.qml)
     systemdInhibit = lib.getExe' osConfig.systemd.package "systemd-inhibit";
     sleep = lib.getExe' pkgs.coreutils "sleep";
+    # answers share-picker's fifo (services/SharePicker.qml)
+    tee = lib.getExe' pkgs.coreutils "tee";
   };
 
   # SIGRTMIN+n to refresh a waybar module
@@ -221,6 +230,13 @@ in
     activeConfig = "haku";
     systemd.enable = true;
   };
+
+  # xdph asks the shell what to share (sharepicker/SharePickerMenu.qml)
+  xdg.configFile."hypr/xdph.conf".text = ''
+    screencopy {
+      custom_picker_binary = ${lib.getExe sharePicker}
+    }
+  '';
 
   # reload on config change
   systemd.user.services.quickshell.Unit.X-Restart-Triggers = [ "${shellConfig}" ];
