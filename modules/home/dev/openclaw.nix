@@ -8,19 +8,25 @@
 let
   llm = osConfig.llm;
   searxUrl = "http://127.0.0.1:${toString llm.searxPort}";
+
+  # config is a store symlink, nix mode keeps openclaw from rewriting it;
+  # set on the binary so it holds without a fresh login
+  openclaw = pkgs.symlinkJoin
+  {
+    name = "openclaw-nix-mode";
+    paths = [ pkgs.openclaw ];
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      for b in $out/bin/*; do
+        wrapProgram $b --set OPENCLAW_NIX_MODE 1
+      done
+    '';
+  };
 in
 lib.mkIf llm.enable
 {
   # agent on local Ollama; SearXNG for web_search
-  home.packages = [ pkgs.openclaw ];
-
-  home.sessionVariables =
-  {
-    # config is a store symlink, nix mode keeps openclaw from rewriting it
-    OPENCLAW_NIX_MODE = "1";
-    OLLAMA_API_KEY = "ollama-local";
-    SEARXNG_BASE_URL = searxUrl;
-  };
+  home.packages = [ openclaw ];
 
   # searxng ships in the package but not as a bundled plugin
   home.file.".openclaw/extensions/searxng".source = "${pkgs.openclaw}/lib/openclaw/extensions/searxng";
