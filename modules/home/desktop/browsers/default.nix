@@ -144,6 +144,7 @@ in
   [
     inputs.zen-browser.homeModules.beta
     ./sine.nix
+    ./tor.nix
   ];
 
   # Zen: default browser
