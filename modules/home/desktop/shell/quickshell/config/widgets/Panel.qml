@@ -32,7 +32,11 @@ PanelWindow {
 
     WlrLayershell.namespace: "haku-" + name
     WlrLayershell.layer: WlrLayer.Top
-    WlrLayershell.keyboardFocus: open ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
+    // Hyprland pins the pointer to an exclusive layer too, so waybar would
+    // go dead while a panel is open; on-demand still takes focus on map.
+    WlrLayershell.keyboardFocus: !open ? WlrKeyboardFocus.None
+        : Wm.currentCompositor === "hyprland" ? WlrKeyboardFocus.OnDemand
+        : WlrKeyboardFocus.Exclusive
 
     mask: Region {
         item: root.open ? catcher : null
