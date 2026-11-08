@@ -37,4 +37,7 @@ if [ "${#args[@]}" -eq 0 ]; then
   echo "openrgb-stylix: no devices to paint" >&2
   exit 0
 fi
-exec openrgb --nodetect "${args[@]}"
+openrgb --nodetect "${args[@]}"
+
+# 1.0 keeps profiles on the server; the GUI loads this one at login
+exec openrgb --nodetect --save-profile stylix
