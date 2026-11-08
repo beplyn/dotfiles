@@ -124,7 +124,7 @@ local night = false
 function haku.night_light(temperature)
     return function()
         night = not night
-        hl.exec_cmd(night and ("hyprctl hyprsunset temperature " .. temperature) or "hyprctl hyprsunset identity")
+        hl.exec_cmd(night and ("hyprctl hyprsunset temperature " .. temperature) or "hyprctl hyprsunset temperature 6000")
     end
 end
 
