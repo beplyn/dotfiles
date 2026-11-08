@@ -33,6 +33,8 @@ lib.mkIf llm.enable
 
   home.file.".openclaw/openclaw.json".text = builtins.toJSON
   {
+    # gateway refuses to start without this; defaults to loopback, no token needed
+    gateway.mode = "local";
     models.providers.ollama =
     {
       # native api: /v1 breaks tool calling
