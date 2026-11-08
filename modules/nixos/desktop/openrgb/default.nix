@@ -11,14 +11,14 @@
 let
   cfg = config.services.hardware.openrgb;
   # the pastel accents wash out to near white on LEDs, so darker, saturated
-  # takes on them
+  # takes on them; keyboards get their own, brighter one
   colors =
   {
-    catppuccin = "5a0fb4"; # dark purple
-    nord = "0a2a9c"; # dark blue
-    gruvbox = "b04a08"; # orange-brown
+    catppuccin = { main = "3f0078"; keyboard = "8800ff"; }; # dark purple
+    nord = { main = "0a2a9c"; keyboard = "0a2a9c"; }; # dark blue
+    gruvbox = { main = "b04a08"; keyboard = "b04a08"; }; # orange-brown
   };
-  accent = colors.${themeName};
+  inherit (colors.${themeName}) main keyboard;
 
   openrgb-stylix = pkgs.writeShellApplication
   {
@@ -48,12 +48,12 @@ in
       wantedBy = [ "openrgb.service" ];
       after = [ "openrgb.service" ];
       bindsTo = [ "openrgb.service" ];
-      restartTriggers = [ accent ];
+      restartTriggers = [ main keyboard ];
       serviceConfig =
       {
         Type = "oneshot";
         RemainAfterExit = true;
-        ExecStart = "${lib.getExe openrgb-stylix} ${accent}";
+        ExecStart = "${lib.getExe openrgb-stylix} ${main} ${keyboard}";
         DynamicUser = true;
         # OpenRGB keeps a config dir in $HOME
         StateDirectory = "openrgb-stylix";
