@@ -101,6 +101,9 @@ ColumnLayout {
         MonthGrid {
             id: grid
             Layout.fillWidth: true
+            // MonthGrid doesn't size itself from its delegates; without
+            // this the layout squashes every row to nothing.
+            Layout.preferredHeight: 30 * 6 + spacing * 5
             month: root.month.getMonth()
             year: root.month.getFullYear()
             locale: Qt.locale()
