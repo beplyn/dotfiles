@@ -2,6 +2,8 @@
 Defaults passprompt="󰌾 password for %p: "
 Defaults badpass_message=" wrong password"
 Defaults lecture=never
+# a * per character, the TOTP code included; shows the length, not the text
+Defaults pwfeedback
 
 # root commands only from root-owned paths, never ~/.local/bin or a caller's PATH
 Defaults secure_path="/run/wrappers/bin:/run/current-system/sw/bin:/etc/profiles/per-user/@username@/bin"
@@ -13,7 +15,6 @@ Defaults timestamp_type=tty
 Defaults timestamp_timeout=5
 Defaults passwd_tries=3
 Defaults passwd_timeout=1
-Defaults !pwfeedback
 Defaults !visiblepw
 Defaults !rootpw
 Defaults !targetpw
