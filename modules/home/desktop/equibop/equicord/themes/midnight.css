@@ -5,30 +5,51 @@
 
 @import url('https://refact0r.github.io/midnight-discord/build/midnight.css');
 
-:root
+body
 {
     --font: 'gg sans';
     --code-font: '@mono@';
-    --corner-text: '@corner@';
 
-    /* status indicators and window controls */
-    --online-indicator: @success@;
-    --dnd-indicator: @error@;
-    --idle-indicator: @warning@;
-    --streaming-indicator: @purple@;
+    --gap: 12px;
+    --divider-thickness: 4px;
+    --border-thickness: 1px;
 
-    /* accents */
-    --accent-1: @blue@;                                           /* links */
-    --accent-2: @accent@;                                         /* unread/mention elements, active icons */
-    --accent-3: @accent@;                                         /* accent buttons */
-    --accent-4: color-mix(in srgb, @accent@ 85%, white);          /* accent buttons hovered */
-    --accent-5: color-mix(in srgb, @accent@ 80%, black);          /* accent buttons clicked */
-    --mention: color-mix(in srgb, @accent@ 10%, transparent);     /* mentions & mention messages */
-    --mention-hover: color-mix(in srgb, @accent@ 18%, transparent);
+    /* reduced motion in discord settings disables these too */
+    --animations: on;
+    --list-item-transition: 0.2s ease;
+    --dms-icon-svg-transition: 0.4s ease;
+    --border-hover-transition: 0.2s ease;
 
-    /* the second stop of every gradient */
-    --accent-alt: @blue@;
-    --accent-gradient: linear-gradient(135deg, var(--accent-3), var(--accent-alt));
+    --top-bar-height: var(--gap);
+    --top-bar-button-position: titlebar;
+    --top-bar-title-position: off;
+    --subtle-top-bar-title: off;
+
+    --custom-window-controls: on;
+    --window-control-size: 14px;
+
+    /* moon on the dms button, over a palette gradient */
+    --custom-dms-icon: custom;
+    --dms-icon-svg-url: url('https://refact0r.github.io/midnight-discord/assets/Font_Awesome_5_solid_moon.svg');
+    --dms-icon-svg-size: 90%;
+    --dms-icon-color-before: var(--icon-subtle);
+    --dms-icon-color-after: var(--white);
+    --custom-dms-background: color;
+    --dms-background-color: linear-gradient(70deg, @blue@, @purple@, @red@);
+
+    --background-image: off;
+    --transparency-tweaks: off;
+    --remove-bg-layer: off;
+    --panel-blur: off;
+
+    --custom-chatbar: off;
+    --chatbar-height: 47px;
+    --small-user-panel: on;
+}
+
+:root
+{
+    --colors: on;
 
     /* text */
     --text-0: @background@;                                       /* text on coloured elements */
@@ -43,34 +64,88 @@
     --bg-2: @surface@;                                            /* dark buttons */
     --bg-3: @background@;                                         /* spacing, secondary elements */
     --bg-4: color-mix(in srgb, @background@ 80%, black);          /* main background */
-    --hover: color-mix(in srgb, @accent@ 10%, @background@);
-    --active: color-mix(in srgb, @accent@ 20%, @background@);
+    --hover: color-mix(in srgb, @accent@ 10%, transparent);
+    --active: color-mix(in srgb, @accent@ 20%, transparent);
+    --active-2: color-mix(in srgb, @accent@ 30%, transparent);
     --message-hover: color-mix(in srgb, @foreground@ 4%, transparent);
 
-    --spacing: 12px;
+    /* accents */
+    --accent-1: @blue@;                                           /* links */
+    --accent-2: @accent@;                                         /* unread/mention elements, active icons */
+    --accent-3: @accent@;                                         /* accent buttons */
+    --accent-4: color-mix(in srgb, @accent@ 85%, white);          /* accent buttons hovered */
+    --accent-5: color-mix(in srgb, @accent@ 80%, black);          /* accent buttons clicked */
+    --accent-new: @red@;                                          /* mute/deafen and other normally red bits */
+    --mention: linear-gradient(to right, color-mix(in srgb, @accent@ 14%, transparent) 40%, transparent);
+    --mention-hover: linear-gradient(to right, color-mix(in srgb, @accent@ 22%, transparent) 40%, transparent);
+    --reply: linear-gradient(to right, color-mix(in srgb, @blue@ 10%, transparent) 40%, transparent);
+    --reply-hover: linear-gradient(to right, color-mix(in srgb, @blue@ 16%, transparent) 40%, transparent);
 
-    /* reduced motion in discord settings disables all of these */
-    --list-item-transition: 0.2s ease;
-    --unread-bar-transition: 0.2s ease;
-    --moon-spin-transition: 0.4s ease;
-    --icon-spin-transition: 1s ease;
+    /* the second stop of every gradient */
+    --accent-alt: @blue@;
+    --accent-gradient: linear-gradient(135deg, var(--accent-3), var(--accent-alt));
 
-    --roundness-xl: 22px;
-    --roundness-l: 20px;
-    --roundness-m: 16px;
-    --roundness-s: 12px;
-    --roundness-xs: 10px;
-    --roundness-xxs: 8px;
+    /* status indicators */
+    --online: @success@;
+    --dnd: @error@;
+    --idle: @warning@;
+    --streaming: @purple@;
+    --offline: @muted@;
 
-    --discord-icon: none;
-    --moon-icon: block;
-    --moon-icon-url: url('https://upload.wikimedia.org/wikipedia/commons/c/c4/Font_Awesome_5_solid_moon.svg');
-    --moon-icon-size: auto;
+    --border-light: var(--hover);
+    --border: var(--active);
+    --border-hover: var(--active);
+    --button-border: color-mix(in srgb, @foreground@ 10%, transparent);
 
-    /* hue filters only fit one palette */
-    --login-bg-filter: saturate(0.3) brightness(0.4);
-    --green-to-accent-3-filter: none;
-    --blurple-to-accent-3-filter: none;
+    /* midnight's base ramps, 1 lightest */
+    --red-1: color-mix(in srgb, @red@ 80%, white);
+    --red-2: @red@;
+    --red-3: color-mix(in srgb, @red@ 90%, black);
+    --red-4: color-mix(in srgb, @red@ 80%, black);
+    --red-5: color-mix(in srgb, @red@ 70%, black);
+
+    --green-1: color-mix(in srgb, @green@ 80%, white);
+    --green-2: @green@;
+    --green-3: color-mix(in srgb, @green@ 90%, black);
+    --green-4: color-mix(in srgb, @green@ 80%, black);
+    --green-5: color-mix(in srgb, @green@ 70%, black);
+
+    --blue-1: color-mix(in srgb, @blue@ 80%, white);
+    --blue-2: @blue@;
+    --blue-3: color-mix(in srgb, @blue@ 90%, black);
+    --blue-4: color-mix(in srgb, @blue@ 80%, black);
+    --blue-5: color-mix(in srgb, @blue@ 70%, black);
+
+    --yellow-1: color-mix(in srgb, @yellow@ 80%, white);
+    --yellow-2: @yellow@;
+    --yellow-3: color-mix(in srgb, @yellow@ 90%, black);
+    --yellow-4: color-mix(in srgb, @yellow@ 80%, black);
+    --yellow-5: color-mix(in srgb, @yellow@ 70%, black);
+
+    --purple-1: color-mix(in srgb, @purple@ 80%, white);
+    --purple-2: @purple@;
+    --purple-3: color-mix(in srgb, @purple@ 90%, black);
+    --purple-4: color-mix(in srgb, @purple@ 80%, black);
+    --purple-5: color-mix(in srgb, @purple@ 70%, black);
+}
+
+/* muted mic, deafened headset: red tint instead of grey surface */
+body,
+.theme-dark:not(.custom-user-profile-theme),
+.theme-light:not(.custom-user-profile-theme)
+{
+    --control-critical-secondary-background-default: color-mix(in srgb, @red@ 18%, transparent);
+    --control-critical-secondary-background-hover: color-mix(in srgb, @red@ 28%, transparent);
+    --control-critical-secondary-background-active: color-mix(in srgb, @red@ 38%, transparent);
+    --control-critical-secondary-border-default: color-mix(in srgb, @red@ 35%, transparent);
+    --control-critical-secondary-border-hover: color-mix(in srgb, @red@ 50%, transparent);
+    --control-critical-secondary-border-active: color-mix(in srgb, @red@ 60%, transparent);
+    --control-critical-secondary-icon-default: @red@;
+    --control-critical-secondary-icon-hover: var(--red-1);
+    --control-critical-secondary-icon-active: var(--red-1);
+    --control-critical-secondary-text-default: @red@;
+    --control-critical-secondary-text-hover: var(--red-1);
+    --control-critical-secondary-text-active: var(--red-1);
 }
 
 ::selection
