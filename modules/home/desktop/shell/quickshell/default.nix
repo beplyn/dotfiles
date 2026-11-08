@@ -126,6 +126,8 @@ let
     lock = "${lib.getExe' pkgs.systemd "loginctl"} lock-session";
     loginctl = lib.getExe' pkgs.systemd "loginctl";
     brightnessctl = lib.getExe pkgs.brightnessctl;
+    # monitor brightness over DDC/CI, when there is no backlight
+    ddcutil = lib.getExe pkgs.ddcutil;
     mixer = lib.getExe pkgs.pavucontrol;
     wallpaper = lib.getExe pkgs.waypaper;
     systemctl = lib.getExe' osConfig.systemd.package "systemctl";

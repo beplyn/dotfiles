@@ -64,7 +64,7 @@ PanelWindow {
 
     Connections {
         target: Brightness
-        function onPercentChanged() { root.show("brightness") }
+        function onPercentChanged() { if (Brightness.ready) root.show("brightness") }
     }
 
     Rectangle {
