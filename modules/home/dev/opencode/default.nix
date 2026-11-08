@@ -13,6 +13,8 @@ in
   programs.opencode = lib.mkIf llm.enable
   {
     enable = true;
+    # search before guessing
+    rules = ./rules.md;
     settings =
     {
       model = "ollama/${llm.model}";
