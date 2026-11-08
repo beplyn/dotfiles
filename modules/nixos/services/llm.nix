@@ -40,6 +40,9 @@ in
 
   config = lib.mkIf cfg.enable
   {
+    # openclaw is marked insecure for prompt injection with full system access
+    nixpkgs.config.allowInsecurePredicate = pkg: lib.getName pkg == "openclaw";
+
     services.ollama =
     {
       enable = true;
