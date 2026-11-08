@@ -461,15 +461,15 @@
       "locked": {
         "lastModified": 1792880342,
         "narHash": "sha256-ufTrHBsroaI843fBoBpV36LVQiHBiEVUvE7pVGdGYM4=",
-        "ref": "refs/heads/main",
+        "owner": "beplyn",
+        "repo": "nirimation",
         "rev": "e85f9968a2124f3bfd09bac70e05afea9e0f4ce2",
-        "revCount": 71,
-        "type": "git",
-        "url": "https://codeberg.org/beplyn/nirimation"
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "https://codeberg.org/beplyn/nirimation"
+        "owner": "beplyn",
+        "repo": "nirimation",
+        "type": "github"
       }
     },
     "nixpkgs": {
