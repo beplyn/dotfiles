@@ -11,6 +11,9 @@
   toolbox.enable = true;
   rgb.enable = true;
 
+  # the 7900 XTX; 13:00.0 is the 7800X3D's iGPU
+  displayGpu = "0000:03:00.0";
+
   # connector names unverified (niri msg outputs); 1080p sits left
   monitors =
   [

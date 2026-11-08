@@ -87,9 +87,17 @@ in
     };
   };
 
-  # sway instead of the module's cage: picks outputs, and cage froze
-  services.greetd.settings.default_session.command =
-    "${pkgs.dbus}/bin/dbus-run-session ${lib.getExe config.programs.sway.package} --config ${swayConfig}";
+  # stable name for the monitors' GPU; WLR_DRM_DEVICES splits on ':', so no by-path link
+  services.udev.extraRules = lib.mkIf (config.displayGpu != null) ''
+    SUBSYSTEM=="drm", KERNEL=="card[0-9]*", KERNELS=="${config.displayGpu}", SYMLINK+="dri/display"
+  '';
+
+  # sway instead of the module's cage: picks outputs; only the monitors' GPU, since rendering
+  # on the iGPU and copying over can make outputs drop out
+  services.greetd.settings.default_session.command = lib.concatStringsSep " " (
+    [ "${pkgs.dbus}/bin/dbus-run-session" ]
+    ++ lib.optional (config.displayGpu != null) "${pkgs.coreutils}/bin/env WLR_DRM_DEVICES=/dev/dri/display"
+    ++ [ "${lib.getExe config.programs.sway.package} --config ${swayConfig}" ]);
 
   # appended to Stylix's ReGreet colours
   stylix.targets.regreet.extraCss = ''

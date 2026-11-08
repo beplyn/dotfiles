@@ -36,6 +36,14 @@ in
     description = "Outputs from left to right; each is placed after the previous one.";
   };
 
+  options.displayGpu = lib.mkOption
+  {
+    type = lib.types.nullOr lib.types.str;
+    default = null;
+    example = "0000:03:00.0";
+    description = "PCI address of the GPU the monitors are plugged into, when there are several; linked as /dev/dri/display.";
+  };
+
   # battery and backlight widgets in the shell
   options.laptop.enable = lib.mkEnableOption "laptop-only shell widgets";
 }
