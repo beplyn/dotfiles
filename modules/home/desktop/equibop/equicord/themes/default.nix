@@ -1,10 +1,9 @@
-{ config, subst, themeName, ... }:
+{ config, subst, ... }:
 
 let
   vars = config.themes.palette //
   {
     mono = config.stylix.fonts.monospace.name;
-    corner = themeName;
   };
 in
 {
