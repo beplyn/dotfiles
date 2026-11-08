@@ -1,0 +1,117 @@
+diff --git a/src/gui/component.rs b/src/gui/component.rs
+index 20e4b5b..2a7fac4 100644
+--- a/src/gui/component.rs
++++ b/src/gui/component.rs
+@@ -368,9 +368,11 @@ impl AsyncComponent for Greeter {
+         if model.updates.changed(Updates::monitor()) {
+             if let Some(monitor) = &model.updates.monitor {
+                 widgets.window.fullscreen_on_monitor(monitor);
+-                // For some reason, the GTK settings are reset when changing monitors, so re-apply them.
+-                setup_settings(self, &widgets.window);
++            } else {
++                widgets.window.fullscreen();
+             }
++            // For some reason, the GTK settings are reset when changing monitors, so re-apply them.
++            setup_settings(self, &widgets.window);
+         }
+     }
+ 
+@@ -403,7 +405,15 @@ impl AsyncComponent for Greeter {
+             warn!("Couldn't cancel greetd session: {err}");
+         };
+ 
+-        model.choose_monitor(widgets.ui.display().name().as_str(), &sender);
++        let display = widgets.ui.display();
++        model.choose_monitor(&display);
++        // Outputs come and go (hotplug, modesets); follow them instead of sticking to a dead one.
++        {
++            let sender = sender.clone();
++            display.monitors().connect_items_changed(move |_, _, _, _| {
++                sender.oneshot_command(async { CommandMsg::MonitorsChanged })
++            });
++        }
+         if let Some(monitor) = &model.updates.monitor {
+             // The window needs to be manually fullscreened, since the monitor is `None` at widget
+             // init.
+@@ -514,8 +524,10 @@ impl AsyncComponent for Greeter {
+             Self::CommandOutput::HandleGreetdResponse(response) => {
+                 self.handle_greetd_response(&sender, response).await
+             }
+-            Self::CommandOutput::MonitorRemoved(display_name) => {
+-                self.choose_monitor(display_name.as_str(), &sender)
++            Self::CommandOutput::MonitorsChanged => {
++                if let Some(display) = gtk::gdk::Display::default() {
++                    self.choose_monitor(&display)
++                }
+             }
+         };
+     }
+diff --git a/src/gui/messages.rs b/src/gui/messages.rs
+index ad1a756..f65a83c 100644
+--- a/src/gui/messages.rs
++++ b/src/gui/messages.rs
+@@ -67,7 +67,6 @@ pub enum CommandMsg {
+     ClearNotif(u32),
+     /// Handle a response received from greetd
+     HandleGreetdResponse(Response),
+-    /// Notify the greeter that a monitor was removed.
+-    // The Gstring is the name of the display.
+-    MonitorRemoved(GString),
++    /// Notify the greeter that a monitor was added or removed.
++    MonitorsChanged,
+ }
+diff --git a/src/gui/model.rs b/src/gui/model.rs
+index c43d412..2e61067 100644
+--- a/src/gui/model.rs
++++ b/src/gui/model.rs
+@@ -147,40 +147,22 @@ impl Greeter {
+         }
+     }
+ 
+-    /// Make the greeter full screen over the first monitor.
+-    #[instrument(skip(self, sender))]
+-    pub(super) fn choose_monitor(
+-        &mut self,
+-        display_name: &str,
+-        sender: &AsyncComponentSender<Self>,
+-    ) {
+-        let display = match Display::open(Some(display_name)) {
+-            Some(display) => display,
+-            None => {
+-                error!("Couldn't get display with name: {display_name}");
+-                return;
+-            }
+-        };
+-
+-        let mut chosen_monitor = None;
+-        for monitor in display
++    /// Make the greeter full screen over the first monitor of the window's own display.
++    ///
++    /// Opening a second connection by name fails once the compositor recreates an output, which
++    /// left the greeter stuck on the vanished monitor.
++    #[instrument(skip_all)]
++    pub(super) fn choose_monitor(&mut self, display: &Display) {
++        let chosen_monitor = display
+             .monitors()
+             .into_iter()
+             .filter_map(|item| {
+                 item.ok()
+                     .and_then(|object| object.downcast::<Monitor>().ok())
+             })
+-            .filter(Monitor::is_valid)
+-        {
+-            let sender = sender.clone();
+-            monitor.connect_invalidate(move |monitor| {
+-                let display_name = monitor.display().name();
+-                sender.oneshot_command(async move { CommandMsg::MonitorRemoved(display_name) })
+-            });
+-            if chosen_monitor.is_none() {
+-                // Choose the first monitor.
+-                chosen_monitor = Some(monitor);
+-            }
++            .find(Monitor::is_valid);
++        if chosen_monitor.is_none() {
++            warn!("No monitor to full-screen on; leaving it to the compositor");
+         }
+ 
+         self.updates.set_monitor(chosen_monitor);

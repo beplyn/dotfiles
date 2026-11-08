@@ -21,7 +21,8 @@ let
 
   regreet = pkgs.regreet.overrideAttrs (old:
   {
-    patches = (old.patches or [ ]) ++ [ ./regreet-layout.patch ];
+    # monitors: follow outputs as they come and go instead of freezing on a vanished one
+    patches = (old.patches or [ ]) ++ [ ./regreet-layout.patch ./regreet-monitors.patch ];
   });
 
   # primary at its mode, the rest off; no monitors (VMs): sway's default
