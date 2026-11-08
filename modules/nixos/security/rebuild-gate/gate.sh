@@ -21,14 +21,35 @@ themes=(@themes@)
 secrets=(@secrets@)
 totpDone=
 
-die() {
-  log "$*"
-  exit 1
+# a nerd font glyph leads on a terminal only; the journal and pipes get the bare text
+mark() {
+  if [ -t 2 ]; then
+    printf '\e[%sm%s\e[0m %s\n' "$1" "$2" "$3" >&2
+  else
+    printf '%s\n' "$3" >&2
+  fi
+}
+say() { mark 34  "$*"; }
+warn() { mark 33  "$*"; }
+err() { mark 31  "$*"; }
+if [ -t 2 ]; then
+  key=$'\e[35m'""$'\e[0m '
+  ask=$'\e[35m'""$'\e[0m '
+fi
+
+journal() {
+  logger -t rebuild-gate -p auth.notice -- "$*" 2>/dev/null || true
 }
 
 log() {
-  echo "$*" >&2
-  logger -t rebuild-gate -p auth.notice -- "$*" 2>/dev/null || true
+  say "$*"
+  journal "$*"
+}
+
+die() {
+  err "$*"
+  journal "$*"
+  exit 1
 }
 
 has_tty() {
@@ -68,14 +89,14 @@ totp_ok() {
   local code secret now off step last=0 used="@keysDir@/totp-step" failed="@keysDir@/totp-failed"
   [ -n "$totpDone" ] && return
   if [ ! -s "$seed" ]; then
-    echo "no TOTP seed at $seed; enrol one with: sudo rebuild-gate init" >&2
+    err "no TOTP seed at $seed; enrol one with: sudo rebuild-gate init"
     return 1
   fi
   if [ -e "$failed" ] && [ $(( $(date +%s) - $(stat -c %Y "$failed") )) -lt 60 ]; then
-    echo "a TOTP code failed less than a minute ago, try again later" >&2
+    warn "a TOTP code failed less than a minute ago, try again later"
     return 1
   fi
-  read -rsp "TOTP code: " code </dev/tty || code=
+  read -rsp "${key}TOTP code: " code </dev/tty || code=
   echo >&2
   secret="$(head -n1 "$seed")"
   now="$(date +%s)"
@@ -94,7 +115,8 @@ totp_ok() {
     done
   fi
   touch "$failed"
-  log "wrong or already used TOTP code"
+  err "wrong or already used TOTP code"
+  journal "wrong or already used TOTP code"
   return 1
 }
 
@@ -123,7 +145,7 @@ import_key() {
   local paste type blob rest line='' fpr answer
   install -d -m 0700 "@keysDir@" "$GNUPGHOME"
   paste="$(mktemp)"
-  echo "Paste the master public key: the ssh-... line from the .pub, or the whole PGP PUBLIC KEY BLOCK (empty to skip)." >&2
+  say "Paste the master public key: the ssh-... line from the .pub, or the whole PGP PUBLIC KEY BLOCK (empty to skip)."
   read_paste </dev/tty >"$paste"
   drain_tty
 
@@ -132,30 +154,30 @@ import_key() {
     rm -f "$paste"
     return 1
   elif grep -q PRIVATE "$paste"; then
-    echo "that is a private key: it stays on the stick, paste the public one" >&2
+    err "that is a private key: it stays on the stick, paste the public one"
     rm -f "$paste"
     return 1
   elif [[ "$type" =~ ^(ssh-|ecdsa-|sk-) ]]; then
     line="master namespaces=\"git\" $type $blob"
     if ! fpr="$(ssh-keygen -l -f /dev/stdin <<<"$type $blob" 2>/dev/null)"; then
-      echo "not an SSH public key" >&2
+      err "not an SSH public key"
       rm -f "$paste"
       return 1
     fi
-    echo "SSH key: $fpr" >&2
-    echo "compare with \`ssh-keygen -lf <key>.pub\` on the workstation" >&2
+    say "SSH key: $fpr"
+    say "compare with \`ssh-keygen -lf <key>.pub\` on the workstation"
   elif [ "$(gpg --show-keys --with-colons "$paste" 2>/dev/null | grep -c '^pub:')" -eq 1 ] \
       && ! gpg --show-keys --with-colons "$paste" 2>/dev/null | grep -q '^sec:'; then
     fpr="$(gpg --show-keys --with-colons "$paste" | awk -F: '$1 == "fpr" { print $10; exit }')"
-    echo "GPG key: $fpr ($(gpg --show-keys --with-colons "$paste" | awk -F: '$1 == "uid" { print $10; exit }'))" >&2
-    echo "compare with \`gpg --fingerprint\` on the workstation" >&2
+    say "GPG key: $fpr ($(gpg --show-keys --with-colons "$paste" | awk -F: '$1 == "uid" { print $10; exit }'))"
+    say "compare with \`gpg --fingerprint\` on the workstation"
   else
-    echo "neither one SSH public key nor one GPG public key" >&2
+    err "neither one SSH public key nor one GPG public key"
     rm -f "$paste"
     return 1
   fi
 
-  read -rp "Same fingerprint as on the workstation? [y/N] " answer </dev/tty || answer=
+  read -rp "${ask}Same fingerprint as on the workstation? [y/N] " answer </dev/tty || answer=
   if [[ "$answer" != [yY]* ]]; then
     rm -f "$paste"
     return 1
@@ -216,9 +238,9 @@ case "${1:-}" in
     git -C "$repo" cat-file -e "$rev^{commit}" 2>/dev/null || die "$rev never reached the gate"
 
     if ! have_key; then
-      echo "No master key on @hostName@ yet; importing one takes a TOTP code." >&2
+      warn "No master key on @hostName@ yet; importing one takes a TOTP code."
       if ! { totp_ok && import_key; }; then
-        echo "still no master key" >&2
+        err "still no master key"
       fi
     fi
 
@@ -230,7 +252,7 @@ case "${1:-}" in
       else
         why="not signed by the master key"
       fi
-      echo "$(describe "$rev"): $why. A TOTP code deploys it anyway." >&2
+      warn "$(describe "$rev"): $why. A TOTP code deploys it anyway."
       totp_ok || die "not deploying $rev"
       log "deploying $(describe "$rev") on a TOTP code ($why)"
     fi
@@ -245,7 +267,7 @@ case "${1:-}" in
     git -C "$repo" fetch -q --no-tags "$remote" "+refs/heads/@branch@:refs/remotes/origin/@branch@"
     rev="$(git -C "$repo" rev-parse "refs/remotes/origin/@branch@")"
     if [ "$rev" = "$(git -C "$repo" rev-parse -q --verify "$deployed" || true)" ]; then
-      echo "@branch@ is at the deployed $rev"
+      say "@branch@ is at the deployed $rev"
       exit 0
     fi
     have_key || die "no master key; import it with: sudo rebuild-gate init"
@@ -260,18 +282,18 @@ case "${1:-}" in
     has_tty || die "init is interactive: ssh -t @hostName@ sudo rebuild-gate init"
     lock
     if [ -s "$seed" ]; then
-      echo "TOTP seed already at $seed (delete it to enrol a new one)"
+      say "TOTP seed already at $seed (delete it to enrol a new one)"
     else
-      echo "Enrolling the TOTP seed: scan the QR code, then confirm a code."
+      say "Enrolling the TOTP seed: scan the QR code, then confirm a code."
       install -d -m 0700 "$(dirname "$seed")"
       google-authenticator -t -d -f -r 3 -R 30 -w 3 -e 5 \
         -l "@username@@@hostName@" -i "@hostName@" -s "$seed" </dev/tty
       chmod 0600 "$seed"
-      echo "Keep the emergency scratch codes above offline; they work for sudo, not for the gate."
+      warn "Keep the emergency scratch codes above offline; they work for sudo, not for the gate."
       log "TOTP seed enrolled"
     fi
     if have_key; then
-      echo "master key already imported (delete $signers or $GNUPGHOME to replace it)"
+      say "master key already imported (delete $signers or $GNUPGHOME to replace it)"
     else
       import_key || die "no master key imported"
     fi
