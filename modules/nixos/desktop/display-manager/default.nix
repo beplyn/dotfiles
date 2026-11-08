@@ -1,8 +1,9 @@
-# greetd + ReGreet in cage, Stylix-themed; patched layout (clock top right, avatar and session picker on the card)
+# greetd + ReGreet in sway, Stylix-themed; patched layout (clock top right, avatar and session picker on the card)
 {
   config,
   lib,
   pkgs,
+  subst,
   username,
   ...
 }:
@@ -17,6 +18,25 @@ let
     magick ${config.stylix.image} -resize 1920x1080^ -filter Gaussian -blur 0x20 -level 0%,100%,0.85 "png24:$out"
   '';
   snowflake = "${pkgs.nixos-icons}/share/icons/hicolor/256x256/apps/nix-snowflake.png";
+
+  regreet = pkgs.regreet.overrideAttrs (old:
+  {
+    patches = (old.patches or [ ]) ++ [ ./regreet-layout.patch ];
+  });
+
+  # primary at its mode, the rest off; no monitors (VMs): sway's default
+  primary = lib.findFirst (m: m.primary) (lib.head (config.monitors ++ [ null ])) config.monitors;
+  output = m:
+    if m == primary
+    then "output ${m.name} mode ${toString m.width}x${toString m.height}@${toString m.refresh}Hz"
+    else "output ${m.name} disable";
+  swayConfig = pkgs.writeText "greeter-sway.conf" (subst
+  {
+    outputs = lib.concatMapStringsSep "\n" output config.monitors;
+    layout = config.services.xserver.xkb.layout;
+    regreet = lib.getExe regreet;
+    sway = config.programs.sway.package;
+  } (builtins.readFile ./greeter-sway.conf));
 in
 {
   # rebuild fills these (greeter can't read homes); Stylix wallpaper and snowflake until then
@@ -31,10 +51,7 @@ in
   services.displayManager.regreet =
   {
     enable = true;
-    package = pkgs.regreet.overrideAttrs (old:
-    {
-      patches = (old.patches or [ ]) ++ [ ./regreet-layout.patch ];
-    });
+    package = regreet;
     settings =
     {
       skip_selection = true;
@@ -68,6 +85,10 @@ in
       };
     };
   };
+
+  # sway instead of the module's cage: picks outputs, and cage froze
+  services.greetd.settings.default_session.command =
+    "${pkgs.dbus}/bin/dbus-run-session ${lib.getExe config.programs.sway.package} --config ${swayConfig}";
 
   # appended to Stylix's ReGreet colours
   stylix.targets.regreet.extraCss = ''
