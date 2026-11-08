@@ -13,6 +13,10 @@ let
 
   theme = import ./recolor.nix { inherit lib subst; palette = p; };
   zenTheme = "${inputs.catppuccin-zen}/themes/Mocha/Mauve";
+  # upstream's `background` shorthand on preferences buttons wipes Sine's icon images
+  zenContent = pkgs.writeText "userContent.css" (lib.replaceStrings
+    [ "background: #313244 !important;" ] [ "background-color: #313244 !important;" ]
+    (builtins.readFile "${zenTheme}/userContent.css"));
 
   # AMO slug -> addon id; force-installed from AMO, auto-updating
   addons =
@@ -180,7 +184,7 @@ in
       };
       # upstream catppuccin/zen-browser recoloured, local overrides after it
       userChrome = theme.catppuccin "${zenTheme}/userChrome.css" + theme.override ./zen/userChrome.css;
-      userContent = theme.catppuccin "${zenTheme}/userContent.css" + theme.override ./zen/userContent.css;
+      userContent = theme.catppuccin zenContent + theme.override ./zen/userContent.css;
     };
   };
   home.file."${config.programs.zen-browser.profilesPath}/default/chrome/zen-logo-mocha.svg".text =
