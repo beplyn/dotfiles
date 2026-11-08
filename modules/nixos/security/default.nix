@@ -2,5 +2,6 @@
   imports =
   [
     ./rebuild-gate
+    ./sudo
   ];
 }
