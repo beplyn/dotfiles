@@ -1,15 +1,13 @@
-{ themeName, ... }:
+{ config, subst, themeName, ... }:
 
 let
-  links =
+  vars = config.themes.palette //
   {
-    catppuccin = "https://catppuccin.github.io/discord/dist/catppuccin-mocha-mauve.theme.css";
-    nord = "https://raw.githubusercontent.com/refact0r/midnight-discord/refs/heads/master/themes/flavors/midnight-nord.theme.css";
-    gruvbox = ./gruvbox.css;
+    mono = config.stylix.fonts.monospace.name;
+    corner = themeName;
   };
-  selected = links.${themeName};
 in
 {
-  programs.equibop.equicord.extraQuickCss =
-    if builtins.isPath selected then builtins.readFile selected else ''@import url("${selected}");'';
+  # midnight-discord for every palette
+  programs.equibop.equicord.extraQuickCss = subst vars (builtins.readFile ./midnight.css);
 }

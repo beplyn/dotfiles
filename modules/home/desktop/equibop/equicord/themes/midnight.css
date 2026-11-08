@@ -1,0 +1,274 @@
+/* midnight-discord by refact0r, coloured from the palette.
+* https://github.com/refact0r/midnight-discord
+* palette placeholders are filled in by subst; discord must be in dark mode.
+*/
+
+@import url('https://refact0r.github.io/midnight-discord/build/midnight.css');
+
+:root
+{
+    --font: 'gg sans';
+    --code-font: '@mono@';
+    --corner-text: '@corner@';
+
+    /* status indicators and window controls */
+    --online-indicator: @success@;
+    --dnd-indicator: @error@;
+    --idle-indicator: @warning@;
+    --streaming-indicator: @purple@;
+
+    /* accents */
+    --accent-1: @blue@;                                           /* links */
+    --accent-2: @accent@;                                         /* unread/mention elements, active icons */
+    --accent-3: @accent@;                                         /* accent buttons */
+    --accent-4: color-mix(in srgb, @accent@ 85%, white);          /* accent buttons hovered */
+    --accent-5: color-mix(in srgb, @accent@ 80%, black);          /* accent buttons clicked */
+    --mention: color-mix(in srgb, @accent@ 10%, transparent);     /* mentions & mention messages */
+    --mention-hover: color-mix(in srgb, @accent@ 18%, transparent);
+
+    /* the second stop of every gradient */
+    --accent-alt: @blue@;
+    --accent-gradient: linear-gradient(135deg, var(--accent-3), var(--accent-alt));
+
+    /* text */
+    --text-0: @background@;                                       /* text on coloured elements */
+    --text-1: @brightest@;
+    --text-2: @bright@;                                           /* headings */
+    --text-3: @foreground@;                                       /* normal text */
+    --text-4: @subtext@;                                          /* icon buttons and channels */
+    --text-5: @muted@;                                            /* muted channels and timestamps */
+
+    /* backgrounds, darkest is the main one */
+    --bg-1: color-mix(in srgb, @surface@ 70%, @background@);      /* dark buttons clicked */
+    --bg-2: @surface@;                                            /* dark buttons */
+    --bg-3: @background@;                                         /* spacing, secondary elements */
+    --bg-4: color-mix(in srgb, @background@ 80%, black);          /* main background */
+    --hover: color-mix(in srgb, @accent@ 10%, @background@);
+    --active: color-mix(in srgb, @accent@ 20%, @background@);
+    --message-hover: color-mix(in srgb, @foreground@ 4%, transparent);
+
+    --spacing: 12px;
+
+    /* reduced motion in discord settings disables all of these */
+    --list-item-transition: 0.2s ease;
+    --unread-bar-transition: 0.2s ease;
+    --moon-spin-transition: 0.4s ease;
+    --icon-spin-transition: 1s ease;
+
+    --roundness-xl: 22px;
+    --roundness-l: 20px;
+    --roundness-m: 16px;
+    --roundness-s: 12px;
+    --roundness-xs: 10px;
+    --roundness-xxs: 8px;
+
+    --discord-icon: none;
+    --moon-icon: block;
+    --moon-icon-url: url('https://upload.wikimedia.org/wikipedia/commons/c/c4/Font_Awesome_5_solid_moon.svg');
+    --moon-icon-size: auto;
+
+    /* hue filters only fit one palette */
+    --login-bg-filter: saturate(0.3) brightness(0.4);
+    --green-to-accent-3-filter: none;
+    --blurple-to-accent-3-filter: none;
+}
+
+::selection
+{
+    color: var(--text-0);
+    background: color-mix(in srgb, @accent@ 70%, transparent);
+}
+
+/* selected chat/friend: accent gradient */
+.selected_f5eb4b,
+.selected_f6f816 .link_d8bfb3
+{
+    color: var(--text-0) !important;
+    background: var(--accent-gradient) !important;
+    box-shadow: 0 4px 16px color-mix(in srgb, @accent@ 30%, transparent);
+}
+
+.selected_f6f816 .link_d8bfb3 *
+{
+    color: var(--text-0) !important;
+    fill: var(--text-0) !important;
+}
+
+/* accent buttons */
+[class*="colorBrand"]:not([class*="Outlined"])
+{
+    background-image: var(--accent-gradient) !important;
+    color: var(--text-0) !important;
+}
+
+[class*="colorBrand"]:not([class*="Outlined"]):hover
+{
+    box-shadow: 0 0 14px color-mix(in srgb, @accent@ 40%, transparent);
+}
+
+/* unread and mention badges */
+[class*="numberBadge_"],
+[class*="textBadge_"]
+{
+    background: linear-gradient(135deg, @red@, @orange@) !important;
+    color: var(--text-0) !important;
+}
+
+/* servers glow on hover */
+[data-list-item-id^="guildsnav___"]
+{
+    transition: filter var(--list-item-transition);
+}
+
+[data-list-item-id^="guildsnav___"]:hover
+{
+    filter: drop-shadow(0 0 6px color-mix(in srgb, @accent@ 55%, transparent));
+}
+
+/* message bar: accent ring while typing */
+[class*="channelTextArea_"] [class*="scrollableContainer_"]
+{
+    transition: box-shadow var(--list-item-transition);
+}
+
+[class*="channelTextArea_"]:focus-within [class*="scrollableContainer_"]
+{
+    box-shadow:
+        0 0 0 1px color-mix(in srgb, @accent@ 55%, transparent),
+        0 0 20px color-mix(in srgb, @accent@ 15%, transparent);
+}
+
+/* hovered message: accent edge */
+li[id^="chat-messages-"] > div
+{
+    transition: box-shadow var(--list-item-transition);
+}
+
+li[id^="chat-messages-"] > div:hover
+{
+    box-shadow: inset 2px 0 0 var(--accent-3);
+}
+
+/* scrollbars */
+::-webkit-scrollbar-thumb
+{
+    background-color: color-mix(in srgb, @accent@ 35%, @surface@) !important;
+}
+
+::-webkit-scrollbar-thumb:hover
+{
+    background-color: color-mix(in srgb, @accent@ 60%, @surface@) !important;
+}
+
+@media (prefers-reduced-motion: reduce)
+{
+    [data-list-item-id^="guildsnav___"],
+    [class*="channelTextArea_"] [class*="scrollableContainer_"],
+    li[id^="chat-messages-"] > div
+    {
+        transition: none;
+    }
+}
+
+/* code blocks */
+code,
+pre,
+[class*="codeContainer_"],
+[class*="inlineCode_"]
+{
+    font-family: var(--code-font), monospace !important;
+}
+
+.hljs
+{
+    color: @foreground@;
+    background: @background@ !important;
+    border-color: color-mix(in srgb, @accent@ 25%, transparent) !important;
+}
+
+.hljs-deletion,
+.hljs-formula,
+.hljs-keyword,
+.hljs-link,
+.hljs-selector-tag
+{
+    color: @red@;
+}
+
+.hljs-built_in,
+.hljs-emphasis,
+.hljs-name,
+.hljs-quote,
+.hljs-strong,
+.hljs-title,
+.hljs-variable
+{
+    color: @blue@;
+}
+
+.hljs-attr,
+.hljs-params,
+.hljs-template-tag,
+.hljs-type
+{
+    color: @yellow@;
+}
+
+.hljs-code,
+.hljs-meta,
+.hljs-regexp,
+.hljs-selector-id,
+.hljs-template-variable
+{
+    color: @orange@;
+}
+
+.hljs-addition,
+.hljs-meta-string,
+.hljs-section,
+.hljs-selector-attr,
+.hljs-selector-class,
+.hljs-string,
+.hljs-symbol
+{
+    color: @green@;
+}
+
+.hljs-attribute,
+.hljs-bullet,
+.hljs-class,
+.hljs-function,
+.hljs-function .hljs-keyword,
+.hljs-meta-keyword,
+.hljs-selector-pseudo,
+.hljs-tag
+{
+    color: @cyan@;
+}
+
+.hljs-builtin-name,
+.hljs-doctag,
+.hljs-link_label,
+.hljs-literal,
+.hljs-number
+{
+    color: @purple@;
+}
+
+.hljs-comment
+{
+    color: @muted@;
+}
+
+.hljs-comment,
+.hljs-emphasis
+{
+    font-style: italic;
+}
+
+.hljs-section,
+.hljs-strong,
+.hljs-tag
+{
+    font-weight: bold;
+}
