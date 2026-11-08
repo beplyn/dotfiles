@@ -15,9 +15,9 @@ bold="${bold:-$regular}"
 
 # ascii, latin-1, arrows, bullets: the whole font would take seconds to load
 range=0x20-0x7E,0xA0-0xFF,0x2190-0x21FF,0x2022-0x2022
-grub-mkfont -n Maple -s 16 -r "$range" -o maple-16.pf2 "$regular"
-grub-mkfont -n Maple -s 20 -r "$range" -o maple-20.pf2 "$regular"
-grub-mkfont -n Maple -s 48 -r "$range" -o maple-bold-48.pf2 "$bold"
+grub-mkfont -n Maple -s @px16@ -r "$range" -o maple-16.pf2 "$regular"
+grub-mkfont -n Maple -s @px20@ -r "$range" -o maple-20.pf2 "$regular"
+grub-mkfont -n Maple -s @px48@ -r "$range" -o maple-bold-48.pf2 "$bold"
 
 # slice file name size corner: cut a square image into GRUB's nine styled-box parts
 slice() {
@@ -44,31 +44,31 @@ box() {
   slice box.png "$name" "$s" "$c"
 }
 
-# pill name colour: 8px bar centred in the 28px GRUB gives every progress bar
+# pill name colour: 8px bar centred in the 28px GRUB gives every progress bar (at 1080p)
 pill() {
-  magick -size 28x28 xc:none -fill "$2" -draw "roundrectangle 0,10 27,17 4,4" pill.png
-  slice pill.png "$1" 28 10
+  magick -size @px28@x@px28@ xc:none -fill "$2" -draw "roundrectangle 0,@px10@ $((@px28@ - 1)),@px17@ @px4@,@px4@" pill.png
+  slice pill.png "$1" @px28@ @px10@
 }
 
 # menu panel, selected entry, countdown bar, scrollbar
 # the selected box is drawn outside the item by its corner size
-box panel 96 22 "@mantle@d9" "@surface@" 2 24
-box select 40 10 "@accent@33" "@accent@" 2 10
+box panel @px96@ @px22@ "@mantle@d9" "@surface@" 2 @px24@
+box select @px40@ @px10@ "@accent@33" "@accent@" 2 @px10@
 # invisible, same border as select so every row is laid out alike
-box item 40 10 none none 0 10
+box item @px40@ @px10@ none none 0 @px10@
 pill track "@surface@"
 pill fill "@accent@"
-box thumb 12 3 "@muted@" none 0 3
+box thumb @px12@ @px3@ "@muted@" none 0 @px3@
 
-# background: diagonal gradient, dot grid, two-tone glowing snowflake, rainbow foot
-magick -size 1920x1080 -define gradient:angle=135 gradient:"@mantle@"-"@background@" bg.png
+# background at the boot screen's size: diagonal gradient, dot grid, two-tone glowing snowflake, rainbow foot
+magick -size @width@x@height@ -define gradient:angle=135 gradient:"@mantle@"-"@background@" bg.png
 magick -size 32x32 xc:none -fill "@surface@" -draw "circle 16,16 17.2,16" dot.png
-magick -size 1920x1080 tile:dot.png -channel A -evaluate multiply 0.55 +channel grid.png
+magick -size @width@x@height@ tile:dot.png -channel A -evaluate multiply 0.55 +channel grid.png
 
-magick -background none -density 600 "@snowflake@" -resize 760x760 \
+magick -background none -density 600 "@snowflake@" -resize @px760@x@px760@ \
   -channel RGB -colorspace gray -auto-level +level-colors "@blue@","@accent@" +channel flake.png
-magick flake.png -background none -gravity center -extent 1000x1000 \
-  -channel A -evaluate multiply 0.6 +channel -blur 0x60 glow.png
+magick flake.png -background none -gravity center -extent @px1000@x@px1000@ \
+  -channel A -evaluate multiply 0.6 +channel -blur 0x@px60@ glow.png
 magick flake.png -channel A -evaluate multiply 0.12 +channel dim.png
 magick flake.png -channel A -morphology EdgeIn Disk:2.5 -evaluate multiply 0.9 +channel edge.png
 
@@ -76,22 +76,22 @@ stripe=()
 for c in "@red@" "@orange@" "@yellow@" "@green@" "@cyan@" "@blue@" "@purple@"; do
   stripe+=(xc:"$c")
 done
-magick -size 275x5 "${stripe[@]}" +append -resize '1920x5!' stripe.png
+magick -size 275x5 "${stripe[@]}" +append -resize '@width@x5!' stripe.png
 
 # -geometry sticks, so every layer gets its own
 magick bg.png \
   grid.png -geometry +0+0 -composite \
-  glow.png -geometry +900+40 -composite \
-  dim.png -geometry +1020+160 -composite \
-  edge.png -geometry +1020+160 -composite \
-  stripe.png -geometry +0+1075 -composite \
+  glow.png -geometry +@px900@+@px40@ -composite \
+  dim.png -geometry +@px1020@+@px160@ -composite \
+  edge.png -geometry +@px1020@+@px160@ -composite \
+  stripe.png -geometry +0+$((@height@ - 5)) -composite \
   png24:background.png
 rm bg.png dot.png grid.png flake.png glow.png dim.png edge.png stripe.png
 
-# icon class glyph colour: Nerd Font glyph, trimmed and centred in 36px
+# icon class glyph colour: Nerd Font glyph, trimmed and centred in the icon box
 icon() {
   magick -background none -fill "$3" -font "$regular" -pointsize 96 label:"$2" \
-    -trim +repage -resize 30x30 -gravity center -extent 36x36 "PNG32:icons/$1.png"
+    -trim +repage -resize @px30@x@px30@ -gravity center -extent @px36@x@px36@ "PNG32:icons/$1.png"
 }
 icon nixos      $'\uf313' "@blue@"
 icon submenu    $'\uf1da' "@muted@"
