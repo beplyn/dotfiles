@@ -22,5 +22,6 @@
     ./debugging.nix
     ./keymaps.nix
     ./packages.nix
+    ./cord.nix
   ];
 }
