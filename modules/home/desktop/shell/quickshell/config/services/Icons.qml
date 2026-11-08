@@ -23,6 +23,7 @@ Singleton {
     readonly property string memory: g(0xEFC5)
     readonly property string temperature: g(0xF2C9)
     readonly property string uptime: g(0xF0150)
+    readonly property string today: g(0xF00F6)
     readonly property var backlight: [0xE38D, 0xE3D3, 0xE3D1, 0xE3CF, 0xE3CE, 0xE3CD, 0xE3CA, 0xE3C8, 0xE39B].map(c => g(c))
     readonly property string performance: g(0xF0E7)
     readonly property string balanced: g(0xF24E)
