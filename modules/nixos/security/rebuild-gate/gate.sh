@@ -37,6 +37,30 @@ if [ -t 2 ]; then
   ask=$'\e[35m'""$'\e[0m '
 fi
 
+# read_hidden VAR PROMPT: like read -s, but a * per character; backspace takes one back
+read_hidden() {
+  local -n into="$1"
+  local ch
+  into=
+  printf '%s' "$2" >&2
+  while IFS= read -rsn1 ch; do
+    case "$ch" in
+      '') break ;;
+      $'\x7f' | $'\b')
+        if [ -n "$into" ]; then
+          into="${into%?}"
+          printf '\b \b' >&2
+        fi
+        ;;
+      *)
+        into+="$ch"
+        printf '*' >&2
+        ;;
+    esac
+  done
+  echo >&2
+}
+
 journal() {
   logger -t rebuild-gate -p auth.notice -- "$*" 2>/dev/null || true
 }
@@ -96,8 +120,7 @@ totp_ok() {
     warn "a TOTP code failed less than a minute ago, try again later"
     return 1
   fi
-  read -rsp "${key}TOTP code: " code </dev/tty || code=
-  echo >&2
+  read_hidden code "${key}TOTP code: " </dev/tty
   secret="$(head -n1 "$seed")"
   now="$(date +%s)"
   [ -s "$used" ] && last="$(cat "$used")"

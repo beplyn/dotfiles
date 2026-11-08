@@ -13,6 +13,30 @@ upload() { printf '\e[36m\e[0m %s\n' "$*"; }
 key=$'\e[35m'""$'\e[0m'
 ask=$'\e[35m'""$'\e[0m'
 
+# read_hidden VAR PROMPT: like read -s, but a * per character; backspace takes one back
+read_hidden() {
+  local -n into="$1"
+  local ch
+  into=
+  printf '%s' "$2" >&2
+  while IFS= read -rsn1 ch; do
+    case "$ch" in
+      '') break ;;
+      $'\x7f' | $'\b')
+        if [ -n "$into" ]; then
+          into="${into%?}"
+          printf '\b \b' >&2
+        fi
+        ;;
+      *)
+        into+="$ch"
+        printf '*' >&2
+        ;;
+    esac
+  done
+  echo >&2
+}
+
 if [ "$(id -un)" != "@username@" ]; then
   err "run rebuild as @username@, not $(id -un)"
   exit 1
@@ -28,12 +52,13 @@ done
 if ! gpg --list-secret-keys "=$uid" >/dev/null 2>&1; then
   info "No GPG signing key for $uid, generating one."
   while true; do
-    read -rsp "$key GPG passphrase (empty for an unprotected key): " pass; echo
+    read_hidden pass "$key GPG passphrase (empty for an unprotected key): "
     if [ -z "$pass" ]; then
       read -rp "$ask Key will be stored unencrypted. Continue? [y/N] " insecure
       [[ "$insecure" == [yY]* ]] && break
     else
-      read -rsp "$key Repeat passphrase: " pass2; echo
+      read_hidden pass2 "$key Repeat passphrase: "
+      # shellcheck disable=SC2154 # set by read_hidden
       [ "$pass" = "$pass2" ] && break
       err "passphrases do not match"
     fi
@@ -57,7 +82,7 @@ fi
 
 # hosts without fj skip the token
 if @forgejo@ && ! fj -H @forgejoHost@ auth list 2>/dev/null | grep -qF "@forgejoHost@"; then
-  read -rsp "$key Forgejo token for @forgejoHost@ (empty to skip): " token; echo
+  read_hidden token "$key Forgejo token for @forgejoHost@ (empty to skip): "
   if [ -n "$token" ]; then
     printf '%s' "$token" | fj -H @forgejoHost@ auth add-token
   fi
@@ -100,7 +125,7 @@ host_secret() {
     fi
     sudo install -m 0400 -o root -g root "$value" "$path"
   else
-    read -rsp "$key $what for $path (empty to skip): " value; echo
+    read_hidden value "$key $what for $path (empty to skip): "
     if [ -z "$value" ]; then
       warn "$path still missing"
       return
