@@ -2,14 +2,23 @@
   config,
   lib,
   pkgs,
+  themeName,
   ...
 }:
 
-# OpenRGB server, every LED in the Stylix accent. The GUI connects to the
-# server and is a plain Qt app, so Stylix's qtct + Kvantum theme it
+# OpenRGB server, every LED in one deep colour per theme. The GUI connects to
+# the server and is a plain Qt app, so Stylix's qtct + Kvantum theme it
 let
   cfg = config.services.hardware.openrgb;
-  accent = lib.removePrefix "#" config.themes.palette.accent;
+  # the pastel accents wash out to near white on LEDs, so darker, saturated
+  # takes on them
+  colors =
+  {
+    catppuccin = "5a0fb4"; # dark purple
+    nord = "0a2a9c"; # dark blue
+    gruvbox = "b04a08"; # orange-brown
+  };
+  accent = colors.${themeName};
 
   openrgb-stylix = pkgs.writeShellApplication
   {
@@ -19,7 +28,7 @@ let
   };
 in
 {
-  options.rgb.enable = lib.mkEnableOption "OpenRGB with the LEDs in Stylix colours";
+  options.rgb.enable = lib.mkEnableOption "OpenRGB with the LEDs in the theme's colour";
 
   config = lib.mkIf config.rgb.enable
   {
@@ -35,7 +44,7 @@ in
     # once the server has detected everything; the scheme changes on rebuild
     systemd.services.openrgb-stylix =
     {
-      description = "Paint the RGB LEDs in the Stylix accent";
+      description = "Paint the RGB LEDs in the theme's colour";
       wantedBy = [ "openrgb.service" ];
       after = [ "openrgb.service" ];
       bindsTo = [ "openrgb.service" ];
