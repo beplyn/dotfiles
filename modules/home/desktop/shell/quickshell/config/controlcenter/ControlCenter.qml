@@ -267,14 +267,6 @@ Panel {
         }
         Tile {
             Layout.fillWidth: true
-            icon: Audio.micMuted ? Icons.micOff : Icons.mic
-            title: "Microphone"
-            subtitle: Audio.micMuted ? "Muted" : "Live"
-            active: !Audio.micMuted
-            onClicked: Audio.toggleMicMute()
-        }
-        Tile {
-            Layout.fillWidth: true
             icon: Awake.active ? Icons.awake : Icons.idle
             title: "Stay awake"
             subtitle: Awake.active ? "On" : "Off"
