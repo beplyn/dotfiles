@@ -54,7 +54,7 @@ function __greeting
     test $pct -ge @diskWarn@; and set -a warn "$f[2] at $pct%"
   end
   test (count $warn) -gt 0
-  and echo "  $(set_color @red@)⚠$(set_color normal)  $(string join -- $dot $warn)"
+  and echo "  $(set_color @red@)$(set_color normal)  $(string join -- $dot $warn)"
 end
 
 # skip in nvim/yazi
