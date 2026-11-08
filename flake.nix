@@ -51,7 +51,7 @@
 
     nirimation =
     {
-      url = "git+https://codeberg.org/beplyn/nirimation";
+      url = "github:beplyn/nirimation";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
