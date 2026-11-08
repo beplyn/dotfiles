@@ -32,6 +32,8 @@ let
     catppuccin-web-file-icons = "{bbb880ce-43c9-47ae-b746-c3e0096c5b76}";
     vimium-ff = "{d7742d87-e61d-4b78-b8a1-b469842139fa}";
   };
+  # on the toolbar, the rest in the extensions menu
+  pinned = [ "bitwarden-password-manager" "darkreader" "duckduckgo-for-firefox" ];
 
   policies =
   {
@@ -39,6 +41,7 @@ let
     {
       installation_mode = "force_installed";
       install_url = "https://addons.mozilla.org/firefox/downloads/latest/${slug}/latest.xpi";
+      default_area = if lib.elem slug pinned then "navbar" else "menupanel";
     }) addons;
     # Bitwarden instead
     PasswordManagerEnabled = false;
