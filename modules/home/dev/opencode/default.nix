@@ -27,16 +27,16 @@ in
         npm = "@ai-sdk/openai-compatible";
         name = "Ollama (local)";
         options.baseURL = "http://127.0.0.1:${toString osConfig.services.ollama.port}/v1";
-        models.${llm.model} =
+        models = lib.genAttrs llm.models (m:
         {
-          name = llm.model;
+          name = m;
           tools = true;
           limit =
           {
             context = llm.contextLength;
             output = 16384;
           };
-        };
+        });
       };
       mcp.searxng =
       {

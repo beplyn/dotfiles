@@ -22,6 +22,29 @@ in
       description = "Ollama model tag to pull and serve.";
     };
 
+    extraModels = lib.mkOption
+    {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      description = "More Ollama model tags to pull, switchable from the agents.";
+    };
+
+    models = lib.mkOption
+    {
+      type = lib.types.listOf lib.types.str;
+      default = [ cfg.model ] ++ cfg.extraModels;
+      readOnly = true;
+      description = "Every pulled model, default first.";
+    };
+
+    gpu = lib.mkOption
+    {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      example = "GPU-9fac555f6cbbbf7b";
+      description = "ROCm device (index or GPU-<uuid>) Ollama is pinned to; null for all.";
+    };
+
     contextLength = lib.mkOption
     {
       type = lib.types.int;
@@ -48,7 +71,7 @@ in
       enable = true;
       # gfx1100 is supported, no override
       package = pkgs.ollama-rocm;
-      loadModels = [ cfg.model ];
+      loadModels = cfg.models;
       environmentVariables =
       {
         OLLAMA_CONTEXT_LENGTH = toString cfg.contextLength;
@@ -59,6 +82,10 @@ in
         OLLAMA_MAX_LOADED_MODELS = "1";
         OLLAMA_NUM_PARALLEL = "1";
         OLLAMA_KEEP_ALIVE = "30m";
+      }
+      // lib.optionalAttrs (cfg.gpu != null)
+      {
+        ROCR_VISIBLE_DEVICES = cfg.gpu;
       };
     };
 
