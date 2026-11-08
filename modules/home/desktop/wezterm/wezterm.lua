@@ -22,6 +22,8 @@ config.window_padding =
 config.scrollback_lines = 10000
 config.audible_bell = "Disabled"
 config.window_close_confirmation = "NeverPrompt"
+-- the sudo prompt brings its own lock glyph
+config.detect_password_input = false
 
 -- copy on select, to the clipboard as well as primary
 config.mouse_bindings =

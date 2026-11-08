@@ -1,0 +1,21 @@
+# own prompt; only pam_unix's "Password:" is swapped, the TOTP prompt stays its own
+Defaults passprompt="󰌾 password for %p: "
+Defaults badpass_message=" wrong password"
+Defaults lecture=never
+
+# root commands only from root-owned paths, never ~/.local/bin or a caller's PATH
+Defaults secure_path="/run/wrappers/bin:/run/current-system/sw/bin:/etc/profiles/per-user/@username@/bin"
+Defaults env_reset
+# a pty of its own, so a root command can't push input back into the caller's terminal
+Defaults use_pty
+# a password per terminal, forgotten after 5 minutes
+Defaults timestamp_type=tty
+Defaults timestamp_timeout=5
+Defaults passwd_tries=3
+Defaults passwd_timeout=1
+Defaults !pwfeedback
+Defaults !visiblepw
+Defaults !rootpw
+Defaults !targetpw
+Defaults log_allowed
+Defaults log_denied
