@@ -1,7 +1,8 @@
 {
-  imports = [ ./hardware.nix ];
+  imports = [ ./hardware.nix ./hardware-extra.nix ];
 
   networking.hostName = "anvil";
+  encryption.device = "/dev/disk/by-uuid/52043e38-4ee0-4e79-9f48-53379ba2b743";
   docker.enable = true;
   qbittorrent.enable = true;
   qbittorrent.openWebUI = false;
