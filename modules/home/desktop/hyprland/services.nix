@@ -32,7 +32,9 @@ in
     };
   };
 
-  # warm at night; Mod+Alt+N toggles it by hand
+  # warm at night; Mod+Alt+N and the shell's night light toggle it by hand.
+  # Mornings go to 6000 K, not identity, which leaves `hyprctl hyprsunset
+  # temperature` reporting the evening value
   services.hyprsunset =
   {
     enable = true;
@@ -41,7 +43,7 @@ in
     [
       {
         time = "7:00";
-        identity = true;
+        temperature = 6000;
       }
       {
         time = "21:00";
