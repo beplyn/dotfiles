@@ -52,6 +52,21 @@ in
       };
     };
 
+    # the GUI in the tray at login, a client of the server with the Stylix
+    # profile the oneshot above saved
+    systemd.user.services.openrgb-gui =
+    {
+      description = "OpenRGB GUI in the tray";
+      wantedBy = [ "graphical-session.target" ];
+      partOf = [ "graphical-session.target" ];
+      after = [ "graphical-session.target" ];
+      serviceConfig =
+      {
+        ExecStart = "${lib.getExe cfg.package} --startminimized --profile stylix";
+        Restart = "on-failure";
+      };
+    };
+
     # some controllers forget their colours over suspend
     powerManagement.resumeCommands = "${config.systemd.package}/bin/systemctl restart --no-block openrgb-stylix.service";
   };
