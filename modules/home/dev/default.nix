@@ -6,7 +6,7 @@
     ./signing.nix
     ./nvim
     ./toolchains.nix
-    ./opencode.nix
+    ./opencode
     ./openclaw.nix
     ./claude.nix
   ];
