@@ -128,6 +128,9 @@ let
     brightnessctl = lib.getExe pkgs.brightnessctl;
     # monitor brightness over DDC/CI, when there is no backlight
     ddcutil = lib.getExe pkgs.ddcutil;
+    # night light (services/NightLight.qml): hyprsunset on hyprland, else gammastep
+    hyprctl = lib.getExe' osConfig.programs.hyprland.package "hyprctl";
+    gammastep = lib.getExe pkgs.gammastep;
     mixer = lib.getExe pkgs.pavucontrol;
     wallpaper = lib.getExe pkgs.waypaper;
     systemctl = lib.getExe' osConfig.systemd.package "systemctl";

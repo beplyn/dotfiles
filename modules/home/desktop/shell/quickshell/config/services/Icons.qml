@@ -34,6 +34,8 @@ Singleton {
     readonly property string batteryHealth: g(0xF120F)
     readonly property string awake: g(0xF0176)
     readonly property string idle: g(0xF04B2)
+    readonly property string nightLight: g(0xF0594)
+    readonly property string daylight: g(0xF05A8)
 
     // audio
     readonly property var volume: [0xF026, 0xF027, 0xF028].map(c => g(c))
