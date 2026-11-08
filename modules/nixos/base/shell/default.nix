@@ -25,6 +25,7 @@
     // lib.genAttrs themes (t: "rebuild ${t}");
     shellAliases =
     {
+      y = "yazi";
       lg = "lazygit";
       repo-update = "git fetch && git pull --rebase && git push";
       vim = "nvim";
