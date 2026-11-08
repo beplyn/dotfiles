@@ -148,6 +148,25 @@ body,
     --control-critical-secondary-text-active: var(--red-1);
 }
 
+/* muted mic, deafened headset, disabled game activity */
+.container_g6VwXp .button_Y-8oZW.redGlow_Y-8oZW
+{
+    background-color: color-mix(in srgb, @red@ 20%, transparent) !important;
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, @red@ 40%, transparent);
+    color: @red@ !important;
+}
+
+.container_g6VwXp .button_Y-8oZW.redGlow_Y-8oZW:hover
+{
+    background-color: color-mix(in srgb, @red@ 30%, transparent) !important;
+    color: var(--red-1) !important;
+}
+
+.container_g6VwXp
+{
+    --status-danger: @red@;
+}
+
 ::selection
 {
     color: var(--text-0);
@@ -170,13 +189,13 @@ body,
 }
 
 /* accent buttons */
-[class*="colorBrand"]:not([class*="Outlined"])
+[class*="lookFilled"][class*="colorBrand"]
 {
     background-image: var(--accent-gradient) !important;
     color: var(--text-0) !important;
 }
 
-[class*="colorBrand"]:not([class*="Outlined"]):hover
+[class*="lookFilled"][class*="colorBrand"]:hover
 {
     box-shadow: 0 0 14px color-mix(in srgb, @accent@ 40%, transparent);
 }
