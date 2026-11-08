@@ -21,9 +21,12 @@ function __append_fzf
   if test -z "$cmd"
     return
   end
-  if string match -q "* (fzf)" "$cmd"
-    commandline -r (string replace -r ' \(fzf\)$' "$cmd")
-  else if string match -q "* " "$cmd"
+  # cycles: (fzf) -> directories -> nothing
+  if string match -q "* (fzf)" -- "$cmd"
+    commandline -r (string replace -r -- ' \(fzf\)$' ' (fd -t directory | fzf)' "$cmd")
+  else if string match -q "* (fd -t directory | fzf)" -- "$cmd"
+    commandline -r (string replace -r -- ' \(fd -t directory \| fzf\)$' "" "$cmd")
+  else if string match -q "* " -- "$cmd"
     commandline -r "$cmd(fzf)"
   else
     commandline -r "$cmd (fzf)"
