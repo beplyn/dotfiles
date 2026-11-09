@@ -16,6 +16,8 @@ hl.config({
     plugin = {
         -- a grid of each monitor's workspaces; the borders are Stylix's
         -- col.active_border and col.inactive_border
+        -- off with hyprtasking (plugins.nix)
+        --[[
         hyprtasking = {
             layout = "grid",
             gap_size = t.gaps,
@@ -40,6 +42,7 @@ hl.config({
                 gaps_use_aspect_ratio = true,
             },
         },
+        ]]
 
         hyprfocus = {
             keyboard_focus_animation = "flash",

@@ -85,7 +85,8 @@ let
         (show "Power menu" (Mod "x" exec (ipc "panels" "toggle" [ "power" ])))
         (show "Show hotkeys" (Mod "slash" exec (ipc "panels" "toggle" [ "hotkeys" ])))
         # hyprtasking's grid of this monitor's workspaces
-        (show "Overview" (noRepeat (Mod "Tab" "haku.overview" null)))
+        # off with hyprtasking (plugins.nix)
+        # (show "Overview" (noRepeat (Mod "Tab" "haku.overview" null)))
       ];
     }
     {

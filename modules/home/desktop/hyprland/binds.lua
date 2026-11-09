@@ -159,11 +159,14 @@ hl.bind("SUPER + mouse_up", hs.dsp.focus({ workspace = "-1" }))
 hl.bind("SUPER + SHIFT + mouse_down", hl.dsp.layout("move +col"))
 hl.bind("SUPER + SHIFT + mouse_up", hl.dsp.layout("move -col"))
 
+-- off with hyprtasking (plugins.nix)
+--[[
 -- Escape closes the overview, and still reaches the window otherwise
 hl.bind("Escape", function()
     if hl.plugin.hyprtasking.is_active() then
         hl.plugin.hyprtasking.toggle("all")
     end
 end, { non_consuming = true })
+]]
 
 return haku
