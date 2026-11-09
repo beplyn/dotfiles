@@ -746,15 +746,15 @@
       "locked": {
         "lastModified": 1794256281,
         "narHash": "sha256-QHdUUTQxUvNnsxJ2mZtS7z1UlarzJBnHA79lZsX7J5g=",
-        "ref": "refs/heads/main",
+        "owner": "beplyn",
+        "repo": "vcal",
         "rev": "7240dc35f5b9cbf3560766fc54b47f06e7778366",
-        "revCount": 6,
-        "type": "git",
-        "url": "file:///home/beplyn/Projects/calendar"
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/beplyn/Projects/calendar"
+        "owner": "beplyn",
+        "repo": "vcal",
+        "type": "github"
       }
     },
     "xwayland-satellite-stable": {
