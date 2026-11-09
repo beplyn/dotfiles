@@ -13,6 +13,14 @@ function()
   hl(0, "LineNrAbove", { fg = "@subtext@" })
   hl(0, "LineNrBelow", { fg = "@subtext@" })
 
+  -- git signs: base16 gives them a surface bg, keep only the fg
+  for name, attrs in pairs(vim.api.nvim_get_hl(0, {})) do
+    if name:match("^GitSigns") and attrs.bg and not attrs.link then
+      attrs.bg = nil
+      hl(0, name, attrs)
+    end
+  end
+
   -- no cursorline fill: terminal opacity shows through
   hl(0, "CursorLine", {})
 
