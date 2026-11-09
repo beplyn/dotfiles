@@ -11,6 +11,7 @@
     ./browsers
     ./office.nix
     ./media.nix
+    ./kdeconnect.nix
     ./niri
     ./sway
     ./mango
