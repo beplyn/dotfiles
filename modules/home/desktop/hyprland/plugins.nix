@@ -37,6 +37,15 @@ let
     '';
   };
   hyprcursor = cursor.name == "Bibata-Modern-Classic";
+
+  # hl.get_config returns binds.workspace_back_and_forth as the number 0,
+  # which Lua treats as true; hyprsplit then took a clamped +1/-1 at the
+  # first or last workspace for back-and-forth and jumped the other way
+  hyprsplitLua = pkgs.runCommand "hyprsplit-init.lua" { } ''
+    substitute ${pkgs.hyprlandPlugins.hyprsplit.src}/init.lua $out \
+      --replace-fail 'hl.get_config("binds.workspace_back_and_forth")' \
+                     '(hl.get_config("binds.workspace_back_and_forth") or 0) ~= 0'
+  '';
 in
 {
   wayland.windowManager.hyprland =
@@ -55,7 +64,7 @@ in
       # the Lua library; the package's C++ plugin is the deprecated one
       "hyprsplit/init" =
       {
-        content = "${pkgs.hyprlandPlugins.hyprsplit.src}/init.lua";
+        content = hyprsplitLua;
         autoLoad = false;
       };
     }
