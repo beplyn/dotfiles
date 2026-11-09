@@ -37,6 +37,26 @@ nixpkgs.lib.nixosSystem
     { nixpkgs.hostPlatform = "x86_64-linux"; }
     ../hosts/common
     ../hosts/${hostname}
+    # flake packages built against our nixpkgs, whose cargo hook links the
+    # -sys crates against system libraries these packages don't list
+    {
+      nixpkgs.overlays =
+      [
+        (final: prev:
+        let
+          withSystemLibs = drv: libs: drv.overrideAttrs (old:
+          {
+            nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ final.pkg-config ];
+            buildInputs = (old.buildInputs or [ ]) ++ libs;
+          });
+          system = final.stdenv.hostPlatform.system;
+        in
+        {
+          netspd = withSystemLibs inputs.netspd.packages.${system}.default [ final.aws-lc ];
+          forgejo-cli = withSystemLibs inputs.forgejo-cli.packages.${system}.default [ final.libgit2 ];
+        })
+      ];
+    }
   ]
   # Steam (Millennium) and niri only with a display
   ++ nixpkgs.lib.optionals (!headless)

@@ -1,5 +1,4 @@
 {
-  inputs,
   pkgs,
   ...
 }:
@@ -7,7 +6,8 @@
 {
   home.packages =
   [
-    inputs.netspd.packages.${pkgs.stdenv.hostPlatform.system}.default
+    # the flake's package, via lib/mkHost.nix's overlay
+    pkgs.netspd
   ];
 
   xdg.configFile."netspd/config.toml".source = ./netspd.toml;
