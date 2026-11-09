@@ -5,6 +5,7 @@ import Quickshell.Bluetooth
 import Quickshell.Io
 import Quickshell.Networking
 import Quickshell.Services.UPower
+import Quickshell.Widgets
 import qs.services
 import qs.widgets
 
@@ -123,7 +124,8 @@ Panel {
         Layout.fillWidth: true
         spacing: 12
 
-        Rectangle {
+        // ~/.pfp as rendered by lock.nix's pfp; the logo until it loads
+        ClippingRectangle {
             implicitWidth: 42
             implicitHeight: 42
             radius: 21
@@ -131,10 +133,21 @@ Panel {
 
             Text {
                 anchors.centerIn: parent
+                visible: pfp.status !== Image.Ready
                 text: Icons.logo
                 color: Theme.background
                 font.family: Theme.font
                 font.pointSize: Theme.popupFontSize + 6
+            }
+
+            Image {
+                id: pfp
+                anchors.fill: parent
+                source: "file://" + (Quickshell.env("XDG_CACHE_HOME") || Quickshell.env("HOME") + "/.cache") + "/pfp.png"
+                sourceSize: Qt.size(84, 84)
+                fillMode: Image.PreserveAspectCrop
+                asynchronous: true
+                cache: false
             }
         }
 
