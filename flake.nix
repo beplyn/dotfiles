@@ -48,10 +48,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # the calendar (programs.vcal); git+file copies only tracked files, not target/
+    # the calendar (programs.vcal)
     vcal =
     {
-      url = "git+file:///home/beplyn/Projects/calendar";
+      url = "github:beplyn/vcal";
       inputs.nixpkgs.follows = "nixpkgs";
       # only used by its checks; no second copy in the lock
       inputs.home-manager.follows = "home-manager";
