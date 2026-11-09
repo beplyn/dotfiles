@@ -1,4 +1,4 @@
-# vcal, the terminal calendar (github:beplyn/calendar), and what the desktop
+# vcal, the terminal calendar (~/Projects/calendar), and what the desktop
 # needs of it: one database for the TUI, the CLI and Quickshell
 # (services/Events.qml), and the command that opens the TUI, for Mod+Shift+C,
 # a right click on waybar's clock and the dashboard.

@@ -53,6 +53,8 @@
     {
       url = "git+file:///home/beplyn/Projects/calendar";
       inputs.nixpkgs.follows = "nixpkgs";
+      # only used by its checks; no second copy in the lock
+      inputs.home-manager.follows = "home-manager";
     };
 
     stylix =
