@@ -43,7 +43,7 @@ in
   {
     plugins = with pkgs.hyprlandPlugins;
     [
-      hyprtasking
+      # hyprtasking: off until it builds against Hyprland 0.57 (raybbian/hyprtasking#140)
       hyprfocus
       borders-plus-plus
     ];
