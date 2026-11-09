@@ -1,6 +1,6 @@
 # vcal, the terminal calendar (github:beplyn/vcal), and what the desktop
 # needs of it: one database for the TUI, the CLI and Quickshell
-# (services/Events.qml), and the command that opens the TUI, for Mod+Shift+C,
+# (services/Events.qml), and the command that opens the TUI, for
 # a right click on waybar's clock and the dashboard.
 {
   config,
@@ -43,8 +43,7 @@ let
   systemdRun = lib.getExe' osConfig.systemd.package "systemd-run";
 
   # the TUI in a terminal, in a scope of its own so it outlives waybar or
-  # quickshell restarting; arguments go to vcal (`--date <day>`). A script
-  # because mango caps a bind at 255 bytes, too short for the store paths.
+  # quickshell restarting; arguments go to vcal (`--date <day>`)
   open = pkgs.writeShellScriptBin "vcal-open" ''
     exec ${systemdRun} --user --scope --collect --quiet -- \
       ${wezterm} start --class vcal -- ${vcal} --db ${lib.escapeShellArg cfg.databasePath} "$@"
