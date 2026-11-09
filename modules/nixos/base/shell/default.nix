@@ -28,8 +28,7 @@
       y = "yazi";
       lg = "lazygit";
       repo-update = "git fetch && git pull --rebase && git push";
-      vim = "nvim";
-      nano = "nvim";
+      v = "nvim";
       ls = "eza --icons --color=auto -a";
       grep = "rg --color=auto";
     };
