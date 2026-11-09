@@ -30,7 +30,6 @@
     pkgs.hyprsysteminfo
     pkgs.hyprpwcenter
     pkgs.hyprshutdown
-    pkgs.hyprland-qtutils
   ];
 
   # radeonsi's compressed (DCC) modifiers can't be fixated for Chromium's
