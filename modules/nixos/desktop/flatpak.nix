@@ -54,8 +54,14 @@ in
     wantedBy = [ "multi-user.target" ];
     wants = [ "network-online.target" ];
     after = [ "network-online.target" ];
-    path = [ config.services.flatpak.package ];
-    script = "flatpak remote-add --system --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo";
+    path = [ config.services.flatpak.package pkgs.gnugrep ];
+    # --if-not-exists still fetches the .flatpakrepo, so check locally first;
+    # otherwise a switch that bounces NetworkManager fails this unit
+    script = ''
+      flatpak remotes --system --columns=name | grep -qx flathub && exit 0
+      flatpak remote-add --system --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+    '';
+    restartIfChanged = false;
     serviceConfig =
     {
       Type = "oneshot";
