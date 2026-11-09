@@ -9,6 +9,7 @@ import qs.launcher
 import qs.monitor
 import qs.notifications
 import qs.osd
+import qs.overview
 import qs.power
 import qs.recorder
 import qs.services
@@ -29,6 +30,7 @@ ShellRoot {
     ClipboardMenu {}
     LauncherMenu {}
     SharePickerMenu {}
+    Overview {}
 
     // One per waybar hardware pill.
     Monitor {

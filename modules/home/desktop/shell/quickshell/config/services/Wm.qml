@@ -7,7 +7,8 @@ import Quickshell.Io
 // talks to WM IPC. A backend (NiriBackend.qml, SwayBackend.qml,
 // HyprlandBackend.qml, or GenericBackend.qml over Wayland protocols) provides workspaces,
 // activeWindowTitle, focusedOutput, focusWorkspace(id) and quit(); adding
-// one is a case in `wm name` and a Loader below.
+// one is a case in `wm name` and a Loader below. Hyprland's also has the
+// windows behind the overview (overview/Overview.qml).
 Singleton {
     id: root
 
@@ -27,6 +28,17 @@ Singleton {
 
     function focusWorkspace(id) { backend?.focusWorkspace(id) }
     function quit() { backend?.quit() }
+
+    // Hyprland only, for the overview: windows with their geometry, kept
+    // fresh while trackWindows is set
+    readonly property var windows: backend?.windows ?? []
+    function trackWindows(on) {
+        if (!backend || backend.trackWindows === undefined) return
+        backend.trackWindows = on
+        if (on) backend.refreshWindows()
+    }
+    function focusWindow(address) { backend?.focusWindow?.(address) }
+    function moveWindow(address, id) { backend?.moveWindow?.(address, id) }
 
     Process {
         running: true
