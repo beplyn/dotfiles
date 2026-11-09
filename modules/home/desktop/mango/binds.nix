@@ -48,7 +48,6 @@ let
         (show "Clipboard" (Mod "v" (spawn (ipc "panels" "toggle" [ "clipboard" ]))))
         (show "Control center" (Mod "a" (spawn (ipc "panels" "toggle" [ "control" ]))))
         (show "Dashboard" (Mod "d" (spawn (ipc "panels" "toggle" [ "dashboard" ]))))
-        (show "Calendar" (ModShift "c" (spawn (lib.escapeShellArgs config.lib.haku.calendar.open))))
         (show "Notification center" (Mod "n" (spawn (ipc "notifications" "toggle" [ ]))))
         (show "Toggle do not disturb" (ModShift "n" (spawn (ipc "notifications" "toggleDnd" [ ]))))
         (show "Screen recorder" (ModShift "r" (spawn (ipc "recorder" "toggle" [ ]))))

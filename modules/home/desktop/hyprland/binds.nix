@@ -65,7 +65,6 @@ let
         (show "Clipboard" (Mod "v" exec (ipc "panels" "toggle" [ "clipboard" ])))
         (show "Control center" (Mod "a" exec (ipc "panels" "toggle" [ "control" ])))
         (show "Dashboard" (Mod "d" exec (ipc "panels" "toggle" [ "dashboard" ])))
-        (show "Calendar" (ModShift "c" exec (lib.escapeShellArgs config.lib.haku.calendar.open)))
         (show "Notification center" (Mod "n" exec (ipc "notifications" "toggle" [ ])))
         (show "Toggle do not disturb" (ModShift "n" exec (ipc "notifications" "toggleDnd" [ ])))
         (show "Screen recorder" (ModShift "r" exec (ipc "recorder" "toggle" [ ])))
