@@ -12,7 +12,7 @@ let
     x = acc.x + m.width;
     rules = acc.rules ++
     [
-      "monitorrule=name:^${m.name}$,width:${toString m.width},height:${toString m.height},refresh:${toString m.refresh},x:${toString acc.x},y:0"
+      "monitor_rule=name:^${m.name}$,width:${toString m.width},height:${toString m.height},refresh:${toString m.refresh},x:${toString acc.x},y:0"
     ];
   };
   primary = lib.findFirst (m: m.primary) null osConfig.monitors;
@@ -22,7 +22,7 @@ in
   xdg.configFile."mango/outputs.conf".source = config.lib.haku.mangoConf "outputs" (
     lib.concatLines (
       (lib.foldl' place { x = 0; rules = [ ]; } osConfig.monitors).rules
-      ++ lib.optional (primary != null) "exec-once=${mmsg} dispatch focusmon,${primary.name}"
+      ++ lib.optional (primary != null) "exec_once=${mmsg} dispatch focusmon,${primary.name}"
     )
   );
 }
