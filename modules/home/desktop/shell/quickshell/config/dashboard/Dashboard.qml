@@ -4,8 +4,8 @@ import Quickshell
 import qs.services
 import qs.widgets
 
-// Dropped from waybar's clock: the time,
-// a calendar, the media player and system load.
+// Dropped from waybar's clock: the time, a calendar with the picked
+// day's events (vcal), the media player and system load.
 Panel {
     id: root
 
@@ -71,16 +71,33 @@ Panel {
         Layout.fillWidth: true
         spacing: 12
 
-        Surface {
+        ColumnLayout {
             Layout.alignment: Qt.AlignTop
             Layout.preferredWidth: 300
-            padding: 14
+            spacing: 12
 
-            Calendar {
+            Surface {
                 Layout.fillWidth: true
-                today: clock.date
-                // Back to the current month whenever the dashboard opens.
-                resetOn: root.open
+                padding: 14
+
+                Calendar {
+                    id: calendar
+                    Layout.fillWidth: true
+                    today: clock.date
+                    // Back to the current month whenever the dashboard opens.
+                    resetOn: root.open
+                }
+            }
+
+            Surface {
+                Layout.fillWidth: true
+                padding: 12
+
+                Agenda {
+                    Layout.fillWidth: true
+                    day: calendar.selected
+                    active: root.open
+                }
             }
         }
 

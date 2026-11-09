@@ -552,6 +552,7 @@
         "nixpkgs": "nixpkgs",
         "nixvim": "nixvim",
         "stylix": "stylix",
+        "vcal": "vcal",
         "zen-browser": "zen-browser"
       }
     },
@@ -731,6 +732,26 @@
         "owner": "numtide",
         "repo": "flake-utils",
         "type": "github"
+      }
+    },
+    "vcal": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1794253491,
+        "narHash": "sha256-09quWooctTRirw2BbWVgRvAAZs8Yu+nf4bxBKXggwn4=",
+        "ref": "refs/heads/main",
+        "rev": "0b7dd44361fc07e338e866225c1233bb00134e17",
+        "revCount": 4,
+        "type": "git",
+        "url": "file:///home/beplyn/Projects/calendar"
+      },
+      "original": {
+        "type": "git",
+        "url": "file:///home/beplyn/Projects/calendar"
       }
     },
     "xwayland-satellite-stable": {

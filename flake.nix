@@ -48,6 +48,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # the calendar (programs.vcal); git+file copies only tracked files, not target/
+    vcal =
+    {
+      url = "git+file:///home/beplyn/Projects/calendar";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     stylix =
     {
       url = "github:danth/stylix";
