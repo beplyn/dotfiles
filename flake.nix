@@ -42,13 +42,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # niri-glass; follows our nixpkgs so mesa/GBM loads (system glibc)
-    niri-glass =
-    {
-      url = "github:zaroutt/Niri-glass";
-      inputs.niri.inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     nirimation =
     {
       url = "github:beplyn/nirimation";
