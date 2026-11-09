@@ -85,9 +85,9 @@ let
         (show "Lock screen" (ModAlt "l" exec "${loginctl} lock-session"))
         (show "Power menu" (Mod "x" exec (ipc "panels" "toggle" [ "power" ])))
         (show "Show hotkeys" (Mod "slash" exec (ipc "panels" "toggle" [ "hotkeys" ])))
-        # hyprtasking's grid of this monitor's workspaces
-        # off with hyprtasking (plugins.nix)
-        # (show "Overview" (noRepeat (Mod "Tab" "haku.overview" null)))
+        # this monitor's workspaces, Quickshell's while hyprtasking is off
+        # (plugins.nix); hyprtasking's was (Mod "Tab" "haku.overview" null)
+        (show "Overview" (noRepeat (Mod "Tab" exec (ipc "panels" "toggle" [ "overview" ]))))
       ];
     }
     {
