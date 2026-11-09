@@ -13,11 +13,25 @@ function()
   hl(0, "LineNrAbove", { fg = "@subtext@" })
   hl(0, "LineNrBelow", { fg = "@subtext@" })
 
-  -- git signs: base16 gives them a surface bg, keep only the fg
+  -- base16 gives these a surface bg that shows as grey blocks on the
+  -- transparent background; keep only the fg
+  local surface = {
+    "^GitSigns",           -- gutter signs
+    "^DiagnosticFloating", -- DiagnosticSign* link here
+    "^Ibl", "^@ibl",       -- indent scope guide
+    "^Todo$",              -- TODO in comments
+    "^Folded$",
+    "^WhichKey",
+  }
   for name, attrs in pairs(vim.api.nvim_get_hl(0, {})) do
-    if name:match("^GitSigns") and attrs.bg and not attrs.link then
-      attrs.bg = nil
-      hl(0, name, attrs)
+    if attrs.bg and not attrs.link then
+      for _, pattern in ipairs(surface) do
+        if name:match(pattern) then
+          attrs.bg = nil
+          hl(0, name, attrs)
+          break
+        end
+      end
     end
   end
 
