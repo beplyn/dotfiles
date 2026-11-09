@@ -1,0 +1,272 @@
+import QtQuick
+import QtQuick.Layouts
+import Quickshell
+import Quickshell.Wayland
+import qs.services
+
+// Mod+Tab on Hyprland, in place of hyprtasking's grid: this monitor's ten
+// workspaces (hyprsplit's, workspaces.lua) with their windows drawn to scale,
+// live where the compositor lets them be captured. Click a window to focus
+// it, a workspace to go there; drag a window onto another to send it.
+// hjkl or the arrows pick, 1-0 jump, Enter goes, Escape or Mod+Tab closes.
+PanelWindow {
+    id: root
+
+    readonly property bool open: Panels.current === "overview"
+    readonly property int columns: 5
+    readonly property int count: 10
+
+    // hyprsplit gives monitor i the ids (i-1)*10+1 .. i*10
+    readonly property int active: Wm.workspacesOn(screen?.name ?? "").find(ws => ws.isActive)?.id ?? 1
+    readonly property int base: Math.floor((active - 1) / count) * count
+
+    // the tile the keys move; starts on the active workspace
+    property int selected: 0
+
+    onOpenChanged: {
+        Wm.trackWindows(open)
+        if (open) selected = active - base - 1
+    }
+
+    function go(index) {
+        Wm.focusWorkspace(base + index + 1)
+        Panels.close()
+    }
+
+    function pick(index) {
+        selected = Math.max(0, Math.min(count - 1, index))
+    }
+
+    function appIcon(appId) {
+        const icon = DesktopEntries.heuristicLookup(appId)?.icon ?? ""
+        if (icon === "") return ""
+        if (icon.startsWith("/")) return "file://" + icon
+        return Quickshell.iconPath(icon, true)
+    }
+
+    screen: Panels.screen
+    visible: open || backdrop.opacity > 0
+    anchors {
+        top: true
+        bottom: true
+        left: true
+        right: true
+    }
+    exclusiveZone: -1
+    color: "transparent"
+
+    WlrLayershell.namespace: "haku-overview"
+    WlrLayershell.layer: WlrLayer.Overlay
+    WlrLayershell.keyboardFocus: open ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
+
+    mask: Region {
+        item: root.open ? backdrop : null
+    }
+    BackgroundEffect.blurRegion: Region {
+        item: root.open ? backdrop : null
+    }
+
+    Rectangle {
+        id: backdrop
+        anchors.fill: parent
+        color: Theme.alpha(Theme.background, 0.55)
+        opacity: root.open ? 1 : 0
+
+        Behavior on opacity {
+            NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic }
+        }
+
+        focus: root.open
+        Keys.onPressed: e => {
+            const k = e.key
+            if (k === Qt.Key_Escape) Panels.close()
+            else if (k === Qt.Key_Return || k === Qt.Key_Enter || k === Qt.Key_Space) root.go(root.selected)
+            else if (k === Qt.Key_H || k === Qt.Key_Left) root.pick(root.selected - 1)
+            else if (k === Qt.Key_L || k === Qt.Key_Right) root.pick(root.selected + 1)
+            else if (k === Qt.Key_K || k === Qt.Key_Up) root.pick(root.selected - root.columns)
+            else if (k === Qt.Key_J || k === Qt.Key_Down) root.pick(root.selected + root.columns)
+            else if (k === Qt.Key_Tab) root.pick((root.selected + 1) % root.count)
+            else if (k === Qt.Key_Backtab) root.pick((root.selected + root.count - 1) % root.count)
+            else if (k >= Qt.Key_1 && k <= Qt.Key_9) root.go(k - Qt.Key_1)
+            else if (k === Qt.Key_0) root.go(9)
+            else return
+            e.accepted = true
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: Panels.close()
+        }
+
+        GridLayout {
+            id: grid
+
+            // the largest tiles, at the monitor's aspect, that fit 85% of it
+            readonly property real aspect: root.width / Math.max(1, root.height)
+            readonly property int rows: Math.ceil(root.count / root.columns)
+            readonly property int spacing: Theme.gap * 3
+            readonly property real tileWidth: Math.min(
+                (root.width * 0.85 - spacing * (root.columns - 1)) / root.columns,
+                (root.height * 0.85 - spacing * (rows - 1)) / rows * aspect)
+            readonly property real tileHeight: tileWidth / aspect
+            readonly property real ratio: tileWidth / Math.max(1, root.width)
+
+            anchors.centerIn: parent
+            columns: root.columns
+            columnSpacing: spacing
+            rowSpacing: spacing
+
+            opacity: root.open ? 1 : 0
+            scale: root.open ? 1 : 0.94
+            Behavior on opacity {
+                NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic }
+            }
+            Behavior on scale {
+                NumberAnimation { duration: Theme.slow; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.easing }
+            }
+
+            Repeater {
+                id: tiles
+                model: root.count
+
+                Rectangle {
+                    id: tile
+
+                    required property int index
+                    readonly property int workspace: root.base + index + 1
+                    readonly property bool current: workspace === root.active
+                    readonly property bool dropTarget: drag.containsDrag && drag.drag.source?.workspace !== workspace
+                    readonly property var windows: Wm.windows
+                        .filter(w => w.workspace === workspace)
+                        // tiled first, floating on top; the focused one last
+                        .sort((a, b) => (a.floating - b.floating) || (a.focused - b.focused))
+
+                    Layout.preferredWidth: grid.tileWidth
+                    Layout.preferredHeight: grid.tileHeight
+                    radius: Theme.radius
+                    color: Theme.cardColor
+                    border.width: current || index === root.selected || dropTarget ? 2 : 1
+                    border.color: dropTarget ? Theme.green
+                        : index === root.selected ? Theme.accent
+                        : current ? Theme.subtext
+                        : Theme.cardBorder
+                    clip: true
+
+                    MouseArea {
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onEntered: root.selected = tile.index
+                        onClicked: root.go(tile.index)
+                    }
+
+                    DropArea {
+                        id: drag
+                        anchors.fill: parent
+                        keys: ["haku-window"]
+                        onDropped: e => {
+                            const w = e.source.window
+                            if (w && w.workspace !== tile.workspace) Wm.moveWindow(w.address, tile.workspace)
+                        }
+                    }
+
+                    Repeater {
+                        model: tile.windows
+
+                        Item {
+                            id: win
+
+                            required property var modelData
+                            readonly property var window: modelData
+                            readonly property int workspace: modelData.workspace
+                            readonly property real homeX: (modelData.x - (root.screen?.x ?? 0)) * grid.ratio
+                            readonly property real homeY: (modelData.y - (root.screen?.y ?? 0)) * grid.ratio
+
+                            x: homeX
+                            y: homeY
+                            width: Math.max(8, modelData.width * grid.ratio)
+                            height: Math.max(8, modelData.height * grid.ratio)
+                            z: grab.drag.active ? 10 : 0
+
+                            Drag.active: grab.drag.active
+                            Drag.keys: ["haku-window"]
+                            Drag.hotSpot.x: width / 2
+                            Drag.hotSpot.y: height / 2
+
+                            // out of the tile's clip while it travels
+                            states: State {
+                                when: grab.drag.active
+                                ParentChange {
+                                    target: win
+                                    parent: backdrop
+                                }
+                            }
+
+                            Rectangle {
+                                id: frame
+                                anchors.fill: parent
+                                radius: Theme.innerRadius
+                                color: Theme.well
+                                border.width: 1
+                                border.color: win.modelData.focused ? Theme.accent : Theme.cardBorder
+                                clip: true
+
+                                ScreencopyView {
+                                    id: shot
+                                    anchors.fill: parent
+                                    anchors.margins: 1
+                                    captureSource: root.open ? win.modelData.toplevel : null
+                                    live: root.open
+                                    constraintSize: Qt.size(width, height)
+                                }
+
+                                // until (or unless) the capture has a frame
+                                Image {
+                                    anchors.centerIn: parent
+                                    visible: !shot.hasContent
+                                    width: Math.min(parent.width, parent.height) * 0.45
+                                    height: width
+                                    sourceSize: Qt.size(width, height)
+                                    source: root.appIcon(win.modelData.appId)
+                                    asynchronous: true
+                                }
+                            }
+
+                            MouseArea {
+                                id: grab
+                                anchors.fill: parent
+                                drag.target: win
+                                drag.threshold: 6
+                                cursorShape: drag.active ? Qt.ClosedHandCursor : Qt.PointingHandCursor
+                                onEntered: root.selected = tile.index
+                                hoverEnabled: true
+                                onClicked: {
+                                    Wm.focusWindow(win.modelData.address)
+                                    Panels.close()
+                                }
+                                onReleased: {
+                                    if (!drag.active) return
+                                    win.Drag.drop()
+                                    win.x = Qt.binding(() => win.homeX)
+                                    win.y = Qt.binding(() => win.homeY)
+                                }
+                            }
+                        }
+                    }
+
+                    Text {
+                        anchors.left: parent.left
+                        anchors.top: parent.top
+                        anchors.margins: 8
+                        text: String((tile.index + 1) % 10)
+                        color: tile.current ? Theme.accent : Theme.subtext
+                        font.family: Theme.font
+                        font.pointSize: Theme.popupFontSize
+                        font.bold: true
+                        style: Text.Outline
+                        styleColor: Theme.alpha(Theme.background, 0.6)
+                    }
+                }
+            }
+        }
+    }
+}
