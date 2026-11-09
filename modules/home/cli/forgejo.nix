@@ -1,7 +1,6 @@
 {
   pkgs,
   lib,
-  inputs,
   osConfig,
   username,
   forgejoHost,
@@ -12,7 +11,7 @@ lib.mkIf osConfig.forgejo.enable
 {
   home.packages =
   [
-    inputs.forgejo-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
+    pkgs.forgejo-cli
   ];
 
   home.sessionVariables =
