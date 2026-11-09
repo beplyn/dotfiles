@@ -143,11 +143,28 @@ in
             for = "unix";
           }
         ];
+        # binary in its own wezterm window with a shell left behind; it ignores
+        # SIGHUP so a gui app outlives the window, but stays in the foreground
+        # so stdin (scanf) still works
+        run =
+        [
+          {
+            run = ''wezterm start --cwd %d1 -- fish -c 'env --ignore-signal=HUP $argv[1]; echo "[exit $status]"; exec fish' %s1'';
+            orphan = true;
+            desc = "Run in wezterm";
+            for = "unix";
+          }
+        ];
       };
       open =
       {
         prepend_rules =
         [
+          {
+            # yazi drops the x- prefix: application/pie-executable
+            mime = "application/{,x-}{executable,pie-executable}";
+            use = [ "run" "reveal" ];
+          }
           {
             url = "*.nix";
             use = "edit";
