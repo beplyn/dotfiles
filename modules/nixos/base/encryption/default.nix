@@ -38,8 +38,6 @@ in
 
   config = lib.mkIf cfg.enable
   {
-    boot.initrd.systemd.enable = true;
-
     boot.initrd.luks.devices.cryptroot =
     {
       inherit (cfg) device;
@@ -73,7 +71,6 @@ in
 
     # quiet splash
     boot.consoleLogLevel = 3;
-    boot.initrd.verbose = false;
     boot.kernelParams =
     [
       "quiet"
