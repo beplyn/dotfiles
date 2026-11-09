@@ -155,6 +155,16 @@ in
             for = "unix";
           }
         ];
+        # same, through bash, so a script without +x runs too
+        run-sh =
+        [
+          {
+            run = ''wezterm start --cwd %d1 -- fish -c 'env --ignore-signal=HUP bash $argv[1]; echo "[exit $status]"; exec fish' %s1'';
+            orphan = true;
+            desc = "Run in wezterm";
+            for = "unix";
+          }
+        ];
       };
       open =
       {
@@ -175,7 +185,7 @@ in
           }
           {
             url = "*.sh";
-            use = "edit";
+            use = [ "edit" "run-sh" ];
           }
           {
             url = "*.toml";
