@@ -222,6 +222,8 @@ in
         format = "${glyph 983376}  {:%a %d  %H:%M}"; # clock-outline
         tooltip = false;
         on-click = panel "dashboard";
+        # the terminal calendar (calendar.nix)
+        on-click-right = lib.escapeShellArgs config.lib.haku.calendar.open;
       };
 
       "custom/recorder" =

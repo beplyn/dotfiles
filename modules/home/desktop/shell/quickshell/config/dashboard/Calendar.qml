@@ -6,7 +6,9 @@ import qs.widgets
 
 // Month grid with ISO week numbers and today's week picked out. Arrows
 // or scrolling slide between months; the title or the today button
-// goes back to the current one.
+// goes back to the current one. Dots under a day count its events (vcal,
+// services/Events.qml); a click picks the day for the agenda, a double
+// click opens it in the terminal calendar.
 ColumnLayout {
     id: root
 
@@ -14,6 +16,17 @@ ColumnLayout {
     // Each change back to true returns to the current month.
     property bool resetOn: false
     property date month: new Date(today.getFullYear(), today.getMonth(), 1)
+    // The day the agenda below shows.
+    property date selected: Events.midnight(today)
+
+    // First of the six rows on screen; Events loads those 42 days.
+    readonly property date gridFirst: {
+        const f = new Date(month.getFullYear(), month.getMonth(), 1)
+        f.setDate(f.getDate() - column(f))
+        return f
+    }
+    onGridFirstChanged: Events.show(gridFirst, Events.addDays(gridFirst, 42))
+    Component.onCompleted: Events.show(gridFirst, Events.addDays(gridFirst, 42))
 
     readonly property int cellSize: 32
     readonly property bool onThisMonth: month.getFullYear() === today.getFullYear()
@@ -65,6 +78,7 @@ ColumnLayout {
         body.opacity = 1
         offset.x = 0
         month = pending = new Date(today.getFullYear(), today.getMonth(), 1)
+        selected = Events.midnight(today)
     }
 
     function goToday() {
@@ -234,6 +248,8 @@ ColumnLayout {
                 readonly property bool weekend: model.date.getDay() === 0 || model.date.getDay() === 6
                 readonly property bool thisWeek: root.inTodayWeek(model.year, model.month, model.day)
                 readonly property bool past: root.onThisMonth && new Date(model.year, model.month, model.day + 1) <= root.today
+                readonly property bool isSelected: Events.key(model.date) === Events.key(root.selected)
+                readonly property var events: Events.on(model.date)
 
                 implicitHeight: root.cellSize
 
@@ -287,8 +303,45 @@ ColumnLayout {
                     font.bold: cell.isToday
                 }
 
+                // The picked day, when it isn't today (today has its disc).
+                Rectangle {
+                    anchors.centerIn: parent
+                    width: root.cellSize - 4
+                    height: width
+                    radius: width / 2
+                    visible: cell.isSelected && !cell.isToday
+                    color: "transparent"
+                    border.width: 1.5
+                    border.color: Theme.accent
+                }
+
+                // One dot per event, up to three, in the event's colour.
+                Row {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 1
+                    spacing: 2
+                    opacity: cell.inMonth ? 1 : 0.35
+
+                    Repeater {
+                        model: cell.events.slice(0, 3)
+                        delegate: Rectangle {
+                            required property var modelData
+                            width: 4
+                            height: 4
+                            radius: 2
+                            color: Events.color(modelData)
+                        }
+                    }
+                }
+
                 HoverHandler {
                     id: hover
+                }
+
+                TapHandler {
+                    onTapped: root.selected = Events.midnight(cell.model.date)
+                    onDoubleTapped: Events.openTui(cell.model.date)
                 }
             }
         }

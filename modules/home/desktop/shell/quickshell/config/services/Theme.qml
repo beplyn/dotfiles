@@ -36,6 +36,10 @@ Singleton {
     // compass: shows the power-profile tile.
     readonly property bool laptop: Stylix.laptop
 
+    // vcal: the database Events reads and the argv that opens the TUI
+    readonly property string calendarDb: Stylix.calendarDb
+    readonly property var calendarOpen: Stylix.calendarOpen
+
     readonly property var bin: Stylix.bin
     readonly property var signals: Stylix.signals
     // { sway, mango: [{ name, binds: [{ key, title }] }] }, titled binds by section

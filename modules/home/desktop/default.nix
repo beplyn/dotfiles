@@ -1,6 +1,7 @@
 {
   imports =
   [
+    ./calendar.nix
     ./kitty.nix
     ./wezterm
     ./gaming.nix

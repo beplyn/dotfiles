@@ -38,6 +38,7 @@ let
         (spawn (Mod "V") "Clipboard" (ipc "panels" "toggle" ++ [ "clipboard" ]))
         (spawn (Mod "A") "Control center" (ipc "panels" "toggle" ++ [ "control" ]))
         (spawn (Mod "D") "Dashboard" (ipc "panels" "toggle" ++ [ "dashboard" ]))
+        (spawn (ModShift "C") "Calendar" config.lib.haku.calendar.open)
         (spawn (Mod "N") "Notification center" (ipc "notifications" "toggle"))
         (spawn (ModShift "N") "Toggle do not disturb" (ipc "notifications" "toggleDnd"))
         (spawn (ModShift "R") "Screen recorder" (ipc "recorder" "toggle"))
