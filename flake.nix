@@ -64,6 +64,12 @@
       flake = false;
     };
 
+    cliamp =
+    {
+      url = "github:bjarneo/cliamp";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     glass-firefox =
     {
       url = "github:ChaosMx11/Glass-Firefox-Theme";
