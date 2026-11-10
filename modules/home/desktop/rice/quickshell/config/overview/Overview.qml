@@ -9,7 +9,8 @@ import qs.services
 // workspaces (hyprsplit's, workspaces.lua) with their windows drawn to scale
 // from Hyprland's own geometry, live through hyprland-toplevel-export. Click a window to focus
 // it, a workspace to go there; drag a window onto another to send it.
-// hjkl or the arrows pick, 1-0 jump, Enter goes, Escape or Mod+Tab closes.
+// hjkl, the arrows or the wheel pick, 1-0 jump, Enter goes, Escape or
+// Mod+Tab closes. Tiles ripple in from the active one; hovering names a window.
 PanelWindow {
     id: root
 
@@ -155,6 +156,12 @@ PanelWindow {
             onClicked: Panels.close()
         }
 
+        // the wheel walks the tiles like Tab, over them too
+        WheelHandler {
+            target: null
+            onWheel: e => root.pick((root.selected + (e.angleDelta.y < 0 ? 1 : root.count - 1)) % root.count)
+        }
+
         GridLayout {
             id: grid
 
@@ -173,15 +180,6 @@ PanelWindow {
             columnSpacing: spacing
             rowSpacing: spacing
 
-            opacity: root.open ? 1 : 0
-            scale: root.open ? 1 : 0.94
-            Behavior on opacity {
-                NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic }
-            }
-            Behavior on scale {
-                NumberAnimation { duration: Theme.slow; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.easing }
-            }
-
             Repeater {
                 id: tiles
                 model: root.count
@@ -197,17 +195,67 @@ PanelWindow {
                         .filter(w => w.workspace === workspace)
                         // tiled first, floating on top; the focused one last
                         .sort((a, b) => (a.floating - b.floating) || (a.focused - b.focused))
+                    readonly property bool picked: index === root.selected
+                    // the window under the pointer, named at the bottom
+                    property string hovered: ""
+
+                    // tiles ripple in from the active workspace
+                    property bool shown: false
+                    Timer {
+                        id: stagger
+                        interval: {
+                            const from = root.active - root.base - 1
+                            const steps = Math.abs(Math.floor(tile.index / root.columns) - Math.floor(from / root.columns))
+                                + Math.abs(tile.index % root.columns - from % root.columns)
+                            return 1 + steps * 35
+                        }
+                        onTriggered: tile.shown = true
+                    }
+                    Connections {
+                        target: root
+                        function onOpenChanged() {
+                            if (root.open) stagger.restart()
+                            else {
+                                stagger.stop()
+                                tile.shown = false
+                                tile.hovered = ""
+                            }
+                        }
+                    }
 
                     Layout.preferredWidth: grid.tileWidth
                     Layout.preferredHeight: grid.tileHeight
                     radius: Theme.radius
-                    color: Theme.cardColor
-                    border.width: current || index === root.selected || dropTarget ? 2 : 1
+                    color: picked ? Theme.alpha(Theme.surface, Math.min(1, Theme.glass + 0.15)) : Theme.cardColor
+                    border.width: current || picked || dropTarget ? 2 : 1
                     border.color: dropTarget ? Theme.green
-                        : index === root.selected ? Theme.accent
+                        : picked ? Theme.accent
                         : current ? Theme.subtext
                         : Theme.cardBorder
                     clip: true
+
+                    // the picked one lifts above its neighbours
+                    z: picked ? 1 : 0
+                    opacity: shown ? 1 : 0
+                    scale: !shown ? 0.88 : picked ? 1.035 : 1
+                    transform: Translate {
+                        y: tile.shown ? 0 : 28
+                        Behavior on y {
+                            NumberAnimation { duration: Theme.slow; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.easing }
+                        }
+                    }
+                    Behavior on opacity {
+                        NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic }
+                    }
+                    Behavior on scale {
+                        NumberAnimation { duration: Theme.slow; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.easing }
+                    }
+                    Behavior on color {
+                        ColorAnimation { duration: Theme.fast }
+                    }
+                    Behavior on border.color {
+                        ColorAnimation { duration: Theme.fast }
+                    }
 
                     MouseArea {
                         anchors.fill: parent
@@ -243,6 +291,12 @@ PanelWindow {
                             width: Math.max(8, modelData.width * grid.ratio)
                             height: Math.max(8, modelData.height * grid.ratio)
                             z: grab.drag.active ? 10 : 0
+                            // picked up, it lifts off the tile
+                            scale: grab.drag.active ? 1.08 : 1
+                            opacity: grab.drag.active ? 0.9 : 1
+                            Behavior on scale {
+                                NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic }
+                            }
 
                             Drag.active: grab.drag.active
                             Drag.keys: ["haku-window"]
@@ -264,8 +318,13 @@ PanelWindow {
                                 radius: Theme.innerRadius
                                 color: Theme.well
                                 border.width: 1
-                                border.color: win.modelData.focused ? Theme.accent : Theme.cardBorder
+                                border.width: grab.containsMouse ? 2 : 1
+                                border.color: grab.containsMouse || win.modelData.focused ? Theme.accent : Theme.cardBorder
                                 clip: true
+
+                                Behavior on border.color {
+                                    ColorAnimation { duration: Theme.fast }
+                                }
 
                                 ScreencopyView {
                                     id: shot
@@ -294,7 +353,11 @@ PanelWindow {
                                 drag.target: win
                                 drag.threshold: 6
                                 cursorShape: drag.active ? Qt.ClosedHandCursor : Qt.PointingHandCursor
-                                onEntered: root.selected = tile.index
+                                onEntered: {
+                                    root.selected = tile.index
+                                    tile.hovered = win.modelData.title
+                                }
+                                onExited: if (tile.hovered === win.modelData.title) tile.hovered = ""
                                 hoverEnabled: true
                                 onClicked: root.focusWindow(win.modelData.address)
                                 onReleased: {
@@ -318,6 +381,46 @@ PanelWindow {
                         font.bold: true
                         style: Text.Outline
                         styleColor: Theme.alpha(Theme.background, 0.6)
+                    }
+
+                    // nothing here: the number, faint, in the middle
+                    Text {
+                        anchors.centerIn: parent
+                        visible: tile.windows.length === 0
+                        text: String((tile.index + 1) % 10)
+                        color: Theme.alpha(tile.picked ? Theme.accent : Theme.subtext, 0.35)
+                        font.family: Theme.font
+                        font.pixelSize: tile.height * 0.32
+                        font.bold: true
+                    }
+
+                    // the hovered window's title
+                    Rectangle {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.bottom: parent.bottom
+                        anchors.bottomMargin: 8
+                        width: Math.min(parent.width - 16, title.implicitWidth + 20)
+                        height: title.implicitHeight + 8
+                        radius: height / 2
+                        color: Theme.alpha(Theme.background, 0.8)
+                        opacity: tile.hovered !== "" ? 1 : 0
+                        visible: opacity > 0
+                        z: 5
+
+                        Behavior on opacity {
+                            NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic }
+                        }
+
+                        Text {
+                            id: title
+                            anchors.centerIn: parent
+                            width: Math.min(implicitWidth, parent.parent.width - 36)
+                            text: tile.hovered
+                            elide: Text.ElideRight
+                            color: Theme.foreground
+                            font.family: Theme.font
+                            font.pointSize: Theme.fontSize
+                        }
                     }
                 }
             }

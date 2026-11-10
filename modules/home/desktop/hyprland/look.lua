@@ -124,3 +124,11 @@ hl.layer_rule({
     match = { namespace = "^(hyprpicker|selection)$" },
     no_anim = true,
 })
+
+-- full-screen shell layers animate their own contents; a layer slide
+-- would drag the whole screen in under them
+hl.layer_rule({
+    name = "fullscreen-shell",
+    match = { namespace = "^(haku-overview)$" },
+    no_anim = true,
+})
