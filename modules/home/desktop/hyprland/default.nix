@@ -29,6 +29,7 @@ in
     ./outputs.nix
     ./plugins.nix
     ./settings.nix
+    ./toolkit.nix
     ./services.nix
   ];
 
