@@ -76,18 +76,18 @@ PanelWindow {
         const id = base + index + 1
         const ws = Hyprland.workspaces.values.find(ws => ws.id === id)
         if (ws) ws.activate()
-        else Hyprland.dispatch(`hl.dsp.focus({ workspace = "", on_current_monitor = true })`)
+        else Hyprland.dispatch(`hl.dsp.focus({ workspace = "${id}", on_current_monitor = true })`)
         Panels.close()
     }
 
     function focusWindow(addr) {
-        Hyprland.dispatch(`hl.dsp.focus({ window = "address:" })`)
+        Hyprland.dispatch(`hl.dsp.focus({ window = "address:${addr}" })`)
         Panels.close()
     }
 
     // the window alone; focus stays where it is
     function moveWindow(addr, id) {
-        Hyprland.dispatch(`hl.dsp.window.move({ workspace = , follow = false, window = "address:" })`)
+        Hyprland.dispatch(`hl.dsp.window.move({ workspace = ${id}, follow = false, window = "address:${addr}" })`)
     }
 
     function pick(index) {
