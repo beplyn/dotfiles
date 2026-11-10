@@ -21,7 +21,7 @@ in
     settings =
     {
       model = "ollama/${llm.model}";
-      # same model: one is loaded at a time (OLLAMA_MAX_LOADED_MODELS)
+      # same model: no second big model next to it (OLLAMA_MAX_LOADED_MODELS)
       small_model = "ollama/${llm.model}";
       share = "disabled";
       autoupdate = false;
