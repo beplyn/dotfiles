@@ -1,5 +1,6 @@
 {
   config,
+  osConfig,
   pkgs,
   subst,
   ...
@@ -21,7 +22,8 @@ let
       libnotify
       satty
       xdg-utils
-      config.lib.haku.wm
+      jq
+      osConfig.programs.hyprland.package
     ];
     text = subst { inherit (p) background accent; } (builtins.readFile ./screenshot.sh);
   };

@@ -205,7 +205,7 @@ start_recording() {
   fi
 
   local display
-  display=$(wm focused-output) || { echo "record: no output picked" >&2; return 1; }
+  display=$(hyprctl -j monitors | jq -r '.[] | select(.focused).name') || { echo "record: no focused output" >&2; return 1; }
 
   mkdir -p "$SAVE_DIR" "$STATE_DIR"
   local file

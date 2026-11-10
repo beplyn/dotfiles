@@ -1,12 +1,27 @@
 {
-  config,
   lib,
+  pkgs,
   ...
 }:
 
 # Hyprland's Lua config. The .nix files hand values to Lua as data modules
 # (hypr/haku/data/*.lua); the .lua files next to them do the rest. Stylix
 # adds its colours to the generated hyprland.lua.
+let
+  sessionWatch = pkgs.writeShellApplication
+  {
+    name = "session-watch";
+    runtimeInputs = with pkgs;
+    [
+      bash
+      coreutils
+      gnugrep
+      iproute2
+      systemd
+    ];
+    text = builtins.readFile ./session-watch.sh;
+  };
+in
 {
   imports =
   [
@@ -38,15 +53,15 @@
     systemd =
     {
       enable = true;
-      # as in mango: sway leaves graphical-session.target up with waybar and
-      # co. failed, so cycle the session onto Hyprland
+      # a crashed session can leave graphical-session.target up with waybar
+      # and co. failed, so start it afresh
       extraCommands =
       [
         "systemctl --user stop graphical-session.target"
         "systemctl --user reset-failed"
         "systemctl --user start hyprland-session.target"
         # the shutdown hook below misses a crash
-        (lib.getExe config.lib.haku.sessionWatch)
+        (lib.getExe sessionWatch)
       ];
     };
 

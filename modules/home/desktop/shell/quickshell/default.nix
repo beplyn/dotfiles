@@ -23,7 +23,7 @@ let
       libnotify
       jq
       procps
-      config.lib.haku.wm
+      osConfig.programs.hyprland.package
     ];
     text = builtins.readFile ./record.sh;
   };

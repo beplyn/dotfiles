@@ -14,7 +14,7 @@ case "$mode" in
     grim -g "$geometry" "$file"
     ;;
   output)
-    output="$(wm focused-output)" || exit 0
+    output="$(hyprctl -j monitors | jq -r '.[] | select(.focused).name')" || exit 0
     grim -o "$output" "$file"
     ;;
   *)
