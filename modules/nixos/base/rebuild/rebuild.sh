@@ -179,13 +179,13 @@ if [ ${#restart[@]} -gt 0 ]; then
 fi
 
 # new random wallpaper in the theme's colours (desktop hosts only)
-if command -v wallpaper-pick >/dev/null; then
-  if wallpaper-pick; then
+if command -v wallpaper >/dev/null; then
+  if wallpaper random; then
     # blurred copy for the greeter (can't read homes, no blur)
-    magick "$cache/wallpaper/current.png" -resize 1920x1080^ -filter Gaussian -blur 0x20 -level 0%,100%,0.85 png24:- \
+    magick "$cache/wallpapers/current.jpg" -resize 1920x1080^ -filter Gaussian -blur 0x20 -level 0%,100%,0.85 png24:- \
       | sudo install -Dm644 /dev/stdin /var/lib/wallpaper/current.png
   else
-    warn "wallpaper-pick failed, keeping the current wallpaper"
+    warn "wallpaper random failed, keeping the current wallpaper"
   fi
 fi
 
