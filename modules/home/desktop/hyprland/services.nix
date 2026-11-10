@@ -10,7 +10,7 @@ let
   target = "hyprland-session.target";
 in
 {
-  # wallpaper-pick's image, which awww shows elsewhere (quickshell/wallpaper.nix),
+  # wallpaper-pick's and waypaper's image (quickshell/wallpaper.nix),
   # not Stylix's
   stylix.targets.hyprland.hyprpaper.enable = false;
   stylix.targets.hyprpaper.enable = false;
