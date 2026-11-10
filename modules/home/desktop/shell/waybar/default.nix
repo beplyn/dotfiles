@@ -9,7 +9,7 @@
 
 let
   t = config.themes.shell;
-  gap = config.programs.niri.settings.layout.gaps;
+  gap = t.gaps;
   niri = lib.getExe osConfig.programs.niri.package;
   signals = config.lib.haku.waybarSignals;
   cava = lib.getExe config.lib.haku.cava.cavaVisualizer;

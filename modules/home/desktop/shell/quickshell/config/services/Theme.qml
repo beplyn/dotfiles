@@ -29,7 +29,7 @@ Singleton {
     readonly property int innerRadius: radius - 4
     readonly property real glass: Stylix.opacity
     // Panels float this far from the screen edges and from waybar,
-    // matching niri's window gaps.
+    // matching Hyprland's window gaps.
     readonly property int gap: Stylix.gap
     readonly property int pad: 14
 
