@@ -15,7 +15,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # no follows: nixvim warns when its nixpkgs pin is overridden
     nixvim.url = "github:nix-community/nixvim";
 
     areofyl-fetch =
@@ -36,12 +35,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # the calendar (programs.vcal)
     vcal =
     {
       url = "github:beplyn/vcal";
       inputs.nixpkgs.follows = "nixpkgs";
-      # only used by its checks; no second copy in the lock
       inputs.home-manager.follows = "home-manager";
     };
 
@@ -51,7 +48,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # upstream themes, recoloured to the Stylix scheme at build time
     catppuccin-zen =
     {
       url = "github:catppuccin/zen-browser";
@@ -88,7 +84,6 @@
     inputs@{ nixpkgs, ... }:
     let
       inherit (nixpkgs) lib;
-      # every directory in hosts/ except the shared one
       hosts = lib.attrNames (lib.filterAttrs (n: t: t == "directory" && n != "common") (builtins.readDir ./hosts));
       themes =
       [
