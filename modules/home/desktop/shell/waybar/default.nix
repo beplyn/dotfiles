@@ -3,14 +3,12 @@
   config,
   lib,
   osConfig,
-  pkgs,
   ...
 }:
 
 let
   t = config.themes.shell;
   gap = t.gaps;
-  niri = lib.getExe osConfig.programs.niri.package;
   signals = config.lib.haku.waybarSignals;
   cava = lib.getExe config.lib.haku.cava.cavaVisualizer;
   laptop = osConfig.laptop.enable;
@@ -32,110 +30,6 @@ let
     }"'';
   glyphs = map glyph;
 
-  # after the workspaces and window title, whichever compositor's
-  media =
-  [
-    "mpris"
-    "custom/cava"
-  ];
-
-  # the same bar with another compositor's modules on the left; niri's stay
-  # empty elsewhere, so each gets its own config
-  variant = name: left: modules: (pkgs.formats.json { }).generate "waybar-${name}.json"
-  [
-    (config.programs.waybar.settings.main // modules // { modules-left = [ "custom/launcher" ] ++ left ++ media; })
-  ];
-
-  swayConfig = variant "sway"
-    [
-      "sway/workspaces"
-      "sway/mode"
-      "sway/window"
-    ]
-    {
-      # scrolling switches workspaces by default
-      "sway/workspaces".format = "{name}";
-
-      # only shown outside the default mode, e.g. resize
-      "sway/mode".format = "{}";
-
-      "sway/window" =
-      {
-        format = "{title}";
-        max-length = 48;
-      };
-    };
-
-  # hyprland/workspaces clicks send hyprlang dispatches, which the Lua config
-  # rejects; ext-workspace switches over the protocol
-  hyprlandConfig = variant "hyprland"
-    [
-      "ext/workspaces"
-      "hyprland/window"
-    ]
-    {
-      "ext/workspaces" =
-      {
-        format = "{name}";
-        on-click = "activate";
-      };
-
-      "hyprland/window" =
-      {
-        format = "{title}";
-        max-length = 48;
-        separate-outputs = true;
-      };
-    };
-
-  # river classic's status protocol: all nine tags, occupied ones brighter
-  riverConfig = variant "river"
-    [
-      "river/tags"
-      "river/window"
-    ]
-    {
-      "river/window" =
-      {
-        format = "{}";
-        max-length = 48;
-      };
-    };
-
-  # mango and any other compositor: ext-workspace and foreign-toplevel, where
-  # it has them
-  genericConfig = variant "generic"
-    [
-      "ext/workspaces"
-      "wlr/taskbar"
-    ]
-    {
-      "ext/workspaces" =
-      {
-        format = "{name}";
-        on-click = "activate";
-      };
-
-      "wlr/taskbar" =
-      {
-        format = "{icon}";
-        icon-size = 16;
-        tooltip-format = "{title}";
-        on-click = "activate";
-      };
-    };
-
-  # `wm name` skips a stale SWAYSOCK, which sway leaves behind
-  launch = pkgs.writeShellScript "waybar-launch" ''
-    case "$(${lib.getExe config.lib.haku.wm} name)" in
-      niri) exec ${waybar} ;;
-      sway) exec ${waybar} -c ${swayConfig} ;;
-      hyprland) exec ${waybar} -c ${hyprlandConfig} ;;
-      river) exec ${waybar} -c ${riverConfig} ;;
-      *) exec ${waybar} -c ${genericConfig} ;;
-    esac
-  '';
-  waybar = lib.getExe config.programs.waybar.package;
 in
 {
   # Stylix's waybar CSS fights the capsule
@@ -161,10 +55,11 @@ in
       modules-left =
       [
         "custom/launcher"
-        "niri/workspaces"
-        "niri/window"
-      ]
-      ++ media;
+        "ext/workspaces"
+        "hyprland/window"
+        "mpris"
+        "custom/cava"
+      ];
       modules-center = [ "clock" ];
       modules-right =
       [
@@ -184,14 +79,15 @@ in
         on-click = lib.getExe config.services.walker.package;
       };
 
-      "niri/workspaces" =
+      # hyprland/workspaces clicks send hyprlang dispatches, which the Lua
+      # config rejects; ext-workspace switches over the protocol
+      "ext/workspaces" =
       {
-        format = "{index}";
-        on-scroll-up = "${niri} msg action focus-workspace-up";
-        on-scroll-down = "${niri} msg action focus-workspace-down";
+        format = "{name}";
+        on-click = "activate";
       };
 
-      "niri/window" =
+      "hyprland/window" =
       {
         format = "{title}";
         max-length = 48;
@@ -428,6 +324,4 @@ in
     ''
     + builtins.readFile ./style.css;
   };
-
-  systemd.user.services.waybar.Service.ExecStart = lib.mkForce "${launch}";
 }
