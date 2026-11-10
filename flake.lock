@@ -120,6 +120,26 @@
         "type": "github"
       }
     },
+    "cliamp": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1794327789,
+        "narHash": "sha256-sJT//GvXEl4f1rIf/68JMZEAlbuvaqO0nPHcL6bjd24=",
+        "owner": "bjarneo",
+        "repo": "cliamp",
+        "rev": "f43b9c144702a356f5bfa9225137ed2b6bbd2fb4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "bjarneo",
+        "repo": "cliamp",
+        "type": "github"
+      }
+    },
     "firefox-gnome-theme": {
       "flake": false,
       "locked": {
@@ -448,6 +468,7 @@
         "areofyl-fetch": "areofyl-fetch",
         "catppuccin-vimium": "catppuccin-vimium",
         "catppuccin-zen": "catppuccin-zen",
+        "cliamp": "cliamp",
         "forgejo-cli": "forgejo-cli",
         "glass-firefox": "glass-firefox",
         "home-manager": "home-manager",

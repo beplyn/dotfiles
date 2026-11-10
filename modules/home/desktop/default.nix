@@ -12,6 +12,7 @@
     ./browsers
     ./office.nix
     ./media.nix
+    ./cliamp.nix
     ./kdeconnect.nix
     ./hyprland
     ./rice
