@@ -6,7 +6,7 @@
   ...
 }:
 
-# hyprlock over wallpaper-pick's wallpaper; colours from the palette.
+# hyprlock over the picked wallpaper; colours from the palette.
 let
   p = config.themes.palette;
   rgb = color: "rgb(${lib.removePrefix "#" color})";
@@ -51,10 +51,10 @@ in
 
       animations.enabled = true;
 
-      # set by wallpaper-pick; hyprlock falls back to the colour if missing
+      # set by `wallpaper`; hyprlock falls back to the colour if missing
       background =
       {
-        path = lib.mkForce "${config.xdg.cacheHome}/wallpaper/current.png";
+        path = lib.mkForce "${config.lib.haku.wallpaper.cache}/current.jpg";
         # slight blur, like the greeter
         blur_passes = 2;
         blur_size = 4;

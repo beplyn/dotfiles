@@ -1,16 +1,16 @@
-# hyprpaper draws (desktop/hyprland/services.nix), waypaper picks; rebuild
-# runs wallpaper-pick.
+# hyprpaper draws (desktop/hyprland/services.nix); the shell's selector
+# (wallpapers/WallpaperMenu.qml, Mod+W) picks; rebuild runs `wallpaper random`.
 {
   config,
   lib,
   osConfig,
   pkgs,
+  subst,
   themeName,
   ...
 }:
 
 let
-  p = config.themes.palette;
   hyprctl = lib.getExe' osConfig.programs.hyprland.package "hyprctl";
 
   # lutgen palette per theme, matching the Stylix schemes
@@ -23,11 +23,37 @@ let
 
   # uncoloured sources; git skips an empty folder
   sources = lib.optionalString (builtins.pathExists ./wallpapers) "${./wallpapers}";
-  cache = "${config.xdg.cacheHome}/wallpaper";
-  # links to ./wallpapers in the checkout, so new ones land in the repo
-  folder = "${config.home.homeDirectory}/Pictures/Wallpapers";
+  cache = "${config.xdg.cacheHome}/wallpapers";
 
-  # recolor [-o DIR] IMAGE...: one copy per theme
+  # every source in this theme's colours, the palette wallpaper with them,
+  # and 16:9 thumbnails for the selector; built once per theme and source set
+  recoloured = pkgs.runCommand "wallpapers-${themeName}"
+  {
+    nativeBuildInputs = [ pkgs.lutgen pkgs.imagemagick ];
+  }
+  ''
+    export HOME="$TMPDIR"
+    mkdir -p "$out/thumbs"
+    ${lib.optionalString (sources != "") ''
+      for src in ${sources}/*; do
+        stem="$(basename "''${src%.*}")"
+        lutgen apply -p ${palettes.${themeName}} -o "$out/$stem.jpg" "$src"
+      done
+    ''}
+    magick ${config.stylix.image} -quality 95 "$out/stylix.jpg"
+    for img in "$out"/*.jpg; do
+      magick "$img" -resize 640x360^ -gravity center -extent 640x360 -quality 85 "$out/thumbs/$(basename "$img")"
+    done
+  '';
+
+  wallpaper = pkgs.writeShellApplication
+  {
+    name = "wallpaper";
+    runtimeInputs = [ pkgs.coreutils pkgs.findutils ];
+    text = subst { inherit cache hyprctl; } (builtins.readFile ./wallpaper.sh);
+  };
+
+  # recolor [-o DIR] IMAGE...: one copy per theme, for trying new ones
   recolor = pkgs.writeShellApplication
   {
     name = "recolor";
@@ -53,42 +79,15 @@ let
     '';
   };
 
-  # random source in the current theme's colours, else the Stylix wallpaper
-  wallpaper-pick = pkgs.writeShellApplication
-  {
-    name = "wallpaper-pick";
-    runtimeInputs = [ pkgs.lutgen pkgs.coreutils pkgs.findutils ];
-    text = ''
-      mkdir -p "${cache}"
-      src=
-      ${lib.optionalString (sources != "") ''
-        src="$(find -L "${sources}" -type f \
-          \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) | shuf -n1)"
-      ''}
-      if [ -n "$src" ]; then
-        img="${cache}/$(basename "''${src%.*}")-${themeName}.png"
-        # cached per source and theme
-        [ -e "$img" ] || lutgen apply -p ${palettes.${themeName}} -o "$img" "$src"
-      else
-        img="${config.stylix.image}"
-      fi
-      ln -sfn "$img" "${cache}/current.png"
-      # hyprpaper reads the symlink when it starts; this swaps it live. No
-      # session (e.g. a TTY): the lock screen still follows the symlink
-      ${hyprctl} hyprpaper wallpaper ",$(readlink -f "${cache}/current.png"),cover" >/dev/null 2>&1 || true
-    '';
-  };
-
-  # picks become the lock screen's too
   waypaperSettings =
   {
     backend = "hyprpaper";
-    post_command = "ln -sfn $wallpaper ${cache}/current.png";
-    inherit folder;
+    post_command = "${lib.getExe wallpaper} set $wallpaper";
+    folder = cache;
     fill = "fill";
     sort = "name";
-    color = p.background;
-    subfolders = true;
+    color = config.themes.palette.background;
+    subfolders = false;
     show_hidden = false;
     show_path_in_tooltip = true;
     number_of_columns = 3;
@@ -96,7 +95,7 @@ let
   };
 in
 {
-  home.packages = [ pkgs.waypaper pkgs.lutgen recolor wallpaper-pick ];
+  home.packages = [ pkgs.waypaper pkgs.lutgen recolor wallpaper ];
 
   # writable: waypaper rewrites it on exit
   xdg.configFile."waypaper/config.ini".source = (pkgs.formats.ini { }).generate "waypaper-config"
@@ -104,6 +103,26 @@ in
     Settings = waypaperSettings;
   };
 
+  # file by file, so the folder stays writable for current.jpg; a theme
+  # switch swaps the links, and current.jpg follows by name
+  xdg.cacheFile."wallpapers" =
+  {
+    source = recoloured;
+    recursive = true;
+  };
+
+  # until the first pick (rebuild's `wallpaper random`), the palette one
+  home.activation.wallpaper = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    [ -e "${cache}/current.jpg" ] || run ln -sfn "${cache}/stylix.jpg" "${cache}/current.jpg"
+  '';
+
+  # the sources in the checkout, so new ones land in the repo
   home.file."Pictures/Wallpapers".source =
-    config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/desktop/shell/quickshell/wallpapers";
+    config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/desktop/rice/quickshell/wallpapers";
+
+  lib.haku.wallpaper =
+  {
+    inherit cache;
+    bin = lib.getExe wallpaper;
+  };
 }

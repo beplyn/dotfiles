@@ -135,6 +135,7 @@ let
     hyprctl = lib.getExe' osConfig.programs.hyprland.package "hyprctl";
     mixer = lib.getExe pkgs.pavucontrol;
     wallpaper = lib.getExe pkgs.waypaper;
+    wallpaperSet = config.lib.haku.wallpaper.bin;
     systemctl = lib.getExe' osConfig.systemd.package "systemctl";
     pkill = lib.getExe' pkgs.procps "pkill";
     # stay awake (services/Awake.qml)
