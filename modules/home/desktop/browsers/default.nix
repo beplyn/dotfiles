@@ -61,6 +61,8 @@ let
     "font.name.serif.x-western" = lib.mkForce config.stylix.fonts.monospace.name;
     # open and save dialogs through the portal, which hands them to Nautilus
     "widget.use-xdg-desktop-portal.file-picker" = 1;
+    # ask where to save every download
+    "browser.download.useDownloadDir" = false;
   };
 
   # DuckDuckGo, Startpage and nixpkgs; the browser's other built-ins hidden by id
