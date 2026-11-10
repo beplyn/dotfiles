@@ -62,6 +62,7 @@ let
       [
         (show "Terminal" (Mod "Return" exec wezterm))
         (show "Launcher" (Mod "space" exec (ipc "panels" "toggle" [ "launcher" ])))
+        (show "Hyprlauncher" (ModAlt "space" exec "hyprlauncher"))
         (show "Clipboard" (Mod "v" exec (ipc "panels" "toggle" [ "clipboard" ])))
         (show "Control center" (Mod "a" exec (ipc "panels" "toggle" [ "control" ])))
         (show "Dashboard" (Mod "d" exec (ipc "panels" "toggle" [ "dashboard" ])))
