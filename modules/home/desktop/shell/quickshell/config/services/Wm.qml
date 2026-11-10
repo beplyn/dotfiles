@@ -1,76 +1,98 @@
 pragma Singleton
 import QtQuick
 import Quickshell
-import Quickshell.Io
+import Quickshell.Hyprland
 
-// The running compositor behind one interface; nothing else in the shell
-// talks to WM IPC. A backend (NiriBackend.qml, SwayBackend.qml,
-// HyprlandBackend.qml, or GenericBackend.qml over Wayland protocols) provides workspaces,
-// activeWindowTitle, focusedOutput, focusWorkspace(id) and quit(); adding
-// one is a case in `wm name` and a Loader below. Hyprland's also has the
-// windows behind the overview (overview/Overview.qml).
+// Hyprland behind one interface, from Quickshell.Hyprland; nothing else in
+// the shell talks to its IPC. Workspaces, the active window's title, the
+// focused output, and the windows behind the overview (overview/Overview.qml).
 Singleton {
     id: root
 
-    // from `wm name`, as the scripts see it; empty until it answers
-    property string currentCompositor: ""
-
-    readonly property var backend: niri.item ?? sway.item ?? hyprland.item ?? generic.item
-
-    // [{ id, idx, name, output, isFocused, isActive, isUrgent }], by output then idx.
-    readonly property var workspaces: backend?.workspaces ?? []
-    readonly property string activeWindowTitle: backend?.activeWindowTitle ?? ""
-    readonly property string focusedOutput: backend?.focusedOutput ?? ""
+    // [{ id, idx, name, output, isFocused, isActive, isUrgent }], by output
+    // then idx; special workspaces (the scratchpad) have negative ids
+    readonly property var workspaces: Hyprland.workspaces.values
+        .filter(ws => ws.id > 0)
+        .map(ws => ({
+            id: ws.id,
+            idx: ws.id,
+            name: ws.name,
+            output: ws.monitor?.name ?? "",
+            isFocused: ws.focused,
+            isActive: ws.active,
+            isUrgent: ws.urgent
+        }))
+        .sort((a, b) => a.output.localeCompare(b.output) || a.idx - b.idx)
+    readonly property string activeWindowTitle: Hyprland.activeToplevel?.title ?? ""
+    readonly property string focusedOutput: Hyprland.focusedMonitor?.name ?? ""
 
     function workspacesOn(output) {
         return workspaces.filter(ws => ws.output === output)
     }
 
-    function focusWorkspace(id) { backend?.focusWorkspace(id) }
-    function quit() { backend?.quit() }
+    // For the overview: [{ address, title, appId, workspace, x, y, width,
+    // height, floating, focused, toplevel }] in global logical pixels;
+    // toplevel is the Wayland handle a ScreencopyView captures. Geometry is
+    // from `j/clients`, so only as fresh as the last refresh.
+    readonly property var windows: Hyprland.toplevels.values
+        .filter(t => (t.workspace?.id ?? 0) > 0 && t.lastIpcObject?.at !== undefined)
+        .map(t => {
+            const ipc = t.lastIpcObject
+            return {
+                address: address(t.address),
+                title: t.title,
+                appId: ipc.class ?? "",
+                workspace: t.workspace.id,
+                x: ipc.at[0],
+                y: ipc.at[1],
+                width: ipc.size?.[0] ?? 0,
+                height: ipc.size?.[1] ?? 0,
+                floating: ipc.floating ?? false,
+                focused: t.activated,
+                toplevel: t.wayland
+            }
+        })
 
-    // Hyprland only, for the overview: windows with their geometry, kept
-    // fresh while trackWindows is set
-    readonly property var windows: backend?.windows ?? []
+    // while on, geometry follows every window event
+    property bool tracking: false
+
     function trackWindows(on) {
-        if (!backend || backend.trackWindows === undefined) return
-        backend.trackWindows = on
-        if (on) backend.refreshWindows()
+        tracking = on
+        if (on) Hyprland.refreshToplevels()
     }
-    function focusWindow(address) { backend?.focusWindow?.(address) }
-    function moveWindow(address, id) { backend?.moveWindow?.(address, id) }
 
-    Process {
-        running: true
-        command: [Theme.bin.wm, "name"]
-        stdout: StdioCollector {
-            onStreamFinished: root.currentCompositor = text.trim() || "generic"
+    Connections {
+        target: Hyprland
+        enabled: root.tracking
+        function onRawEvent(event) {
+            if (["openwindow", "closewindow", "movewindow", "movewindowv2", "changefloatingmode", "fullscreen"].includes(event.name))
+                Hyprland.refreshToplevels()
         }
     }
 
-    // Loader, not LazyLoader: that one waits for a reload, which this
-    // lazily created singleton can miss.
-    Loader {
-        id: niri
-        active: root.currentCompositor === "niri"
-        sourceComponent: NiriBackend {}
+    // Hyprland's address: selector wants the 0x Quickshell drops
+    function address(a) {
+        return a.startsWith("0x") ? a : "0x" + a
     }
 
-    Loader {
-        id: sway
-        active: root.currentCompositor === "sway"
-        sourceComponent: SwayBackend {}
+    // activate() speaks the Lua config's dispatch; an empty workspace has
+    // no object to activate, so that one goes by id
+    function focusWorkspace(id) {
+        const ws = Hyprland.workspaces.values.find(ws => ws.id === id)
+        if (ws) ws.activate()
+        else Hyprland.dispatch(`hl.dsp.focus({ workspace = "${id}", on_current_monitor = true })`)
     }
 
-    Loader {
-        id: hyprland
-        active: root.currentCompositor === "hyprland"
-        sourceComponent: HyprlandBackend {}
+    function focusWindow(addr) {
+        Hyprland.dispatch(`hl.dsp.focus({ window = "address:${addr}" })`)
     }
 
-    Loader {
-        id: generic
-        active: root.currentCompositor !== "" && !niri.active && !sway.active && !hyprland.active
-        sourceComponent: GenericBackend {}
+    // the window alone; focus stays where it is
+    function moveWindow(addr, id) {
+        Hyprland.dispatch(`hl.dsp.window.move({ workspace = ${id}, follow = false, window = "address:${addr}" })`)
+    }
+
+    function quit() {
+        Hyprland.dispatch("hl.dsp.exit()")
     }
 }

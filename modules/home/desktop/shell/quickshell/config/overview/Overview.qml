@@ -4,7 +4,7 @@ import Quickshell
 import Quickshell.Wayland
 import qs.services
 
-// Mod+Tab on Hyprland, in place of hyprtasking's grid: this monitor's ten
+// Mod+Tab, in place of hyprtasking's grid: this monitor's ten
 // workspaces (hyprsplit's, workspaces.lua) with their windows drawn to scale,
 // live where the compositor lets them be captured. Click a window to focus
 // it, a workspace to go there; drag a window onto another to send it.

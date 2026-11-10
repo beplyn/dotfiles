@@ -118,9 +118,6 @@ let
     cava = lib.getExe pkgs.cava;
     cavaVisualizer = lib.getExe cavaVisualizer;
     inherit cavaConfig;
-    niri = lib.getExe osConfig.programs.niri.package;
-    swaymsg = lib.getExe' osConfig.programs.sway.package "swaymsg";
-    wm = lib.getExe config.lib.haku.wm;
     clipboard = lib.getExe config.lib.haku.clipboard;
     # the launcher (launcher/LauncherMenu.qml); apps start in a scope of
     # their own, out of quickshell.service
@@ -131,13 +128,11 @@ let
     wlCopy = lib.getExe' pkgs.wl-clipboard "wl-copy";
     # via hypridle, which skips an already running hyprlock
     lock = "${lib.getExe' pkgs.systemd "loginctl"} lock-session";
-    loginctl = lib.getExe' pkgs.systemd "loginctl";
     brightnessctl = lib.getExe pkgs.brightnessctl;
     # monitor brightness over DDC/CI, when there is no backlight
     ddcutil = lib.getExe pkgs.ddcutil;
-    # night light (services/NightLight.qml): hyprsunset on hyprland, else gammastep
+    # night light (services/NightLight.qml) through hyprsunset
     hyprctl = lib.getExe' osConfig.programs.hyprland.package "hyprctl";
-    gammastep = lib.getExe pkgs.gammastep;
     mixer = lib.getExe pkgs.pavucontrol;
     wallpaper = lib.getExe pkgs.waypaper;
     systemctl = lib.getExe' osConfig.systemd.package "systemctl";
@@ -189,14 +184,8 @@ let
         # one database for the TUI and the dashboard (calendar.nix)
         (str "calendarDb" config.lib.haku.calendar.db)
         (prop "var" "calendarOpen" (builtins.toJSON config.lib.haku.calendar.open))
-        # titled binds for the hotkey overlay, by compositor
-        (prop "var" "hotkeys" (builtins.toJSON
-        {
-          niri = config.lib.haku.niriHotkeys;
-          sway = config.lib.haku.swayHotkeys;
-          mango = config.lib.haku.mangoHotkeys;
-          hyprland = config.lib.haku.hyprlandHotkeys;
-        }))
+        # titled binds for the hotkey overlay
+        (prop "var" "hotkeys" (builtins.toJSON config.lib.haku.hyprlandHotkeys))
         ""
         "    readonly property QtObject signals: QtObject {"
       ]
