@@ -134,8 +134,8 @@ let
     # night light (services/NightLight.qml) through hyprsunset
     hyprctl = lib.getExe' osConfig.programs.hyprland.package "hyprctl";
     mixer = lib.getExe pkgs.pavucontrol;
-    wallpaper = lib.getExe pkgs.waypaper;
-    wallpaperSet = config.lib.haku.wallpaper.bin;
+    # set, random, current (wallpaper.nix)
+    wallpaper = config.lib.haku.wallpaper.bin;
     systemctl = lib.getExe' osConfig.systemd.package "systemctl";
     pkill = lib.getExe' pkgs.procps "pkill";
     # stay awake (services/Awake.qml)
@@ -184,6 +184,8 @@ let
         (prop "bool" "laptop" (lib.boolToString laptop))
         # one database for the TUI and the dashboard (calendar.nix)
         (str "calendarDb" config.lib.haku.calendar.db)
+        # the recoloured wallpapers and their thumbnails (wallpaper.nix)
+        (str "wallpapers" config.lib.haku.wallpaper.cache)
         (prop "var" "calendarOpen" (builtins.toJSON config.lib.haku.calendar.open))
         # titled binds for the hotkey overlay
         (prop "var" "hotkeys" (builtins.toJSON config.lib.haku.hyprlandHotkeys))

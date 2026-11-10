@@ -14,6 +14,7 @@ import qs.power
 import qs.recorder
 import qs.services
 import qs.sharepicker
+import qs.wallpapers
 
 // The interactive layer over waybar. Every surface here is hidden until
 // waybar, a Hyprland bind or an event opens it.
@@ -31,6 +32,7 @@ ShellRoot {
     LauncherMenu {}
     SharePickerMenu {}
     Overview {}
+    WallpaperMenu {}
 
     // One per waybar hardware pill.
     Monitor {

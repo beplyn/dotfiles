@@ -78,30 +78,9 @@ let
       done
     '';
   };
-
-  waypaperSettings =
-  {
-    backend = "hyprpaper";
-    post_command = "${lib.getExe wallpaper} set $wallpaper";
-    folder = cache;
-    fill = "fill";
-    sort = "name";
-    color = config.themes.palette.background;
-    subfolders = false;
-    show_hidden = false;
-    show_path_in_tooltip = true;
-    number_of_columns = 3;
-    use_xdg_state = true;
-  };
 in
 {
-  home.packages = [ pkgs.waypaper pkgs.lutgen recolor wallpaper ];
-
-  # writable: waypaper rewrites it on exit
-  xdg.configFile."waypaper/config.ini".source = (pkgs.formats.ini { }).generate "waypaper-config"
-  {
-    Settings = waypaperSettings;
-  };
+  home.packages = [ pkgs.lutgen recolor wallpaper ];
 
   # file by file, so the folder stays writable for current.jpg; a theme
   # switch swaps the links, and current.jpg follows by name
