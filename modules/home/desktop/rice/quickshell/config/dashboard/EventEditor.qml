@@ -123,9 +123,10 @@ ColumnLayout {
         Events.edit(event, f, recurring && !series ? event.occurrence : null, finish)
     }
 
-    function remove() {
+    // all: every occurrence of a repeating event, not just this one
+    function remove(all) {
         busy = true
-        Events.remove(event, recurring && !series ? event.occurrence : null, finish)
+        Events.remove(event, recurring && !all ? event.occurrence : null, finish)
     }
 
     spacing: 6
@@ -249,10 +250,19 @@ ColumnLayout {
         IconButton {
             visible: root.confirmDelete
             size: 30
-            label: root.recurring && !root.series ? "Delete this one" : root.recurring ? "Delete all" : "Delete"
+            label: root.recurring ? "Delete this one" : "Delete"
             tint: Theme.red
             filled: true
-            onClicked: root.remove()
+            onClicked: root.remove(false)
+        }
+        // a repeating event offers both, whichever "Repeats" is set to
+        IconButton {
+            visible: root.confirmDelete && root.recurring
+            size: 30
+            label: "Delete all"
+            tint: Theme.red
+            filled: true
+            onClicked: root.remove(true)
         }
         IconButton {
             visible: root.confirmDelete
