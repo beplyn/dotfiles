@@ -3,7 +3,6 @@
   [
     ./quickshell
     ./waybar
-    ./walker
     ./clipboard
     ./screenshot
     ./lock.nix

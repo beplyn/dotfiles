@@ -51,7 +51,7 @@ in
       package = pkgs.maple-mono.NF;
     };
     opacity.terminal = 0.80;
-    # waybar, quickshell, walker
+    # waybar, quickshell
     opacity.desktop = 0.82;
     cursor = lib.mkIf (!headless)
     {
@@ -70,7 +70,7 @@ in
 
   home-manager.sharedModules =
   [
-    # no rofi (walker); its target sets the renamed programs.rofi.font
+    # no rofi; its target sets the renamed programs.rofi.font
     { stylix.targets.rofi.enable = false; }
   ]
   # servers: terminal targets only

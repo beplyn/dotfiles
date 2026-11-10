@@ -109,11 +109,11 @@ hl.animation({ leaf = "workspaces", enabled = true, speed = 5, bezier = "emphasi
 hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 4, bezier = "emphasizedDecel", style = "slidefadevert 15%" })
 hl.animation({ leaf = "zoomFactor", enabled = true, speed = 7, bezier = "standard" })
 
--- frosted shell: the bar, the launcher and quickshell's panels blur what is
+-- frosted shell: the bar and quickshell's panels blur what is
 -- behind them; ignore_alpha keeps their clear margins sharp
 hl.layer_rule({
     name = "frosted-shell",
-    match = { namespace = "^(waybar|walker|haku-.*)$" },
+    match = { namespace = "^(waybar|haku-.*)$" },
     blur = true,
     ignore_alpha = 0.3,
 })

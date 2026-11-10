@@ -76,7 +76,7 @@ in
       {
         format = glyph 62227; # nf-linux-nixos
         tooltip = false;
-        on-click = lib.getExe config.services.walker.package;
+        on-click = panel "launcher";
       };
 
       # hyprland/workspaces clicks send hyprlang dispatches, which the Lua
