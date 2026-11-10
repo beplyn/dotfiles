@@ -14,7 +14,10 @@ in
   {
     enable = true;
     # search before guessing
-    rules = ./rules.md;
+    context = ./rules.md;
+    # stylix still sets tui.json, which OpenCode 2 ignores; the theme goes in cli.json
+    tui = lib.mkForce { };
+    cli.theme.name = "stylix";
     settings =
     {
       model = "ollama/${llm.model}";
