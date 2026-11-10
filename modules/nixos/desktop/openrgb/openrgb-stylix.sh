@@ -1,7 +1,8 @@
 # openrgb-stylix: paint every device the OpenRGB server found, keyboards in
 # their own colour. Static where a device has it, so it sticks in hardware;
-# Direct or Custom (per-LED, e.g. the Red Devil GPU) otherwise. Motherboards
-# go Direct first: Gigabyte's IT5701 leaves zones out in Static.
+# Direct or Custom (per-LED) otherwise. A device that can follow the
+# motherboard (the Red Devil GPU) does, its Custom mode leaves LEDs out.
+# Keyboards go Direct first: the Mountain Everest ignores the Static colour.
 # --nodetect: only talk to the local server (port 6742), never probe hardware
 colour="${1:?usage: openrgb-stylix RRGGBB [KEYBOARD_RRGGBB]}"
 keyboard_colour="${2:-$colour}"
@@ -31,7 +32,9 @@ while read -r line; do
       modes="${modes,,}"
       c=$colour
       [[ $type == Keyboard ]] && c=$keyboard_colour
-      if [[ $type == Motherboard && $modes == *" direct "* ]]; then
+      if [[ $modes == *" sync with motherboard "* ]]; then
+        args+=(--device "$dev" --mode "sync with motherboard")
+      elif [[ $type == Keyboard && $modes == *" direct "* ]]; then
         args+=(--device "$dev" --mode direct --color "$c")
       elif [[ $modes == *" static "* ]]; then
         args+=(--device "$dev" --mode static --color "$c")
