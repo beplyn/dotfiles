@@ -14,6 +14,6 @@
     ./media.nix
     ./kdeconnect.nix
     ./hyprland
-    ./shell
+    ./rice
   ];
 }
