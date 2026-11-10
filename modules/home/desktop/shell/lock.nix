@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  osConfig,
   pkgs,
   ...
 }:
@@ -13,7 +14,9 @@ let
   hyprlock = lib.getExe config.programs.hyprlock.package;
   pidof = lib.getExe' pkgs.procps "pidof";
   loginctl = lib.getExe' pkgs.systemd "loginctl";
-  wm = lib.getExe config.lib.haku.wm;
+  hyprctl = lib.getExe' osConfig.programs.hyprland.package "hyprctl";
+  # the Lua config takes a Lua dispatcher
+  dpms = action: "${hyprctl} dispatch 'hl.dsp.dpms({ action = \"${action}\" })'";
   avatar = "${config.xdg.cacheHome}/pfp.png";
 
   # ~/.pfp (any image, set at rebuild) -> square png; snowflake if missing or unreadable
@@ -133,7 +136,7 @@ in
         # pfp re-renders first, so a changed ~/.pfp shows on the next lock
         lock_cmd = "${pidof} hyprlock || { ${lib.getExe pfp}; ${hyprlock}; }";
         before_sleep_cmd = "${loginctl} lock-session";
-        after_sleep_cmd = "${wm} dpms on";
+        after_sleep_cmd = "${dpms "on"}";
         inhibit_sleep = 3;
       };
       listener =
@@ -144,8 +147,8 @@ in
         }
         {
           timeout = 600;
-          on-timeout = "${wm} dpms off";
-          on-resume = "${wm} dpms on";
+          on-timeout = "${dpms "off"}";
+          on-resume = "${dpms "on"}";
         }
       ];
     };
