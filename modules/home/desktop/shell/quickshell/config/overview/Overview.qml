@@ -1,12 +1,13 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Hyprland
 import Quickshell.Wayland
 import qs.services
 
-// Mod+Tab, in place of hyprtasking's grid: this monitor's ten
-// workspaces (hyprsplit's, workspaces.lua) with their windows drawn to scale,
-// live where the compositor lets them be captured. Click a window to focus
+// Mod+Tab, in place of hyprtasking's grid: this monitor's ten Hyprland
+// workspaces (hyprsplit's, workspaces.lua) with their windows drawn to scale
+// from Hyprland's own geometry, live through hyprland-toplevel-export. Click a window to focus
 // it, a workspace to go there; drag a window onto another to send it.
 // hjkl or the arrows pick, 1-0 jump, Enter goes, Escape or Mod+Tab closes.
 PanelWindow {
@@ -16,21 +17,77 @@ PanelWindow {
     readonly property int columns: 5
     readonly property int count: 10
 
-    // hyprsplit gives monitor i the ids (i-1)*10+1 .. i*10
-    readonly property int active: Wm.workspacesOn(screen?.name ?? "").find(ws => ws.isActive)?.id ?? 1
+    // this screen's Hyprland monitor; hyprsplit gives monitor i the ids
+    // (i-1)*10+1 .. i*10
+    readonly property var monitor: screen ? Hyprland.monitorFor(screen) : null
+    readonly property int active: Math.max(1, monitor?.activeWorkspace?.id ?? 1)
     readonly property int base: Math.floor((active - 1) / count) * count
 
     // the tile the keys move; starts on the active workspace
     property int selected: 0
 
-    onOpenChanged: {
-        Wm.trackWindows(open)
-        if (open) selected = active - base - 1
+    // [{ address, title, appId, workspace, x, y, width, height, floating,
+    // focused, toplevel }] in global logical pixels; toplevel is the Wayland
+    // handle a ScreencopyView captures. Geometry is from `j/clients`, so it
+    // is refreshed on open and on every window event while open.
+    readonly property var windows: Hyprland.toplevels.values
+        // special workspaces (the scratchpad) have negative ids
+        .filter(t => (t.workspace?.id ?? 0) > 0 && t.lastIpcObject?.at !== undefined)
+        .map(t => {
+            const ipc = t.lastIpcObject
+            return {
+                address: address(t.address),
+                title: t.title,
+                appId: ipc.class ?? "",
+                workspace: t.workspace.id,
+                x: ipc.at[0],
+                y: ipc.at[1],
+                width: ipc.size?.[0] ?? 0,
+                height: ipc.size?.[1] ?? 0,
+                floating: ipc.floating ?? false,
+                focused: t.activated,
+                toplevel: t.wayland
+            }
+        })
+
+    Connections {
+        target: Hyprland
+        enabled: root.open
+        function onRawEvent(event) {
+            if (["openwindow", "closewindow", "movewindow", "movewindowv2", "changefloatingmode", "fullscreen"].includes(event.name))
+                Hyprland.refreshToplevels()
+        }
     }
 
+    onOpenChanged: {
+        if (!open) return
+        Hyprland.refreshToplevels()
+        selected = active - base - 1
+    }
+
+    // Hyprland's address: selector wants the 0x Quickshell drops
+    function address(a) {
+        return a.startsWith("0x") ? a : "0x" + a
+    }
+
+    // activate() speaks the Lua config's dispatch; an empty workspace has
+    // no object to activate, so that one goes by id
     function go(index) {
-        Wm.focusWorkspace(base + index + 1)
+        const id = base + index + 1
+        const ws = Hyprland.workspaces.values.find(ws => ws.id === id)
+        if (ws) ws.activate()
+        else Hyprland.dispatch(`hl.dsp.focus({ workspace = "", on_current_monitor = true })`)
         Panels.close()
+    }
+
+    function focusWindow(addr) {
+        Hyprland.dispatch(`hl.dsp.focus({ window = "address:" })`)
+        Panels.close()
+    }
+
+    // the window alone; focus stays where it is
+    function moveWindow(addr, id) {
+        Hyprland.dispatch(`hl.dsp.window.move({ workspace = , follow = false, window = "address:" })`)
     }
 
     function pick(index) {
@@ -136,7 +193,7 @@ PanelWindow {
                     readonly property int workspace: root.base + index + 1
                     readonly property bool current: workspace === root.active
                     readonly property bool dropTarget: drag.containsDrag && drag.drag.source?.workspace !== workspace
-                    readonly property var windows: Wm.windows
+                    readonly property var windows: root.windows
                         .filter(w => w.workspace === workspace)
                         // tiled first, floating on top; the focused one last
                         .sort((a, b) => (a.floating - b.floating) || (a.focused - b.focused))
@@ -165,7 +222,7 @@ PanelWindow {
                         keys: ["haku-window"]
                         onDropped: e => {
                             const w = e.source.window
-                            if (w && w.workspace !== tile.workspace) Wm.moveWindow(w.address, tile.workspace)
+                            if (w && w.workspace !== tile.workspace) root.moveWindow(w.address, tile.workspace)
                         }
                     }
 
@@ -239,10 +296,7 @@ PanelWindow {
                                 cursorShape: drag.active ? Qt.ClosedHandCursor : Qt.PointingHandCursor
                                 onEntered: root.selected = tile.index
                                 hoverEnabled: true
-                                onClicked: {
-                                    Wm.focusWindow(win.modelData.address)
-                                    Panels.close()
-                                }
+                                onClicked: root.focusWindow(win.modelData.address)
                                 onReleased: {
                                     if (!drag.active) return
                                     win.Drag.drop()
