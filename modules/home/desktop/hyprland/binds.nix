@@ -5,9 +5,9 @@
   ...
 }:
 
-# niri's binds (niri/binds.nix) on the same keys, with the scrolling layout
-# standing in for niri's columns; where Hyprland has no equivalent the
-# closest action is noted. binds.lua turns each into an hl.bind.
+# niri-style binds, with the scrolling layout for its columns; where
+# Hyprland has no equivalent the closest action is noted. binds.lua turns
+# each into an hl.bind.
 let
   wezterm = lib.getExe config.programs.wezterm.package;
   walker = lib.getExe config.services.walker.package;
@@ -177,13 +177,13 @@ let
       ];
     }
     {
-      # what niri has no bind for, on the keys mango uses for its own
-      name = "Hyprland only";
+      # beyond the niri-style set
+      name = "Hyprland";
       # toggles, which a held key would flip back and forth
       repeat = false;
       binds =
       [
-        # niri's columns or classic tiling, as mango's Mod+T cycles its layouts
+        # scrolling columns or classic tiling
         (show "Toggle scrolling / tiling" (Mod "t" "haku.cycle_layout" [ "scrolling" "dwindle" ]))
         (show "Cycle windows" (ModShift "Tab" "window.cycle_next" { next = false; }))
         (show "Show scratchpad" (Mod "grave" "workspace.toggle_special" "scratch"))

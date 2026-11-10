@@ -1,5 +1,5 @@
--- Layout, decoration and motion. Gaps, borders and columns follow niri
--- (settings.nix); the curves are Material 3 motion, as in caelestia's and
+-- Layout, decoration and motion. Gaps, borders and columns from the shell
+-- theme (settings.nix); the curves are Material 3 motion, as in caelestia's and
 -- end-4's rices. Stylix sets the colours in hyprland.lua.
 local t = require("haku.data.theme")
 

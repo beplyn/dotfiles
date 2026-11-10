@@ -9,7 +9,7 @@ let
   t = config.themes.shell;
 in
 {
-  # walker backend: now only the dmenu prompts (quit confirm, sway menu); the
+  # walker backend: now only the dmenu prompts (quit confirm); the
   # launcher (Mod+Space) and the clipboard are quickshell panels
   services.elephant =
   {
@@ -29,8 +29,6 @@ in
         "dnfpackages"
         "files"
         "menus"
-        "niriactions"
-        "nirisessions"
         "playerctl"
         "protonpass"
         "providerlist"

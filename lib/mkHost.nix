@@ -58,12 +58,9 @@ nixpkgs.lib.nixosSystem
       ];
     }
   ]
-  # Steam (Millennium) and niri only with a display
-  ++ nixpkgs.lib.optionals (!headless)
-  [
+  # Steam (Millennium) only with a display
+  ++ nixpkgs.lib.optional (!headless)
     { nixpkgs.overlays = [ inputs.millennium.overlays.default ]; }
-    inputs.niri.nixosModules.niri
-  ]
   ++
   [
     inputs.stylix.nixosModules.stylix

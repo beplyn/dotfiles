@@ -13,9 +13,6 @@
     ./office.nix
     ./media.nix
     ./kdeconnect.nix
-    ./niri
-    ./sway
-    ./mango
     ./hyprland
     ./shell
   ];

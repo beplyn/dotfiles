@@ -1,11 +1,7 @@
-{
-  config,
-  lib,
-  ...
-}:
+{ config, ... }:
 
-# the hypr daemons, on hyprland-session.target only so the other sessions
-# keep theirs; hyprlock and hypridle are shared (shell/lock.nix)
+# the hypr daemons, on hyprland-session.target; hyprlock and hypridle are
+# in shell/lock.nix
 let
   target = "hyprland-session.target";
 in
@@ -52,15 +48,5 @@ in
     ];
   };
 
-  # niri brings its own agent
   services.hyprpolkitagent.enable = true;
-  systemd.user.services.hyprpolkitagent =
-  {
-    Unit =
-    {
-      PartOf = lib.mkForce [ target ];
-      After = lib.mkForce [ target ];
-    };
-    Install.WantedBy = lib.mkForce [ target ];
-  };
 }

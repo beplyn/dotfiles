@@ -1,6 +1,6 @@
 { lib, ... }:
 
-# Per-host display hardware: niri layout (empty on VMs) and laptop panel.
+# Per-host display hardware: Hyprland and greeter layout (empty on VMs) and laptop panel.
 let
   monitor = lib.types.submodule
   {
@@ -10,20 +10,20 @@ let
       {
         type = lib.types.str;
         example = "DP-1";
-        description = "Connector name, as listed by `niri msg outputs`.";
+        description = "Connector name, as listed by `hyprctl monitors`.";
       };
       width = lib.mkOption { type = lib.types.int; };
       height = lib.mkOption { type = lib.types.int; };
       refresh = lib.mkOption
       {
         type = lib.types.float;
-        description = "Refresh rate in Hz; niri picks the closest mode.";
+        description = "Refresh rate in Hz; Hyprland picks the closest mode.";
       };
       primary = lib.mkOption
       {
         type = lib.types.bool;
         default = false;
-        description = "Focus this output when niri starts.";
+        description = "Focus this output when Hyprland starts; the only one the greeter uses.";
       };
     };
   };

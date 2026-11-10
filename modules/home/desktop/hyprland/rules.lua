@@ -1,5 +1,5 @@
--- niri's window rules (niri/rules.nix), then floats for dialogs and the
--- hypr tools.
+-- Translucent apps and Steam toasts, then floats for dialogs and the hypr
+-- tools.
 
 hl.window_rule({
     name = "translucent",
