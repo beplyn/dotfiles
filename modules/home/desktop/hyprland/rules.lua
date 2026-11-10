@@ -38,10 +38,10 @@ hl.window_rule({
     center = true,
 })
 
--- the hypr tools and the mixer, centred at a comfortable size
+-- the hypr tools, centred at a comfortable size
 hl.window_rule({
     name = "hypr-tools",
-    match = { class = "^(hyprpwcenter|hyprsysteminfo|org\\.pulseaudio\\.pavucontrol)$" },
+    match = { class = "^(hyprpwcenter|hyprsysteminfo)$" },
     float = true,
     center = true,
     size = { "(monitor_w*0.45)", "(monitor_h*0.5)" },
