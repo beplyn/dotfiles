@@ -14,7 +14,7 @@ let
   # takes on them; keyboards get their own, brighter one
   colors =
   {
-    catppuccin = { main = "3f0078"; keyboard = "8800ff"; }; # dark purple
+    catppuccin = { main = "1a0033"; keyboard = "8000ff"; }; # dark purple
     nord = { main = "0a2a9c"; keyboard = "0a2a9c"; }; # dark blue
     gruvbox = { main = "b04a08"; keyboard = "b04a08"; }; # orange-brown
   };
