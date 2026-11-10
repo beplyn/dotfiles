@@ -44,4 +44,12 @@
     enable = true;
     enableFishIntegration = true;
   };
+
+  # typos in fish and bash: an unknown command offers the closest match (fastftech -> fastfetch),
+  # `f` fixes the last command, ctrl-x ctrl-x the one being typed
+  programs.pay-respects =
+  {
+    enable = true;
+    alias = "f";
+  };
 }
