@@ -685,11 +685,11 @@
         "systems": "systems_5"
       },
       "locked": {
-        "lastModified": 1794336959,
-        "narHash": "sha256-h4xTqyIAwixWjT4tKIBoE3kBmvetHxIb7cR1M/jZstg=",
+        "lastModified": 1794352197,
+        "narHash": "sha256-w98yIIZdGs+uKPZ9X0lqaY7l8QvBTiSslpu7rX1WNqg=",
         "owner": "beplyn",
         "repo": "vcal",
-        "rev": "725d881ab4cfc7b9ddbc0ef9c0b7c63e030e550b",
+        "rev": "363e134441b7046ccb4e7066dd754450da804201",
         "type": "github"
       },
       "original": {
