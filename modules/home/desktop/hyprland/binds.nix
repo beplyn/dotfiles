@@ -10,7 +10,7 @@
 # each into an hl.bind.
 let
   wezterm = lib.getExe config.programs.wezterm.package;
-  walker = lib.getExe config.services.walker.package;
+  dialog = lib.getExe' pkgs.hyprland-guiutils "hyprland-dialog";
   # qs ipc call as a command string
   ipc = target: fn: args: lib.escapeShellArgs (config.lib.haku.ipc target fn ++ args);
   # through hypridle, whose lock_cmd skips an already running hyprlock
@@ -46,7 +46,7 @@ let
   };
 
   # niri asks before quitting too; hyprshutdown closes apps first
-  quit = "[ \"$(printf 'Quit\\nCancel\\n' | ${walker} -d -p 'Quit Hyprland?')\" = Quit ] && ${hyprshutdown} -t 'Quitting Hyprland…'";
+  quit = "[ \"$(${dialog} --title 'Quit Hyprland' --text 'Quit Hyprland?' --buttons 'Quit;Cancel')\" = Quit ] && ${hyprshutdown} -t 'Quitting Hyprland…'";
 
   # every bind titled, by section, for the hotkey overlay (Mod+/), as in niri's
   show = title: b: b // { inherit title; };

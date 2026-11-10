@@ -30,6 +30,14 @@ hl.window_rule({
     center = true,
 })
 
+-- hyprland-dialog's prompts (the quit confirm), centred at their own size
+hl.window_rule({
+    name = "hypr-dialogs",
+    match = { class = "^hyprland-dialog$" },
+    float = true,
+    center = true,
+})
+
 -- the hypr tools and the mixer, centred at a comfortable size
 hl.window_rule({
     name = "hypr-tools",
