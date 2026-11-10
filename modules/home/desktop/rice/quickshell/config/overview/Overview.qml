@@ -317,7 +317,6 @@ PanelWindow {
                                 anchors.fill: parent
                                 radius: Theme.innerRadius
                                 color: Theme.well
-                                border.width: 1
                                 border.width: grab.containsMouse ? 2 : 1
                                 border.color: grab.containsMouse || win.modelData.focused ? Theme.accent : Theme.cardBorder
                                 clip: true
