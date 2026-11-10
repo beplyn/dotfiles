@@ -2,6 +2,7 @@
   imports =
   [
     ./ssh.nix
+    ./bash
     ./bat.nix
     ./glow.nix
     ./fzf.nix
