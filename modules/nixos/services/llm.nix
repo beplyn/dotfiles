@@ -29,6 +29,14 @@ in
       description = "More Ollama model tags to pull, switchable from the agents.";
     };
 
+    completionModel = lib.mkOption
+    {
+      type = lib.types.str;
+      # base, not instruct: FIM wants the raw fim tokens
+      default = "qwen2.5-coder:1.5b-base";
+      description = "Small FIM model for editor completions (lsp-ai), kept out of the agents' list.";
+    };
+
     models = lib.mkOption
     {
       type = lib.types.listOf lib.types.str;
@@ -71,15 +79,15 @@ in
       enable = true;
       # gfx1100 is supported, no override
       package = pkgs.ollama-rocm;
-      loadModels = cfg.models;
+      loadModels = cfg.models ++ [ cfg.completionModel ];
       environmentVariables =
       {
         OLLAMA_CONTEXT_LENGTH = toString cfg.contextLength;
         # flash attn + q8 KV to fit 64k context
         OLLAMA_FLASH_ATTENTION = "1";
         OLLAMA_KV_CACHE_TYPE = "q8_0";
-        # one model at a time
-        OLLAMA_MAX_LOADED_MODELS = "1";
+        # the agent model plus the small completion model
+        OLLAMA_MAX_LOADED_MODELS = "2";
         OLLAMA_NUM_PARALLEL = "1";
         OLLAMA_KEEP_ALIVE = "30m";
       }
