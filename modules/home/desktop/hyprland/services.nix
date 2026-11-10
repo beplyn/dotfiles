@@ -6,7 +6,7 @@ let
   target = "hyprland-session.target";
 in
 {
-  # wallpaper-pick's and waypaper's image (quickshell/wallpaper.nix),
+  # the shell's pick from ~/.cache/wallpapers (quickshell/wallpaper.nix),
   # not Stylix's
   stylix.targets.hyprland.hyprpaper.enable = false;
   stylix.targets.hyprpaper.enable = false;
@@ -21,7 +21,7 @@ in
       [
         {
           monitor = "";
-          path = "${config.xdg.cacheHome}/wallpaper/current.png";
+          path = "${config.lib.haku.wallpaper.cache}/current.jpg";
           fit_mode = "cover";
         }
       ];
