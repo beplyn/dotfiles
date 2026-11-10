@@ -16,7 +16,7 @@ import qs.services
 import qs.sharepicker
 
 // The interactive layer over waybar. Every surface here is hidden until
-// waybar, a niri bind or an event opens it.
+// waybar, a Hyprland bind or an event opens it.
 ShellRoot {
     ControlCenter {}
     Dashboard {}

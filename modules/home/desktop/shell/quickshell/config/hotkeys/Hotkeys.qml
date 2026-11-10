@@ -4,23 +4,15 @@ import Quickshell
 import Quickshell.Wayland
 import qs.services
 
-// The hotkey overlay for niri, sway and mango: the titled binds from their
-// binds.nix, by section. Any key or click closes it, as in niri.
+// The hotkey overlay: the titled binds from hyprland/binds.nix, by section.
+// Any key or click closes it.
 PanelWindow {
     id: root
 
     readonly property bool open: Panels.current === "hotkeys"
 
-    // keysyms as niri prints them; niri's own spellings too
+    // keysyms as binds.nix names them
     readonly property var names: ({
-        Mod4: "Super",
-        Mod: "Super",
-        Space: "Space",
-        BracketLeft: "[",
-        BracketRight: "]",
-        Minus: "-",
-        Equal: "=",
-        Slash: "/",
         KP_Add: "Keypad +",
         KP_Subtract: "Keypad -",
         XF86AudioRaiseVolume: "Volume Up",
@@ -47,9 +39,9 @@ PanelWindow {
 
     // Sections into columns, each to the shortest one, flattened into grid
     // cells: a header spanning both, then keys and title per bind. A long
-    // list (niri's, all binds) gets three columns to fit the screen height.
+    // list gets three columns to fit the screen height.
     readonly property var columns: {
-        const sections = Theme.hotkeys[Wm.currentCompositor] ?? []
+        const sections = Theme.hotkeys
         const total = sections.reduce((n, s) => n + s.binds.length + 1, 0)
         const cols = total > 45 ? [[], [], []] : [[], []]
         const rows = cols.map(() => 0)
