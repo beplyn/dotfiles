@@ -10,6 +10,7 @@
     ./options.nix
     ./ui.nix
     ./lsp.nix
+    ./ai.nix
     ./completion.nix
     ./formatting.nix
     ./treesitter.nix
