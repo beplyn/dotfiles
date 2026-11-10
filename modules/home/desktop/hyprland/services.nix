@@ -49,4 +49,7 @@ in
   };
 
   services.hyprpolkitagent.enable = true;
+
+  # Mod+Alt+Space; the daemon keeps it warm, `hyprlauncher` opens it
+  services.hyprlauncher.enable = true;
 }
