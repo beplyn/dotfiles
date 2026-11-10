@@ -16,7 +16,7 @@
     {
       bold_font = "auto";
 
-      # base00 background; blur comes from niri
+      # base00 background; blur comes from Hyprland
       background = lib.mkForce config.themes.palette.background;
       dynamic_background_opacity = true;
 

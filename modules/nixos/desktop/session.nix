@@ -2,7 +2,8 @@
 
 # keyring, mounts, Bluetooth, file picker
 {
-  # unlock keyring on login
+  # Secret Service, unlocked on login
+  services.gnome.gnome-keyring.enable = true;
   security.pam.services.greetd.enableGnomeKeyring = true;
 
   # gvfs: trash, network; udisks2: drives

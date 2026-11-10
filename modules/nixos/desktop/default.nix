@@ -12,9 +12,6 @@
     ./monitors.nix
     ./ddc.nix
     ./touchpad.nix
-    ./niri.nix
-    ./sway.nix
-    ./mango.nix
     ./hyprland.nix
   ];
 }

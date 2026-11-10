@@ -1,7 +1,7 @@
 { lib, pkgs, ... }:
 
-# fourth session next to niri, sway and mango; config lives in home-manager
-# (desktop/hyprland). The module brings the portal (xdph) and the session file.
+# the desktop; config lives in home-manager (desktop/hyprland). The module
+# brings the portal (xdph), polkit and the session file.
 {
   programs.hyprland =
   {
@@ -36,4 +36,10 @@
   # screen share streams, which xdph then drops; plain ones work. Only for the
   # portal, the desktop keeps DCC
   systemd.user.services.xdg-desktop-portal-hyprland.environment.AMD_DEBUG = "nodcc";
+
+  # Electron on Wayland
+  environment.sessionVariables.NIXOS_OZONE_WL = "1";
+
+  # hyprlock's PAM service
+  security.pam.services.hyprlock = { };
 }

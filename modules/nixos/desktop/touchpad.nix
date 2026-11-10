@@ -1,7 +1,6 @@
 { lib, ... }:
 
-# Per-host touchpad scrolling, the same in every compositor (niri, sway,
-# mango and Hyprland read it); each one's own default differs.
+# Per-host touchpad scrolling, read by Hyprland (hyprland/settings.nix).
 {
   options.touchpad =
   {

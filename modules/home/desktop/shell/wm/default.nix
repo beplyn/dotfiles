@@ -19,8 +19,6 @@ let
       wlr-randr
       wlopm
       wayland-utils
-      osConfig.programs.niri.package
-      osConfig.programs.sway.package
     ];
     text = builtins.readFile ./wm.sh;
   };
