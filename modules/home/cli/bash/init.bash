@@ -9,6 +9,8 @@ bleopt complete_menu_style=desc
 bleopt prompt_eol_mark=''
 bleopt exec_errexit_mark=''
 bleopt exec_elapsed_mark=''
+# suggestions in grey on the terminal background, like fish (ble's default is a white bg)
+ble-face auto_complete=fg=244
 
 # up/down: search history for what is already typed, plain history when empty
 ble-bind -m emacs -f up 'history-substring-search-backward hide-status:point=end:empty=history-move'
