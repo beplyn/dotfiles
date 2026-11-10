@@ -1,4 +1,4 @@
-# greetd + ReGreet in sway, Stylix-themed; patched layout (clock top right, avatar and session picker on the card)
+# greetd + ReGreet in Hyprland, Stylix-themed; patched layout (clock top right, avatar and session picker on the card)
 {
   config,
   lib,
@@ -25,19 +25,20 @@ let
     patches = (old.patches or [ ]) ++ [ ./regreet-layout.patch ./regreet-monitors.patch ];
   });
 
-  # primary at its mode, the rest off; no monitors (VMs): sway's default
+  # primary at its mode, the rest off; no monitors (VMs): Hyprland's default
   primary = lib.findFirst (m: m.primary) (lib.head (config.monitors ++ [ null ])) config.monitors;
-  output = m:
+  monitor = m:
     if m == primary
-    then "output ${m.name} mode ${toString m.width}x${toString m.height}@${toString m.refresh}Hz"
-    else "output ${m.name} disable";
-  swayConfig = pkgs.writeText "greeter-sway.conf" (subst
+    then ''hl.monitor({ output = "${m.name}", mode = "${toString m.width}x${toString m.height}@${toString m.refresh}", position = "0x0", scale = 1 })''
+    else ''hl.monitor({ output = "${m.name}", disabled = true })'';
+  hyprland = config.programs.hyprland.package;
+  greeterConfig = pkgs.writeText "greeter-hyprland.lua" (subst
   {
-    outputs = lib.concatMapStringsSep "\n" output config.monitors;
+    monitors = lib.concatMapStringsSep "\n" monitor config.monitors;
     layout = config.services.xserver.xkb.layout;
     regreet = lib.getExe regreet;
-    sway = config.programs.sway.package;
-  } (builtins.readFile ./greeter-sway.conf));
+    hyprctl = lib.getExe' hyprland "hyprctl";
+  } (builtins.readFile ./greeter-hyprland.lua));
 in
 {
   # rebuild fills these (greeter can't read homes); Stylix wallpaper and snowflake until then
@@ -87,17 +88,17 @@ in
     };
   };
 
-  # stable name for the monitors' GPU; WLR_DRM_DEVICES splits on ':', so no by-path link
+  # stable name for the monitors' GPU; AQ_DRM_DEVICES splits on ':', so no by-path link
   services.udev.extraRules = lib.mkIf (config.displayGpu != null) ''
     SUBSYSTEM=="drm", KERNEL=="card[0-9]*", KERNELS=="${config.displayGpu}", SYMLINK+="dri/display"
   '';
 
-  # sway instead of the module's cage: picks outputs; only the monitors' GPU, since rendering
+  # Hyprland instead of the module's cage: picks outputs; only the monitors' GPU, since rendering
   # on the iGPU and copying over can make outputs drop out
   services.greetd.settings.default_session.command = lib.concatStringsSep " " (
     [ "${pkgs.dbus}/bin/dbus-run-session" ]
-    ++ lib.optional (config.displayGpu != null) "${pkgs.coreutils}/bin/env WLR_DRM_DEVICES=/dev/dri/display"
-    ++ [ "${lib.getExe config.programs.sway.package} --config ${swayConfig}" ]);
+    ++ lib.optional (config.displayGpu != null) "${pkgs.coreutils}/bin/env AQ_DRM_DEVICES=/dev/dri/display"
+    ++ [ "${lib.getExe' hyprland "Hyprland"} --config ${greeterConfig}" ]);
 
   # appended to Stylix's ReGreet colours
   stylix.targets.regreet.extraCss = ''
