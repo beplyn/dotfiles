@@ -133,7 +133,8 @@ let
     ddcutil = lib.getExe pkgs.ddcutil;
     # night light (services/NightLight.qml) through hyprsunset
     hyprctl = lib.getExe' osConfig.programs.hyprland.package "hyprctl";
-    mixer = lib.getExe pkgs.pavucontrol;
+    # the hypr audio mixer, as on Mod+Alt+A
+    mixer = lib.getExe pkgs.hyprpwcenter;
     # set, random, current (wallpaper.nix)
     wallpaper = config.lib.haku.wallpaper.bin;
     systemctl = lib.getExe' osConfig.systemd.package "systemctl";
