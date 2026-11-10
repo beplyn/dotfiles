@@ -40,6 +40,9 @@ Singleton {
     readonly property string calendarDb: Stylix.calendarDb
     readonly property var calendarOpen: Stylix.calendarOpen
 
+    // the recoloured wallpapers (quickshell/wallpaper.nix)
+    readonly property string wallpapers: Stylix.wallpapers
+
     readonly property var bin: Stylix.bin
     readonly property var signals: Stylix.signals
     // [{ name, binds: [{ key, title }] }], titled binds by section

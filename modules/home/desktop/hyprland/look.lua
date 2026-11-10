@@ -129,6 +129,6 @@ hl.layer_rule({
 -- would drag the whole screen in under them
 hl.layer_rule({
     name = "fullscreen-shell",
-    match = { namespace = "^(haku-overview)$" },
+    match = { namespace = "^(haku-overview|haku-wallpapers)$" },
     no_anim = true,
 })

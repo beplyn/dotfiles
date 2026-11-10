@@ -69,7 +69,7 @@ let
         (show "Toggle do not disturb" (ModShift "n" exec (ipc "notifications" "toggleDnd" [ ])))
         (show "Screen recorder" (ModShift "r" exec (ipc "recorder" "toggle" [ ])))
         # on hyprpaper (quickshell/wallpaper.nix)
-        (show "Wallpaper picker" (Mod "w" exec "waypaper"))
+        (show "Wallpaper picker" (noRepeat (Mod "w" exec (ipc "panels" "toggle" [ "wallpapers" ]))))
         (show "Screenshot area" (None "Print" exec "screenshot area"))
         (show "Screenshot area" (ModShift "s" exec "screenshot area"))
         (show "Screenshot screen" (Shift "Print" exec "screenshot output"))

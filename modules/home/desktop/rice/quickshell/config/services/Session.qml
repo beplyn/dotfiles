@@ -18,8 +18,8 @@ Singleton {
     }
 
     function mixer() { Quickshell.execDetached([Theme.bin.mixer]) }
-    function wallpaper() { Quickshell.execDetached([Theme.bin.wallpaper]) }
-    function randomWallpaper() { Quickshell.execDetached([Theme.bin.wallpaperSet, "random"]) }
+    function wallpaper() { Panels.open("wallpapers") }
+    function randomWallpaper() { Quickshell.execDetached([Theme.bin.wallpaper, "random"]) }
     function lock() { run(Theme.bin.lock) }
     function logout() { Wm.quit() }
     function suspend() { Quickshell.execDetached([Theme.bin.systemctl, "suspend"]) }
