@@ -36,18 +36,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    niri =
-    {
-      url = "github:sodiboo/niri-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    nirimation =
-    {
-      url = "github:beplyn/nirimation";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # the calendar (programs.vcal)
     vcal =
     {
