@@ -1,10 +1,11 @@
--- hyprsplit: ten workspaces per monitor, as niri keeps them per output.
--- Monitors take theirs left to right (outputs.nix), 1-10, 11-20, ...; each
--- is named 1-10 on its own monitor so waybar and the overview number them so.
+-- hyprsplit: nine workspaces per monitor (the overview's 3x3), as niri keeps
+-- them per output.
+-- Monitors take theirs left to right (outputs.nix), 1-9, 10-18, ...; each
+-- is named 1-9 on its own monitor so waybar and the overview number them so.
 local hs = require("hyprsplit")
 local outputs = require("haku.data.outputs")
 
-local count = 10
+local count = 9
 hs.config({ num_workspaces = count })
 
 local names = {}
