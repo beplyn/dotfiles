@@ -64,6 +64,20 @@ Singleton {
     readonly property string wifiOff: g(0xF05AA)
     readonly property string bluetooth: g(0xF00AF)
     readonly property string bluetoothOff: g(0xF00B2)
+    readonly property string bluetoothConnected: g(0xF00B1)
+    // A glyph for BlueZ's freedesktop icon name (audio-headset, input-mouse…).
+    function btDevice(name) {
+        const n = name ?? ""
+        return n.includes("headset") ? g(0xF02CE)
+            : n.includes("headphone") || n.includes("audio-card") ? g(0xF02CB)
+            : n.includes("speaker") ? g(0xF04C3)
+            : n.includes("mouse") ? g(0xF037D)
+            : n.includes("keyboard") ? g(0xF030C)
+            : n.includes("gaming") || n.includes("joystick") ? g(0xF0297)
+            : n.includes("phone") ? g(0xF011C)
+            : n.includes("computer") ? g(0xF0322)
+            : g(0xF00AF)
+    }
     readonly property string record: g(0xF044A)
     readonly property string wallpaper: g(0xF03E)
     readonly property string shuffle: g(0xF049D)
