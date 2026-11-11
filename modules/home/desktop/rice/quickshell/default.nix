@@ -123,6 +123,8 @@ let
     # their own, out of quickshell.service
     systemdRun = lib.getExe' osConfig.systemd.package "systemd-run";
     env = lib.getExe' pkgs.coreutils "env";
+    # Connect on a device already linked by pairing (controlcenter)
+    bluetoothctl = lib.getExe' osConfig.hardware.bluetooth.package "bluetoothctl";
     terminal = lib.getExe config.programs.wezterm.package;
     xdgOpen = lib.getExe' pkgs.xdg-utils "xdg-open";
     wlCopy = lib.getExe' pkgs.wl-clipboard "wl-copy";
