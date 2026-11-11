@@ -5,21 +5,21 @@ import Quickshell.Hyprland
 import Quickshell.Wayland
 import qs.services
 
-// Mod+Tab, in place of hyprtasking's grid: this monitor's ten Hyprland
+// Mod+Tab, in place of hyprtasking's grid: this monitor's nine Hyprland
 // workspaces (hyprsplit's, workspaces.lua) with their windows drawn to scale
 // from Hyprland's own geometry, live through hyprland-toplevel-export. Click a window to focus
 // it, a workspace to go there; drag a window onto another to send it.
-// hjkl, the arrows or the wheel pick, 1-0 jump, Enter goes, Escape or
+// hjkl, the arrows or the wheel pick, 1-9 jump, Enter goes, Escape or
 // Mod+Tab closes. Tiles ripple in from the active one; hovering names a window.
 PanelWindow {
     id: root
 
     readonly property bool open: Panels.current === "overview"
-    readonly property int columns: 5
-    readonly property int count: 10
+    readonly property int columns: 3
+    readonly property int count: 9
 
     // this screen's Hyprland monitor; hyprsplit gives monitor i the ids
-    // (i-1)*10+1 .. i*10
+    // (i-1)*9+1 .. i*9
     readonly property var monitor: screen ? Hyprland.monitorFor(screen) : null
     readonly property int active: Math.max(1, monitor?.activeWorkspace?.id ?? 1)
     readonly property int base: Math.floor((active - 1) / count) * count
@@ -146,7 +146,6 @@ PanelWindow {
             else if (k === Qt.Key_Tab) root.pick((root.selected + 1) % root.count)
             else if (k === Qt.Key_Backtab) root.pick((root.selected + root.count - 1) % root.count)
             else if (k >= Qt.Key_1 && k <= Qt.Key_9) root.go(k - Qt.Key_1)
-            else if (k === Qt.Key_0) root.go(9)
             else return
             e.accepted = true
         }
@@ -373,7 +372,7 @@ PanelWindow {
                         anchors.left: parent.left
                         anchors.top: parent.top
                         anchors.margins: 8
-                        text: String((tile.index + 1) % 10)
+                        text: String(tile.index + 1)
                         color: tile.current ? Theme.accent : Theme.subtext
                         font.family: Theme.font
                         font.pointSize: Theme.popupFontSize
@@ -386,7 +385,7 @@ PanelWindow {
                     Text {
                         anchors.centerIn: parent
                         visible: tile.windows.length === 0
-                        text: String((tile.index + 1) % 10)
+                        text: String(tile.index + 1)
                         color: Theme.alpha(tile.picked ? Theme.accent : Theme.subtext, 0.35)
                         font.family: Theme.font
                         font.pixelSize: tile.height * 0.32
