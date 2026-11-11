@@ -17,6 +17,21 @@
   };
   services.blueman.enable = true;
 
+  # pairing agent for quickshell, which has none of its own; without one the
+  # controller is not pairable and devices link up unbonded, with no audio
+  systemd.user.services.bt-agent =
+  {
+    description = "Bluetooth pairing agent";
+    wantedBy = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+    after = [ "bluetooth.target" ];
+    serviceConfig =
+    {
+      ExecStart = "${pkgs.bluez-tools}/bin/bt-agent --capability=NoInputNoOutput";
+      Restart = "on-failure";
+    };
+  };
+
   # battery and power profiles for the bar
   services.upower.enable = true;
   services.power-profiles-daemon.enable = true;
