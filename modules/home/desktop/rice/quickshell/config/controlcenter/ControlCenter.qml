@@ -65,9 +65,25 @@ Panel {
         sessionOpen = false
         networksOpen = false
         pskTarget = null
+        btOpen = false
     }
     readonly property var adapter: Bluetooth.defaultAdapter
     readonly property var btDevices: Bluetooth.devices.values.filter(d => d.connected)
+    // Connected, then paired, then by name; unnamed beacons dropped.
+    readonly property var btList: !adapter ? [] : adapter.devices.values
+        .filter(d => d.deviceName !== "" || d.paired)
+        .sort((a, b) => (b.connected - a.connected) || (b.paired - a.paired) || a.name.localeCompare(b.name))
+        .slice(0, 8)
+    property bool btOpen: false
+    property string btError: ""
+
+    // Discover only while the list is on screen.
+    Binding {
+        target: root.adapter
+        property: "discovering"
+        value: root.open && root.btOpen && (root.adapter?.enabled ?? false)
+        when: root.adapter !== null
+    }
 
     readonly property var profiles: [PowerProfile.PowerSaver, PowerProfile.Balanced, PowerProfile.Performance]
 
@@ -489,6 +505,162 @@ Panel {
             Layout.fillWidth: true
             Layout.topMargin: 4
             text: root.wifiError
+            wrapMode: Text.Wrap
+            color: Theme.red
+            font.family: Theme.font
+            font.pointSize: Theme.popupFontSize - 1
+        }
+    }
+
+    // --- bluetooth devices --------------------------------------------------
+    Surface {
+        Layout.fillWidth: true
+        visible: root.adapter?.enabled ?? false
+        spacing: 2
+
+        Item {
+            Layout.fillWidth: true
+            implicitHeight: btHeader.implicitHeight
+
+            RowLayout {
+                id: btHeader
+                anchors.fill: parent
+
+                Heading {
+                    Layout.fillWidth: true
+                    text: "Bluetooth devices"
+                }
+                Text {
+                    text: root.btOpen ? Icons.chevronUp : Icons.chevronDown
+                    color: Theme.subtext
+                    font.family: Theme.font
+                    font.pointSize: Theme.popupFontSize
+                }
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    root.btOpen = !root.btOpen
+                    root.btError = ""
+                }
+            }
+        }
+
+        Text {
+            visible: root.btOpen && root.btList.length === 0
+            Layout.topMargin: 4
+            text: "Searching…"
+            color: Theme.subtext
+            font.family: Theme.font
+            font.pointSize: Theme.popupFontSize - 1
+        }
+
+        Repeater {
+            model: ScriptModel {
+                values: root.btOpen ? root.btList : []
+            }
+
+            Rectangle {
+                id: btEntry
+                required property var modelData
+                readonly property bool busy: modelData.pairing
+                    || modelData.state === BluetoothDeviceState.Connecting
+                    || modelData.state === BluetoothDeviceState.Disconnecting
+                // Set when we paired it, so it connects once pairing lands.
+                property bool connectAfterPair: false
+
+                Layout.fillWidth: true
+                implicitHeight: 34
+                radius: Theme.innerRadius - 2
+                color: btRow.containsMouse ? Theme.alpha(Theme.surface, 0.85) : "transparent"
+
+                Behavior on color {
+                    ColorAnimation { duration: Theme.fast }
+                }
+
+                Connections {
+                    target: btEntry.modelData
+                    function onPairedChanged() {
+                        if (!btEntry.connectAfterPair || !btEntry.modelData.paired) return
+                        btEntry.connectAfterPair = false
+                        btEntry.modelData.trusted = true
+                        btEntry.modelData.connect()
+                    }
+                    function onPairingChanged() {
+                        if (!btEntry.modelData.pairing && btEntry.connectAfterPair && !btEntry.modelData.paired) {
+                            btEntry.connectAfterPair = false
+                            root.btError = btEntry.modelData.name + ": pairing failed"
+                        }
+                    }
+                }
+
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.leftMargin: 8
+                    anchors.rightMargin: 8
+                    spacing: 10
+
+                    Text {
+                        text: Icons.btDevice(btEntry.modelData.icon)
+                        color: btEntry.modelData.connected ? Theme.accent : Theme.foreground
+                        font.family: Theme.font
+                        font.pointSize: Theme.popupFontSize + 2
+                    }
+                    Text {
+                        Layout.fillWidth: true
+                        text: btEntry.modelData.name
+                        elide: Text.ElideRight
+                        color: btEntry.modelData.connected ? Theme.accent : Theme.foreground
+                        font.family: Theme.font
+                        font.pointSize: Theme.popupFontSize
+                        font.bold: btEntry.modelData.connected
+                    }
+                    Text {
+                        text: btEntry.busy ? "…"
+                            : btEntry.modelData.connected
+                                ? (btEntry.modelData.batteryAvailable ? Math.round(btEntry.modelData.battery * 100) + "%  " : "") + Icons.check
+                            : btEntry.modelData.paired ? "Paired"
+                            : ""
+                        color: Theme.subtext
+                        font.family: Theme.font
+                        font.pointSize: Theme.popupFontSize - 1
+                    }
+                }
+
+                // Left: connect / disconnect (pairing new devices first). Right: forget.
+                MouseArea {
+                    id: btRow
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    acceptedButtons: Qt.LeftButton | Qt.RightButton
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: m => {
+                        const d = btEntry.modelData
+                        root.btError = ""
+                        if (m.button === Qt.RightButton) {
+                            if (d.paired) d.forget()
+                            return
+                        }
+                        if (d.pairing) d.cancelPair()
+                        else if (btEntry.busy) return
+                        else if (d.connected) d.disconnect()
+                        else if (d.paired) d.connect()
+                        else {
+                            btEntry.connectAfterPair = true
+                            d.pair()
+                        }
+                    }
+                }
+            }
+        }
+
+        Text {
+            visible: root.btError !== ""
+            Layout.fillWidth: true
+            Layout.topMargin: 4
+            text: root.btError
             wrapMode: Text.Wrap
             color: Theme.red
             font.family: Theme.font
