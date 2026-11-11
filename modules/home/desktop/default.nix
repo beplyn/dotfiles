@@ -13,6 +13,7 @@
     ./office.nix
     ./media.nix
     ./cliamp.nix
+    ./speci-local.nix
     ./kdeconnect.nix
     ./hyprland
     ./rice

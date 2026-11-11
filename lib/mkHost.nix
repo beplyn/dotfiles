@@ -55,6 +55,7 @@ nixpkgs.lib.nixosSystem
           netspd = withSystemLibs inputs.netspd.packages.${system}.default [ final.aws-lc ];
           forgejo-cli = withSystemLibs inputs.forgejo-cli.packages.${system}.default [ final.libgit2 ];
           cliamp = inputs.cliamp.packages.${system}.default;
+          speci-local = inputs.speci-local.packages.${system}.default;
         })
       ];
     }
