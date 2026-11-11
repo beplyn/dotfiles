@@ -476,9 +476,30 @@
         "netspd": "netspd",
         "nixpkgs": "nixpkgs",
         "nixvim": "nixvim",
+        "speci-local": "speci-local",
         "stylix": "stylix",
         "vcal": "vcal",
         "zen-browser": "zen-browser"
+      }
+    },
+    "speci-local": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1794421371,
+        "narHash": "sha256-+/h7wGUTahpx5rwcETRv38ugci6A8wb8jGK92fTKimU=",
+        "owner": "FCsab",
+        "repo": "speci-local",
+        "rev": "55850dcfb1f8c6d76000d4565443fe114505d0e8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "FCsab",
+        "repo": "speci-local",
+        "type": "github"
       }
     },
     "stylix": {
