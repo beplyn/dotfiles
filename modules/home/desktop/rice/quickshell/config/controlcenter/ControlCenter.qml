@@ -77,6 +77,13 @@ Panel {
     property bool btOpen: false
     property string btError: ""
 
+    // Pair() leaves the link up, so Quickshell's connect() refuses the device
+    // as already connected; BlueZ's Connect still brings up the audio profiles.
+    function btConnect(d) {
+        if (d.connected) Quickshell.execDetached([Theme.bin.bluetoothctl, "connect", d.address])
+        else d.connect()
+    }
+
     // Discover only while the list is on screen.
     Binding {
         target: root.adapter
@@ -586,7 +593,7 @@ Panel {
                         if (!btEntry.connectAfterPair || !btEntry.modelData.paired) return
                         btEntry.connectAfterPair = false
                         btEntry.modelData.trusted = true
-                        btEntry.modelData.connect()
+                        root.btConnect(btEntry.modelData)
                     }
                     function onPairingChanged() {
                         if (!btEntry.modelData.pairing && btEntry.connectAfterPair && !btEntry.modelData.paired) {
@@ -645,6 +652,11 @@ Panel {
                         }
                         if (d.pairing) d.cancelPair()
                         else if (btEntry.busy) return
+                        else if (d.connected && !d.paired) {
+                            // linked without a bond: no audio, so pair it now
+                            btEntry.connectAfterPair = true
+                            d.pair()
+                        }
                         else if (d.connected) d.disconnect()
                         else if (d.paired) d.connect()
                         else {
