@@ -5,12 +5,9 @@ import Quickshell.Hyprland
 import Quickshell.Wayland
 import qs.services
 
-// Mod+Tab, in place of hyprtasking's grid: this monitor's nine Hyprland
-// workspaces (hyprsplit's, workspaces.lua) with their windows drawn to scale
-// from Hyprland's own geometry, live through hyprland-toplevel-export. Click a window to focus
-// it, a workspace to go there; drag a window onto another to send it.
-// hjkl, the arrows or the wheel pick, 1-9 jump, Enter goes, Escape or
-// Mod+Tab closes. Tiles ripple in from the active one; hovering names a window.
+// Mod+Tab: this monitor's nine workspaces with live windows to scale.
+// Click to go, drag a window to move it; hjkl/arrows/wheel pick, 1-9 jump,
+// Enter goes, Esc or Mod+Tab closes
 PanelWindow {
     id: root
 
@@ -27,10 +24,7 @@ PanelWindow {
     // the tile the keys move; starts on the active workspace
     property int selected: 0
 
-    // [{ address, title, appId, workspace, x, y, width, height, floating,
-    // focused, toplevel }] in global logical pixels; toplevel is the Wayland
-    // handle a ScreencopyView captures. Geometry is from `j/clients`, so it
-    // is refreshed on open and on every window event while open.
+    // windows from `j/clients` in logical pixels, refreshed on every window event
     readonly property var windows: Hyprland.toplevels.values
         // special workspaces (the scratchpad) have negative ids
         .filter(t => (t.workspace?.id ?? 0) > 0 && t.lastIpcObject?.at !== undefined)

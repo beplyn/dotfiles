@@ -4,10 +4,8 @@ import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Io
 
-// xdph's screen share picker (share-picker.sh): it opens the picker over IPC
-// with a fifo, and the choice goes back down the fifo in xdph's own syntax,
-// "screen:<output>" or "window:<handle>", "r" in front to hand out a restore
-// token. An empty answer is a cancel.
+// xdph share picker (share-picker.sh): answers "screen:<output>" or
+// "window:<handle>" down a fifo, "r" prefix = restore token, empty = cancel
 Singleton {
     id: root
 
@@ -16,9 +14,7 @@ Singleton {
     // remember the choice: the app may restore it without asking next time
     property bool remember: false
 
-    // [{ handle, appId, title, toplevel }] from XDPH_WINDOW_SHARING_LIST,
-    // "handle[HC>]class[HT>]title[HE>]address[HA>]" per window; the address
-    // finds the window again for its preview
+    // parsed from XDPH_WINDOW_SHARING_LIST; address finds the preview
     property var windows: []
 
     function parse(list) {

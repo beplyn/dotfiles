@@ -2,7 +2,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-// The palette (themes.palette) from the generated Stylix.qml; components never use a literal color.
+// palette from the generated Stylix.qml; never use literal colors
 Singleton {
     id: root
 

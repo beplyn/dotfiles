@@ -4,10 +4,8 @@ import Quickshell
 import qs.services
 import qs.widgets
 
-// Apps, sums, shell lines and web searches (Mod+Space), the clipboard panel's
-// look and vim keys. Unlike it, it opens typing: Esc drops to normal mode
-// (j/k, Enter, p, 1-9), / or i types again, ? or the (i) tab lists every key.
-// With nothing typed it is only the search bar.
+// Mod+Space: apps, math, shell and web search. Opens typing; Esc for vim keys
+// (j/k, Enter, p, 1-9), / or i to type, ? lists all keys
 Panel {
     id: root
 

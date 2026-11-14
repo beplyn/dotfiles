@@ -3,9 +3,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// The launcher's apps, from the .desktop files Quickshell reads, with the pins
-// and how often each was launched kept in launcher.json. Launches go through
-// `systemd-run --scope`, so apps outlive a quickshell restart.
+// apps from .desktop files, pins and launch counts in launcher.json;
+// systemd-run --scope so apps outlive quickshell
 Singleton {
     id: root
 

@@ -3,9 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Stay awake: a logind idle lock held while active, which hypridle honours,
-// so neither the lock nor the screen-off timeouts fire.
-// Gone with the shell, as waybar's idle_inhibitor was with the bar.
+// stay awake: holds a logind idle inhibitor, so hypridle never locks or blanks
 Singleton {
     id: root
 

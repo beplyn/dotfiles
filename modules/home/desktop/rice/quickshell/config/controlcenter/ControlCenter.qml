@@ -77,8 +77,7 @@ Panel {
     property bool btOpen: false
     property string btError: ""
 
-    // Pair() leaves the link up, so Quickshell's connect() refuses the device
-    // as already connected; BlueZ's Connect still brings up the audio profiles.
+    // after Pair() connect() refuses; BlueZ's Connect still brings up audio
     function btConnect(d) {
         if (d.connected) Quickshell.execDetached([Theme.bin.bluetoothctl, "connect", d.address])
         else d.connect()
@@ -473,7 +472,7 @@ Panel {
                     }
                 }
 
-                // Credential prompt for a new secured network; enterprise ones get a username first.
+                // password prompt for a new network; enterprise asks a username first
                 function submit() {
                     const pass = psk.input.text
                     if (pass === "") return

@@ -1,5 +1,4 @@
-# hyprpaper draws (desktop/hyprland/services.nix); the shell's selector
-# (wallpapers/WallpaperMenu.qml, Mod+W) picks; rebuild runs `wallpaper random`.
+# hyprpaper draws, Mod+W picks, rebuild runs `wallpaper random`
 {
   config,
   lib,
@@ -25,8 +24,7 @@ let
   sources = lib.optionalString (builtins.pathExists ./wallpapers) "${./wallpapers}";
   cache = "${config.xdg.cacheHome}/wallpapers";
 
-  # every source in this theme's colours, the palette wallpaper with them,
-  # and 16:9 thumbnails for the selector; built once per theme and source set
+  # recoloured wallpapers and thumbnails, built once per theme
   recoloured = pkgs.runCommand "wallpapers-${themeName}"
   {
     nativeBuildInputs = [ pkgs.lutgen pkgs.imagemagick ];
