@@ -8,8 +8,6 @@
 let
   authorizedKeys = config.users.users.${username}.openssh.authorizedKeys;
   hasAuthorizedKeys = authorizedKeys.keys != [ ] || authorizedKeys.keyFiles != [ ];
-  # the gate's PAM stack: password + the sudo TOTP
-  totp = config.rebuildGate.enable;
 in
 {
   # opt-in per host
@@ -20,10 +18,9 @@ in
     openFirewall = true;
     settings =
     {
-      # gated: a key, else password + TOTP; otherwise password only until a key is set
-      PasswordAuthentication = !totp && !hasAuthorizedKeys;
-      KbdInteractiveAuthentication = totp;
-      AuthenticationMethods = lib.mkIf totp "publickey keyboard-interactive:pam";
+      # password only until a key is set
+      PasswordAuthentication = !hasAuthorizedKeys;
+      KbdInteractiveAuthentication = false;
       PermitRootLogin = "no";
     };
   };
