@@ -68,6 +68,9 @@ let
         # skipped Cloudflare
         if ($from_cloudflare = 0) { return 444; }
       ''
+      + lib.optionalString (host.maxBodySize != null) ''
+        client_max_body_size ${host.maxBodySize};
+      ''
       + lib.optionalString cfg.originPulls ''
         ssl_client_certificate ${creds}/origin-pull-ca.pem;
         ssl_verify_client on;
@@ -155,6 +158,13 @@ in
             type = lib.types.bool;
             default = true;
             description = "Pass WebSocket upgrades through.";
+          };
+          maxBodySize = lib.mkOption
+          {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+            example = "100m";
+            description = "Largest request body (uploads); null keeps nginx's 1m.";
           };
         };
       });
