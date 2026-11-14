@@ -1,5 +1,6 @@
 # @x@ placeholders are filled in by apps.nix
-# log in as admin, password in the miniflux Secret (ADMIN_PASSWORD)
+# log in as admin, password in the miniflux Secret (ADMIN_PASSWORD), or with Pocket ID once
+# seal-oidc made miniflux-oidc (new users are created on first login)
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -133,6 +134,30 @@ spec:
                   key: ADMIN_PASSWORD
             - name: BASE_URL
               value: "https://@miniflux.host@/"
+            # empty without the sealed client: no Pocket ID button
+            - name: OAUTH2_PROVIDER
+              value: "@miniflux.provider@"
+            - name: OAUTH2_OIDC_DISCOVERY_ENDPOINT
+              value: "https://@pocket-id.host@"
+            - name: OAUTH2_OIDC_PROVIDER_NAME
+              value: "Pocket ID"
+            - name: OAUTH2_REDIRECT_URL
+              value: "https://@miniflux.host@/oauth2/oidc/callback"
+            - name: OAUTH2_USER_CREATION
+              value: "1"
+            # from seal-oidc; absent until then
+            - name: OAUTH2_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: miniflux-oidc
+                  key: CLIENT_ID
+                  optional: true
+            - name: OAUTH2_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: miniflux-oidc
+                  key: CLIENT_SECRET
+                  optional: true
             # the default is loopback only
             - name: LISTEN_ADDR
               value: "0.0.0.0:8080"
