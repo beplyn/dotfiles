@@ -1,0 +1,96 @@
+# @x@ placeholders are filled in by apps.nix
+# no signups: invite yourself from /admin (token in the vaultwarden Secret), then register
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: vaultwarden
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vaultwarden
+  namespace: vaultwarden
+  labels:
+    app: vaultwarden
+spec:
+  replicas: 1
+  # one writer on the sqlite db
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: vaultwarden
+  template:
+    metadata:
+      labels:
+        app: vaultwarden
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: vaultwarden
+          image: vaultwarden/server:1.37.5
+          env:
+            - name: DOMAIN
+              value: "https://@vaultwarden.host@"
+            - name: ROCKET_PORT
+              value: "8080"
+            - name: SIGNUPS_ALLOWED
+              value: "false"
+            - name: INVITATIONS_ALLOWED
+              value: "true"
+            # nginx puts the Cloudflare client's address here
+            - name: IP_HEADER
+              value: "X-Real-IP"
+            - name: TZ
+              value: "@tz@"
+            - name: ADMIN_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: vaultwarden
+                  key: ADMIN_TOKEN
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /alive
+              port: http
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: @uid@
+            runAsGroup: @uid@
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              memory: 512Mi
+      volumes:
+        - name: data
+          hostPath:
+            path: "@state@/vaultwarden"
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vaultwarden
+  namespace: vaultwarden
+spec:
+  type: NodePort
+  selector:
+    app: vaultwarden
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @vaultwarden.port@

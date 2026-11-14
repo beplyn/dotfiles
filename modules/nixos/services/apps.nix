@@ -26,7 +26,17 @@ let
   # host: subdomain (null: not proxied), port: NodePort, body: nginx upload limit
   # (Cloudflare caps a request at 100m anyway), secrets: random keys in the
   # Secret named like the app, dirs: what the pods mount, extra: more manifests
-  apps = { };
+  apps =
+  {
+    vaultwarden =
+    {
+      host = "vault";
+      port = 30080;
+      body = "100m";
+      secrets = [ "ADMIN_TOKEN" ];
+      dirs = [ (app "${st.state}/vaultwarden") ];
+    };
+  };
 
   enabled = lib.filterAttrs (n: _: lib.elem n cfg.apps) apps;
   proxied = lib.filterAttrs (_: a: a ? host) enabled;
