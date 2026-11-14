@@ -107,7 +107,7 @@ let
         proxy_set_header Remote-User "";
         proxy_set_header Remote-Email "";
       '');
-      extraConfig = ''
+      extraConfig = lib.optionalString cfg.cloudflareOnly ''
         # skipped Cloudflare and isn't on the LAN
         if ($allowed_peer = 0) { return 444; }
       ''
@@ -169,6 +169,16 @@ in
       description = ''
         Env file with CF_DNS_API_TOKEN provided by something else.
         null: rebuild asks for it at ''${secrets}/acme-cloudflare.env.
+      '';
+    };
+
+    cloudflareOnly = lib.mkOption
+    {
+      type = lib.types.bool;
+      default = true;
+      description = ''
+        Answer only Cloudflare and proxy.lanSubnets. Off, anyone asking for one of the hosts by
+        name gets in, for DNS-only (unproxied) records; a bare IP or unknown name is still dropped.
       '';
     };
 
@@ -360,10 +370,13 @@ in
       recommendedOptimisation = true;
       recommendedGzipSettings = true;
 
-      # real client IP; $allowed_peer checks the actual peer
+      # real client IP, taken from CF-Connecting-IP only when Cloudflare sent it;
+      # $allowed_peer checks the actual peer
       commonHttpConfig = ''
         ${lib.concatMapStrings (ip: "set_real_ip_from ${ip};\n") cloudflareIPs}
         real_ip_header CF-Connecting-IP;
+      ''
+      + lib.optionalString cfg.cloudflareOnly ''
 
         geo $realip_remote_addr $allowed_peer
         {
