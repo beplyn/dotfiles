@@ -9,6 +9,7 @@
 {
   home.packages = with pkgs;
   [
+    _7zz
     curl
     # `nom build`, or `nixos-rebuild ... |& nom`
     nix-output-monitor
@@ -17,7 +18,6 @@
   ]
   ++ lib.optionals (!headless)
   [
-    _7zz
     # `ouch c dir out.tar.gz`; plain `tar czf` works too
     ouch
     pigz
