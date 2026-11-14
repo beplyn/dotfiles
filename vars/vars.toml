@@ -7,7 +7,7 @@ email = "user@example.com"
 domain = "example.com"
 repo = "https://codeberg.org/user/dotfiles.git"
 
-# beacon's static address; other hosts leave these empty
+# beacon's static address; only beacon asks for them, the other hosts use DHCP
 [lan]
 address = "192.168.1.10"
 gateway = "192.168.1.1"
