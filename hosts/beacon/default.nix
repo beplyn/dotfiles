@@ -1,5 +1,9 @@
 { pkgs, ... }:
 
+let
+  address = "192.168.2.200";
+  subnet = "192.168.2.0/24";
+in
 {
   imports =
   [
@@ -31,6 +35,8 @@
   {
     enable = true;
     domain = "beplyn.dev";
+    # split-horizon: blocky sends the LAN here directly
+    lanSubnets = [ subnet ];
   };
 
   k3s.enable = true;
@@ -49,6 +55,9 @@
     "jellyfin"
     "immich"
   ];
+  k3s.lanAddress = address;
+  # app state and the cluster to the backup disk, daily
+  k3s.backup.enable = true;
 
   environment.systemPackages = [ pkgs.kitty.terminfo ];
 
@@ -88,7 +97,7 @@
     ipv4 =
     {
       method = "manual";
-      address1 = "192.168.2.200/24,192.168.2.1";
+      address1 = "${address}/24,192.168.2.1";
       dns = "192.168.2.1;";
     };
     ipv6.method = "auto";
