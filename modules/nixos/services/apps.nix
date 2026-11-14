@@ -49,6 +49,12 @@ let
         (app "${st.state}/forgejo/config")
       ];
     };
+    gatus =
+    {
+      host = "status";
+      port = 30081;
+      dirs = [ (app "${st.state}/gatus") ];
+    };
     pocket-id =
     {
       host = "id";

@@ -1,0 +1,158 @@
+# @x@ placeholders are filled in by apps.nix
+# checks each app from inside the cluster, plus one round trip through Cloudflare and nginx
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gatus
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gatus
+  namespace: gatus
+data:
+  config.yaml: |
+    storage:
+      type: sqlite
+      path: /data/data.db
+    ui:
+      title: beacon status
+      header: beacon
+    endpoints:
+      - name: Vaultwarden
+        group: apps
+        url: http://vaultwarden.vaultwarden.svc/alive
+        interval: 1m
+        conditions: ["[STATUS] == 200"]
+      - name: Forgejo
+        group: apps
+        url: http://forgejo.forgejo.svc/api/healthz
+        interval: 1m
+        conditions: ["[STATUS] == 200"]
+      - name: Pocket ID
+        group: apps
+        url: http://pocket-id.pocket-id.svc/healthz
+        interval: 1m
+        conditions: ["[STATUS] < 300"]
+      - name: ntfy
+        group: apps
+        url: http://ntfy.ntfy.svc/v1/health
+        interval: 1m
+        conditions: ["[STATUS] == 200"]
+      - name: Miniflux
+        group: apps
+        url: http://miniflux.miniflux.svc/healthcheck
+        interval: 1m
+        conditions: ["[STATUS] == 200"]
+      - name: Paperless
+        group: apps
+        url: http://paperless.paperless.svc/
+        interval: 1m
+        conditions: ["[STATUS] < 500"]
+      - name: Jellyfin
+        group: apps
+        url: http://jellyfin.jellyfin.svc/health
+        interval: 1m
+        conditions: ["[STATUS] == 200"]
+      - name: Immich
+        group: apps
+        url: http://immich-server.immich.svc/api/server/ping
+        interval: 1m
+        conditions: ["[STATUS] == 200"]
+      - name: Glance
+        group: apps
+        url: http://glance.glance.svc/
+        interval: 1m
+        conditions: ["[STATUS] == 200"]
+      - name: Blocky
+        group: network
+        url: http://blocky.blocky.svc:4000/api/blocking/status
+        interval: 1m
+        conditions: ["[STATUS] == 200"]
+      - name: Public
+        group: network
+        url: "https://@vaultwarden.host@/alive"
+        interval: 5m
+        conditions: ["[STATUS] == 200"]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gatus
+  namespace: gatus
+  labels:
+    app: gatus
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: gatus
+  template:
+    metadata:
+      labels:
+        app: gatus
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: gatus
+          image: twinproduction/gatus:v5.38.0
+          env:
+            - name: GATUS_CONFIG_PATH
+              value: /config/config.yaml
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+          volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: true
+            - name: data
+              mountPath: /data
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: @uid@
+            runAsGroup: @uid@
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+      volumes:
+        - name: config
+          configMap:
+            name: gatus
+        - name: data
+          hostPath:
+            path: "@state@/gatus"
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gatus
+  namespace: gatus
+spec:
+  type: NodePort
+  selector:
+    app: gatus
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @gatus.port@
