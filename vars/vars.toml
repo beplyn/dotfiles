@@ -1,0 +1,14 @@
+# placeholders: the real values are in /var/secrets/dotfiles/vars.toml (see README.md).
+# This marks them, so no host builds from them by accident
+placeholder = true
+
+username = "user"
+email = "user@example.com"
+domain = "example.com"
+repo = "https://codeberg.org/user/dotfiles.git"
+
+# beacon's static address; other hosts leave these empty
+[lan]
+address = "192.168.1.10"
+gateway = "192.168.1.1"
+subnet = "192.168.1.0/24"

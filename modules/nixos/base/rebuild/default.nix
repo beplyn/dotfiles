@@ -5,6 +5,7 @@
   subst,
   username,
   email,
+  repo,
   forgejoHost,
   themeName,
   headless,
@@ -15,6 +16,17 @@ let
   secrets = config.rebuild.secrets;
   auto = config.rebuild.auto;
   hostName = config.networking.hostName;
+
+  # the real vars (vars/README.md), root-only beside the host secrets; install.sh has it too
+  varsDir = "/var/secrets/dotfiles";
+
+  # asks for what vars.toml lacks, from the template in the checkout
+  dotfilesVars = pkgs.writeShellApplication
+  {
+    name = "dotfiles-vars";
+    runtimeInputs = [ pkgs.yq-go pkgs.coreutils ];
+    text = builtins.readFile ./vars.sh;
+  };
 
   autoRebuild = pkgs.writeShellApplication
   {
@@ -50,6 +62,7 @@ let
       git
       gnupg
       openssh
+      dotfilesVars
     ]
     # ~/.pfp picker and file secrets
     ++ lib.optional (!headless || lib.any (s: s.file) (lib.attrValues secrets)) fzf
@@ -57,7 +70,7 @@ let
     ++ lib.optional (!headless) imagemagick;
     text = subst
       {
-        inherit username email forgejoHost themeName;
+        inherit username email forgejoHost themeName varsDir;
         inherit hostName;
         desktop = lib.boolToString (!headless);
         hostSecrets = secretLines;
@@ -112,7 +125,7 @@ in
     url = lib.mkOption
     {
       type = lib.types.str;
-      default = "https://${forgejoHost}/${username}/dotfiles.git";
+      default = repo;
       description = "Repo polled for the branch, over https so it needs no key.";
     };
 
@@ -156,6 +169,7 @@ in
           auto.url
           auto.branch
           "${hostName}-${themeName}"
+          varsDir
         ];
       };
     };

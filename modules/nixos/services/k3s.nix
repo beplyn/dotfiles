@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, subst, ... }:
 
 # two phases: k3s + Sealed Secrets first, then seal the token against the live controller and enable ddns
 let
@@ -76,7 +76,8 @@ in
       }
       // lib.optionalAttrs cfg.ddns.enable
       {
-        ddns.source = manifests + "/ddns.yaml";
+        ddns.source = pkgs.writeText "ddns.yaml"
+          (subst { inherit (config.proxy) domain; } (builtins.readFile (manifests + "/ddns.yaml")));
         ddns-token.source = sealedToken;
       };
     };

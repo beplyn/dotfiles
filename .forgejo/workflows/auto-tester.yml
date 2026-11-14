@@ -52,14 +52,20 @@ jobs:
           # Ensure Nix binary is in PATH
           export PATH="/nix/var/nix/profiles/default/bin:$PATH"
 
+          # the placeholders, unmarked: CI builds them, no real host does
+          vars="$RUNNER_TEMP/vars"
+          mkdir -p "$vars"
+          sed '/^placeholder = true$/d' vars/vars.toml > "$vars/vars.toml"
+          override=(--override-input vars "path:$vars")
+
           # every <host>-<theme> the flake defines
-          configs="$(nix eval --raw .#nixosConfigurations \
+          configs="$(nix eval --raw "${override[@]}" .#nixosConfigurations \
             --apply 'cs: builtins.concatStringsSep " " (builtins.filter (n: builtins.match "${{ matrix.host }}-.*" n != null) (builtins.attrNames cs))')"
           [ -n "$configs" ] || { echo "no configurations for ${{ matrix.host }}" >&2; exit 1; }
 
           for config in $configs; do
             echo "== $config"
-            nix eval --raw ".#nixosConfigurations.$config.config.system.build.toplevel.drvPath"
+            nix eval --raw "${override[@]}" ".#nixosConfigurations.$config.config.system.build.toplevel.drvPath"
             echo
           done
 
