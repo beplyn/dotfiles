@@ -10,7 +10,7 @@ in
   [
     {
       assertion = address != "" && gateway != "" && lib.hasInfix "/" subnet;
-      message = "beacon needs lan.address, lan.gateway and lan.subnet (CIDR) in its vars";
+      message = "beacon needs lan.address, lan.gateway and lan.subnet (CIDR): fill them in with sudoedit /var/secrets/dotfiles/vars.toml";
     }
   ];
 
