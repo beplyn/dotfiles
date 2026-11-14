@@ -65,8 +65,8 @@ let
         proxyWebsockets = host.websockets;
       };
       extraConfig = ''
-        # skipped Cloudflare
-        if ($from_cloudflare = 0) { return 444; }
+        # skipped Cloudflare and isn't on the LAN
+        if ($allowed_peer = 0) { return 444; }
       ''
       + lib.optionalString (host.maxBodySize != null) ''
         client_max_body_size ${host.maxBodySize};
@@ -129,6 +129,18 @@ in
       '';
     };
 
+    lanSubnets = lib.mkOption
+    {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      example = [ "192.168.2.0/24" ];
+      description = ''
+        Local networks let in directly, for split-horizon DNS: no Cloudflare upload cap or
+        hairpin NAT, same certificate. They're never taken as Cloudflare, so CF-Connecting-IP
+        from them is ignored.
+      '';
+    };
+
     ipv6 = lib.mkOption
     {
       type = lib.types.bool;
@@ -176,6 +188,14 @@ in
 
   config = lib.mkIf cfg.enable
   {
+    assertions =
+    [
+      {
+        assertion = !(cfg.originPulls && cfg.lanSubnets != [ ]);
+        message = "proxy.originPulls rejects LAN clients, which have no Cloudflare client certificate";
+      }
+    ];
+
     networking.firewall.allowedTCPPorts = [ 80 443 ];
 
     # rebuild asks for whichever are missing
@@ -263,15 +283,15 @@ in
       recommendedOptimisation = true;
       recommendedGzipSettings = true;
 
-      # real client IP; $from_cloudflare checks the actual peer
+      # real client IP; $allowed_peer checks the actual peer
       commonHttpConfig = ''
         ${lib.concatMapStrings (ip: "set_real_ip_from ${ip};\n") cloudflareIPs}
         real_ip_header CF-Connecting-IP;
 
-        geo $realip_remote_addr $from_cloudflare
+        geo $realip_remote_addr $allowed_peer
         {
           default 0;
-        ${lib.concatMapStrings (ip: "  ${ip} 1;\n") cloudflareIPs}
+        ${lib.concatMapStrings (ip: "  ${ip} 1;\n") (cloudflareIPs ++ cfg.lanSubnets)}
         }
       '';
 
