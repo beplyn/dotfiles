@@ -18,7 +18,6 @@ in
   ]
   ++ lib.optionals (!headless)
   [
-    lazycommit
     onefetch
     serie
   ];
