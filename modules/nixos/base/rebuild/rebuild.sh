@@ -80,15 +80,6 @@ elif [ "$(cut -d' ' -f3- "$sshKey.pub")" != "@username@@@hostName@" ]; then
   ssh-keygen -q -c -f "$sshKey" -C "@username@@@hostName@"
 fi
 
-# hosts without fj skip the token
-if @forgejo@ && ! fj -H @forgejoHost@ auth list 2>/dev/null | grep -qF "@forgejoHost@"; then
-  read_hidden token "$key Forgejo token for @forgejoHost@ (empty to skip): "
-  if [ -n "$token" ]; then
-    printf '%s' "$token" | fj -H @forgejoHost@ auth add-token
-  fi
-  unset token
-fi
-
 # gated hosts: the gate reports missing secrets, so a signed rebuild needs no sudo password
 if @gated@; then
   gateState="$(sudo @gate@ state)"
