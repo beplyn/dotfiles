@@ -27,7 +27,8 @@ let
   # (Cloudflare caps a request at 100m; the LAN has none), secrets: generated keys in the
   # Secret named like the app (see k8s/secrets.sh), dirs: what the pods mount,
   # extra: more manifests, lan: host ports open to the LAN, postgres: what to pg_dumpall,
-  # auth: browsers log in through tinyauth first (the app trusts Remote-User),
+  # auth: browsers log in through tinyauth first (the app trusts Remote-User), authSkip and
+  # authSkipToken: what's left to the app's own login (proxy.hosts),
   # oidc: takes Pocket ID credentials from k8s/oidc/<app>.sealed.yaml
   apps =
   {
@@ -54,6 +55,13 @@ let
       # git over ssh, LAN only: Cloudflare doesn't proxy it
       lan.tcp = [ 22 ];
       auth = true;
+      # git over https and API tokens, which can't follow a browser login
+      authSkip =
+      [
+        "~ ^/[^/]+/[^/]+\\.git(/|$)"
+        "^~ /api/v1/"
+      ];
+      authSkipToken = true;
     };
     gatus =
     {
@@ -353,6 +361,8 @@ in
       inherit (a) port;
       maxBodySize = a.body or null;
       auth = a.auth or false;
+      authSkip = a.authSkip or [ ];
+      authSkipToken = a.authSkipToken or false;
     }) proxied;
 
     proxy.authRequest = lib.mkIf (enabled ? tinyauth) "http://127.0.0.1:${toString apps.tinyauth.port}/api/auth/nginx";
