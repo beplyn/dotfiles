@@ -34,6 +34,7 @@ in
     "gatus"
     "glance"
     "pocket-id"
+    "tinyauth"
     "blocky"
     "ntfy"
     "miniflux"

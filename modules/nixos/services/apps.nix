@@ -27,8 +27,8 @@ let
   # (Cloudflare caps a request at 100m; the LAN has none), secrets: generated keys in the
   # Secret named like the app (see k8s/secrets.sh), dirs: what the pods mount,
   # extra: more manifests, lan: host ports open to the LAN, postgres: what to pg_dumpall,
-  # oidc: takes Pocket ID credentials from k8s/oidc/<app>.sealed.yaml, oidcVars: @vars@
-  # that depend on whether that file exists
+  # auth: browsers log in through tinyauth first (the app trusts Remote-User),
+  # oidc: takes Pocket ID credentials from k8s/oidc/<app>.sealed.yaml
   apps =
   {
     vaultwarden =
@@ -38,7 +38,6 @@ let
       body = "100m";
       secrets = [ "ADMIN_TOKEN" ];
       dirs = [ (app "${st.state}/vaultwarden") ];
-      oidc = true;
     };
     forgejo =
     {
@@ -54,18 +53,20 @@ let
       ];
       # git over ssh, LAN only: Cloudflare doesn't proxy it
       lan.tcp = [ 22 ];
-      oidc = true;
+      auth = true;
     };
     gatus =
     {
       host = "status";
       port = 30081;
       dirs = [ (app "${st.state}/gatus") ];
+      auth = true;
     };
     glance =
     {
       host = "home";
       port = 30082;
+      auth = true;
     };
     pocket-id =
     {
@@ -73,6 +74,18 @@ let
       port = 30141;
       secrets = [ "ENCRYPTION_KEY" ];
       dirs = [ (app "${st.state}/pocket-id") ];
+    };
+    # forward auth in front of the auth apps, Pocket ID its only login
+    tinyauth =
+    {
+      host = "auth";
+      port = 30300;
+      dirs =
+      [
+        (app "${st.state}/tinyauth")
+        (app "${st.state}/tinyauth/oidc")
+      ];
+      oidc = true;
     };
     # LAN DNS, nothing to proxy
     blocky =
@@ -113,8 +126,7 @@ let
         deployment = "miniflux-db";
         user = "miniflux";
       };
-      oidc = true;
-      oidcVars = on: { provider = if on then "oidc" else ""; };
+      auth = true;
     };
     paperless =
     {
@@ -131,8 +143,7 @@ let
         # drop files in here as ${username}
         (own "d" "2775" (toString uid) "users" "${st.bulk}/documents/consume")
       ];
-      oidc = true;
-      oidcVars = on: { apps = lib.optionalString on "allauth.socialaccount.providers.openid_connect"; };
+      auth = true;
     };
     jellyfin =
     {
@@ -207,12 +218,7 @@ let
   {
     "${n}.host" = fqdn a;
     "${n}.port" = a.port;
-  }
-  // lib.optionalAttrs (a.oidc or false)
-  {
-    "${n}.oidc" = lib.boolToString (hasOidc n a);
-  }
-  // lib.mapAttrs' (k: v: lib.nameValuePair "${n}.${k}" v) ((a.oidcVars or (_: { })) (hasOidc n a))) apps;
+  }) apps;
 
   manifest = name: pkgs.writeText "${name}.yaml" (subst vars (builtins.readFile ./k8s/${name}.yaml));
   manifests = lib.unique (lib.concatLists (lib.mapAttrsToList (n: a: [ n ] ++ a.extra or [ ]) enabled));
@@ -322,6 +328,10 @@ in
         assertion = cfg.lanAddress == null || config.proxy.lanSubnets != [ ];
         message = "k3s.lanAddress sends LAN clients to nginx directly: set proxy.lanSubnets so it lets them in";
       }
+      {
+        assertion = !(enabled ? tinyauth) || enabled ? pocket-id;
+        message = "tinyauth logs in through Pocket ID: add pocket-id to k3s.apps";
+      }
     ];
 
     services.k3s =
@@ -342,7 +352,10 @@ in
     {
       inherit (a) port;
       maxBodySize = a.body or null;
+      auth = a.auth or false;
     }) proxied;
+
+    proxy.authRequest = lib.mkIf (enabled ? tinyauth) "http://127.0.0.1:${toString apps.tinyauth.port}/api/auth/nginx";
 
     # hostPorts are DNATed past INPUT anyway; listed so the firewall says what's open
     networking.firewall.allowedTCPPorts = lanPorts "tcp";

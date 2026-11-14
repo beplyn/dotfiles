@@ -1,6 +1,7 @@
 # @x@ placeholders are filled in by apps.nix
-# index and sqlite on the SSD, the documents themselves on tank; log in as admin, password
-# in the paperless Secret (ADMIN_PASSWORD), or with Pocket ID once seal-oidc made paperless-oidc
+# index and sqlite on the SSD, the documents themselves on tank. The browser logs in through
+# tinyauth as @username@ (Remote-User from nginx); the API takes that user's password,
+# ADMIN_PASSWORD in the paperless Secret, or a token
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -99,7 +100,7 @@ spec:
                   name: paperless
                   key: SECRET_KEY
             - name: PAPERLESS_ADMIN_USER
-              value: admin
+              value: "@username@"
             - name: PAPERLESS_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -116,30 +117,11 @@ spec:
               value: "hun"
             - name: PAPERLESS_OCR_LANGUAGE
               value: "hun+eng"
-            # empty without the sealed client, which leaves allauth's OIDC provider out
-            - name: PAPERLESS_APPS
-              value: "@paperless.apps@"
-            - name: PAPERLESS_SOCIAL_AUTO_SIGNUP
+            # nginx always sets it, from tinyauth
+            - name: PAPERLESS_ENABLE_HTTP_REMOTE_USER
               value: "true"
-            # from seal-oidc; absent until then
-            - name: CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: paperless-oidc
-                  key: CLIENT_ID
-                  optional: true
-            - name: CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: paperless-oidc
-                  key: CLIENT_SECRET
-                  optional: true
-            - name: PAPERLESS_SOCIALACCOUNT_PROVIDERS
-              value: >-
-                {"openid_connect": {"OAUTH_PKCE_ENABLED": true, "APPS": [{
-                "provider_id": "pocket-id", "name": "Pocket ID",
-                "client_id": "$(CLIENT_ID)", "secret": "$(CLIENT_SECRET)",
-                "settings": {"server_url": "https://@pocket-id.host@"}}]}}
+            - name: PAPERLESS_HTTP_REMOTE_USER_HEADER_NAME
+              value: "HTTP_REMOTE_USER"
           ports:
             - name: http
               containerPort: 8000

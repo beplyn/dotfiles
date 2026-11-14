@@ -34,6 +34,11 @@ data:
         url: http://pocket-id.pocket-id.svc/healthz
         interval: 1m
         conditions: ["[STATUS] < 300"]
+      - name: Tinyauth
+        group: apps
+        url: http://tinyauth.tinyauth.svc/api/healthz
+        interval: 1m
+        conditions: ["[STATUS] == 200"]
       - name: ntfy
         group: apps
         url: http://ntfy.ntfy.svc/v1/health
