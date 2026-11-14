@@ -1,6 +1,5 @@
 # @x@ placeholders are filled in by apps.nix
-# users are declared: admin (password in the ntfy Secret, ADMIN_PASSWORD) and beacon, which
-# can only publish to @alertTopic@ with its token; subscribe to @alertTopic@ as admin
+# users: admin (ADMIN_PASSWORD in the Secret) and beacon, publish-only to @alertTopic@
 apiVersion: v1
 kind: Namespace
 metadata:

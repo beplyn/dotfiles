@@ -41,7 +41,7 @@ spec:
             # the same as nginx's 10m
             - name: WASTEBIN_MAX_BODY_SIZE
               value: "10485760"
-            # signs the cookie that lets you delete your own pastes; random per start without it
+            # signs the delete cookie; random each start if unset
             - name: WASTEBIN_SIGNING_KEY
               valueFrom:
                 secretKeyRef:

@@ -1,7 +1,5 @@
 # @x@ placeholders are filled in by apps.nix
-# shell history sync, end-to-end encrypted by the client; not behind tinyauth, the atuin CLI
-# logs in itself. Registration is closed: open it for your first `atuin register`, then
-# close it again:
+# shell history sync, own login. Open registration once for the first register:
 #   k3s kubectl -n atuin set env deploy/atuin ATUIN_OPEN_REGISTRATION=true
 #   atuin register -u @username@ -e @email@   (sync_address = "https://@atuin.host@")
 #   k3s kubectl -n atuin set env deploy/atuin ATUIN_OPEN_REGISTRATION=false

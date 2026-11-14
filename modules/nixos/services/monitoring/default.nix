@@ -5,9 +5,8 @@
   ...
 }:
 
-# on the host, not k3s: both need the disks and the host itself. Beszel for CPU, memory,
-# disks and containers (hub and its agent here), Scrutiny for SMART history. Behind tinyauth;
-# their state is regenerable, so it stays in /var/lib, out of the backups
+# on the host (needs the disks): Beszel for stats, Scrutiny for SMART. Behind tinyauth;
+# state is regenerable, so not backed up
 let
   cfg = config.monitoring;
   hub = config.services.beszel.hub;

@@ -1,6 +1,5 @@
 # @x@ placeholders are filled in by apps.nix
-# not behind tinyauth: the phone apps log in themselves. The first visit makes the root user.
-# Libraries: /books (yours, read-only here) and /podcasts, which it downloads into
+# own login (phone apps), first visit makes root. Libraries: /books (read-only), /podcasts
 apiVersion: v1
 kind: Namespace
 metadata:

@@ -1,7 +1,5 @@
 # @x@ placeholders are filled in by apps.nix
-# QSV/VA-API on the Arc through the intel-gpu device plugin. Music and video are mounted
-# read-only: Jellyfin can never rewrite tags or drop artwork into the library, and the
-# btrfs mirror under them checksums every block
+# Arc GPU transcoding via the intel-gpu plugin; media mounted read-only
 apiVersion: v1
 kind: Namespace
 metadata:

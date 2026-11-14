@@ -1,10 +1,9 @@
 # @x@ placeholders are filled in by apps.nix
-# not behind tinyauth: the phone apps log in themselves. No registration; make @username@ once,
-# with ADMIN_PASSWORD from the vikunja Secret:
+# own login, no registration; make @username@ once:
 #   p="$(k3s kubectl -n vikunja get secret vikunja -o jsonpath='{.data.ADMIN_PASSWORD}' | base64 -d)"
 #   k3s kubectl -n vikunja exec deploy/vikunja -- /app/vikunja/vikunja user create \
 #     -u @username@ -e @email@ -p "$p"
-# With vikunja-oidc sealed (oidc/README.md) there's Pocket ID too, matched to it by email
+# Pocket ID once vikunja-oidc is sealed, matched by email
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -55,7 +54,7 @@ spec:
               value: /files
             - name: VIKUNJA_FILES_MAXSIZE
               value: 20MB
-            # Pocket ID next to the password; the button does nothing until the client is sealed
+            # Pocket ID next to the password (needs the sealed client)
             - name: VIKUNJA_AUTH_LOCAL_ENABLED
               value: "true"
             - name: VIKUNJA_AUTH_OPENID_ENABLED
