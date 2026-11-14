@@ -28,7 +28,8 @@ let
   shared = own "d" "2775" (toString uid) "users";
 
   # host: subdomain (unset: not proxied), port: NodePort, body: nginx upload limit
-  # (Cloudflare caps a request at 100m; the LAN has none), secrets: generated keys in the
+  # (Cloudflare caps a request at 100m; the LAN has none), timeout: nginx's upstream read
+  # timeout, for long polls (Cloudflare gives up after 100s), secrets: generated keys in the
   # Secret named like the app (see k8s/secrets.sh), dirs: what the pods mount,
   # extra: more manifests, lan: host ports open to the LAN, postgres: what to pg_dumpall,
   # auth: browsers log in through tinyauth first (the app trusts Remote-User), authSkip and
@@ -249,6 +250,8 @@ let
         tcp = [ 22000 ];
         udp = [ 22000 ];
       };
+      # the GUI long-polls /rest/events for up to a minute, right at nginx's default
+      timeout = "5m";
       auth = true;
     };
     # all of tank, as ${username}
@@ -456,6 +459,7 @@ in
     {
       inherit (a) port;
       maxBodySize = a.body or null;
+      readTimeout = a.timeout or null;
       auth = a.auth or false;
       authSkip = a.authSkip or [ ];
       authSkipToken = a.authSkipToken or false;
