@@ -1,7 +1,7 @@
 # @x@ placeholders are filled in by apps.nix
-# index and sqlite on the SSD, the documents themselves on tank. The browser logs in through
-# tinyauth as @username@ (Remote-User from nginx); the API takes that user's password,
-# ADMIN_PASSWORD in the paperless Secret, or a token
+# index and sqlite on the SSD, the documents themselves on tank. Not behind tinyauth: log in
+# as @username@ with ADMIN_PASSWORD from the paperless Secret, the phone apps too, or a token.
+# With paperless-oidc sealed (k8s/oidc/README.md) there's Pocket ID as well
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -117,11 +117,29 @@ spec:
               value: "hun"
             - name: PAPERLESS_OCR_LANGUAGE
               value: "hun+eng"
-            # nginx always sets it, from tinyauth
-            - name: PAPERLESS_ENABLE_HTTP_REMOTE_USER
-              value: "true"
-            - name: PAPERLESS_HTTP_REMOTE_USER_HEADER_NAME
-              value: "HTTP_REMOTE_USER"
+            - name: OIDC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: paperless-oidc
+                  key: CLIENT_ID
+                  optional: true
+            - name: OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: paperless-oidc
+                  key: CLIENT_SECRET
+                  optional: true
+            # Pocket ID next to the password, connected under My Profile; no signups through it.
+            # $(...) are the two above; the button does nothing until the client is sealed
+            - name: PAPERLESS_APPS
+              value: "allauth.socialaccount.providers.openid_connect"
+            - name: PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS
+              value: "false"
+            - name: PAPERLESS_SOCIALACCOUNT_PROVIDERS
+              value: >-
+                {"openid_connect": {"OAUTH_PKCE_ENABLED": true, "APPS": [{"provider_id": "pocket-id",
+                "name": "Pocket ID", "client_id": "$(OIDC_CLIENT_ID)", "secret": "$(OIDC_CLIENT_SECRET)",
+                "settings": {"server_url": "https://@pocket-id.host@"}}]}}
           ports:
             - name: http
               containerPort: 8000

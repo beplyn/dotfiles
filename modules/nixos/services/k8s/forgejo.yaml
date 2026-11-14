@@ -2,8 +2,9 @@
 # https through Cloudflare, ssh on the LAN only (host port 22, Forgejo's built-in server on 2222
 # in the container: rootless can't bind 22; the host sshd is on 2222 and hostPort would shadow it).
 # The init container makes @username@ the admin on first start (password in the forgejo
-# Secret, ADMIN_PASSWORD). In the browser nginx logs you in through tinyauth and Forgejo takes
-# the Remote-User it passes on; no registration.
+# Secret, ADMIN_PASSWORD). Not behind tinyauth, so the phone apps log in themselves; no
+# registration. With forgejo-oidc sealed (k8s/oidc/README.md) it adds "Sign in with Pocket ID"
+# too, linked to @username@ by logging in once with the password.
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -45,10 +46,18 @@ spec:
                 gitea admin user create --admin --username "$ADMIN_USERNAME" \
                   --email "$ADMIN_EMAIL" --password "$ADMIN_PASSWORD" --must-change-password=false
               fi
-              # the old Pocket ID login, from before tinyauth; leave it if users still need it
-              id="$(gitea admin auth list | awk '$2 == "pocket-id" { print $1 }')"
-              if [ -n "$id" ]; then
-                gitea admin auth delete --id "$id" || echo "pocket-id auth source still in use, kept" >&2
+              # Pocket ID as a second login, once its client is sealed; kept in step with it
+              if [ -n "${OIDC_CLIENT_ID:-}" ]; then
+                set -- --name pocket-id --provider openidConnect \
+                  --key "$OIDC_CLIENT_ID" --secret "$OIDC_CLIENT_SECRET" \
+                  --auto-discover-url "https://$OIDC_HOST/.well-known/openid-configuration" \
+                  --scopes "openid email profile"
+                id="$(gitea admin auth list | awk '$2 == "pocket-id" { print $1 }')"
+                if [ -n "$id" ]; then
+                  gitea admin auth update-oauth --id "$id" "$@"
+                else
+                  gitea admin auth add-oauth "$@"
+                fi
               fi
           env: &env
             # FORGEJO__section__KEY is written into app.ini on start
@@ -75,15 +84,21 @@ spec:
               value: "true"
             - name: FORGEJO__service__DISABLE_REGISTRATION
               value: "true"
-            # nginx always sets it, from tinyauth; only existing users get in
-            - name: FORGEJO__service__ENABLE_REVERSE_PROXY_AUTHENTICATION
-              value: "true"
-            - name: FORGEJO__service__ENABLE_REVERSE_PROXY_AUTO_REGISTRATION
-              value: "false"
-            - name: FORGEJO__security__REVERSE_PROXY_AUTHENTICATION_USER
-              value: "Remote-User"
-            - name: FORGEJO__security__REVERSE_PROXY_AUTHENTICATION_EMAIL
-              value: "Remote-Email"
+            # from seal-oidc; absent until then
+            - name: OIDC_HOST
+              value: "@pocket-id.host@"
+            - name: OIDC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: forgejo-oidc
+                  key: CLIENT_ID
+                  optional: true
+            - name: OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: forgejo-oidc
+                  key: CLIENT_SECRET
+                  optional: true
             - name: FORGEJO__security__SECRET_KEY
               valueFrom:
                 secretKeyRef:

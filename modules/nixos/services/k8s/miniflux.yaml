@@ -1,6 +1,7 @@
 # @x@ placeholders are filled in by apps.nix
-# the browser logs in through tinyauth as @username@ (Remote-User from nginx); the API and
-# its clients take that user's password, ADMIN_PASSWORD in the miniflux Secret
+# not behind tinyauth: log in as @username@ with ADMIN_PASSWORD from the miniflux Secret, the
+# phone apps too. With miniflux-oidc sealed (k8s/oidc/README.md) there's "Sign in with Pocket
+# ID" as well, once linked under Settings
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -134,12 +135,31 @@ spec:
                   key: ADMIN_PASSWORD
             - name: BASE_URL
               value: "https://@miniflux.host@/"
-            # nginx always sets it, from tinyauth; only existing users get in
-            - name: AUTH_PROXY_HEADER
-              value: "Remote-User"
-            - name: AUTH_PROXY_USER_CREATION
+            # Pocket ID; the button does nothing until the client is sealed
+            - name: OAUTH2_PROVIDER
+              value: "oidc"
+            - name: OAUTH2_OIDC_PROVIDER_NAME
+              value: "Pocket ID"
+            - name: OAUTH2_OIDC_DISCOVERY_ENDPOINT
+              value: "https://@pocket-id.host@"
+            - name: OAUTH2_REDIRECT_URL
+              value: "https://@miniflux.host@/oauth2/oidc/callback"
+            # only accounts linked in Settings
+            - name: OAUTH2_USER_CREATION
               value: "0"
-            # AUTH_PROXY_HEADER counts only from these: nginx comes in over cni0 from the
+            - name: OAUTH2_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: miniflux-oidc
+                  key: CLIENT_ID
+                  optional: true
+            - name: OAUTH2_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: miniflux-oidc
+                  key: CLIENT_SECRET
+                  optional: true
+            # X-Forwarded-For counts only from these: nginx comes in over cni0 from the
             # node's pod-network address, loopback in case it ever doesn't get SNATed
             - name: TRUSTED_REVERSE_PROXY_NETWORKS
               value: "10.42.0.0/16,127.0.0.0/8"
