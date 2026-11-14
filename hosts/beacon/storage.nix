@@ -1,13 +1,11 @@
 { config, lib, pkgs, ... }:
 
-# which disk gets what, so the SSDs only see small or read-mostly writes:
-#   sdc  Kingston 480G SSD  /, k3s, app state and databases (k3s.storage.state)
-#   sdb  WD Green 120G SSD  regenerable read-mostly caches: thumbnails, metadata, ML models
-#   sda  Barracuda 2T HDD   write-heavy throwaway data: transcodes, encoded video
+# disks (setup in README.md), mounted by label, nofail:
+#   sdc  Kingston 480G SSD  /, k3s, app state, databases
+#   sdb  WD Green 120G SSD  caches: thumbnails, metadata, ML models
+#   sda  Barracuda 2T HDD   throwaway: transcodes, encoded video
 #   sdd  6T HDD "tank"      music, video, photos, documents, notes, books, sync
-#   sde  6T HDD "backup"    btrbk copies of tank, daily k3s state backups
-# by label, so sdX reordering can't swap them; nofail so a dead disk doesn't stop boot.
-# hosts/beacon/README.md has the commands that make them
+#   sde  6T HDD "backup"    btrbk copies of tank, k3s state backups
 let
   st = config.k3s.storage;
   backup = config.k3s.backup.mount;
@@ -26,8 +24,7 @@ let
   };
 in
 {
-  # btrfs checksums every data and metadata block; on one disk a scrub finds rot (and
-  # fixes metadata from its dup copy), the backup disk holds a good copy of the data
+  # scrubs find rot; the backup disk holds good copies
   fileSystems.${st.bulk} = disk "tank" "btrfs" [ "compress=zstd" ];
   fileSystems.${backup} = disk "backup" "btrfs" [ "compress=zstd" ];
   fileSystems.${st.cache} = disk "cache" "ext4" [ ];
@@ -46,7 +43,7 @@ in
     onCalendar = "daily";
     settings =
     {
-      # runs as root below: beacon's sudo is wheel-only, so the module's sudo backend can't work
+      # as root: beacon's sudo is wheel-only
       backend = "btrfs-progs";
       timestamp_format = "long";
       # on tank: two weeks to undo a delete or a bad tag edit, plus the latest as the

@@ -17,8 +17,7 @@
   };
   services.blueman.enable = true;
 
-  # pairing agent for quickshell, which has none of its own; without one the
-  # controller is not pairable and devices link up unbonded, with no audio
+  # pairing agent for quickshell; without it devices pair with no audio
   systemd.user.services.bt-agent =
   {
     description = "Bluetooth pairing agent";

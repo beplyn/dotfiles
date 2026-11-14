@@ -1,5 +1,4 @@
-# placeholders: the real values are in /var/secrets/dotfiles/vars.toml (see README.md).
-# This marks them, so no host builds from them by accident
+# placeholders, real values in /var/secrets/dotfiles/vars.toml (see README.md)
 placeholder = true
 
 username = "user"
