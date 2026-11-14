@@ -96,7 +96,7 @@ once their client is sealed; Immich and Audiobookshelf have it in their admin se
 
 1. Make the Pocket ID admin at `https://id.<domain>/setup`: username `<username>`, the same
    email as in git, and register a passkey.
-2. Seal the Pocket ID clients: `modules/nixos/services/k8s/oidc/README.md`.
+2. Seal the Pocket ID clients: `modules/nixos/services/k3s/manifests/oidc/README.md`.
 
 Passwords are generated in the cluster on first start, never in git. Read one with
 `sudo k3s kubectl -n <app> get secret <app> -o jsonpath='{.data.<KEY>}' | base64 -d`.
@@ -112,7 +112,7 @@ Passwords are generated in the cluster on first start, never in git. Read one wi
 | FileBrowser | `<username>` through Tinyauth; tank as you, photos excluded       |
 | Radicale    | `<username>`, `ADMIN_PASSWORD`; CalDAV/CardDAV at `cal`           |
 | Navidrome   | `admin`, `ADMIN_PASSWORD`; rename it in the app                   |
-| Vikunja     | `<username>`, `ADMIN_PASSWORD`, made once, see `k8s/vikunja.yaml` |
+| Vikunja     | `<username>`, `ADMIN_PASSWORD`, made once, see `k3s/manifests/vikunja.yaml` |
 
 Only possible in the apps themselves: the first Immich user (becomes admin), Jellyfin's setup
 wizard and libraries (`/media/music`, `/media/video`).
@@ -131,7 +131,7 @@ And for the newer ones:
   engine.
 
 - **Atuin** (`sh`): registration is closed; open it for your first `atuin register`, the
-  commands are in `k8s/atuin.yaml`. Set `sync_address = "https://sh.<domain>"`.
+  commands are in `k3s/manifests/atuin.yaml`. Set `sync_address = "https://sh.<domain>"`.
 - **n8n** (`flow`): makes its owner account on the first visit, behind Tinyauth. Webhooks and
   forms (`/webhook/`, `/form/`) skip Tinyauth so other services can call them.
 - **Mealie** (`recipes`): first login `changeme@example.com` / `MyPassword`; change both, the

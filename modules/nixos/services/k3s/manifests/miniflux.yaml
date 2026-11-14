@@ -1,6 +1,6 @@
 # @x@ placeholders are filled in by apps.nix
 # not behind tinyauth: log in as @username@ with ADMIN_PASSWORD from the miniflux Secret, the
-# phone apps too. With miniflux-oidc sealed (k8s/oidc/README.md) there's "Sign in with Pocket
+# phone apps too. With miniflux-oidc sealed (oidc/README.md) there's "Sign in with Pocket
 # ID" as well, once linked under Settings
 apiVersion: v1
 kind: Namespace

@@ -1,6 +1,6 @@
 # Pocket ID clients
 
-One per app with `oidc = true` in `apps.nix`. Each is optional: until its sealed `<app>-oidc`
+One per app with `oidc = true` in `k3s/apps.nix`. Each is optional: until its sealed `<app>-oidc`
 Secret is here, the app has only its own login, apart from Tinyauth, which lets nobody past
 without it.
 
@@ -15,7 +15,7 @@ without it.
 
 1. In Pocket ID (`https://id.<domain>`), add an OIDC client with the app's callback URL.
 2. On beacon, from the repo:
-   `sudo seal-oidc <app> > modules/nixos/services/k8s/oidc/<app>.sealed.yaml`
+   `sudo seal-oidc <app> > modules/nixos/services/k3s/manifests/oidc/<app>.sealed.yaml`
    and paste the client ID and secret it shows.
 3. `git add` the file, commit, push, rebuild.
 

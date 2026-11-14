@@ -1,4 +1,4 @@
-# namespace comes from k3s.nix (phase 1); @domain@ is filled in there
+# namespace comes from default.nix (phase 1); @domain@ is filled in there
 # no Kubernetes API access: no Role, no RoleBinding, no token
 apiVersion: v1
 kind: ServiceAccount

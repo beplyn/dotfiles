@@ -74,7 +74,7 @@ in
         ExecStart = lib.escapeShellArgs
         [
           "${pkgs.bash}/bin/bash"
-          ./backup.sh
+          ../../k3s-backup/backup.sh
           cfg.mount
           cfg.target
           config.k3s.storage.state

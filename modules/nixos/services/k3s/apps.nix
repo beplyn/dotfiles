@@ -8,7 +8,7 @@
   ...
 }:
 
-# k3s workloads, one manifest each in ./k8s with @var@s filled in from here.
+# k3s workloads, one manifest each in ./manifests with @var@s filled in from here.
 # nginx reaches them on NodePorts bound to loopback only; data lands on k3s.storage
 let
   cfg = config.k3s;
@@ -30,11 +30,11 @@ let
   # host: subdomain (unset: not proxied), port: NodePort, body: nginx upload limit
   # (Cloudflare caps a request at 100m; the LAN has none), timeout: nginx's upstream read
   # timeout, for long polls (Cloudflare gives up after 100s), secrets: generated keys in the
-  # Secret named like the app (see k8s/secrets.sh), dirs: what the pods mount,
+  # Secret named like the app (see secrets.sh), dirs: what the pods mount,
   # extra: more manifests, lan: host ports open to the LAN, postgres: what to pg_dumpall,
   # auth: browsers log in through tinyauth first (the app trusts Remote-User), authSkip and
   # authSkipToken: what's left to the app's own login (proxy.hosts),
-  # oidc: takes Pocket ID credentials from k8s/oidc/<app>.sealed.yaml.
+  # oidc: takes Pocket ID credentials from manifests/oidc/<app>.sealed.yaml.
   # Everything is behind tinyauth but what's used from phone apps, extensions or other
   # clients that can't follow a browser login: those log in themselves, and the ones that
   # can offer Pocket ID as a second way in have oidc
@@ -383,7 +383,7 @@ let
   proxied = lib.filterAttrs (_: a: a ? host) enabled;
 
   fqdn = a: "${a.host}.${config.proxy.domain}";
-  sealedOidc = n: ./k8s/oidc + "/${n}.sealed.yaml";
+  sealedOidc = n: ./manifests/oidc + "/${n}.sealed.yaml";
   hasOidc = n: a: a.oidc or false && builtins.pathExists (sealedOidc n);
 
   # LAN clients go straight to nginx: the apex and every proxied host, apps or not
@@ -416,7 +416,7 @@ let
     "${n}.port" = a.port;
   }) apps;
 
-  manifest = name: pkgs.writeText "${name}.yaml" (subst vars (builtins.readFile ./k8s/${name}.yaml));
+  manifest = name: pkgs.writeText "${name}.yaml" (subst vars (builtins.readFile ./manifests/${name}.yaml));
   manifests = lib.unique (lib.concatLists (lib.mapAttrsToList (n: a: [ n ] ++ a.extra or [ ]) enabled));
 
   secretSpec = pkgs.writeText "k3s-app-secrets" (lib.concatStrings (lib.mapAttrsToList
@@ -433,7 +433,7 @@ let
   {
     name = "seal-oidc";
     runtimeInputs = [ config.services.k3s.package pkgs.kubeseal ];
-    text = builtins.readFile ./k8s/seal-oidc.sh;
+    text = builtins.readFile ../k8s/seal-oidc.sh;
   };
 in
 {
@@ -594,7 +594,7 @@ in
         RemainAfterExit = true;
         UMask = "0077";
         TimeoutStartSec = "6min";
-        ExecStart = "${pkgs.bash}/bin/bash ${./k8s/secrets.sh} ${secretSpec}";
+        ExecStart = "${pkgs.bash}/bin/bash ${../k8s/secrets.sh} ${secretSpec}";
       };
     };
 
@@ -607,7 +607,7 @@ in
       {
         Type = "oneshot";
         UMask = "0077";
-        ExecStart = "${pkgs.bash}/bin/bash ${./k8s/ntfy-alert.sh} %i ${toString apps.ntfy.port} ${alertTopic}";
+        ExecStart = "${pkgs.bash}/bin/bash ${../k8s/ntfy-alert.sh} %i ${toString apps.ntfy.port} ${alertTopic}";
       };
     };
   };
