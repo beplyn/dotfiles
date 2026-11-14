@@ -3,6 +3,7 @@
   inputs,
   username,
   email,
+  domain,
   forgejoHost,
   # every theme in the flake, for the rebuild shortcuts
   themes,
@@ -21,6 +22,7 @@ let
       inputs
       username
       email
+      domain
       forgejoHost
       themes
       themeName

@@ -96,6 +96,8 @@
         inherit inputs themes;
         username = "beplyn";
         email = "me@beplyn.dev";
+        # beacon serves it; the other hosts are its clients
+        domain = "beplyn.dev";
         forgejoHost = "codeberg.org";
         headlessHosts = [ "beacon" ];
       };

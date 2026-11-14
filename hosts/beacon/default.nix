@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, domain, ... }:
 
 let
   address = "192.168.2.200";
@@ -22,7 +22,7 @@ in
   proxy =
   {
     enable = true;
-    domain = "beplyn.dev";
+    inherit domain;
     # split-horizon: blocky sends the LAN here directly
     lanSubnets = [ subnet ];
     # the records are DNS-only, so clients come straight here, not through Cloudflare
