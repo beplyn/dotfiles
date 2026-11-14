@@ -1,7 +1,7 @@
 {
   imports =
   [
-    ./containers.nix
+    ./docker.nix
     ./qbittorrent.nix
     ./llm.nix
     ./proxy.nix
