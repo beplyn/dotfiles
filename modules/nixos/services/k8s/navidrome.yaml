@@ -1,0 +1,97 @@
+# @x@ placeholders are filled in by apps.nix
+# @bulk@/music over Subsonic, read-only. Not behind tinyauth: the phone apps log in themselves.
+# The first start makes the user admin with ADMIN_PASSWORD from the navidrome Secret, so
+# nobody else gets to make it first
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: navidrome
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: navidrome
+  namespace: navidrome
+  labels:
+    app: navidrome
+spec:
+  replicas: 1
+  # one writer on the sqlite db
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: navidrome
+  template:
+    metadata:
+      labels:
+        app: navidrome
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: navidrome
+          image: deluan/navidrome:0.64.2
+          env:
+            - name: ND_DEVAUTOCREATEADMINPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: navidrome
+                  key: ADMIN_PASSWORD
+            - name: ND_ENABLEINSIGHTSCOLLECTOR
+              value: "false"
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: http
+              containerPort: 4533
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: http
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: music
+              mountPath: /music
+              readOnly: true
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: @uid@
+            runAsGroup: @uid@
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              memory: 512Mi
+      volumes:
+        - name: data
+          hostPath:
+            path: "@state@/navidrome"
+            type: Directory
+        - name: music
+          hostPath:
+            path: "@bulk@/music"
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: navidrome
+  namespace: navidrome
+spec:
+  type: NodePort
+  selector:
+    app: navidrome
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @navidrome.port@

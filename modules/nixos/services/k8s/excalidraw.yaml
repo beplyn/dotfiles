@@ -1,0 +1,63 @@
+# @x@ placeholders are filled in by apps.nix
+# the whiteboard as static files, behind tinyauth. Drawings stay in the browser unless saved
+# to a file; no collaboration server. Only latest and commit tags upstream, so by digest
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: excalidraw
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: excalidraw
+  namespace: excalidraw
+  labels:
+    app: excalidraw
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: excalidraw
+  template:
+    metadata:
+      labels:
+        app: excalidraw
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        # stock nginx: starts as root for port 80, workers drop to nginx
+        - name: excalidraw
+          image: excalidraw/excalidraw:latest@sha256:f7ee194addd607bf831d2af0f0a34463dd4225e426cf35199ef0b12a803398e9
+          ports:
+            - name: http
+              containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          securityContext:
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 5m
+              memory: 16Mi
+            limits:
+              memory: 64Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: excalidraw
+  namespace: excalidraw
+spec:
+  type: NodePort
+  selector:
+    app: excalidraw
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @excalidraw.port@

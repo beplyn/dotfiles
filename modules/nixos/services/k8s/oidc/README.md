@@ -10,6 +10,8 @@ without it.
 | forgejo   | `https://git.beplyn.dev/user/oauth2/pocket-id/callback`           |
 | miniflux  | `https://rss.beplyn.dev/oauth2/oidc/callback`                     |
 | paperless | `https://docs.beplyn.dev/accounts/oidc/pocket-id/login/callback/` |
+| vikunja   | `https://tasks.beplyn.dev/auth/openid/pocketid`                   |
+| mealie    | `https://recipes.beplyn.dev/login`                                |
 
 1. In Pocket ID (`https://id.beplyn.dev`), add an OIDC client with the app's callback URL.
 2. On beacon, from the repo:
@@ -17,13 +19,16 @@ without it.
    and paste the client ID and secret it shows.
 3. `git add` the file, commit, push, rebuild.
 
-None of them makes accounts through Pocket ID; link it to `beplyn` once:
+Only Vikunja makes accounts through Pocket ID; link it to `beplyn` once:
 
 - **Forgejo**: the first Pocket ID sign-in asks for the Forgejo password, then remembers it.
 - **Miniflux**: Settings, "Link my Pocket ID account".
 - **Paperless**: My Profile, connect Pocket ID.
+- **Vikunja** and **Mealie**: matched by email, so give the account your Pocket ID email;
+  without a match Vikunja makes a second one.
 
 Not here: Immich and Audiobookshelf take Pocket ID in their own admin settings (callbacks
 `https://photos.beplyn.dev/auth/login`, `app.immich:///oauth-callback` and
 `https://books.beplyn.dev/auth/openid/callback`, `audiobookshelf://oauth`). Linkding would make
-a second account, and Vaultwarden, Jellyfin, ntfy, FileBrowser and Actual keep only their own.
+a second account, and Vaultwarden, Jellyfin, ntfy, Actual, Radicale, Navidrome and Atuin keep
+only their own.

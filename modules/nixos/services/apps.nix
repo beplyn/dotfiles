@@ -294,6 +294,89 @@ let
       secrets = [ "SECRET_KEY" ];
       auth = true;
     };
+    # the phone apps log in themselves
+    vikunja =
+    {
+      host = "tasks";
+      port = 30093;
+      body = "20m";
+      secrets = [ "JWT_SECRET" "ADMIN_PASSWORD" ];
+      dirs =
+      [
+        (app "${st.state}/vikunja")
+        (app "${st.state}/vikunja/files")
+      ];
+      oidc = true;
+    };
+    # CalDAV/CardDAV clients log in with basic auth
+    radicale =
+    {
+      host = "cal";
+      port = 30094;
+      secrets = [ "ADMIN_PASSWORD" "ADMIN_HASH=bcrypt:ADMIN_PASSWORD" ];
+      dirs = [ (app "${st.state}/radicale") ];
+    };
+    # Subsonic clients log in themselves
+    navidrome =
+    {
+      host = "music";
+      port = 30095;
+      secrets = [ "ADMIN_PASSWORD" ];
+      dirs =
+      [
+        (app "${st.state}/navidrome")
+        # jellyfin's too; it only gets it read-only
+        (subvol "${st.bulk}/music")
+      ];
+    };
+    # webhooks and forms are called by other services, without a login
+    n8n =
+    {
+      host = "flow";
+      port = 30097;
+      body = "20m";
+      secrets = [ "ENCRYPTION_KEY" ];
+      dirs = [ (app "${st.state}/n8n") ];
+      auth = true;
+      authSkip =
+      [
+        "^~ /webhook/"
+        "^~ /webhook-test/"
+        "^~ /webhook-waiting/"
+        "^~ /form/"
+      ];
+    };
+    # the atuin client syncs with its own account
+    atuin =
+    {
+      host = "sh";
+      port = 30098;
+      body = "20m";
+      dirs = [ (app "${st.state}/atuin") ];
+    };
+    changedetection =
+    {
+      host = "watch";
+      port = 30099;
+      dirs = [ (app "${st.state}/changedetection") ];
+      auth = true;
+    };
+    mealie =
+    {
+      host = "recipes";
+      port = 30100;
+      body = "20m";
+      dirs = [ (app "${st.state}/mealie") ];
+      auth = true;
+      oidc = true;
+    };
+    # nothing kept: drawings stay in the browser unless exported
+    excalidraw =
+    {
+      host = "draw";
+      port = 30101;
+      auth = true;
+    };
   };
 
   enabled = lib.filterAttrs (n: _: lib.elem n cfg.apps) apps;

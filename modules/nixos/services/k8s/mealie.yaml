@@ -1,0 +1,110 @@
+# @x@ placeholders are filled in by apps.nix
+# behind tinyauth, plus Mealie's own login, which it can't do without. First login:
+# changeme@example.com / MyPassword, then change both, the email to @email@. With mealie-oidc
+# sealed (k8s/oidc/README.md) "Login with Pocket ID" logs in as the user with that email
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mealie
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mealie
+  namespace: mealie
+  labels:
+    app: mealie
+spec:
+  replicas: 1
+  # one writer on the sqlite db
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: mealie
+  template:
+    metadata:
+      labels:
+        app: mealie
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        # starts as root, chowns /app to PUID and drops to it
+        - name: mealie
+          image: ghcr.io/mealie-recipes/mealie:v3.31.0
+          env:
+            - name: PUID
+              value: "@uid@"
+            - name: PGID
+              value: "@uid@"
+            - name: BASE_URL
+              value: "https://@mealie.host@"
+            - name: ALLOW_SIGNUP
+              value: "false"
+            # hidden until the client is sealed: it needs the ID and the URL
+            - name: OIDC_AUTH_ENABLED
+              value: "true"
+            - name: OIDC_PROVIDER_NAME
+              value: "Pocket ID"
+            - name: OIDC_CONFIGURATION_URL
+              value: "https://@pocket-id.host@/.well-known/openid-configuration"
+            - name: OIDC_SIGNUP_ENABLED
+              value: "false"
+            - name: OIDC_USER_CLAIM
+              value: email
+            - name: OIDC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: mealie-oidc
+                  key: CLIENT_ID
+                  optional: true
+            - name: OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: mealie-oidc
+                  key: CLIENT_SECRET
+                  optional: true
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: http
+              containerPort: 9000
+          readinessProbe:
+            httpGet:
+              path: /api/app/about
+              port: http
+            periodSeconds: 30
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+          securityContext:
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 20m
+              memory: 256Mi
+            limits:
+              memory: 1Gi
+      volumes:
+        - name: data
+          hostPath:
+            path: "@state@/mealie"
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mealie
+  namespace: mealie
+spec:
+  type: NodePort
+  selector:
+    app: mealie
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @mealie.port@
