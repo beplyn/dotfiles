@@ -75,6 +75,17 @@ let
       port = 30083;
       dirs = [ (app "${st.state}/ntfy") ];
     };
+    miniflux =
+    {
+      host = "rss";
+      port = 30084;
+      secrets = [ "POSTGRES_PASSWORD" "ADMIN_PASSWORD" ];
+      dirs =
+      [
+        (app "${st.state}/miniflux")
+        (app "${st.state}/miniflux/postgres")
+      ];
+    };
   };
 
   enabled = lib.filterAttrs (n: _: lib.elem n cfg.apps) apps;

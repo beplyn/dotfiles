@@ -1,0 +1,178 @@
+# @x@ placeholders are filled in by apps.nix
+# log in as admin, password in the miniflux Secret (ADMIN_PASSWORD)
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: miniflux
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: miniflux-db
+  namespace: miniflux
+  labels:
+    app: miniflux-db
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: miniflux-db
+  template:
+    metadata:
+      labels:
+        app: miniflux-db
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: postgres
+          image: postgres:18-alpine
+          env:
+            - name: POSTGRES_USER
+              value: miniflux
+            - name: POSTGRES_DB
+              value: miniflux
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: miniflux
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_INITDB_ARGS
+              value: "--data-checksums"
+          ports:
+            - name: postgres
+              containerPort: 5432
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "miniflux"]
+          volumeMounts:
+            # 18+ keeps its data in a versioned dir under here
+            - name: data
+              mountPath: /var/lib/postgresql
+            - name: run
+              mountPath: /var/run/postgresql
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: @uid@
+            runAsGroup: @uid@
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              memory: 512Mi
+      volumes:
+        - name: data
+          hostPath:
+            path: "@state@/miniflux/postgres"
+            type: Directory
+        - name: run
+          emptyDir: { }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: miniflux-db
+  namespace: miniflux
+spec:
+  selector:
+    app: miniflux-db
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: postgres
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: miniflux
+  namespace: miniflux
+  labels:
+    app: miniflux
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: miniflux
+  template:
+    metadata:
+      labels:
+        app: miniflux
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: miniflux
+          image: miniflux/miniflux:2.3.5-distroless
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: miniflux
+                  key: POSTGRES_PASSWORD
+            # hex, so it needs no escaping in the URL
+            - name: DATABASE_URL
+              value: "postgres://miniflux:$(POSTGRES_PASSWORD)@miniflux-db/miniflux?sslmode=disable"
+            - name: RUN_MIGRATIONS
+              value: "1"
+            - name: CREATE_ADMIN
+              value: "1"
+            - name: ADMIN_USERNAME
+              value: admin
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: miniflux
+                  key: ADMIN_PASSWORD
+            - name: BASE_URL
+              value: "https://@miniflux.host@/"
+            # the default is loopback only
+            - name: LISTEN_ADDR
+              value: "0.0.0.0:8080"
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /healthcheck
+              port: http
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: @uid@
+            runAsGroup: @uid@
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: miniflux
+  namespace: miniflux
+spec:
+  type: NodePort
+  selector:
+    app: miniflux
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @miniflux.port@
