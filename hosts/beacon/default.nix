@@ -26,7 +26,7 @@
     };
   };
 
-  # no hosts yet: dyndns keeps only the apex pointed here
+  # the k3s ddns keeps the apex and *. pointed here; k3s.apps add their subdomains
   proxy =
   {
     enable = true;
@@ -35,6 +35,20 @@
 
   k3s.enable = true;
   k3s.ddns.enable = true;
+  k3s.apps =
+  [
+    "vaultwarden"
+    "forgejo"
+    "gatus"
+    "glance"
+    "pocket-id"
+    "blocky"
+    "ntfy"
+    "miniflux"
+    "paperless"
+    "jellyfin"
+    "immich"
+  ];
 
   environment.systemPackages = [ pkgs.kitty.terminfo ];
 
