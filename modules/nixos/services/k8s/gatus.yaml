@@ -64,6 +64,51 @@ data:
         url: http://immich-server.immich.svc/api/server/ping
         interval: 1m
         conditions: ["[STATUS] == 200"]
+      - name: SilverBullet
+        group: apps
+        url: http://silverbullet.silverbullet.svc/
+        interval: 1m
+        conditions: ["[STATUS] == 200"]
+      - name: Linkding
+        group: apps
+        url: http://linkding.linkding.svc/health
+        interval: 1m
+        conditions: ["[STATUS] == 200"]
+      - name: Audiobookshelf
+        group: apps
+        url: http://audiobookshelf.audiobookshelf.svc/healthcheck
+        interval: 1m
+        conditions: ["[STATUS] == 200"]
+      - name: Stirling-PDF
+        group: apps
+        url: http://stirling-pdf.stirling-pdf.svc/
+        interval: 1m
+        conditions: ["[STATUS] < 500"]
+      - name: Syncthing
+        group: apps
+        url: http://syncthing.syncthing.svc/rest/noauth/health
+        interval: 1m
+        conditions: ["[STATUS] == 200"]
+      - name: FileBrowser
+        group: apps
+        url: http://filebrowser.filebrowser.svc/health
+        interval: 1m
+        conditions: ["[STATUS] == 200"]
+      - name: Actual
+        group: apps
+        url: http://actual.actual.svc/health
+        interval: 1m
+        conditions: ["[STATUS] == 200"]
+      - name: wastebin
+        group: apps
+        url: http://wastebin.wastebin.svc/
+        interval: 1m
+        conditions: ["[STATUS] == 200"]
+      - name: SearXNG
+        group: apps
+        url: http://searxng.searxng.svc/healthz
+        interval: 1m
+        conditions: ["[STATUS] == 200"]
       - name: Glance
         group: apps
         url: http://glance.glance.svc/

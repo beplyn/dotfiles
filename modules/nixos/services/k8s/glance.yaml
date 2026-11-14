@@ -53,6 +53,42 @@ data:
                     url: "https://@miniflux.host@"
                     check-url: http://miniflux.miniflux.svc/healthcheck
                     icon: di:miniflux
+                  - title: SilverBullet
+                    url: "https://@silverbullet.host@"
+                    check-url: http://silverbullet.silverbullet.svc/
+                    icon: di:silverbullet
+                  - title: Linkding
+                    url: "https://@linkding.host@"
+                    check-url: http://linkding.linkding.svc/health
+                    icon: di:linkding
+                  - title: Audiobookshelf
+                    url: "https://@audiobookshelf.host@"
+                    check-url: http://audiobookshelf.audiobookshelf.svc/healthcheck
+                    icon: di:audiobookshelf
+                  - title: Stirling-PDF
+                    url: "https://@stirling-pdf.host@"
+                    check-url: http://stirling-pdf.stirling-pdf.svc/
+                    icon: di:stirling-pdf
+                  - title: Syncthing
+                    url: "https://@syncthing.host@"
+                    check-url: http://syncthing.syncthing.svc/rest/noauth/health
+                    icon: di:syncthing
+                  - title: FileBrowser
+                    url: "https://@filebrowser.host@"
+                    check-url: http://filebrowser.filebrowser.svc/health
+                    icon: di:filebrowser
+                  - title: Actual
+                    url: "https://@actual.host@"
+                    check-url: http://actual.actual.svc/health
+                    icon: di:actual-budget
+                  - title: wastebin
+                    url: "https://@wastebin.host@"
+                    check-url: http://wastebin.wastebin.svc/
+                    icon: di:wastebin
+                  - title: SearXNG
+                    url: "https://@searxng.host@"
+                    check-url: http://searxng.searxng.svc/healthz
+                    icon: di:searxng
                   - title: ntfy
                     url: "https://@ntfy.host@"
                     check-url: http://ntfy.ntfy.svc/v1/health
