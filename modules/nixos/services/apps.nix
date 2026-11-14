@@ -69,6 +69,12 @@ let
     };
     # LAN DNS on hostPort 53, nothing to proxy
     blocky = { };
+    ntfy =
+    {
+      host = "ntfy";
+      port = 30083;
+      dirs = [ (app "${st.state}/ntfy") ];
+    };
   };
 
   enabled = lib.filterAttrs (n: _: lib.elem n cfg.apps) apps;

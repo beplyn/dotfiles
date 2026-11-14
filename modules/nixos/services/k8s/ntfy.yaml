@@ -1,0 +1,105 @@
+# @x@ placeholders are filled in by apps.nix
+# nobody can read or publish until you add yourself:
+#   kubectl -n ntfy exec -it deploy/ntfy -- ntfy user add --role=admin <name>
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ntfy
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ntfy
+  namespace: ntfy
+data:
+  server.yml: |
+    base-url: "https://@ntfy.host@"
+    listen-http: ":8080"
+    behind-proxy: true
+    cache-file: /var/lib/ntfy/cache.db
+    auth-file: /var/lib/ntfy/user.db
+    auth-default-access: deny-all
+    enable-login: true
+    # iOS only gets pushes relayed through ntfy.sh
+    upstream-base-url: "https://ntfy.sh"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ntfy
+  namespace: ntfy
+  labels:
+    app: ntfy
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: ntfy
+  template:
+    metadata:
+      labels:
+        app: ntfy
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: ntfy
+          image: binwiederhier/ntfy:v2.38.0
+          args: ["serve"]
+          env:
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /v1/health
+              port: http
+          volumeMounts:
+            - name: config
+              mountPath: /etc/ntfy
+              readOnly: true
+            - name: data
+              mountPath: /var/lib/ntfy
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: @uid@
+            runAsGroup: @uid@
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 5m
+              memory: 32Mi
+            limits:
+              memory: 256Mi
+      volumes:
+        - name: config
+          configMap:
+            name: ntfy
+        - name: data
+          hostPath:
+            path: "@state@/ntfy"
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ntfy
+  namespace: ntfy
+spec:
+  type: NodePort
+  selector:
+    app: ntfy
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @ntfy.port@
