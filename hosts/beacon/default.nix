@@ -25,6 +25,8 @@ in
     domain = "beplyn.dev";
     # split-horizon: blocky sends the LAN here directly
     lanSubnets = [ subnet ];
+    # the records are DNS-only, so clients come straight here, not through Cloudflare
+    cloudflareOnly = false;
   };
 
   k3s.enable = true;
