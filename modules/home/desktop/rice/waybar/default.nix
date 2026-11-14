@@ -169,7 +169,7 @@ in
       };
       temperature =
       {
-        # CPU package: k10temp (AMD) or coretemp (Intel); thermal_zone0 is a fixed 20° on compass
+        # CPU package: k10temp (AMD) or coretemp (Intel); thermal_zone0 is a fixed 20° on shulker
         hwmon-path-abs =
         [
           "/sys/devices/pci0000:00/0000:00:18.3/hwmon"

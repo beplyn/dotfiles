@@ -33,7 +33,7 @@ Singleton {
     readonly property int gap: Stylix.gap
     readonly property int pad: 14
 
-    // compass: shows the power-profile tile.
+    // shulker: shows the power-profile tile.
     readonly property bool laptop: Stylix.laptop
 
     // vcal: the database Events reads and the argv that opens the TUI

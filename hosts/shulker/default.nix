@@ -3,7 +3,7 @@
 {
   imports = [ ./hardware.nix ];
 
-  networking.hostName = "compass";
+  networking.hostName = "shulker";
   laptop.enable = true;
   toolbox.enable = true;
   # early KMS: native-res Plymouth unlock (here, hardware.nix gets regenerated)
