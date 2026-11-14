@@ -14,6 +14,7 @@
     ./packages.nix
     ./toolbox.nix
     ./unfree.nix
+    ./users.nix
   ];
 
   nix.settings.experimental-features =

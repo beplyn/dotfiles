@@ -45,7 +45,7 @@ nixpkgs.lib.nixosSystem
   modules =
   [
     { nixpkgs.hostPlatform = "x86_64-linux"; }
-    ../hosts/common
+    ../modules/nixos
     ../hosts/${hostname}
     # flake packages built against our nixpkgs, whose cargo hook links the
     # -sys crates against system libraries these packages don't list
