@@ -12,20 +12,20 @@
     ./ripgrep.nix
     ./lazyclis.nix
     ./tmux.nix
+    ./yazi.nix
     ./tools.nix
     ./forgejo.nix
+    ./fastfetch.nix
     ./btop
+    ./netspd
   ]
   # servers: the essentials only
   ++ lib.optionals (!headless)
   [
     ./glow.nix
     ./fetch
-    ./yazi.nix
     ./fun
     ./tldr.nix
-    ./fastfetch.nix
     ./bottom.nix
-    ./netspd
   ];
 }

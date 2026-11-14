@@ -2,7 +2,6 @@
   config,
   lib,
   themes,
-  headless,
   ...
 }:
 
@@ -26,16 +25,12 @@
     // lib.genAttrs themes (t: "rebuild ${t}");
     shellAliases =
     {
+      y = "yazi";
       lg = "lazygit";
       repo-update = "git fetch && git pull --rebase && git push";
       v = "nvim";
       ls = "eza --icons --color=auto -a";
       grep = "rg --color=auto";
-    }
-    # yazi is desktop-only (modules/home/cli)
-    // lib.optionalAttrs (!headless)
-    {
-      y = "yazi";
     };
     generateCompletions = true;
 
