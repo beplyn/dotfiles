@@ -1,3 +1,5 @@
+{ lib, headless, ... }:
+
 {
   imports =
   [
@@ -5,9 +7,13 @@
     ./jj.nix
     ./signing.nix
     ./nvim
-    ./toolchains.nix
     ./opencode
     ./openclaw.nix
+  ]
+  # servers: no compilers, no agents
+  ++ lib.optionals (!headless)
+  [
+    ./toolchains.nix
     ./claude.nix
   ];
 }
