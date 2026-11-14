@@ -43,6 +43,15 @@ in
     "paperless"
     "jellyfin"
     "immich"
+    "silverbullet"
+    "linkding"
+    "audiobookshelf"
+    "stirling-pdf"
+    "syncthing"
+    "filebrowser"
+    "actual"
+    "wastebin"
+    "searxng"
   ];
   k3s.lanAddress = address;
   # app state and the cluster to the backup disk, daily

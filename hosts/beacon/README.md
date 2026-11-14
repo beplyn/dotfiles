@@ -13,7 +13,7 @@ backups that need it fail instead of writing onto the system SSD.
 | sdc Kingston 480G SSD   | (system)  | `/`            | OS, k3s, app state and databases (`/srv/apps`)    |
 | sdb WD Green 120G SSD   | `cache`   | `/srv/cache`   | thumbnails, metadata, ML models: all regenerable   |
 | sda Barracuda 2T HDD    | `scratch` | `/srv/scratch` | transcodes, encoded video: write-heavy, throwaway  |
-| ST6000NM0034 6T HDD     | `tank`    | `/srv/tank`    | music, video, photos, documents (btrfs subvolumes) |
+| ST6000NM0034 6T HDD     | `tank`    | `/srv/tank`    | music, video, photos, documents, notes, books, sync (btrfs subvolumes) |
 | ST6000NM0034 6T HDD     | `backup`  | `/srv/backup`  | `tank/` from btrbk, `k3s-state/` from k3s-backup  |
 
 tank and backup are single-disk btrfs, scrubbed monthly. A scrub finds rotten data on either
@@ -80,7 +80,8 @@ Anyone who can push to the branch is root on beacon.
 
 ## Logins
 
-`home`, `status`, `git`, `rss` and `docs` are behind Tinyauth (`https://auth.beplyn.dev`): the
+`home`, `status`, `git`, `rss`, `docs`, `notes`, `links`, `pdf`, `sync`, `files`, `budget`,
+`bin` and `search` are behind Tinyauth (`https://auth.beplyn.dev`): the
 first visit goes to Pocket ID, your passkey logs you in, and the session cookie covers every
 subdomain. The apps take the username nginx passes on, so there's no second login.
 
@@ -88,7 +89,7 @@ subdomain. The apps take the username nginx passes on, so there's no second logi
    email as in git, and register a passkey.
 2. Seal Tinyauth's Pocket ID client: `modules/nixos/services/k8s/oidc/README.md`.
 
-Behind Tinyauth only existing users get in, and they're matched by name, so all three are
+Behind Tinyauth only existing users get in, and they're matched by name, so all of them are
 `beplyn`. Miniflux and Paperless used to call theirs `admin`. Rename them once, **before**
 the rebuild that switches the name, or a second, empty `beplyn` gets created next to it:
 
@@ -110,6 +111,24 @@ only for the API and app clients. Read one with
 | Paperless   | `beplyn`, `ADMIN_PASSWORD`                                    |
 | ntfy        | `admin`, `ADMIN_PASSWORD`; subscribe to `alerts`              |
 | Vaultwarden | `/admin` with `ADMIN_TOKEN`, invite yourself, then register   |
+| Linkding    | `beplyn`; the browser extension takes an API token            |
+| FileBrowser | `beplyn`; sees what you can on tank, photos excluded          |
 
 Only possible in the apps themselves: the first Immich user (becomes admin), Jellyfin's setup
 wizard and libraries (`/media/music`, `/media/video`).
+
+And for the newer ones:
+
+- **Audiobookshelf** (`books`, not behind Tinyauth for the phone apps): the first visit makes
+  the root user. Libraries: `/books` (`/srv/tank/books`, yours) and `/podcasts`.
+- **Actual** (`budget`): set its server password on the first visit; it guards the budget
+  files, which sync through the server.
+- **Syncthing** (`sync`): leave the GUI user and password unset, Tinyauth covers it. Add folders
+  under `/sync` (`/srv/tank/sync`); devices connect at `tcp://192.168.2.200:22000`.
+- **SilverBullet** (`notes`): every page is a `.md` file in `/srv/tank/notes`, yours to edit.
+- **wastebin** (`bin`): making a paste needs the login, opening a paste's link doesn't.
+- **SearXNG** (`search`): add `https://search.beplyn.dev/search?q=%s` as the browser's search
+  engine.
+
+SilverBullet, Syncthing and FileBrowser run as `beplyn` (uid 1000), so what they write on tank
+is yours.

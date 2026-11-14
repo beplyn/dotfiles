@@ -4,7 +4,7 @@
 #   sdc  Kingston 480G SSD  /, k3s, app state and databases (k3s.storage.state)
 #   sdb  WD Green 120G SSD  regenerable read-mostly caches: thumbnails, metadata, ML models
 #   sda  Barracuda 2T HDD   write-heavy throwaway data: transcodes, encoded video
-#   sdd  6T HDD "tank"      music, video, photos, documents
+#   sdd  6T HDD "tank"      music, video, photos, documents, notes, books, sync
 #   sde  6T HDD "backup"    btrbk copies of tank, daily k3s state backups
 # by label, so sdX reordering can't swap them; nofail so a dead disk doesn't stop boot.
 # hosts/beacon/README.md has the commands that make them
@@ -60,7 +60,7 @@ in
       {
         snapshot_dir = ".btrbk";
         target = "${backup}/tank";
-        subvolume = lib.genAttrs [ "music" "video" "photos" "documents" ] (_: { });
+        subvolume = lib.genAttrs [ "music" "video" "photos" "documents" "notes" "books" "sync" ] (_: { });
       };
     };
   };
