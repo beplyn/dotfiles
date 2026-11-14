@@ -117,6 +117,9 @@ let
       + lib.optionalString (host.maxBodySize != null) ''
         client_max_body_size ${host.maxBodySize};
       ''
+      + lib.optionalString (host.readTimeout != null) ''
+        proxy_read_timeout ${host.readTimeout};
+      ''
       + lib.optionalString cfg.originPulls ''
         ssl_client_certificate ${creds}/origin-pull-ca.pem;
         ssl_verify_client on;
@@ -234,6 +237,13 @@ in
             type = lib.types.bool;
             default = true;
             description = "Pass WebSocket upgrades through.";
+          };
+          readTimeout = lib.mkOption
+          {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+            example = "5m";
+            description = "Longest wait between two reads from the upstream, for long polls; null keeps nginx's 60s.";
           };
           maxBodySize = lib.mkOption
           {
