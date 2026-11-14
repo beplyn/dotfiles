@@ -1,5 +1,6 @@
 {
   pkgs,
+  headless,
   ...
 }:
 
@@ -16,7 +17,7 @@
   # run AppImages directly (./foo.AppImage) via binfmt + appimage-run
   programs.appimage =
   {
-    enable = true;
+    enable = !headless;
     binfmt = true;
   };
 }

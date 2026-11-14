@@ -3,6 +3,7 @@
   lib,
   pkgs,
   subst,
+  headless,
   ...
 }:
 
@@ -18,7 +19,8 @@ let
   };
 in
 {
-  programs.fish.shellAbbrs.ff = "fastfetch";
+  # fastfetch is desktop-only (modules/home/cli)
+  programs.fish.shellAbbrs.ff = lib.mkIf (!headless) "fastfetch";
 
   programs.fish.interactiveShellInit = lib.mkAfter (subst vars (builtins.readFile ./greeting.fish));
 }
