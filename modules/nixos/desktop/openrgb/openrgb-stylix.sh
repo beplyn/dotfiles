@@ -1,9 +1,7 @@
-# openrgb-stylix: paint every device the OpenRGB server found, keyboards in
-# their own colour. Static where a device has it, so it sticks in hardware;
-# Direct or Custom (per-LED) otherwise. A device that can follow the
-# motherboard (the Red Devil GPU) does, its Custom mode leaves LEDs out.
-# Keyboards go Direct first: the Mountain Everest ignores the Static colour.
-# --nodetect: only talk to the local server (port 6742), never probe hardware
+# openrgb-stylix: paint every device, keyboards in their own colour.
+# Static if possible (sticks in hardware), else Direct/Custom; the GPU follows
+# the motherboard. Keyboards go Direct first (Everest ignores Static).
+# --nodetect: only talk to the local server, never probe hardware
 colour="${1:?usage: openrgb-stylix RRGGBB [KEYBOARD_RRGGBB]}"
 keyboard_colour="${2:-$colour}"
 
@@ -54,7 +52,5 @@ if [ "${#args[@]}" -eq 0 ]; then
   exit 0
 fi
 
-# 1.0 keeps profiles on the server; the GUI loads this one at login. Saved in
-# the same run: on its own --save-profile reapplies every device's mode
-# without a colour and fails
+# profile for the GUI to load at login; must be saved in the same run or it fails
 exec openrgb --nodetect "${args[@]}" --save-profile stylix

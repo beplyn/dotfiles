@@ -80,8 +80,8 @@ elif [ "$(cut -d' ' -f3- "$sshKey.pub")" != "@username@@@hostName@" ]; then
   ssh-keygen -q -c -f "$sshKey" -C "@username@@@hostName@"
 fi
 
-# pick PROMPT [FIND TESTS...]: a file under ~ or a mounted stick (hidden dirs skipped), empty on Esc;
-# find gets SIGPIPE once fzf exits, hence || true
+# pick PROMPT [FIND TESTS...]: fzf a file under ~ or a USB stick, empty on Esc
+# (|| true: find gets SIGPIPE when fzf exits)
 pick() {
   local prompt="$1"; shift
   find "$HOME" "/run/media/@username@" -name '.*' -prune -o -type f "$@" -print 2>/dev/null \
@@ -122,7 +122,7 @@ host_secret() {
 }
 @hostSecrets@
 
-# profile picture for hyprlock and the greeter (desktop hosts only); asked for until there is one
+# profile picture for hyprlock and the greeter, desktops only
 if @desktop@ && [ ! -e "$HOME/.pfp" ]; then
   pic="$(pick 'Profile picture for ~/.pfp (Esc: snowflake)' \
     \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' -o -iname '*.gif' \))"

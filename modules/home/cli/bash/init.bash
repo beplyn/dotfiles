@@ -16,8 +16,7 @@ ble-face auto_complete=fg=244
 ble-bind -m emacs -f up 'history-substring-search-backward hide-status:point=end:empty=history-move'
 ble-bind -m emacs -f down 'history-substring-search-forward hide-status:point=end:empty=history-move'
 
-# ctrl-f/right take the whole suggestion, alt-right one word of it (ble defaults);
-# end only moves the cursor, and alt-f is the fzf bind below
+# ctrl-f/right accept the suggestion, alt-right one word; alt-f is fzf (below)
 blehook/eval-after-load complete '
   ble-bind -m auto_complete -f end -
   ble-bind -m auto_complete -f M-f -

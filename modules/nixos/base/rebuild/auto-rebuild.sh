@@ -1,7 +1,5 @@
-# auto-rebuild URL BRANCH CONFIG VARS: switch to CONFIG from BRANCH's newest commit, once per
-# commit, with the vars (vars/README.md) from the VARS dir.
-# The last one switched to and the last one that failed are kept in $STATE_DIRECTORY, so a
-# broken commit fails (and alerts) once, and the next push is tried again
+# auto-rebuild URL BRANCH CONFIG VARS: switch to BRANCH's newest commit, once per commit.
+# Remembers the last good and failed commit, so a broken one alerts only once
 set -euo pipefail
 url="$1"
 branch="$2"

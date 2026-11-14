@@ -1,6 +1,5 @@
-# clipboard <command> <store> ...: cliphist for the quickshell clipboard
-# panel. Two stores: "history", the db wl-paste fills, and "pinned", a cliphist
-# db of its own so pins outlive the history's max-items and wipes.
+# clipboard <command> <store> ...: cliphist for the quickshell panel.
+# Stores: "history" (from wl-paste) and "pinned" (own db, survives wipes).
 #
 #   list <store>               "<id>\t<preview>", newest first
 #   copy <store> <id> [mime]   back onto the clipboard through wl-copy
