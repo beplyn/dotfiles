@@ -433,7 +433,7 @@ let
   {
     name = "seal-oidc";
     runtimeInputs = [ config.services.k3s.package pkgs.kubeseal ];
-    text = builtins.readFile ../k8s/seal-oidc.sh;
+    text = builtins.readFile ./seal-oidc.sh;
   };
 in
 {
@@ -594,7 +594,7 @@ in
         RemainAfterExit = true;
         UMask = "0077";
         TimeoutStartSec = "6min";
-        ExecStart = "${pkgs.bash}/bin/bash ${../k8s/secrets.sh} ${secretSpec}";
+        ExecStart = "${pkgs.bash}/bin/bash ${./secrets.sh} ${secretSpec}";
       };
     };
 
@@ -607,7 +607,7 @@ in
       {
         Type = "oneshot";
         UMask = "0077";
-        ExecStart = "${pkgs.bash}/bin/bash ${../k8s/ntfy-alert.sh} %i ${toString apps.ntfy.port} ${alertTopic}";
+        ExecStart = "${pkgs.bash}/bin/bash ${./ntfy-alert.sh} %i ${toString apps.ntfy.port} ${alertTopic}";
       };
     };
   };
