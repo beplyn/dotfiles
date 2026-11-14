@@ -1,0 +1,89 @@
+# @x@ placeholders are filled in by apps.nix
+# watches pages without feeds and sends the diffs on; behind tinyauth, leave its own password
+# unset. For ntfy, use the notification URL ntfys://@ntfy.host@/<topic>. Plain HTTP fetches
+# only: no browser for pages that need JavaScript
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: changedetection
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: changedetection
+  namespace: changedetection
+  labels:
+    app: changedetection
+spec:
+  replicas: 1
+  # one writer on the datastore
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: changedetection
+  template:
+    metadata:
+      labels:
+        app: changedetection
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: changedetection
+          image: ghcr.io/dgtlmoon/changedetection.io:0.70.3
+          env:
+            # for the links in notifications
+            - name: BASE_URL
+              value: "https://@changedetection.host@"
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: http
+              containerPort: 5000
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          volumeMounts:
+            - name: data
+              mountPath: /datastore
+            - name: tmp
+              mountPath: /tmp
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: @uid@
+            runAsGroup: @uid@
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 10m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+      volumes:
+        - name: data
+          hostPath:
+            path: "@state@/changedetection"
+            type: Directory
+        - name: tmp
+          emptyDir: { }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: changedetection
+  namespace: changedetection
+spec:
+  type: NodePort
+  selector:
+    app: changedetection
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @changedetection.port@

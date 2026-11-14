@@ -1,0 +1,139 @@
+# @x@ placeholders are filled in by apps.nix
+# CalDAV/CardDAV for phones and desktops, so not behind tinyauth: clients log in as @username@
+# with ADMIN_PASSWORD from the radicale Secret (ADMIN_HASH is its bcrypt). Point them at
+# https://@radicale.host@/; collections are flat files in @state@/radicale
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: radicale
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: radicale
+  namespace: radicale
+data:
+  # read-only, so the entrypoint leaves it alone
+  config: |
+    [server]
+    hosts = 0.0.0.0:5232
+
+    [auth]
+    type = htpasswd
+    htpasswd_filename = /auth/users
+    htpasswd_encryption = bcrypt
+
+    [rights]
+    type = owner_only
+
+    [storage]
+    filesystem_folder = /data/collections
+
+    [headers]
+    Content-Security-Policy = default-src 'self'; object-src 'none'
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: radicale
+  namespace: radicale
+  labels:
+    app: radicale
+spec:
+  replicas: 1
+  # one writer on the collections
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: radicale
+  template:
+    metadata:
+      labels:
+        app: radicale
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      initContainers:
+        # the htpasswd line from the Secret, never in the store
+        - name: users
+          image: tomsquest/docker-radicale:3.9.1.1
+          command:
+            - /bin/sh
+            - -ec
+            - printf '%s:%s\n' "$USERNAME" "$HASH" > /auth/users
+          env:
+            - name: USERNAME
+              value: "@username@"
+            - name: HASH
+              valueFrom:
+                secretKeyRef:
+                  name: radicale
+                  key: ADMIN_HASH
+          volumeMounts:
+            - name: auth
+              mountPath: /auth
+          securityContext: &security
+            runAsNonRoot: true
+            runAsUser: @uid@
+            runAsGroup: @uid@
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+      containers:
+        - name: radicale
+          image: tomsquest/docker-radicale:3.9.1.1
+          env:
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: http
+              containerPort: 5232
+          readinessProbe:
+            tcpSocket:
+              port: http
+          # not root, so the entrypoint runs it as is: no chown, no user switch
+          volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: true
+            - name: auth
+              mountPath: /auth
+              readOnly: true
+            - name: data
+              mountPath: /data
+          securityContext: *security
+          resources:
+            requests:
+              cpu: 5m
+              memory: 32Mi
+            limits:
+              memory: 256Mi
+      volumes:
+        - name: config
+          configMap:
+            name: radicale
+        - name: auth
+          emptyDir: { }
+        - name: data
+          hostPath:
+            path: "@state@/radicale"
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: radicale
+  namespace: radicale
+spec:
+  type: NodePort
+  selector:
+    app: radicale
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @radicale.port@

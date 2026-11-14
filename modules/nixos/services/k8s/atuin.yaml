@@ -1,0 +1,96 @@
+# @x@ placeholders are filled in by apps.nix
+# shell history sync, end-to-end encrypted by the client; not behind tinyauth, the atuin CLI
+# logs in itself. Registration is closed: open it for your first `atuin register`, then
+# close it again:
+#   k3s kubectl -n atuin set env deploy/atuin ATUIN_OPEN_REGISTRATION=true
+#   atuin register -u @username@ -e @email@   (sync_address = "https://@atuin.host@")
+#   k3s kubectl -n atuin set env deploy/atuin ATUIN_OPEN_REGISTRATION=false
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: atuin
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atuin
+  namespace: atuin
+  labels:
+    app: atuin
+spec:
+  replicas: 1
+  # one writer on the sqlite db
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: atuin
+  template:
+    metadata:
+      labels:
+        app: atuin
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: atuin
+          image: ghcr.io/atuinsh/atuin:18.24.8
+          args: ["start"]
+          env:
+            - name: ATUIN_HOST
+              value: "0.0.0.0"
+            - name: ATUIN_PORT
+              value: "8888"
+            - name: ATUIN_OPEN_REGISTRATION
+              value: "false"
+            - name: ATUIN_DB_URI
+              value: "sqlite:///config/atuin-server.db"
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: http
+              containerPort: 8888
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          volumeMounts:
+            # ATUIN_CONFIG_DIR: server.toml and the db
+            - name: data
+              mountPath: /config
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: @uid@
+            runAsGroup: @uid@
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 5m
+              memory: 32Mi
+            limits:
+              memory: 256Mi
+      volumes:
+        - name: data
+          hostPath:
+            path: "@state@/atuin"
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: atuin
+  namespace: atuin
+spec:
+  type: NodePort
+  selector:
+    app: atuin
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @atuin.port@
