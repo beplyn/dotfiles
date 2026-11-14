@@ -1,6 +1,6 @@
 # @x@ placeholders are filled in by apps.nix
 # no password signups: invite yourself from /admin (token in the vaultwarden Secret, ADMIN_TOKEN),
-# then register; or log in with Pocket ID once seal-oidc made vaultwarden-oidc
+# then register. Not behind tinyauth: the apps and browser extension log in themselves
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -50,26 +50,6 @@ spec:
                 secretKeyRef:
                   name: vaultwarden
                   key: ADMIN_TOKEN
-            # Pocket ID; the master password still unlocks the vault
-            - name: SSO_ENABLED
-              value: "@vaultwarden.oidc@"
-            - name: SSO_AUTHORITY
-              value: "https://@pocket-id.host@"
-            - name: SSO_SIGNUPS_MATCH_EMAIL
-              value: "true"
-            # from seal-oidc; absent until then
-            - name: SSO_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: vaultwarden-oidc
-                  key: CLIENT_ID
-                  optional: true
-            - name: SSO_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: vaultwarden-oidc
-                  key: CLIENT_SECRET
-                  optional: true
           ports:
             - name: http
               containerPort: 8080

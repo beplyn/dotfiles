@@ -61,6 +61,10 @@ data:
                     url: "https://@pocket-id.host@"
                     check-url: http://pocket-id.pocket-id.svc/healthz
                     icon: di:pocket-id
+                  - title: Tinyauth
+                    url: "https://@tinyauth.host@"
+                    check-url: http://tinyauth.tinyauth.svc/api/healthz
+                    icon: di:tinyauth
                   - title: Status
                     url: "https://@gatus.host@"
                     check-url: http://gatus.gatus.svc/health

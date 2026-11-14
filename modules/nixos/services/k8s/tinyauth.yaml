@@ -1,0 +1,126 @@
+# @x@ placeholders are filled in by apps.nix
+# forward auth for the browser-only apps: nginx asks /api/auth/nginx on every request and passes
+# Remote-User on. Logins go straight to Pocket ID (passkeys), its client from seal-oidc in
+# tinyauth-oidc; until that's sealed nobody gets past it. Sessions are rows in its sqlite db,
+# the cookie is set for the parent domain so one login covers every subdomain
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tinyauth
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tinyauth
+  namespace: tinyauth
+  labels:
+    app: tinyauth
+spec:
+  replicas: 1
+  # one sqlite writer
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: tinyauth
+  template:
+    metadata:
+      labels:
+        app: tinyauth
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: tinyauth
+          image: ghcr.io/tinyauthapp/tinyauth:v5
+          env:
+            - name: TINYAUTH_APPURL
+              value: "https://@tinyauth.host@"
+            - name: TINYAUTH_AUTH_SECURECOOKIE
+              value: "true"
+            # the image's workdir is read-only, so everything it writes goes to /data
+            - name: TINYAUTH_DATABASE_PATH
+              value: "/data/tinyauth.db"
+            - name: TINYAUTH_OIDC_PRIVATEKEYPATH
+              value: "/data/oidc/key.pem"
+            - name: TINYAUTH_OIDC_PUBLICKEYPATH
+              value: "/data/oidc/key.pub"
+            # no local users: Pocket ID or nothing, and only your account there
+            - name: TINYAUTH_OAUTH_AUTOREDIRECT
+              value: "pocketid"
+            - name: TINYAUTH_OAUTH_WHITELIST
+              value: "@email@"
+            - name: TINYAUTH_OAUTH_PROVIDERS_POCKETID_NAME
+              value: "Pocket ID"
+            - name: TINYAUTH_OAUTH_PROVIDERS_POCKETID_AUTHURL
+              value: "https://@pocket-id.host@/authorize"
+            - name: TINYAUTH_OAUTH_PROVIDERS_POCKETID_TOKENURL
+              value: "https://@pocket-id.host@/api/oidc/token"
+            - name: TINYAUTH_OAUTH_PROVIDERS_POCKETID_USERINFOURL
+              value: "https://@pocket-id.host@/api/oidc/userinfo"
+            - name: TINYAUTH_OAUTH_PROVIDERS_POCKETID_REDIRECTURL
+              value: "https://@tinyauth.host@/api/oauth/callback/pocketid"
+            # Remote-User is preferred_username: name the Pocket ID user @username@
+            - name: TINYAUTH_OAUTH_PROVIDERS_POCKETID_SCOPES
+              value: "openid email profile"
+            # from seal-oidc; absent until then
+            - name: TINYAUTH_OAUTH_PROVIDERS_POCKETID_CLIENTID
+              valueFrom:
+                secretKeyRef:
+                  name: tinyauth-oidc
+                  key: CLIENT_ID
+                  optional: true
+            - name: TINYAUTH_OAUTH_PROVIDERS_POCKETID_CLIENTSECRET
+              valueFrom:
+                secretKeyRef:
+                  name: tinyauth-oidc
+                  key: CLIENT_SECRET
+                  optional: true
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: http
+              containerPort: 3000
+          readinessProbe:
+            httpGet:
+              path: /api/healthz
+              port: http
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: @uid@
+            runAsGroup: @uid@
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 256Mi
+      volumes:
+        - name: data
+          hostPath:
+            path: "@state@/tinyauth"
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tinyauth
+  namespace: tinyauth
+spec:
+  type: NodePort
+  selector:
+    app: tinyauth
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @tinyauth.port@
