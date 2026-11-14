@@ -59,15 +59,16 @@ not a fire or theft.
    sudo mkfs.btrfs -f -L backup -d single -m dup /dev/disk/by-id/<backup-disk>
    ```
 
-3. Point the router's DHCP DNS at `192.168.2.200`. Blocky answers `beplyn.dev` and every app's
+3. Point the router's DHCP DNS at `<beacon's address>`. Blocky answers `<domain>` and every app's
    subdomain with beacon's address, so the LAN skips Cloudflare (no 100 MB upload cap, video
-   doesn't go through it) and gets Forgejo's ssh: `git clone git@git.beplyn.dev:<user>/<repo>.git`.
+   doesn't go through it) and gets Forgejo's ssh: `git clone git@git.<domain>:<user>/<repo>.git`.
 
 ## Auto rebuild
 
 Every 5 minutes `auto-rebuild` checks the `beacon` branch on Codeberg and, when it moved,
-switches to exactly that commit (`git+https://codeberg.org/beplyn/dotfiles.git?ref=beacon&rev=…`),
-not to the checkout in `/etc/nixos`. Deploy by pushing there:
+switches to exactly that commit (`git+<repo>?ref=beacon&rev=…`),
+not to the checkout in `/etc/nixos`, with the vars from `/var/secrets/dotfiles/vars.toml`
+(`vars/README.md`); without that file it does nothing but fail. Deploy by pushing there:
 
 ```sh
 git push origin master:beacon
@@ -80,7 +81,7 @@ Anyone who can push to the branch is root on beacon.
 
 ## Logins
 
-Everything is behind Tinyauth (`https://auth.beplyn.dev`) but what's used from phone apps,
+Everything is behind Tinyauth (`https://auth.<domain>`) but what's used from phone apps,
 browser extensions or other clients that can't follow a browser login. The first visit goes to
 Pocket ID, your passkey logs you in, and the session cookie covers every subdomain.
 
@@ -93,25 +94,25 @@ Pocket ID, your passkey logs you in, and the session cookie covers every subdoma
 Forgejo, Miniflux, Paperless, Vikunja and Mealie can offer Pocket ID next to their own login
 once their client is sealed; Immich and Audiobookshelf have it in their admin settings.
 
-1. Make the Pocket ID admin at `https://id.beplyn.dev/setup`: username `beplyn`, the same
+1. Make the Pocket ID admin at `https://id.<domain>/setup`: username `<username>`, the same
    email as in git, and register a passkey.
 2. Seal the Pocket ID clients: `modules/nixos/services/k8s/oidc/README.md`.
 
 Passwords are generated in the cluster on first start, never in git. Read one with
 `sudo k3s kubectl -n <app> get secret <app> -o jsonpath='{.data.<KEY>}' | base64 -d`.
 
-| App         | Login                                                         |
-|-------------|---------------------------------------------------------------|
-| Forgejo     | `beplyn`, `ADMIN_PASSWORD`; git over ssh on the LAN           |
-| Miniflux    | `beplyn`, `ADMIN_PASSWORD`                                    |
-| Paperless   | `beplyn`, `ADMIN_PASSWORD`                                    |
-| ntfy        | `admin`, `ADMIN_PASSWORD`; subscribe to `alerts`              |
-| Vaultwarden | `/admin` with `ADMIN_TOKEN`, invite yourself, then register   |
-| Linkding    | `beplyn`, `ADMIN_PASSWORD`; the extension takes an API token  |
-| FileBrowser | `beplyn` through Tinyauth; tank as you, photos excluded       |
-| Radicale    | `beplyn`, `ADMIN_PASSWORD`; CalDAV/CardDAV at `cal`           |
-| Navidrome   | `admin`, `ADMIN_PASSWORD`; rename it in the app               |
-| Vikunja     | `beplyn`, `ADMIN_PASSWORD`, made once, see `k8s/vikunja.yaml` |
+| App         | Login                                                             |
+|-------------|-------------------------------------------------------------------|
+| Forgejo     | `<username>`, `ADMIN_PASSWORD`; git over ssh on the LAN           |
+| Miniflux    | `<username>`, `ADMIN_PASSWORD`                                    |
+| Paperless   | `<username>`, `ADMIN_PASSWORD`                                    |
+| ntfy        | `admin`, `ADMIN_PASSWORD`; subscribe to `alerts`                  |
+| Vaultwarden | `/admin` with `ADMIN_TOKEN`, invite yourself, then register       |
+| Linkding    | `<username>`, `ADMIN_PASSWORD`; the extension takes an API token  |
+| FileBrowser | `<username>` through Tinyauth; tank as you, photos excluded       |
+| Radicale    | `<username>`, `ADMIN_PASSWORD`; CalDAV/CardDAV at `cal`           |
+| Navidrome   | `admin`, `ADMIN_PASSWORD`; rename it in the app                   |
+| Vikunja     | `<username>`, `ADMIN_PASSWORD`, made once, see `k8s/vikunja.yaml` |
 
 Only possible in the apps themselves: the first Immich user (becomes admin), Jellyfin's setup
 wizard and libraries (`/media/music`, `/media/video`).
@@ -123,22 +124,22 @@ And for the newer ones:
 - **Actual** (`budget`): set its server password on the first visit; it guards the budget
   files, which sync through the server.
 - **Syncthing** (`sync`): leave the GUI user and password unset, Tinyauth covers it. Add folders
-  under `/sync` (`/srv/tank/sync`); devices connect at `tcp://192.168.2.200:22000`.
+  under `/sync` (`/srv/tank/sync`); devices connect at `tcp://<beacon's address>:22000`.
 - **SilverBullet** (`notes`): every page is a `.md` file in `/srv/tank/notes`, yours to edit.
 - **wastebin** (`bin`): public, like Vaultwarden: anyone can make and read pastes.
-- **SearXNG** (`search`): add `https://search.beplyn.dev/search?q=%s` as the browser's search
+- **SearXNG** (`search`): add `https://search.<domain>/search?q=%s` as the browser's search
   engine.
 
 - **Atuin** (`sh`): registration is closed; open it for your first `atuin register`, the
-  commands are in `k8s/atuin.yaml`. Set `sync_address = "https://sh.beplyn.dev"`.
+  commands are in `k8s/atuin.yaml`. Set `sync_address = "https://sh.<domain>"`.
 - **n8n** (`flow`): makes its owner account on the first visit, behind Tinyauth. Webhooks and
   forms (`/webhook/`, `/form/`) skip Tinyauth so other services can call them.
 - **Mealie** (`recipes`): first login `changeme@example.com` / `MyPassword`; change both, the
   email to yours, so Pocket ID matches it.
-- **changedetection.io** (`watch`): notify ntfy with `ntfys://ntfy.beplyn.dev/<topic>`.
+- **changedetection.io** (`watch`): notify ntfy with `ntfys://ntfy.<domain>/<topic>`.
 - **Beszel** (`metrics`) and **Scrutiny** (`disks`) run on the host, not k3s. Beszel logs you in
   by your Pocket ID email: make its user with that email on the first visit, then Add System,
   host `127.0.0.1`, port `45876`. Their data is regenerable and isn't backed up.
 
-SilverBullet, Syncthing and FileBrowser run as `beplyn` (uid 1000), so what they write on tank
+SilverBullet, Syncthing and FileBrowser run as `<username>` (uid 1000), so what they write on tank
 is yours.

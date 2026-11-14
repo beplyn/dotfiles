@@ -451,7 +451,7 @@ in
     {
       type = lib.types.nullOr lib.types.str;
       default = null;
-      example = "192.168.2.200";
+      example = "192.168.1.10";
       description = ''
         This host's LAN address. Blocky answers the domain and every app's subdomain with it
         (split-horizon), so LAN clients reach nginx directly; needs proxy.lanSubnets.

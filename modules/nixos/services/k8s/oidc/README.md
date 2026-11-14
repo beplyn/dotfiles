@@ -6,20 +6,20 @@ without it.
 
 | App       | Callback URL                                                      |
 |-----------|-------------------------------------------------------------------|
-| tinyauth  | `https://auth.beplyn.dev/api/oauth/callback/pocketid`             |
-| forgejo   | `https://git.beplyn.dev/user/oauth2/pocket-id/callback`           |
-| miniflux  | `https://rss.beplyn.dev/oauth2/oidc/callback`                     |
-| paperless | `https://docs.beplyn.dev/accounts/oidc/pocket-id/login/callback/` |
-| vikunja   | `https://tasks.beplyn.dev/auth/openid/pocketid`                   |
-| mealie    | `https://recipes.beplyn.dev/login`                                |
+| tinyauth  | `https://auth.<domain>/api/oauth/callback/pocketid`             |
+| forgejo   | `https://git.<domain>/user/oauth2/pocket-id/callback`           |
+| miniflux  | `https://rss.<domain>/oauth2/oidc/callback`                     |
+| paperless | `https://docs.<domain>/accounts/oidc/pocket-id/login/callback/` |
+| vikunja   | `https://tasks.<domain>/auth/openid/pocketid`                   |
+| mealie    | `https://recipes.<domain>/login`                                |
 
-1. In Pocket ID (`https://id.beplyn.dev`), add an OIDC client with the app's callback URL.
+1. In Pocket ID (`https://id.<domain>`), add an OIDC client with the app's callback URL.
 2. On beacon, from the repo:
    `sudo seal-oidc <app> > modules/nixos/services/k8s/oidc/<app>.sealed.yaml`
    and paste the client ID and secret it shows.
 3. `git add` the file, commit, push, rebuild.
 
-Only Vikunja makes accounts through Pocket ID; link it to `beplyn` once:
+Only Vikunja makes accounts through Pocket ID; link it to `<username>` once:
 
 - **Forgejo**: the first Pocket ID sign-in asks for the Forgejo password, then remembers it.
 - **Miniflux**: Settings, "Link my Pocket ID account".
@@ -28,7 +28,7 @@ Only Vikunja makes accounts through Pocket ID; link it to `beplyn` once:
   without a match Vikunja makes a second one.
 
 Not here: Immich and Audiobookshelf take Pocket ID in their own admin settings (callbacks
-`https://photos.beplyn.dev/auth/login`, `app.immich:///oauth-callback` and
-`https://books.beplyn.dev/auth/openid/callback`, `audiobookshelf://oauth`). Linkding would make
+`https://photos.<domain>/auth/login`, `app.immich:///oauth-callback` and
+`https://books.<domain>/auth/openid/callback`, `audiobookshelf://oauth`). Linkding would make
 a second account, and Vaultwarden, Jellyfin, ntfy, Actual, Radicale, Navidrome and Atuin keep
 only their own.

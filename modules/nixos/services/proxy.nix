@@ -192,7 +192,7 @@ in
     {
       type = lib.types.listOf lib.types.str;
       default = [ ];
-      example = [ "192.168.2.0/24" ];
+      example = [ "192.168.1.0/24" ];
       description = ''
         Local networks let in directly, for split-horizon DNS: no Cloudflare upload cap or
         hairpin NAT, same certificate. They're never taken as Cloudflare, so CF-Connecting-IP
