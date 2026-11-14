@@ -456,6 +456,7 @@
         "nixvim": "nixvim",
         "speci-local": "speci-local",
         "stylix": "stylix",
+        "vars": "vars",
         "vcal": "vcal",
         "zen-browser": "zen-browser"
       }
@@ -639,6 +640,18 @@
         "repo": "base16-zed",
         "type": "github"
       }
+    },
+    "vars": {
+      "flake": false,
+      "locked": {
+        "path": "./vars",
+        "type": "path"
+      },
+      "original": {
+        "path": "./vars",
+        "type": "path"
+      },
+      "parent": []
     },
     "vcal": {
       "inputs": {

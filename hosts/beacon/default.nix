@@ -1,10 +1,19 @@
-{ pkgs, domain, ... }:
+{ lib, pkgs, domain, lan, ... }:
 
+# its address, gateway and subnet are vars (vars/README.md), not in the repo
 let
-  address = "192.168.2.200";
-  subnet = "192.168.2.0/24";
+  inherit (lan) address subnet gateway;
+  prefix = lib.last (lib.splitString "/" subnet);
 in
 {
+  assertions =
+  [
+    {
+      assertion = address != "" && gateway != "" && lib.hasInfix "/" subnet;
+      message = "beacon needs lan.address, lan.gateway and lan.subnet (CIDR) in its vars";
+    }
+  ];
+
   imports =
   [
     ./hardware.nix
@@ -107,8 +116,8 @@ in
     ipv4 =
     {
       method = "manual";
-      address1 = "${address}/24,192.168.2.1";
-      dns = "192.168.2.1;";
+      address1 = "${address}/${prefix},${gateway}";
+      dns = "${gateway};";
     };
     ipv6.method = "auto";
   };

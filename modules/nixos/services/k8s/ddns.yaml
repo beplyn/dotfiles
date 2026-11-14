@@ -1,4 +1,4 @@
-# namespace comes from k3s.nix (phase 1)
+# namespace comes from k3s.nix (phase 1); @domain@ is filled in there
 # no Kubernetes API access: no Role, no RoleBinding, no token
 apiVersion: v1
 kind: ServiceAccount
@@ -40,7 +40,7 @@ spec:
                   name: cloudflare-api-token
                   key: CLOUDFLARE_API_TOKEN
             - name: DOMAINS
-              value: "beplyn.dev,*.beplyn.dev"
+              value: "@domain@,*.@domain@"
             # for new records; with proxy.cloudflareOnly nginx answers nothing else
             - name: PROXIED
               value: "true"

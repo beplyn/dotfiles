@@ -3,6 +3,14 @@
   {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    # whose machines these are: placeholders here, the real values come from
+    # --override-input vars path:/var/secrets/dotfiles (vars/README.md)
+    vars =
+    {
+      url = "path:./vars";
+      flake = false;
+    };
+
     home-manager =
     {
       url = "github:nix-community/home-manager";
@@ -91,14 +99,20 @@
         "gruvbox"
         "nord"
       ];
+      # an auto-rebuild or a plain nixos-rebuild without the override would build "user"
+      # at example.com; refuse instead
+      vars =
+        let
+          v = builtins.fromTOML (builtins.readFile "${inputs.vars}/vars.toml");
+        in
+        if v.placeholder or false then
+          throw "vars: only the repo's placeholders; build with --override-input vars path:/var/secrets/dotfiles (vars/README.md)"
+        else
+          v;
       mkHost = import ./lib/mkHost.nix
       {
         inherit inputs themes;
-        username = "beplyn";
-        email = "me@beplyn.dev";
-        # beacon serves it; the other hosts are its clients
-        domain = "beplyn.dev";
-        forgejoHost = "codeberg.org";
+        inherit (vars) username email domain repo lan;
         headlessHosts = [ "beacon" ];
       };
     in

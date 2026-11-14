@@ -3,8 +3,12 @@
   inputs,
   username,
   email,
+  # beacon serves it; the other hosts are its clients
   domain,
-  forgejoHost,
+  # this repo's https URL
+  repo,
+  # beacon's static LAN address, gateway and subnet; empty elsewhere
+  lan,
   # every theme in the flake, for the rebuild shortcuts
   themes,
   # servers: no GUI
@@ -16,6 +20,8 @@ hostname: themeName:
 let
   inherit (inputs) nixpkgs home-manager;
   headless = builtins.elem hostname headlessHosts;
+  # https://<host>/<owner>/<name>.git
+  forgejoHost = builtins.head (builtins.match "https?://([^/]+)/.*" repo);
   specialArgs =
   {
     inherit
@@ -23,6 +29,8 @@ let
       username
       email
       domain
+      repo
+      lan
       forgejoHost
       themes
       themeName
@@ -82,7 +90,7 @@ nixpkgs.lib.nixosSystem
         inputs.areofyl-fetch.homeManagerModules.default
         inputs.vcal.homeManagerModules.default
       ];
-      home-manager.users.${username}.imports = [ ../users/${username} ];
+      home-manager.users.${username}.imports = [ ../users/me ];
     }
   ];
 }
