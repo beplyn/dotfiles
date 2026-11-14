@@ -23,7 +23,6 @@
   ++ lib.optionals (!headless)
   [
     ./glow.nix
-    ./fetch
     ./fun
     ./tldr.nix
     ./bottom.nix

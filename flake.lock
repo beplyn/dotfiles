@@ -1,25 +1,5 @@
 {
   "nodes": {
-    "areofyl-fetch": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1794368983,
-        "narHash": "sha256-+JZAkwSDDCmoX+4L39fLu1H/5xoBt0xJjymZjadM+0c=",
-        "owner": "areofyl",
-        "repo": "fetch",
-        "rev": "ddf360c58f4f5344c651765e05616f29013c814d",
-        "type": "github"
-      },
-      "original": {
-        "owner": "areofyl",
-        "repo": "fetch",
-        "type": "github"
-      }
-    },
     "base16": {
       "inputs": {
         "fromYaml": "fromYaml"
@@ -444,7 +424,6 @@
     },
     "root": {
       "inputs": {
-        "areofyl-fetch": "areofyl-fetch",
         "catppuccin-vimium": "catppuccin-vimium",
         "catppuccin-zen": "catppuccin-zen",
         "cliamp": "cliamp",
