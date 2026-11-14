@@ -1,5 +1,6 @@
 # @x@ placeholders are filled in by apps.nix
-# ad-blocking DNS for the LAN on the host's port 53; point the router's DHCP DNS here
+# ad-blocking DNS for the LAN on the host's port 53; point the router's DHCP DNS here.
+# Split horizon: the domain and the apps resolve to this host, so LAN clients skip Cloudflare
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -28,7 +29,7 @@ data:
       clientGroupsBlock:
         default:
           - ads
-    caching:
+@blocky.customDNS@    caching:
       prefetching: true
     ports:
       # unprivileged; hostPort 53 maps onto it
