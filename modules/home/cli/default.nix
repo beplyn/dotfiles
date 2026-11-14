@@ -14,7 +14,6 @@
     ./tmux.nix
     ./yazi.nix
     ./tools.nix
-    ./forgejo.nix
     ./fastfetch.nix
     ./btop
     ./netspd

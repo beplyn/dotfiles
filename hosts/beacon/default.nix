@@ -14,7 +14,6 @@ in
   networking.hostName = "beacon";
   docker.enable = true;
   encryption.enable = false;
-  forgejo.enable = false;
   services.openssh.enable = true;
 
   # switches only to master-signed commits (else a TOTP code); sudo needs password + TOTP
