@@ -1,8 +1,6 @@
 { config, lib, ... }:
 
-# hyprtoolkit's palette (hypr/hyprtoolkit.conf), shared by the apps built on
-# it: hyprlauncher, hyprshutdown, hyprpwcenter and hyprland-dialog. Colours,
-# radius and font from the theme, like the shell's
+# hyprtoolkit theme for hyprlauncher, hyprshutdown, hyprpwcenter, hyprland-dialog
 let
   p = config.themes.palette;
   s = config.themes.shell;

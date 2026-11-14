@@ -1,6 +1,4 @@
-// The screen in two tones of the Stylix palette: dark parts in the
-// background colour, light parts in the foreground, a calm reading mode.
-// plugins.nix fills in the colours; hyprshade applies it (Mod+Alt+S).
+// two-tone reading mode from the palette (Mod+Alt+S), colours from plugins.nix
 #version 300 es
 precision highp float;
 

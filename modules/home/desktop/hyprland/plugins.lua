@@ -1,6 +1,4 @@
--- The plugins plugins.nix loads, in Stylix's colours: hyprtasking's
--- overview (Mod+Tab), hyprfocus's flash on focus and borders-plus-plus's
--- outline; the hyprcursor theme too.
+-- plugin settings in Stylix colours: hyprtasking, hyprfocus, borders, cursor
 local p = require("haku.data.plugins")
 local t = require("haku.data.theme")
 
@@ -14,8 +12,7 @@ end
 
 hl.config({
     plugin = {
-        -- a grid of each monitor's workspaces; the borders are Stylix's
-        -- col.active_border and col.inactive_border
+        -- workspace grid with Stylix border colours
         -- off with hyprtasking (plugins.nix)
         --[[
         hyprtasking = {
