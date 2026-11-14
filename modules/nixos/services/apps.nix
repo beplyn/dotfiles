@@ -33,7 +33,9 @@ let
   # extra: more manifests, lan: host ports open to the LAN, postgres: what to pg_dumpall,
   # auth: browsers log in through tinyauth first (the app trusts Remote-User), authSkip and
   # authSkipToken: what's left to the app's own login (proxy.hosts),
-  # oidc: takes Pocket ID credentials from k8s/oidc/<app>.sealed.yaml
+  # oidc: takes Pocket ID credentials from k8s/oidc/<app>.sealed.yaml.
+  # Apps with a login of their own, phone apps above all, aren't behind tinyauth: those
+  # that can offer Pocket ID as a second way in, with oidc
   apps =
   {
     vaultwarden =
@@ -58,14 +60,7 @@ let
       ];
       # git over ssh, LAN only: Cloudflare doesn't proxy it
       lan.tcp = [ 22 ];
-      auth = true;
-      # git over https and API tokens, which can't follow a browser login
-      authSkip =
-      [
-        "~ ^/[^/]+/[^/]+\\.git(/|$)"
-        "^~ /api/v1/"
-      ];
-      authSkipToken = true;
+      oidc = true;
     };
     gatus =
     {
@@ -138,7 +133,7 @@ let
         deployment = "miniflux-db";
         user = "miniflux";
       };
-      auth = true;
+      oidc = true;
     };
     paperless =
     {
@@ -155,7 +150,7 @@ let
         # drop files in here as ${username}
         (shared "${st.bulk}/documents/consume")
       ];
-      auth = true;
+      oidc = true;
     };
     jellyfin =
     {
@@ -212,9 +207,6 @@ let
       port = 30087;
       secrets = [ "ADMIN_PASSWORD" ];
       dirs = [ (own "d" "0750" "33" "33" "${st.state}/linkding") ];
-      auth = true;
-      # the browser extension and apps send their API token
-      authSkipToken = true;
     };
     # the phone apps log in themselves, so not behind tinyauth
     audiobookshelf =
@@ -257,7 +249,7 @@ let
       };
       auth = true;
     };
-    # all of tank, as ${username}; share links work without a login
+    # all of tank, as ${username}
     filebrowser =
     {
       host = "files";
@@ -265,13 +257,6 @@ let
       body = "100m";
       secrets = [ "ADMIN_PASSWORD" ];
       dirs = [ (mine "${st.state}/filebrowser") ];
-      auth = true;
-      authSkip =
-      [
-        "^~ /share/"
-        "^~ /api/public/"
-        "^~ /static/"
-      ];
     };
     actual =
     {
@@ -279,7 +264,6 @@ let
       port = 30506;
       body = "20m";
       dirs = [ (app "${st.state}/actual") ];
-      auth = true;
     };
     # public: anyone can make and read pastes, no tinyauth
     wastebin =

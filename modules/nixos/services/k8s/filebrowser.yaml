@@ -1,8 +1,7 @@
 # @x@ placeholders are filled in by apps.nix
 # all of @bulk@ in the browser, as @username@: it can change what you can, photos (root's)
-# stay out. Proxy auth takes the Remote-User from tinyauth; the init container makes
-# @username@ the admin (password in the filebrowser Secret, ADMIN_PASSWORD, unused behind
-# the proxy). Share links and their downloads skip the login
+# stay out. Not behind tinyauth: the init container makes @username@ the admin, logging in
+# with ADMIN_PASSWORD from the filebrowser Secret. Share links need no login
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -56,7 +55,7 @@ spec:
             - |
               db=/database/filebrowser.db
               [ -f "$db" ] || filebrowser -d "$db" config init
-              filebrowser -d "$db" config set --auth.method=proxy --auth.header=Remote-User
+              filebrowser -d "$db" config set --auth.method=json
               filebrowser -d "$db" users find "$ADMIN_USERNAME" >/dev/null 2>&1 \
                 || filebrowser -d "$db" users add "$ADMIN_USERNAME" "$ADMIN_PASSWORD" --perm.admin
           env:

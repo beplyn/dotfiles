@@ -1,7 +1,7 @@
 # @x@ placeholders are filled in by apps.nix
-# the browser logs in through tinyauth as @username@ (Remote-User from nginx), made the
-# superuser on first start (ADMIN_PASSWORD in the linkding Secret, unused behind the proxy).
-# The browser extension and apps use an API token from Settings > Integrations
+# not behind tinyauth: log in as @username@, made the superuser on first start (ADMIN_PASSWORD
+# in the linkding Secret). The browser extension and apps use an API token from Settings >
+# Integrations. No Pocket ID: it would make a second account, not log in as this one
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -40,12 +40,6 @@ spec:
                 secretKeyRef:
                   name: linkding
                   key: ADMIN_PASSWORD
-            # every browser request carries it, so the session never drops; Django's
-            # middleware logs you out on the first one that doesn't
-            - name: LD_ENABLE_AUTH_PROXY
-              value: "True"
-            - name: LD_AUTH_PROXY_USERNAME_HEADER
-              value: "HTTP_REMOTE_USER"
             - name: LD_CSRF_TRUSTED_ORIGINS
               value: "https://@linkding.host@"
             - name: TZ

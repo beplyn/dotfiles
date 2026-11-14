@@ -1,6 +1,6 @@
 # @x@ placeholders are filled in by apps.nix
-# behind tinyauth, plus its own server password, set on the first visit: the budget files
-# sync through the server and that password is what guards them
+# not behind tinyauth: its own server password, set on the first visit, guards the budget
+# files that sync through it
 apiVersion: v1
 kind: Namespace
 metadata:

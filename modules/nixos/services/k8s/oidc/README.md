@@ -1,15 +1,29 @@
-# Pocket ID client
+# Pocket ID clients
 
-Tinyauth is the only Pocket ID client: the apps behind it trust the Remote-User header nginx
-passes on, so none of them registers with Pocket ID itself. Until its sealed `tinyauth-oidc`
-Secret is here, nobody gets past Tinyauth.
+One per app with `oidc = true` in `apps.nix`. Each is optional: until its sealed `<app>-oidc`
+Secret is here, the app has only its own login, apart from Tinyauth, which lets nobody past
+without it.
 
-1. In Pocket ID (`https://id.beplyn.dev`), add an OIDC client with the callback URL
-   `https://auth.beplyn.dev/api/oauth/callback/pocketid`.
+| App       | Callback URL                                                      |
+|-----------|-------------------------------------------------------------------|
+| tinyauth  | `https://auth.beplyn.dev/api/oauth/callback/pocketid`             |
+| forgejo   | `https://git.beplyn.dev/user/oauth2/pocket-id/callback`           |
+| miniflux  | `https://rss.beplyn.dev/oauth2/oidc/callback`                     |
+| paperless | `https://docs.beplyn.dev/accounts/oidc/pocket-id/login/callback/` |
+
+1. In Pocket ID (`https://id.beplyn.dev`), add an OIDC client with the app's callback URL.
 2. On beacon, from the repo:
-   `sudo seal-oidc tinyauth > modules/nixos/services/k8s/oidc/tinyauth.sealed.yaml`
+   `sudo seal-oidc <app> > modules/nixos/services/k8s/oidc/<app>.sealed.yaml`
    and paste the client ID and secret it shows.
 3. `git add` the file, commit, push, rebuild.
 
-Not behind Tinyauth, logging in on their own: Vaultwarden, Jellyfin, Immich and ntfy, whose
-apps and clients can't follow a browser login.
+None of them makes accounts through Pocket ID; link it to `beplyn` once:
+
+- **Forgejo**: the first Pocket ID sign-in asks for the Forgejo password, then remembers it.
+- **Miniflux**: Settings, "Link my Pocket ID account".
+- **Paperless**: My Profile, connect Pocket ID.
+
+Not here: Immich and Audiobookshelf take Pocket ID in their own admin settings (callbacks
+`https://photos.beplyn.dev/auth/login`, `app.immich:///oauth-callback` and
+`https://books.beplyn.dev/auth/openid/callback`, `audiobookshelf://oauth`). Linkding would make
+a second account, and Vaultwarden, Jellyfin, ntfy, FileBrowser and Actual keep only their own.
