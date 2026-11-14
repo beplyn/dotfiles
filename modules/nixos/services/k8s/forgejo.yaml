@@ -1,6 +1,8 @@
 # @x@ placeholders are filled in by apps.nix
-# https only, Cloudflare doesn't proxy ssh; no signups, first admin:
-#   kubectl -n forgejo exec deploy/forgejo -- forgejo admin user create --admin --username ... --email ... --random-password
+# https through Cloudflare, ssh on the LAN only (port 2222, Forgejo's built-in server).
+# The init container makes @username@ the admin on first start (password in the forgejo
+# Secret, ADMIN_PASSWORD) and keeps the Pocket ID login in sync with forgejo-oidc.
+# Only Pocket ID users can register.
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -15,6 +17,7 @@ metadata:
     app: forgejo
 spec:
   replicas: 1
+  # one sqlite writer, and the ssh hostPort can't be held twice
   strategy:
     type: Recreate
   selector:
@@ -27,11 +30,32 @@ spec:
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
-      containers:
-        - name: forgejo
+      initContainers:
+        - name: bootstrap
           image: codeberg.org/forgejo/forgejo:17-rootless
-          # FORGEJO__section__KEY is written into app.ini on start
-          env:
+          # the image's entrypoint writes app.ini from the env first
+          command: ["/usr/local/bin/docker-entrypoint.sh"]
+          args:
+            - /bin/sh
+            - -ec
+            - |
+              gitea migrate
+              if [ "$(gitea admin user list --admin | wc -l)" -le 1 ]; then
+                gitea admin user create --admin --username "$ADMIN_USERNAME" \
+                  --email "$ADMIN_EMAIL" --password "$ADMIN_PASSWORD" --must-change-password=false
+              fi
+              if [ -n "${CLIENT_ID:-}" ]; then
+                id="$(gitea admin auth list | awk '$2 == "pocket-id" { print $1 }')"
+                if [ -n "$id" ]; then
+                  gitea admin auth update-oauth --id "$id" --key "$CLIENT_ID" \
+                    --secret "$CLIENT_SECRET" --auto-discover-url "$OIDC_DISCOVERY"
+                else
+                  gitea admin auth add-oauth --name pocket-id --provider openidConnect \
+                    --key "$CLIENT_ID" --secret "$CLIENT_SECRET" --auto-discover-url "$OIDC_DISCOVERY"
+                fi
+              fi
+          env: &env
+            # FORGEJO__section__KEY is written into app.ini on start
             - name: FORGEJO__database__DB_TYPE
               value: "sqlite3"
             - name: FORGEJO__server__DOMAIN
@@ -40,14 +64,28 @@ spec:
               value: "https://@forgejo.host@/"
             - name: FORGEJO__server__HTTP_PORT
               value: "3000"
+            # split-horizon DNS points the LAN at this host
             - name: FORGEJO__server__DISABLE_SSH
-              value: "true"
-            - name: FORGEJO__server__START_SSH_SERVER
               value: "false"
+            - name: FORGEJO__server__START_SSH_SERVER
+              value: "true"
+            - name: FORGEJO__server__SSH_DOMAIN
+              value: "@forgejo.host@"
+            - name: FORGEJO__server__SSH_PORT
+              value: "2222"
+            - name: FORGEJO__server__SSH_LISTEN_PORT
+              value: "2222"
             - name: FORGEJO__security__INSTALL_LOCK
               value: "true"
             - name: FORGEJO__service__DISABLE_REGISTRATION
+              value: "false"
+            - name: FORGEJO__service__ALLOW_ONLY_EXTERNAL_REGISTRATION
               value: "true"
+            - name: FORGEJO__oauth2_client__ENABLE_AUTO_REGISTRATION
+              value: "true"
+            # your Pocket ID login lands on the admin account with the same email
+            - name: FORGEJO__oauth2_client__ACCOUNT_LINKING
+              value: "auto"
             - name: FORGEJO__security__SECRET_KEY
               valueFrom:
                 secretKeyRef:
@@ -60,19 +98,34 @@ spec:
                   key: INTERNAL_TOKEN
             - name: TZ
               value: "@tz@"
-          ports:
-            - name: http
-              containerPort: 3000
-          readinessProbe:
-            httpGet:
-              path: /api/healthz
-              port: http
-          volumeMounts:
+            - name: ADMIN_USERNAME
+              value: "@username@"
+            - name: ADMIN_EMAIL
+              value: "@email@"
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: forgejo
+                  key: ADMIN_PASSWORD
+            - name: OIDC_DISCOVERY
+              value: "https://@pocket-id.host@/.well-known/openid-configuration"
+            # from seal-oidc; absent until then
+            - name: CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: forgejo-oidc
+                  key: CLIENT_ID
+                  optional: true
+            - name: CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: forgejo-oidc
+                  key: CLIENT_SECRET
+                  optional: true
+          volumeMounts: &mounts
             - name: data
               mountPath: /var/lib/gitea
-            - name: config
-              mountPath: /etc/gitea
-          securityContext:
+          securityContext: &security
             runAsNonRoot: true
             runAsUser: @uid@
             runAsGroup: @uid@
@@ -81,6 +134,22 @@ spec:
               drop: ["ALL"]
             seccompProfile:
               type: RuntimeDefault
+      containers:
+        - name: forgejo
+          image: codeberg.org/forgejo/forgejo:17-rootless
+          env: *env
+          ports:
+            - name: http
+              containerPort: 3000
+            - name: ssh
+              containerPort: 2222
+              hostPort: 2222
+          readinessProbe:
+            httpGet:
+              path: /api/healthz
+              port: http
+          volumeMounts: *mounts
+          securityContext: *security
           resources:
             requests:
               cpu: 20m
@@ -91,10 +160,6 @@ spec:
         - name: data
           hostPath:
             path: "@state@/forgejo/data"
-            type: Directory
-        - name: config
-          hostPath:
-            path: "@state@/forgejo/config"
             type: Directory
 ---
 apiVersion: v1
