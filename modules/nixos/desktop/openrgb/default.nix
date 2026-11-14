@@ -6,8 +6,7 @@
   ...
 }:
 
-# OpenRGB server, every LED in one deep colour per theme. The GUI connects to
-# the server and is a plain Qt app, so Stylix's qtct + Kvantum theme it
+# OpenRGB server, every LED in the theme's colour
 let
   cfg = config.services.hardware.openrgb;
   # the pastel accents wash out to near white on LEDs, so darker, saturated

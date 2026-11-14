@@ -1,5 +1,5 @@
 {
-  # clangd formats C/C++ with the nearest .clang-format; this is the default for anything under ~
+  # default .clang-format for everything under ~
   home.file.".clang-format".text = ''
     BasedOnStyle: LLVM
     BreakBeforeBraces: Allman

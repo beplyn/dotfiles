@@ -3,8 +3,7 @@
   {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    # whose machines these are: placeholders here, the real values come from
-    # --override-input vars path:/var/secrets/dotfiles (vars/README.md)
+    # placeholders; real values via --override-input vars (vars/README.md)
     vars =
     {
       url = "path:./vars";

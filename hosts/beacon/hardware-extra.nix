@@ -2,8 +2,7 @@
 { pkgs, ... }:
 
 {
-  # headless skips the desktop that would enable graphics.
-  # mesa covers iris/ANV; iHD + oneVPL for VA-API/QSV, compute-runtime for OpenCL/Level Zero
+  # headless doesn't enable graphics; iHD + oneVPL for VA-API/QSV, compute-runtime for OpenCL
   hardware.enableRedistributableFirmware = true;
   hardware.graphics =
   {

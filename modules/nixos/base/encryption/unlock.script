@@ -1,6 +1,4 @@
-# Plymouth unlock screen; @name@ comes from plymouth-theme.nix
-# booting: pulsing snowflake over a wave of palette dots
-# passphrase: lock, host, prompt, box filling with palette-coloured bullets
+# Plymouth unlock screen (@name@ from plymouth-theme.nix)
 
 w = Window.GetWidth();
 h = Window.GetHeight();

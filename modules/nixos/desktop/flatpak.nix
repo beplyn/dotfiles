@@ -5,9 +5,7 @@
   ...
 }:
 
-# Flatpak with Flathub, and Bazaar as the store. The sandbox only sees
-# /usr/share and the store paths it is allowed to, so fonts, icons and the
-# cursor get bind-mounted there and the Stylix GTK css is let in
+# Flatpak + Flathub + Bazaar; fonts, icons, cursor and GTK css mounted in
 let
   # what the bind mounts expose under /usr/share
   shared = pkgs.buildEnv
@@ -55,8 +53,7 @@ in
     wants = [ "network-online.target" ];
     after = [ "network-online.target" ];
     path = [ config.services.flatpak.package pkgs.gnugrep ];
-    # --if-not-exists still fetches the .flatpakrepo, so check locally first;
-    # otherwise a switch that bounces NetworkManager fails this unit
+    # check locally: --if-not-exists still fetches, failing while offline
     script = ''
       flatpak remotes --system --columns=name | grep -qx flathub && exit 0
       flatpak remote-add --system --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
