@@ -3,8 +3,7 @@ import QtQuick.Layouts
 import qs.services
 import qs.widgets
 
-// One stat's history, dropped from its waybar pill: the reading now, a
-// two-minute graph, and a row of details. shell.qml makes one per stat.
+// a stat's popup from its waybar pill: value now, 2-minute graph, details
 Panel {
     id: root
 

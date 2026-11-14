@@ -3,9 +3,7 @@ import QtQuick.Layouts
 import qs.services
 import qs.widgets
 
-// The picked day's events from vcal (services/Events.qml). A click on one
-// edits it in place; + adds one; the terminal button opens the day in the
-// TUI.
+// the picked day's events: click edits, + adds, terminal button opens the TUI
 ColumnLayout {
     id: root
 

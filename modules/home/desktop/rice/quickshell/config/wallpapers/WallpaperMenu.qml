@@ -6,10 +6,8 @@ import Quickshell.Wayland
 import Quickshell.Widgets
 import qs.services
 
-// Mod+W: the theme's recoloured wallpapers (~/.cache/wallpapers, from
-// quickshell/wallpaper.nix) on a carousel, the picked one crossfading in
-// full behind it. h/l, the arrows, Tab or the wheel cycle, Enter or a click
-// on the middle one sets it, R lands on a random one, Escape closes.
+// Mod+W: wallpaper carousel. h/l, arrows, Tab or wheel cycle, Enter or
+// click sets, R random, Esc closes
 PanelWindow {
     id: root
 

@@ -1,8 +1,7 @@
 import QtQuick
 import qs.services
 
-// Line graph of `values` in [min, max]; `length` samples fill the width from
-// the right. A null value is a gap: the line and fill break around it.
+// line graph of `values` in [min, max], newest on the right; null = gap
 Canvas {
     id: root
 

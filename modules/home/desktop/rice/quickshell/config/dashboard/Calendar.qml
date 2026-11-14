@@ -4,11 +4,8 @@ import QtQuick.Layouts
 import qs.services
 import qs.widgets
 
-// Month grid with ISO week numbers and today's week picked out. Arrows
-// or scrolling slide between months; the title or the today button
-// goes back to the current one. Dots under a day count its events (vcal,
-// services/Events.qml); a click picks the day for the agenda, a double
-// click opens it in the terminal calendar.
+// month grid; arrows/scroll change month, title or today goes back.
+// Dots count events; click picks a day, double click opens the TUI.
 ColumnLayout {
     id: root
 
