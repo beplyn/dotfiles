@@ -86,7 +86,7 @@
     inputs@{ nixpkgs, ... }:
     let
       inherit (nixpkgs) lib;
-      hosts = lib.attrNames (lib.filterAttrs (n: t: t == "directory" && n != "common") (builtins.readDir ./hosts));
+      hosts = lib.attrNames (lib.filterAttrs (n: t: t == "directory") (builtins.readDir ./hosts));
       themes =
       [
         "catppuccin"
