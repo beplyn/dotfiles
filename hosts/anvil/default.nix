@@ -16,7 +16,7 @@
   # 7900 XTX by uuid, not index: the iGPU is in the ROCm list too
   llm.gpu = "GPU-9fac555f6cbbbf7b";
   toolbox.enable = true;
-  rgb.enable = true;
+  openrgb.enable = true;
 
   # the 7900 XTX; 13:00.0 is the 7800X3D's iGPU
   displayGpu = "0000:03:00.0";
