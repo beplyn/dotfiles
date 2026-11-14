@@ -120,6 +120,24 @@ let
       ];
       extra = [ "intel-gpu" ];
     };
+    # upstream runs it as root, so its dirs are root's
+    immich =
+    {
+      host = "photos";
+      port = 30283;
+      body = "100m";
+      secrets = [ "DB_PASSWORD" ];
+      dirs =
+      [
+        (own "v" "0700" "root" "root" "${st.bulk}/photos")
+        (snapshots "${st.bulk}/photos")
+        (root "${st.cache}/immich-thumbs")
+        (root "${st.cache}/immich-models")
+        (root "${st.scratch}/immich-encoded-video")
+        (root "${st.state}/immich")
+        (root "${st.state}/immich/postgres")
+      ];
+    };
   };
 
   enabled = lib.filterAttrs (n: _: lib.elem n cfg.apps) apps;
