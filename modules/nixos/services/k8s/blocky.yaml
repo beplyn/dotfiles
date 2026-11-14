@@ -1,0 +1,120 @@
+# @x@ placeholders are filled in by apps.nix
+# ad-blocking DNS for the LAN on the host's port 53; point the router's DHCP DNS here
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: blocky
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: blocky
+  namespace: blocky
+data:
+  config.yml: |
+    upstreams:
+      groups:
+        default:
+          - https://one.one.one.one/dns-query
+          - https://dns.quad9.net/dns-query
+    # to resolve the DoH hosts themselves
+    bootstrapDns:
+      - tcp+udp:1.1.1.1
+      - tcp+udp:9.9.9.9
+    blocking:
+      denylists:
+        ads:
+          - https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+      clientGroupsBlock:
+        default:
+          - ads
+    caching:
+      prefetching: true
+    ports:
+      # unprivileged; hostPort 53 maps onto it
+      dns: 5353
+      http: 4000
+    log:
+      level: warn
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blocky
+  namespace: blocky
+  labels:
+    app: blocky
+spec:
+  replicas: 1
+  # the hostPort can't be held twice
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: blocky
+  template:
+    metadata:
+      labels:
+        app: blocky
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: blocky
+          image: ghcr.io/0xerr0r/blocky:v0.36.0
+          env:
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: dns-udp
+              containerPort: 5353
+              hostPort: 53
+              protocol: UDP
+            - name: dns-tcp
+              containerPort: 5353
+              hostPort: 53
+              protocol: TCP
+            - name: http
+              containerPort: 4000
+          readinessProbe:
+            tcpSocket:
+              port: dns-tcp
+          volumeMounts:
+            - name: config
+              mountPath: /app/config.yml
+              subPath: config.yml
+              readOnly: true
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: @uid@
+            runAsGroup: @uid@
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+      volumes:
+        - name: config
+          configMap:
+            name: blocky
+---
+# for gatus
+apiVersion: v1
+kind: Service
+metadata:
+  name: blocky
+  namespace: blocky
+spec:
+  selector:
+    app: blocky
+  ports:
+    - name: http
+      port: 4000
+      targetPort: http
