@@ -1,6 +1,6 @@
 { lib, ... }:
 
-# Per-host display hardware: Hyprland and greeter layout (empty on VMs) and laptop panel.
+# Per-host display hardware: Hyprland and greeter layout (empty on VMs).
 let
   monitor = lib.types.submodule
   {
@@ -43,7 +43,4 @@ in
     example = "0000:03:00.0";
     description = "PCI address of the GPU the monitors are plugged into, when there are several; linked as /dev/dri/display.";
   };
-
-  # battery and backlight widgets in the shell
-  options.laptop.enable = lib.mkEnableOption "laptop-only shell widgets";
 }
