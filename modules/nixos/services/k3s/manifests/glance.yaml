@@ -128,6 +128,8 @@ data:
                   - title: Pocket ID
                     url: "https://@pocket-id.host@"
                     check-url: http://pocket-id.pocket-id.svc/healthz
+                    # healthz answers 204, which glance otherwise flags
+                    alt-status-codes: [204]
                     icon: di:pocket-id
                   - title: Tinyauth
                     url: "https://@tinyauth.host@"
