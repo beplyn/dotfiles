@@ -80,14 +80,18 @@ Anyone who can push to the branch is root on beacon.
 
 ## Logins
 
-Only `home`, `status`, `notes`, `pdf`, `sync` and `search` are behind Tinyauth
-(`https://auth.beplyn.dev`): they have no login of their own. The first visit goes to Pocket ID,
-your passkey logs you in, and the session cookie covers every subdomain.
+Everything is behind Tinyauth (`https://auth.beplyn.dev`) but what's used from phone apps,
+browser extensions or other clients that can't follow a browser login. The first visit goes to
+Pocket ID, your passkey logs you in, and the session cookie covers every subdomain.
 
-Every app with a login of its own logs in itself, so its phone app works: Vaultwarden, Forgejo,
-Miniflux, Paperless, Immich, Jellyfin, Audiobookshelf, ntfy, Linkding, FileBrowser and Actual.
-Forgejo, Miniflux and Paperless can offer Pocket ID next to the password once their client is
-sealed; Immich and Audiobookshelf have it in their admin settings.
+- **Behind Tinyauth:** `home`, `status`, `notes`, `pdf`, `sync`, `files`, `search`, `flow`,
+  `watch`, `recipes`, `draw`, `metrics`, `disks`.
+- **Their own login:** Vaultwarden, Forgejo, Miniflux, Paperless, Immich, Jellyfin,
+  Audiobookshelf, ntfy, Linkding, Actual (its desktop app syncs), Vikunja, Radicale, Navidrome
+  and Atuin. wastebin is public.
+
+Forgejo, Miniflux, Paperless, Vikunja and Mealie can offer Pocket ID next to their own login
+once their client is sealed; Immich and Audiobookshelf have it in their admin settings.
 
 1. Make the Pocket ID admin at `https://id.beplyn.dev/setup`: username `beplyn`, the same
    email as in git, and register a passkey.
@@ -104,7 +108,10 @@ Passwords are generated in the cluster on first start, never in git. Read one wi
 | ntfy        | `admin`, `ADMIN_PASSWORD`; subscribe to `alerts`              |
 | Vaultwarden | `/admin` with `ADMIN_TOKEN`, invite yourself, then register   |
 | Linkding    | `beplyn`, `ADMIN_PASSWORD`; the extension takes an API token  |
-| FileBrowser | `beplyn`, `ADMIN_PASSWORD`; tank as you, photos excluded      |
+| FileBrowser | `beplyn` through Tinyauth; tank as you, photos excluded       |
+| Radicale    | `beplyn`, `ADMIN_PASSWORD`; CalDAV/CardDAV at `cal`           |
+| Navidrome   | `admin`, `ADMIN_PASSWORD`; rename it in the app               |
+| Vikunja     | `beplyn`, `ADMIN_PASSWORD`, made once, see `k8s/vikunja.yaml` |
 
 Only possible in the apps themselves: the first Immich user (becomes admin), Jellyfin's setup
 wizard and libraries (`/media/music`, `/media/video`).
@@ -121,6 +128,17 @@ And for the newer ones:
 - **wastebin** (`bin`): public, like Vaultwarden: anyone can make and read pastes.
 - **SearXNG** (`search`): add `https://search.beplyn.dev/search?q=%s` as the browser's search
   engine.
+
+- **Atuin** (`sh`): registration is closed; open it for your first `atuin register`, the
+  commands are in `k8s/atuin.yaml`. Set `sync_address = "https://sh.beplyn.dev"`.
+- **n8n** (`flow`): makes its owner account on the first visit, behind Tinyauth. Webhooks and
+  forms (`/webhook/`, `/form/`) skip Tinyauth so other services can call them.
+- **Mealie** (`recipes`): first login `changeme@example.com` / `MyPassword`; change both, the
+  email to yours, so Pocket ID matches it.
+- **changedetection.io** (`watch`): notify ntfy with `ntfys://ntfy.beplyn.dev/<topic>`.
+- **Beszel** (`metrics`) and **Scrutiny** (`disks`) run on the host, not k3s. Beszel logs you in
+  by your Pocket ID email: make its user with that email on the first visit, then Add System,
+  host `127.0.0.1`, port `45876`. Their data is regenerable and isn't backed up.
 
 SilverBullet, Syncthing and FileBrowser run as `beplyn` (uid 1000), so what they write on tank
 is yours.

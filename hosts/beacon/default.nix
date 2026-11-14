@@ -54,10 +54,20 @@ in
     "actual"
     "wastebin"
     "searxng"
+    "vikunja"
+    "radicale"
+    "navidrome"
+    "n8n"
+    "atuin"
+    "changedetection"
+    "mealie"
+    "excalidraw"
   ];
   k3s.lanAddress = address;
   # app state and the cluster to the backup disk, daily
   k3s.backup.enable = true;
+  # Beszel and Scrutiny on the host, at metrics. and disks.
+  monitoring.enable = true;
 
   environment.systemPackages = [ pkgs.kitty.terminfo ];
 
