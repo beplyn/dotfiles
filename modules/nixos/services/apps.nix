@@ -67,6 +67,8 @@ let
       secrets = [ "ENCRYPTION_KEY" ];
       dirs = [ (app "${st.state}/pocket-id") ];
     };
+    # LAN DNS on hostPort 53, nothing to proxy
+    blocky = { };
   };
 
   enabled = lib.filterAttrs (n: _: lib.elem n cfg.apps) apps;
