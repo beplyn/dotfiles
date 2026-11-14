@@ -28,9 +28,9 @@ let
   };
 in
 {
-  options.rgb.enable = lib.mkEnableOption "OpenRGB with the LEDs in the theme's colour";
+  options.openrgb.enable = lib.mkEnableOption "OpenRGB with the LEDs in the theme's colour";
 
-  config = lib.mkIf config.rgb.enable
+  config = lib.mkIf config.openrgb.enable
   {
     services.hardware.openrgb =
     {
