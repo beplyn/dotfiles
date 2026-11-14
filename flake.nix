@@ -106,7 +106,13 @@
           v = builtins.fromTOML (builtins.readFile "${inputs.vars}/vars.toml");
         in
         if v.placeholder or false then
-          throw "vars: only the repo's placeholders; build with --override-input vars path:/var/secrets/dotfiles (vars/README.md)"
+          throw ''
+            vars: only the repo's placeholders (vars/README.md). `rebuild` asks for the real ones;
+            a rebuild from before vars can't, so once, from the checkout:
+              nix shell nixpkgs#yq-go -c bash /etc/nixos/modules/nixos/base/rebuild/vars.sh /etc/nixos/vars/vars.toml /var/secrets/dotfiles
+              sudo nixos-rebuild switch --flake /etc/nixos#<host>-<theme> --override-input vars path:/var/secrets/dotfiles
+            and plain `rebuild` from then on
+          ''
         else
           v;
       mkHost = import ./lib/mkHost.nix
