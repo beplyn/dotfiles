@@ -36,6 +36,19 @@ let
       secrets = [ "ADMIN_TOKEN" ];
       dirs = [ (app "${st.state}/vaultwarden") ];
     };
+    forgejo =
+    {
+      host = "git";
+      port = 30030;
+      body = "100m";
+      secrets = [ "SECRET_KEY" "INTERNAL_TOKEN" ];
+      dirs =
+      [
+        (app "${st.state}/forgejo")
+        (app "${st.state}/forgejo/data")
+        (app "${st.state}/forgejo/config")
+      ];
+    };
   };
 
   enabled = lib.filterAttrs (n: _: lib.elem n cfg.apps) apps;

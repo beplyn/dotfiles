@@ -1,0 +1,113 @@
+# @x@ placeholders are filled in by apps.nix
+# https only, Cloudflare doesn't proxy ssh; no signups, first admin:
+#   kubectl -n forgejo exec deploy/forgejo -- forgejo admin user create --admin --username ... --email ... --random-password
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: forgejo
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: forgejo
+  namespace: forgejo
+  labels:
+    app: forgejo
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: forgejo
+  template:
+    metadata:
+      labels:
+        app: forgejo
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: forgejo
+          image: codeberg.org/forgejo/forgejo:17-rootless
+          # FORGEJO__section__KEY is written into app.ini on start
+          env:
+            - name: FORGEJO__database__DB_TYPE
+              value: "sqlite3"
+            - name: FORGEJO__server__DOMAIN
+              value: "@forgejo.host@"
+            - name: FORGEJO__server__ROOT_URL
+              value: "https://@forgejo.host@/"
+            - name: FORGEJO__server__HTTP_PORT
+              value: "3000"
+            - name: FORGEJO__server__DISABLE_SSH
+              value: "true"
+            - name: FORGEJO__server__START_SSH_SERVER
+              value: "false"
+            - name: FORGEJO__security__INSTALL_LOCK
+              value: "true"
+            - name: FORGEJO__service__DISABLE_REGISTRATION
+              value: "true"
+            - name: FORGEJO__security__SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: forgejo
+                  key: SECRET_KEY
+            - name: FORGEJO__security__INTERNAL_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: forgejo
+                  key: INTERNAL_TOKEN
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: http
+              containerPort: 3000
+          readinessProbe:
+            httpGet:
+              path: /api/healthz
+              port: http
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/gitea
+            - name: config
+              mountPath: /etc/gitea
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: @uid@
+            runAsGroup: @uid@
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 20m
+              memory: 128Mi
+            limits:
+              memory: 1Gi
+      volumes:
+        - name: data
+          hostPath:
+            path: "@state@/forgejo/data"
+            type: Directory
+        - name: config
+          hostPath:
+            path: "@state@/forgejo/config"
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: forgejo
+  namespace: forgejo
+spec:
+  type: NodePort
+  selector:
+    app: forgejo
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @forgejo.port@
