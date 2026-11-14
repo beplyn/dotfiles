@@ -4,6 +4,7 @@
     ./boot
     ./encryption
     ./locale.nix
+    ./monitors.nix
     ./networking.nix
     ./ssh.nix
     ./shell

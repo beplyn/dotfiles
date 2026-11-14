@@ -9,7 +9,6 @@
     ./gaming.nix
     ./openrgb
     ./flatpak.nix
-    ./monitors.nix
     ./ddc.nix
     ./touchpad.nix
     ./hyprland.nix
