@@ -3,7 +3,10 @@
 # hardware config, link /etc/nixos, build. Works from a checkout or `curl | bash`.
 set -euo pipefail
 
-REPO_URL="${REPO_URL:-https://codeberg.org/beplyn/dotfiles.git}"
+# asked for under `curl | bash`; a checkout uses itself
+REPO_URL="${REPO_URL:-}"
+# whose machines these are (vars/README.md), root-only; the rebuild module has it too
+VARS_DIR=/var/secrets/dotfiles
 NIX_CONFIG="${NIX_CONFIG:-}"$'\n'"experimental-features = nix-command flakes"
 export NIX_CONFIG
 
@@ -43,6 +46,17 @@ choose() {
   done
 }
 
+# a temporary tool from nixpkgs when it's not installed: ensure_tool COMMAND PACKAGE
+ensure_tool() {
+  command -v "$1" > /dev/null && return
+  info "$1 not found, fetching a temporary one from the Nix store"
+  local out
+  out="$(nix build --no-link --print-out-paths "nixpkgs#$2" | head -n1)"
+  [[ -x "$out/bin/$1" ]] || die "Could not get $1 from nixpkgs"
+  PATH="$out/bin:$PATH"
+  export PATH
+}
+
 ensure_git() {
   command -v git > /dev/null && return
   info "git not found, fetching a temporary one from the Nix store"
@@ -62,6 +76,7 @@ ensure_git() {
 command -v sudo > /dev/null || die "sudo is required"
 
 ensure_git
+ensure_tool yq yq-go
 
 # --- 1. Get the repo into ~/<reponame> --------------------------------------
 
@@ -69,6 +84,10 @@ ensure_git
 src=""
 if [[ -n "${BASH_SOURCE[0]:-}" && -f "$(dirname "${BASH_SOURCE[0]}")/flake.nix" ]]; then
   src="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+fi
+if [[ -z "$src" && -z "$REPO_URL" ]]; then
+  REPO_URL="$(ask "Repo to install from (https URL of your dotfiles): ")"
+  [[ -n "$REPO_URL" ]] || die "No repo given"
 fi
 repo_dir="$HOME/$(basename "${src:-${REPO_URL%.git}}")"
 
@@ -87,7 +106,14 @@ fi
 
 cd "$repo_dir"
 
-user="$(sed -n 's/^\s*username = "\([^"]*\)";.*/\1/p' flake.nix | head -n1)"
+# --- 1b. Whose machines: the vars, out of the repo -------------------------
+
+echo
+info "Your values (vars/README.md), saved root-only to $VARS_DIR/vars.toml:"
+bash modules/nixos/base/rebuild/vars.sh vars/vars.toml "$VARS_DIR"
+override=(--override-input vars "path:$VARS_DIR")
+
+user="$(sudo cat "$VARS_DIR/vars.toml" | yq -p toml '.username')"
 [[ "$USER" == "$user" ]] || warn "You are '$USER', but the config sets up the user '$user'."
 
 # --- 2. Host and theme ------------------------------------------------------
@@ -196,19 +222,20 @@ echo
 built=false
 if confirm "Build $target and install it for the next boot? [Y/n]" y; then
   info "Building $target"
-  system="$(nix build --no-link --print-out-paths \
+  # as root: the vars are root-only
+  system="$(sudo nix build --no-link --print-out-paths "${override[@]}" \
     "$repo_dir#nixosConfigurations.$target.config.system.build.toplevel")"
   sudo nix-env -p /nix/var/nix/profiles/system --set "$system"
   sudo "$system/bin/switch-to-configuration" boot
   info "Installed $system"
   built=true
 else
-  info "Later, run: sudo nixos-rebuild boot --flake /etc/nixos#$target"
+  info "Later, run: sudo nixos-rebuild boot --flake /etc/nixos#$target ${override[*]}"
 fi
 
 # keys, host secrets (rebuild.secrets) and ~/.pfp come from rebuild, not from here
 # shellcheck disable=SC2016 # nix expression, not shell
-mapfile -t secrets < <(nix eval --raw "$repo_dir#nixosConfigurations.$target.config.rebuild.secrets" \
+mapfile -t secrets < <(sudo nix eval --raw "${override[@]}" "$repo_dir#nixosConfigurations.$target.config.rebuild.secrets" \
   --apply 's: builtins.concatStringsSep "\n" (map (p: "${p}: ${s.${p}.description}") (builtins.attrNames s))' \
   2> /dev/null || true)
 echo

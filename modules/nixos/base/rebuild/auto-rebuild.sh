@@ -1,10 +1,12 @@
-# auto-rebuild URL BRANCH CONFIG: switch to CONFIG from BRANCH's newest commit, once per commit.
+# auto-rebuild URL BRANCH CONFIG VARS: switch to CONFIG from BRANCH's newest commit, once per
+# commit, with the vars (vars/README.md) from the VARS dir.
 # The last one switched to and the last one that failed are kept in $STATE_DIRECTORY, so a
 # broken commit fails (and alerts) once, and the next push is tried again
 set -euo pipefail
 url="$1"
 branch="$2"
 config="$3"
+vars="$4"
 done="$STATE_DIRECTORY/rev"
 failed="$STATE_DIRECTORY/failed"
 
@@ -24,8 +26,14 @@ if [ "$(cat "$failed" 2>/dev/null)" = "$rev" ]; then
   exit 0
 fi
 
+# without them it would build the placeholders (example.com and all)
+if [ ! -f "$vars/vars.toml" ]; then
+  echo "no $vars/vars.toml: run rebuild once to set the values" >&2
+  exit 1
+fi
+
 echo "$branch moved to $rev, switching"
-if nixos-rebuild switch --flake "git+$url?ref=$branch&rev=$rev#$config"; then
+if nixos-rebuild switch --flake "git+$url?ref=$branch&rev=$rev#$config" --override-input vars "path:$vars"; then
   printf '%s\n' "$rev" > "$done"
   rm -f "$failed"
 else

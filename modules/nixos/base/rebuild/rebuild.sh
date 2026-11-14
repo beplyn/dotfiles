@@ -135,9 +135,12 @@ if @desktop@ && [ ! -e "$HOME/.pfp" ]; then
   fi
 fi
 
+# whose machines these are, out of the repo; asks for whatever is missing
+dotfiles-vars "$flake/vars/vars.toml" @varsDir@
+
 # new files reach the flake; nothing else gets staged
 git -C "$flake" add --intent-to-add .
-sudo nixos-rebuild switch --flake "$flake#@hostName@-$theme"
+sudo nixos-rebuild switch --flake "$flake#@hostName@-$theme" --override-input vars "path:@varsDir@"
 
 # units that were waiting on a new secret
 if [ ${#restart[@]} -gt 0 ]; then
