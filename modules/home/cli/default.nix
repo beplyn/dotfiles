@@ -4,6 +4,7 @@
   imports =
   [
     ./ssh.nix
+    ./atuin.nix
     ./bash
     ./bat.nix
     ./fzf.nix
