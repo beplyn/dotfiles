@@ -127,11 +127,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794327789,
-        "narHash": "sha256-sJT//GvXEl4f1rIf/68JMZEAlbuvaqO0nPHcL6bjd24=",
+        "lastModified": 1794526320,
+        "narHash": "sha256-YrtCmuGlemmIp3xPfa+F52/XV8cm8S0lU6ua6dp9+4A=",
         "owner": "bjarneo",
         "repo": "cliamp",
-        "rev": "f43b9c144702a356f5bfa9225137ed2b6bbd2fb4",
+        "rev": "fce2f93752ad96eb221e1e66ecab913b26f88c2b",
         "type": "github"
       },
       "original": {
@@ -224,11 +224,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1794194570,
-        "narHash": "sha256-HzSKlAfCm6ca2j9m6OhgWyHpxbamtNJiRDPtew/rC2g=",
+        "lastModified": 1794570576,
+        "narHash": "sha256-MCzMA19Cd8Els5X5VDBFwj+2jqvj1g+aHHmDCUDgAKc=",
         "ref": "refs/heads/main",
-        "rev": "5a450bff924f25912f620cdcdb66cc2e984f83dd",
-        "revCount": 1211,
+        "rev": "5bd7bf99411a47d94b24f5b7575d99f5dc391542",
+        "revCount": 1213,
         "type": "git",
         "url": "https://codeberg.org/forgejo-contrib/forgejo-cli.git"
       },
@@ -318,11 +318,11 @@
       },
       "locked": {
         "dir": "packages/nix",
-        "lastModified": 1794431387,
-        "narHash": "sha256-U6tNAspTTC+6/LwCiddZbeDXydn0a6jssSDDBvVIlFk=",
+        "lastModified": 1794588209,
+        "narHash": "sha256-i0Y49re/VXOTBGSjsYdEoIrP9IaNejmCeUHFssGQ+NQ=",
         "owner": "SteamClientHomebrew",
         "repo": "Millennium",
-        "rev": "dee8e60f689b4f42b04eea0a4f4f063ecd8609aa",
+        "rev": "6522c24e8bd3de41a7601ceb4e78a619930f1704",
         "type": "github"
       },
       "original": {
@@ -335,17 +335,17 @@
     "millennium-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1792710296,
-        "narHash": "sha256-e79vMkWWeK7Rk3OjbK82yC+EgVgCCtG9wRMxO1ZP+vE=",
+        "lastModified": 1794587997,
+        "narHash": "sha256-UZQSHMsAaYTcx1TDAI7FTqVRsMpB1jLBL8kYKivwbYo=",
         "owner": "SteamClientHomebrew",
         "repo": "Millennium",
-        "rev": "3858d60a2081f612739f07386ceac9b79f68274b",
+        "rev": "ac5e1ad646b1d1dd76a04aecf32d9e5e41779201",
         "type": "github"
       },
       "original": {
         "owner": "SteamClientHomebrew",
         "repo": "Millennium",
-        "rev": "3858d60a2081f612739f07386ceac9b79f68274b",
+        "rev": "ac5e1ad646b1d1dd76a04aecf32d9e5e41779201",
         "type": "github"
       }
     },
@@ -372,11 +372,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1794192123,
-        "narHash": "sha256-SvB8u5qaJAOwZZyZciqTVOg/rBoUs2w0sFTU6ED51AQ=",
+        "lastModified": 1794386569,
+        "narHash": "sha256-x9sADJvoVG0L6RejZB+/BB4YiGZFBZrfTlhF4uBq1tQ=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "177d0540942fb205af6993b1d5fa0b57799e09f8",
+        "rev": "d4f25a3e562008648d45bcf2d70bcc7422cad84e",
         "type": "github"
       },
       "original": {
@@ -489,11 +489,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794421371,
-        "narHash": "sha256-+/h7wGUTahpx5rwcETRv38ugci6A8wb8jGK92fTKimU=",
+        "lastModified": 1794492735,
+        "narHash": "sha256-YCECrw17tg5E6h1Un/UgU3kicqwmrGTlI8vB6Lt2Yvs=",
         "owner": "FCsab",
         "repo": "speci-local",
-        "rev": "55850dcfb1f8c6d76000d4565443fe114505d0e8",
+        "rev": "9ab280709a8e77b9df320a0c535673b589273c36",
         "type": "github"
       },
       "original": {
@@ -729,11 +729,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794463259,
-        "narHash": "sha256-X1zgmlTHAeF3zynB4qY0EIpKI71hsUCr4Ye1qoPbL5s=",
+        "lastModified": 1794641110,
+        "narHash": "sha256-uoTlmcxa6ewsctJ6/NPgMADN7317QohlUMGBjtQjQmY=",
         "owner": "0xc000022070",
         "repo": "zen-browser-flake",
-        "rev": "7ae4b419e36f18fa5743556e379e4b0154171949",
+        "rev": "ad99018e37999e659ae43f9c6ac126161ca147bc",
         "type": "github"
       },
       "original": {
