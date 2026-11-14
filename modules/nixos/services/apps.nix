@@ -281,7 +281,7 @@ let
       dirs = [ (app "${st.state}/actual") ];
       auth = true;
     };
-    # making a paste needs the login, reading one doesn't: links go to people without one
+    # public: anyone can make and read pastes, no tinyauth
     wastebin =
     {
       host = "bin";
@@ -289,13 +289,6 @@ let
       body = "10m";
       secrets = [ "SIGNING_KEY" "PASSWORD_SALT" ];
       dirs = [ (app "${st.state}/wastebin") ];
-      auth = true;
-      authSkip =
-      [
-        "~ ^/(raw|dl|qr|burn)/"
-        # a paste, its assets; not the form or the API
-        "~ ^/(?!(new|api)(/|$))[^/]+$"
-      ];
     };
     searxng =
     {

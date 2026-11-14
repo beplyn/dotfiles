@@ -1,6 +1,5 @@
 # @x@ placeholders are filled in by apps.nix
-# pastebin: the form and the API are behind tinyauth, a paste's own link isn't (proxy.hosts
-# authSkip in apps.nix), so anyone you send one to can read it
+# pastebin, public: not behind tinyauth, so anyone can make a paste and read one
 apiVersion: v1
 kind: Namespace
 metadata:
