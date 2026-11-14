@@ -63,6 +63,35 @@ let
         proxyPass = "http://${host.address}:${toString host.port}";
         # Upgrade + Connection
         proxyWebsockets = host.websockets;
+        # logged out: off to the login page, which sends you back here. Remote-* are always
+        # set, so a client can't send its own past this
+        extraConfig = lib.optionalString host.auth ''
+          auth_request /tinyauth;
+          auth_request_set $auth_location $upstream_http_x_tinyauth_location;
+          auth_request_set $auth_user $upstream_http_remote_user;
+          auth_request_set $auth_email $upstream_http_remote_email;
+          error_page 401 403 =302 $auth_location;
+          proxy_set_header Remote-User $auth_user;
+          proxy_set_header Remote-Email $auth_email;
+        '';
+      };
+      # it takes the original URL from X-Original-URL and refuses the request when
+      # X-Forwarded-Host or -Uri come along too, so not recommendedProxySettings here
+      locations."= /tinyauth" = lib.mkIf host.auth
+      {
+        proxyPass = cfg.authRequest;
+        recommendedProxySettings = false;
+        extraConfig = ''
+          internal;
+          proxy_pass_request_body off;
+          proxy_set_header Content-Length "";
+          proxy_set_header X-Original-URL $scheme://$host$request_uri;
+          proxy_set_header X-Original-Method $request_method;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Host "";
+          proxy_set_header X-Forwarded-Uri "";
+        '';
       };
       extraConfig = ''
         # skipped Cloudflare and isn't on the LAN
@@ -148,6 +177,14 @@ in
       description = "Also keep AAAA records updated.";
     };
 
+    authRequest = lib.mkOption
+    {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      example = "http://127.0.0.1:30300/api/auth/nginx";
+      description = "Tinyauth's nginx endpoint, which the hosts with auth set ask on every request.";
+    };
+
     hosts = lib.mkOption
     {
       type = lib.types.attrsOf (lib.types.submodule
@@ -178,6 +215,15 @@ in
             example = "100m";
             description = "Largest request body (uploads); null keeps nginx's 1m.";
           };
+          auth = lib.mkOption
+          {
+            type = lib.types.bool;
+            default = false;
+            description = ''
+              Log in through proxy.authRequest first and pass Remote-User and Remote-Email on.
+              Browsers only: app clients and API calls get sent to the login page.
+            '';
+          };
         };
       });
       default = { };
@@ -193,6 +239,10 @@ in
       {
         assertion = !(cfg.originPulls && cfg.lanSubnets != [ ]);
         message = "proxy.originPulls rejects LAN clients, which have no Cloudflare client certificate";
+      }
+      {
+        assertion = cfg.authRequest != null || !lib.any (h: h.auth) (lib.attrValues cfg.hosts);
+        message = "proxy.hosts with auth need proxy.authRequest";
       }
     ];
 
