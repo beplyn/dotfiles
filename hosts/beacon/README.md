@@ -80,8 +80,8 @@ Anyone who can push to the branch is root on beacon.
 
 ## Logins
 
-`home`, `status`, `git`, `rss`, `docs`, `notes`, `links`, `pdf`, `sync`, `files`, `budget`,
-`bin` and `search` are behind Tinyauth (`https://auth.beplyn.dev`): the
+`home`, `status`, `git`, `rss`, `docs`, `notes`, `links`, `pdf`, `sync`, `files`, `budget` and
+`search` are behind Tinyauth (`https://auth.beplyn.dev`): the
 first visit goes to Pocket ID, your passkey logs you in, and the session cookie covers every
 subdomain. The apps take the username nginx passes on, so there's no second login.
 
@@ -126,7 +126,7 @@ And for the newer ones:
 - **Syncthing** (`sync`): leave the GUI user and password unset, Tinyauth covers it. Add folders
   under `/sync` (`/srv/tank/sync`); devices connect at `tcp://192.168.2.200:22000`.
 - **SilverBullet** (`notes`): every page is a `.md` file in `/srv/tank/notes`, yours to edit.
-- **wastebin** (`bin`): making a paste needs the login, opening a paste's link doesn't.
+- **wastebin** (`bin`): public, like Vaultwarden: anyone can make and read pastes.
 - **SearXNG** (`search`): add `https://search.beplyn.dev/search?q=%s` as the browser's search
   engine.
 
