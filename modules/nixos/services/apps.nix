@@ -103,6 +103,23 @@ let
         (own "d" "2775" (toString uid) "users" "${st.bulk}/documents/consume")
       ];
     };
+    jellyfin =
+    {
+      host = "media";
+      port = 30096;
+      body = "20m";
+      dirs =
+      [
+        (app "${st.state}/jellyfin")
+        (app "${st.cache}/jellyfin")
+        (app "${st.scratch}/jellyfin-transcodes")
+        # yours to fill; jellyfin only gets them read-only
+        (subvol "${st.bulk}/music")
+        (snapshots "${st.bulk}/music")
+        (subvol "${st.bulk}/video")
+      ];
+      extra = [ "intel-gpu" ];
+    };
   };
 
   enabled = lib.filterAttrs (n: _: lib.elem n cfg.apps) apps;
