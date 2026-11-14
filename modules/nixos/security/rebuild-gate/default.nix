@@ -10,7 +10,7 @@
 }:
 
 # switches only to commits signed by the master key, an unsigned one only on a TOTP code;
-# sudo and polkit need password + the same TOTP, so they can't go around it.
+# sudo, polkit and keyless ssh need password + the same TOTP, so they can't go around it.
 # The master key and TOTP seed stay root-only on the host, never in the repo: `sudo rebuild-gate init`.
 let
   cfg = config.rebuildGate;
@@ -134,9 +134,12 @@ in
 
     environment.systemPackages = [ gate ];
 
-    # password, then TOTP (unix-early, google_authenticator required, unix)
-    security.pam.services = lib.genAttrs [ "sudo" "polkit-1" ] (_:
+    # password, then TOTP (unix-early, google_authenticator required, unix);
+    # sshd too, its keyboard-interactive fallback when there is no key
+    security.pam.services = lib.genAttrs [ "sudo" "polkit-1" "sshd" ] (name:
     {
+      # sshd drops the password step with PasswordAuthentication off
+      unixAuth = lib.mkIf (name == "sshd") (lib.mkForce true);
       googleAuthenticator =
       {
         enable = true;
