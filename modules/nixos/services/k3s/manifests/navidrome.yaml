@@ -55,6 +55,9 @@ spec:
             - name: music
               mountPath: /music
               readOnly: true
+            # sqlite's temp files, which migrations need ("disk I/O error" without)
+            - name: tmp
+              mountPath: /tmp
           securityContext:
             runAsNonRoot: true
             runAsUser: @uid@
@@ -80,6 +83,8 @@ spec:
           hostPath:
             path: "@bulk@/music"
             type: Directory
+        - name: tmp
+          emptyDir: { }
 ---
 apiVersion: v1
 kind: Service
