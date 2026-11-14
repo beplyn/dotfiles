@@ -33,6 +33,9 @@ spec:
           # stable; 3.x is still a release candidate
           image: n8nio/n8n:2.47.7
           env:
+            # uid @uid@ has no passwd entry, so HOME is / and it'd make /.n8n
+            - name: N8N_USER_FOLDER
+              value: /home/node
             - name: N8N_HOST
               value: "@n8n.host@"
             - name: N8N_PROTOCOL
