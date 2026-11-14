@@ -80,28 +80,20 @@ Anyone who can push to the branch is root on beacon.
 
 ## Logins
 
-`home`, `status`, `git`, `rss`, `docs`, `notes`, `links`, `pdf`, `sync`, `files`, `budget` and
-`search` are behind Tinyauth (`https://auth.beplyn.dev`): the
-first visit goes to Pocket ID, your passkey logs you in, and the session cookie covers every
-subdomain. The apps take the username nginx passes on, so there's no second login.
+Only `home`, `status`, `notes`, `pdf`, `sync` and `search` are behind Tinyauth
+(`https://auth.beplyn.dev`): they have no login of their own. The first visit goes to Pocket ID,
+your passkey logs you in, and the session cookie covers every subdomain.
+
+Every app with a login of its own logs in itself, so its phone app works: Vaultwarden, Forgejo,
+Miniflux, Paperless, Immich, Jellyfin, Audiobookshelf, ntfy, Linkding, FileBrowser and Actual.
+Forgejo, Miniflux and Paperless can offer Pocket ID next to the password once their client is
+sealed; Immich and Audiobookshelf have it in their admin settings.
 
 1. Make the Pocket ID admin at `https://id.beplyn.dev/setup`: username `beplyn`, the same
    email as in git, and register a passkey.
-2. Seal Tinyauth's Pocket ID client: `modules/nixos/services/k8s/oidc/README.md`.
+2. Seal the Pocket ID clients: `modules/nixos/services/k8s/oidc/README.md`.
 
-Behind Tinyauth only existing users get in, and they're matched by name, so all of them are
-`beplyn`. Miniflux and Paperless used to call theirs `admin`. Rename them once, **before**
-the rebuild that switches the name, or a second, empty `beplyn` gets created next to it:
-
-```sh
-sudo k3s kubectl -n miniflux exec deploy/miniflux-db -- \
-  psql -U miniflux -c "update users set username = 'beplyn' where username = 'admin'"
-sudo k3s kubectl -n paperless exec deploy/paperless -- python3 manage.py shell -c \
-  "from django.contrib.auth.models import User; u = User.objects.get(username='admin'); u.username = 'beplyn'; u.save()"
-```
-
-Passwords are generated in the cluster on first start, never in git. Behind Tinyauth they're
-only for the API and app clients. Read one with
+Passwords are generated in the cluster on first start, never in git. Read one with
 `sudo k3s kubectl -n <app> get secret <app> -o jsonpath='{.data.<KEY>}' | base64 -d`.
 
 | App         | Login                                                         |
@@ -111,8 +103,8 @@ only for the API and app clients. Read one with
 | Paperless   | `beplyn`, `ADMIN_PASSWORD`                                    |
 | ntfy        | `admin`, `ADMIN_PASSWORD`; subscribe to `alerts`              |
 | Vaultwarden | `/admin` with `ADMIN_TOKEN`, invite yourself, then register   |
-| Linkding    | `beplyn`; the browser extension takes an API token            |
-| FileBrowser | `beplyn`; sees what you can on tank, photos excluded          |
+| Linkding    | `beplyn`, `ADMIN_PASSWORD`; the extension takes an API token  |
+| FileBrowser | `beplyn`, `ADMIN_PASSWORD`; tank as you, photos excluded      |
 
 Only possible in the apps themselves: the first Immich user (becomes admin), Jellyfin's setup
 wizard and libraries (`/media/music`, `/media/video`).
