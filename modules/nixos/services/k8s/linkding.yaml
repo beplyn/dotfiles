@@ -1,0 +1,94 @@
+# @x@ placeholders are filled in by apps.nix
+# the browser logs in through tinyauth as @username@ (Remote-User from nginx), made the
+# superuser on first start (ADMIN_PASSWORD in the linkding Secret, unused behind the proxy).
+# The browser extension and apps use an API token from Settings > Integrations
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: linkding
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: linkding
+  namespace: linkding
+  labels:
+    app: linkding
+spec:
+  replicas: 1
+  # one writer on the sqlite db
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: linkding
+  template:
+    metadata:
+      labels:
+        app: linkding
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: linkding
+          image: sissbruecker/linkding:1.47.0
+          env:
+            - name: LD_SUPERUSER_NAME
+              value: "@username@"
+            - name: LD_SUPERUSER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: linkding
+                  key: ADMIN_PASSWORD
+            # every browser request carries it, so the session never drops; Django's
+            # middleware logs you out on the first one that doesn't
+            - name: LD_ENABLE_AUTH_PROXY
+              value: "True"
+            - name: LD_AUTH_PROXY_USERNAME_HEADER
+              value: "HTTP_REMOTE_USER"
+            - name: LD_CSRF_TRUSTED_ORIGINS
+              value: "https://@linkding.host@"
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: http
+              containerPort: 9090
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+          volumeMounts:
+            - name: data
+              mountPath: /etc/linkding/data
+          # root at first: bootstrap.sh chowns data and supervisord starts as root, then
+          # uwsgi and the task runner drop to www-data
+          securityContext:
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 10m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+      volumes:
+        - name: data
+          hostPath:
+            path: "@state@/linkding"
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: linkding
+  namespace: linkding
+spec:
+  type: NodePort
+  selector:
+    app: linkding
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @linkding.port@

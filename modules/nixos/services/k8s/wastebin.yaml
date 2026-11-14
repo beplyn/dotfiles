@@ -1,0 +1,103 @@
+# @x@ placeholders are filled in by apps.nix
+# pastebin: the form and the API are behind tinyauth, a paste's own link isn't (proxy.hosts
+# authSkip in apps.nix), so anyone you send one to can read it
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: wastebin
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wastebin
+  namespace: wastebin
+  labels:
+    app: wastebin
+spec:
+  replicas: 1
+  # one writer on the sqlite db
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: wastebin
+  template:
+    metadata:
+      labels:
+        app: wastebin
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: wastebin
+          image: quxfoo/wastebin:3.9.0
+          env:
+            - name: WASTEBIN_ADDRESS_PORT
+              value: "0.0.0.0:8088"
+            - name: WASTEBIN_DATABASE_PATH
+              value: /data/state.db
+            # for the QR codes
+            - name: WASTEBIN_BASE_URL
+              value: "https://@wastebin.host@"
+            # the same as nginx's 10m
+            - name: WASTEBIN_MAX_BODY_SIZE
+              value: "10485760"
+            # signs the cookie that lets you delete your own pastes; random per start without it
+            - name: WASTEBIN_SIGNING_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: wastebin
+                  key: SIGNING_KEY
+            - name: WASTEBIN_PASSWORD_SALT
+              valueFrom:
+                secretKeyRef:
+                  name: wastebin
+                  key: PASSWORD_SALT
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: http
+              containerPort: 8088
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: @uid@
+            runAsGroup: @uid@
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 5m
+              memory: 16Mi
+            limits:
+              memory: 128Mi
+      volumes:
+        - name: data
+          hostPath:
+            path: "@state@/wastebin"
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wastebin
+  namespace: wastebin
+spec:
+  type: NodePort
+  selector:
+    app: wastebin
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @wastebin.port@
