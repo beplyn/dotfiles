@@ -303,14 +303,15 @@ let
   sealedOidc = n: ./k8s/oidc + "/${n}.sealed.yaml";
   hasOidc = n: a: a.oidc or false && builtins.pathExists (sealedOidc n);
 
-  # LAN clients go straight to nginx: the apex and every proxied app
+  # LAN clients go straight to nginx: the apex and every proxied host, apps or not
   customDNS = lib.optionals (cfg.lanAddress != null)
     ([
       "customDNS:"
       "  mapping:"
       "    ${config.proxy.domain}: ${cfg.lanAddress}"
     ]
-    ++ lib.mapAttrsToList (_: a: "    ${fqdn a}: ${cfg.lanAddress}") proxied);
+    ++ map (h: "    ${h}.${config.proxy.domain}: ${cfg.lanAddress}")
+      (lib.filter (h: h != "@") (lib.attrNames config.proxy.hosts)));
 
   vars =
   {
@@ -339,8 +340,9 @@ let
     (n: a: lib.optionalString (a ? secrets) "${n} ${n} ${lib.concatStringsSep " " a.secrets}\n")
     enabled));
 
-  dirRules = pkgs.writeText "k3s-app-dirs.conf" (lib.concatLines
-    ([ (root st.state) ] ++ lib.concatLists (lib.mapAttrsToList (_: a: a.dirs or [ ]) enabled)));
+  # unique: apps may share a dir (jellyfin's and navidrome's music)
+  dirRules = pkgs.writeText "k3s-app-dirs.conf" (lib.concatLines (lib.unique
+    ([ (root st.state) ] ++ lib.concatLists (lib.mapAttrsToList (_: a: a.dirs or [ ]) enabled))));
 
   lanPorts = proto: lib.concatLists (lib.mapAttrsToList (_: a: a.lan.${proto} or [ ]) enabled);
 
