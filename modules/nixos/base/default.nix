@@ -9,7 +9,7 @@
     ./ssh.nix
     ./shell
     ./rebuild
-    ./starship.nix
+    ./starship
     ./greeting
     ./packages.nix
     ./toolbox.nix

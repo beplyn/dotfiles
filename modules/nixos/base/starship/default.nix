@@ -18,7 +18,7 @@ let
 
   toml = (pkgs.formats.toml { }).generate;
   full = config.programs.starship.settings;
-  # a narrow terminal: the directory alone (starship-fit.fish)
+  # a narrow terminal: the directory alone (fit.fish)
   narrow = full //
   {
     format = "$directory";
@@ -32,7 +32,7 @@ in
     narrow = "80";
     fullConfig = toml "starship.toml" full;
     narrowConfig = toml "starship-narrow.toml" narrow;
-  } (builtins.readFile ./starship-fit.fish));
+  } (builtins.readFile ./fit.fish));
 
   programs.starship =
   {
