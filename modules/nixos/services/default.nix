@@ -6,5 +6,6 @@
     ./llm.nix
     ./proxy.nix
     ./k3s.nix
+    ./apps.nix
   ];
 }
