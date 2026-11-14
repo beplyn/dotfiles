@@ -1,26 +1,32 @@
+{ lib, headless, ... }:
+
 {
   imports =
   [
     ./ssh.nix
     ./bash
     ./bat.nix
-    ./glow.nix
     ./fzf.nix
     ./fd.nix
     ./eza.nix
     ./ripgrep.nix
     ./lazyclis.nix
+    ./tmux.nix
+    ./tools.nix
+    ./forgejo.nix
+    ./btop
+  ]
+  # servers: the essentials only
+  ++ lib.optionals (!headless)
+  [
+    ./glow.nix
     ./fetch
     ./gitui
-    ./tmux.nix
     ./yazi.nix
-    ./tools.nix
     ./fun
     ./tldr.nix
-    ./forgejo.nix
     ./fastfetch.nix
     ./bottom.nix
-    ./btop
     ./netspd
   ];
 }
