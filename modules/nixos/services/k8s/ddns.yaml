@@ -41,7 +41,7 @@ spec:
                   key: CLOUDFLARE_API_TOKEN
             - name: DOMAINS
               value: "beplyn.dev,*.beplyn.dev"
-            # nginx only answers Cloudflare
+            # for new records; with proxy.cloudflareOnly nginx answers nothing else
             - name: PROXIED
               value: "true"
             - name: IP4_PROVIDER
