@@ -2,6 +2,7 @@
   username,
   email,
   osConfig,
+  headless,
   forgejoHost,
   ...
 }:
@@ -19,7 +20,7 @@
       };
       init.defaultBranch = "master";
       pull.rebase = true;
-      core.editor = "nvim";
+      core.editor = if headless then "vim" else "nvim";
       safe =
       {
         directory = [ "/etc/nixos" ];

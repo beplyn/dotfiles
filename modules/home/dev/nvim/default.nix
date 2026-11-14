@@ -1,5 +1,3 @@
-{ lib, headless, ... }:
-
 {
   home.sessionVariables =
   {
@@ -21,14 +19,10 @@
     ./git.nix
     ./diagnostics.nix
     ./ide.nix
-    ./keymaps.nix
-    ./packages.nix
-  ]
-  # servers: an editor, not an IDE
-  ++ lib.optionals (!headless)
-  [
     ./testing.nix
     ./debugging.nix
+    ./keymaps.nix
+    ./packages.nix
     ./cord.nix
   ];
 }

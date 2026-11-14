@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  headless,
+  ...
+}:
 
 let
   p = config.themes.palette;
@@ -138,7 +143,7 @@ in
         edit =
         [
           {
-            run = "nvim %s";
+            run = "${if headless then "vim" else "nvim"} %s";
             block = true;
             for = "unix";
           }

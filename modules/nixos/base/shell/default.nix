@@ -2,6 +2,7 @@
   config,
   lib,
   themes,
+  headless,
   ...
 }:
 
@@ -28,7 +29,7 @@
       y = "yazi";
       lg = "lazygit";
       repo-update = "git fetch && git pull --rebase && git push";
-      v = "nvim";
+      v = if headless then "vim" else "nvim";
       ls = "eza --icons --color=auto -a";
       grep = "rg --color=auto";
     };
