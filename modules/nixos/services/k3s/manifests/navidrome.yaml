@@ -1,7 +1,6 @@
 # @x@ placeholders are filled in by apps.nix
-# @bulk@/music over Subsonic, read-only. Not behind tinyauth: the phone apps log in themselves.
-# The first start makes the user admin with ADMIN_PASSWORD from the navidrome Secret, so
-# nobody else gets to make it first
+# @bulk@/music over Subsonic, read-only; own login (phone apps).
+# @username@ is admin (ADMIN_PASSWORD in the Secret)
 apiVersion: v1
 kind: Namespace
 metadata:

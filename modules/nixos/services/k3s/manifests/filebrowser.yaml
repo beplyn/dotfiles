@@ -1,8 +1,6 @@
 # @x@ placeholders are filled in by apps.nix
-# all of @bulk@ in the browser, as @username@: it can change what you can, photos (root's)
-# stay out. Proxy auth takes the Remote-User from tinyauth; the init container makes
-# @username@ the admin (password in the filebrowser Secret, ADMIN_PASSWORD, unused behind
-# the proxy). Share links and their downloads skip the login
+# @bulk@ in the browser as @username@ (admin), behind tinyauth; photos stay out.
+# Share links skip the login
 apiVersion: v1
 kind: Namespace
 metadata:

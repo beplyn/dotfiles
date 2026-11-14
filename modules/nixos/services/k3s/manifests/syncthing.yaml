@@ -1,7 +1,6 @@
 # @x@ placeholders are filled in by apps.nix
-# runs as @username@, so what it syncs into @bulk@/sync is yours (and snapshotted by btrbk).
-# The GUI is behind tinyauth; leave its own user and password unset. Devices connect on the
-# LAN at tcp://<beacon's address>:22000 or find it through global discovery and relays
+# syncs into @bulk@/sync as @username@; GUI behind tinyauth (leave its login unset).
+# Devices connect to tcp://<beacon>:22000 or via discovery
 apiVersion: v1
 kind: Namespace
 metadata:

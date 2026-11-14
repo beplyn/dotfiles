@@ -73,9 +73,8 @@ let
       forceSSL = true;
       locations =
       {
-        # logged out: off to the login page, which sends you back here. Remote-* are always
-        # set, so a client can't send its own past this; empty when the token skip let it through.
-        # Without auth they're always emptied, for an app that still trusts them
+        # logged out: redirect to login. Remote-* are always overwritten so clients can't
+        # fake them (cleared without auth)
         "/" = upstream host (if !host.auth then noRemoteUser else ''
           auth_request /tinyauth;
           auth_request_set $auth_location $upstream_http_x_tinyauth_location;
@@ -85,8 +84,7 @@ let
           proxy_set_header Remote-User $auth_user;
           proxy_set_header Remote-Email $auth_email;
         '');
-        # it takes the original URL from X-Original-URL and refuses the request when
-        # X-Forwarded-Host or -Uri come along too, so not recommendedProxySettings here
+        # tinyauth rejects X-Forwarded-Host/-Uri, so no recommendedProxySettings
         "= /tinyauth" = lib.mkIf host.auth
         {
           proxyPass = cfg.authRequest;

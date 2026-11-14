@@ -1,10 +1,7 @@
 # @x@ placeholders are filled in by apps.nix
-# https through Cloudflare, ssh on the LAN only (host port 22, Forgejo's built-in server on 2222
-# in the container: rootless can't bind 22; the host sshd is on 2222 and hostPort would shadow it).
-# The init container makes @username@ the admin on first start (password in the forgejo
-# Secret, ADMIN_PASSWORD). Not behind tinyauth, so the phone apps log in themselves; no
-# registration. With forgejo-oidc sealed (oidc/README.md) it adds "Sign in with Pocket ID"
-# too, linked to @username@ by logging in once with the password.
+# own login, no registration; @username@ is admin (ADMIN_PASSWORD in the Secret).
+# ssh on LAN port 22 (2222 inside, rootless can't bind 22).
+# Pocket ID login once forgejo-oidc is sealed (oidc/README.md)
 apiVersion: v1
 kind: Namespace
 metadata:

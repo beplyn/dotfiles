@@ -1,6 +1,6 @@
 { config, lib, pkgs, subst, ... }:
 
-# two phases: k3s + Sealed Secrets first, then seal the token against the live controller and enable ddns
+# phase 1: k3s + Sealed Secrets; phase 2: seal the token, enable ddns
 let
   cfg = config.k3s;
   manifests = ./manifests;
@@ -48,7 +48,7 @@ in
         "--disable=servicelb"
       ];
 
-      # rendered into /var/lib/rancher/k3s/server/manifests, applied by the k3s deploy controller
+      # k3s applies these from /var/lib/rancher/k3s/server/manifests
       manifests =
       {
         sealed-secrets.content =

@@ -1,6 +1,5 @@
 # @x@ placeholders are filled in by apps.nix
-# private metasearch behind tinyauth, so no limiter (and no valkey for it). Add it as the
-# browser's search engine: https://@searxng.host@/search?q=%s
+# metasearch behind tinyauth, so no limiter. Search URL: https://@searxng.host@/search?q=%s
 apiVersion: v1
 kind: Namespace
 metadata:

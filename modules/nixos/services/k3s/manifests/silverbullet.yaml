@@ -1,6 +1,5 @@
 # @x@ placeholders are filled in by apps.nix
-# a plain-Markdown wiki: every page is a .md file in @bulk@/notes, as @username@, so btrbk
-# snapshots it and it's yours to edit on beacon. Behind tinyauth, so no login of its own
+# Markdown wiki, pages are .md files in @bulk@/notes owned by @username@. Behind tinyauth
 apiVersion: v1
 kind: Namespace
 metadata:

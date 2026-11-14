@@ -1,7 +1,6 @@
 # @x@ placeholders are filled in by apps.nix
-# index and sqlite on the SSD, the documents themselves on tank. Not behind tinyauth: log in
-# as @username@ with ADMIN_PASSWORD from the paperless Secret, the phone apps too, or a token.
-# With paperless-oidc sealed (oidc/README.md) there's Pocket ID as well
+# own login as @username@ (ADMIN_PASSWORD in the Secret) or a token. Index on the SSD,
+# documents on tank. Pocket ID once paperless-oidc is sealed
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -129,8 +128,7 @@ spec:
                   name: paperless-oidc
                   key: CLIENT_SECRET
                   optional: true
-            # Pocket ID next to the password, connected under My Profile; no signups through it.
-            # $(...) are the two above; the button does nothing until the client is sealed
+            # Pocket ID next to the password (link under My Profile), no signups
             - name: PAPERLESS_APPS
               value: "allauth.socialaccount.providers.openid_connect"
             - name: PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS

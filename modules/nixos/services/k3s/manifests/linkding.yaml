@@ -1,7 +1,6 @@
 # @x@ placeholders are filled in by apps.nix
-# not behind tinyauth: log in as @username@, made the superuser on first start (ADMIN_PASSWORD
-# in the linkding Secret). The browser extension and apps use an API token from Settings >
-# Integrations. No Pocket ID: it would make a second account, not log in as this one
+# own login as @username@ (ADMIN_PASSWORD in the Secret); extensions use an API token
+# (Settings > Integrations). No Pocket ID: it would make a second account
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -54,8 +53,7 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /etc/linkding/data
-          # root at first: bootstrap.sh chowns data and supervisord starts as root, then
-          # uwsgi and the task runner drop to www-data
+          # starts as root, then drops to www-data
           securityContext:
             allowPrivilegeEscalation: false
             seccompProfile:
