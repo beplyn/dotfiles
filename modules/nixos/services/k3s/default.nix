@@ -3,12 +3,18 @@
 # two phases: k3s + Sealed Secrets first, then seal the token against the live controller and enable ddns
 let
   cfg = config.k3s;
-  manifests = ./k8s;
+  manifests = ./manifests;
   sealedToken = manifests + "/cloudflare-api-token.sealed.yaml";
   # the proxy's ACME cert reuses the ddns token
   acmeToken = cfg.ddns.enable && config.proxy.enable && config.proxy.tls == "acme";
 in
 {
+  imports =
+  [
+    ./apps.nix
+    ./backup
+  ];
+
   options.k3s =
   {
     enable = lib.mkEnableOption "a single-node k3s server with the Sealed Secrets controller";
@@ -21,7 +27,7 @@ in
     [
       {
         assertion = !cfg.ddns.enable || builtins.pathExists sealedToken;
-        message = "k3s.ddns.enable needs k8s/cloudflare-api-token.sealed.yaml: seal the token first and git add it";
+        message = "k3s.ddns.enable needs modules/nixos/services/k3s/manifests/cloudflare-api-token.sealed.yaml: seal the token first and git add it";
       }
     ];
 

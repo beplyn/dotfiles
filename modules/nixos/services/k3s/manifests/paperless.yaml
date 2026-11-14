@@ -1,7 +1,7 @@
 # @x@ placeholders are filled in by apps.nix
 # index and sqlite on the SSD, the documents themselves on tank. Not behind tinyauth: log in
 # as @username@ with ADMIN_PASSWORD from the paperless Secret, the phone apps too, or a token.
-# With paperless-oidc sealed (k8s/oidc/README.md) there's Pocket ID as well
+# With paperless-oidc sealed (oidc/README.md) there's Pocket ID as well
 apiVersion: v1
 kind: Namespace
 metadata:

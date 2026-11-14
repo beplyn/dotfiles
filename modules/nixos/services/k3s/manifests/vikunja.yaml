@@ -4,7 +4,7 @@
 #   p="$(k3s kubectl -n vikunja get secret vikunja -o jsonpath='{.data.ADMIN_PASSWORD}' | base64 -d)"
 #   k3s kubectl -n vikunja exec deploy/vikunja -- /app/vikunja/vikunja user create \
 #     -u @username@ -e @email@ -p "$p"
-# With vikunja-oidc sealed (k8s/oidc/README.md) there's Pocket ID too, matched to it by email
+# With vikunja-oidc sealed (oidc/README.md) there's Pocket ID too, matched to it by email
 apiVersion: v1
 kind: Namespace
 metadata:

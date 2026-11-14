@@ -2,7 +2,7 @@
 
 # shell history in sqlite, synced end-to-end encrypted through beacon's atuin server
 # (k3s.apps "atuin" at sh.<domain>). Each machine logs in once, with the key from the first:
-#   first machine:  atuin register -u <you> -e <email>   (registration open, see k8s/atuin.yaml)
+#   first machine:  atuin register -u <you> -e <email>   (registration open, see k3s/manifests/atuin.yaml)
 #                   atuin key                             (keep it, it's the only way to decrypt)
 #   every other:    atuin login -u <you>                  (asks for the password and that key)
 #   then:           atuin import auto && atuin sync

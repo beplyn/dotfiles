@@ -3,7 +3,7 @@
 # in the container: rootless can't bind 22; the host sshd is on 2222 and hostPort would shadow it).
 # The init container makes @username@ the admin on first start (password in the forgejo
 # Secret, ADMIN_PASSWORD). Not behind tinyauth, so the phone apps log in themselves; no
-# registration. With forgejo-oidc sealed (k8s/oidc/README.md) it adds "Sign in with Pocket ID"
+# registration. With forgejo-oidc sealed (oidc/README.md) it adds "Sign in with Pocket ID"
 # too, linked to @username@ by logging in once with the password.
 apiVersion: v1
 kind: Namespace
