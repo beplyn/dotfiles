@@ -1,4 +1,10 @@
-{ config, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  headless,
+  ...
+}:
 
 let
   p = config.themes.palette;
@@ -7,9 +13,12 @@ in
 {
   home.packages = with pkgs;
   [
-    lazycommit
     lazyjournal
     lazyssh
+  ]
+  ++ lib.optionals (!headless)
+  [
+    lazycommit
     onefetch
     serie
   ];

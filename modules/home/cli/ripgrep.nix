@@ -1,3 +1,5 @@
+{ headless, ... }:
+
 {
   programs.ripgrep =
   {
@@ -10,5 +12,6 @@
     ];
   };
 
-  programs.ripgrep-all.enable = true;
+  # rga drags in pandoc, poppler and ffmpeg
+  programs.ripgrep-all.enable = !headless;
 }
