@@ -39,54 +39,6 @@
     }
     {
       mode = "n";
-      key = "<leader>tt";
-      action = "<cmd>Neotest summary toggle<cr>";
-      options.desc = "Test summary";
-    }
-    {
-      mode = "n";
-      key = "<leader>tr";
-      action = "<cmd>Neotest run<cr>";
-      options.desc = "Run nearest test";
-    }
-    {
-      mode = "n";
-      key = "<leader>td";
-      action = "<cmd>Neotest run focused<cr>";
-      options.desc = "Run focused test file";
-    }
-    {
-      mode = "n";
-      key = "<leader>db";
-      action = "<cmd>DapToggleBreakpoint<cr>";
-      options.desc = "Toggle breakpoint";
-    }
-    {
-      mode = "n";
-      key = "<leader>dc";
-      action = "<cmd>DapContinue<cr>";
-      options.desc = "Continue debugger";
-    }
-    {
-      mode = "n";
-      key = "<leader>do";
-      action = "<cmd>DapStepOver<cr>";
-      options.desc = "Step over";
-    }
-    {
-      mode = "n";
-      key = "<leader>di";
-      action = "<cmd>DapStepInto<cr>";
-      options.desc = "Step into";
-    }
-    {
-      mode = "n";
-      key = "<leader>oo";
-      action = "<cmd>OverseerToggle<cr>";
-      options.desc = "Task list";
-    }
-    {
-      mode = "n";
       key = "<leader>bd";
       action = "<cmd>bdelete<cr>";
       options.desc = "Delete buffer";
