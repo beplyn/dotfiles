@@ -19,12 +19,6 @@
 
     nixvim.url = "github:nix-community/nixvim";
 
-    areofyl-fetch =
-    {
-      url = "github:areofyl/fetch";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     millennium =
     {
       url = "github:SteamClientHomebrew/Millennium?dir=packages/nix";
