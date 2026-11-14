@@ -21,7 +21,6 @@
   [
     ./glow.nix
     ./fetch
-    ./gitui
     ./yazi.nix
     ./fun
     ./tldr.nix
