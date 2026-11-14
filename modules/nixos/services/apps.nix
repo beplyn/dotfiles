@@ -49,6 +49,13 @@ let
         (app "${st.state}/forgejo/config")
       ];
     };
+    pocket-id =
+    {
+      host = "id";
+      port = 30141;
+      secrets = [ "ENCRYPTION_KEY" ];
+      dirs = [ (app "${st.state}/pocket-id") ];
+    };
   };
 
   enabled = lib.filterAttrs (n: _: lib.elem n cfg.apps) apps;

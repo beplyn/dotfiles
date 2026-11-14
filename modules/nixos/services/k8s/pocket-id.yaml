@@ -1,0 +1,89 @@
+# @x@ placeholders are filled in by apps.nix
+# passkey-only OIDC provider; first admin at https://@pocket-id.host@/setup
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pocket-id
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pocket-id
+  namespace: pocket-id
+  labels:
+    app: pocket-id
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: pocket-id
+  template:
+    metadata:
+      labels:
+        app: pocket-id
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: pocket-id
+          image: ghcr.io/pocket-id/pocket-id:v2-distroless
+          env:
+            - name: APP_URL
+              value: "https://@pocket-id.host@"
+            - name: TRUST_PROXY
+              value: "true"
+            - name: ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: pocket-id
+                  key: ENCRYPTION_KEY
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: http
+              containerPort: 1411
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: @uid@
+            runAsGroup: @uid@
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 256Mi
+      volumes:
+        - name: data
+          hostPath:
+            path: "@state@/pocket-id"
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pocket-id
+  namespace: pocket-id
+spec:
+  type: NodePort
+  selector:
+    app: pocket-id
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @pocket-id.port@
