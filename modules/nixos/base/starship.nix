@@ -13,7 +13,6 @@ let
       anvil = "󰢛";
       beacon = "";
       compass = "󰆋";
-      shulker = "";
     }
     .${config.networking.hostName} or "󰒋";
 
