@@ -118,7 +118,7 @@ user="$(sudo cat "$VARS_DIR/vars.toml" | yq -p toml '.username')"
 
 # --- 2. Host and theme ------------------------------------------------------
 
-mapfile -t hosts < <(find hosts -mindepth 1 -maxdepth 1 -type d ! -name common -printf '%f\n' | sort)
+mapfile -t hosts < <(find hosts -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort)
 (( ${#hosts[@]} )) || die "No hosts found in $repo_dir/hosts"
 
 # Themes come from the `themes = [ ... ];` list in flake.nix.

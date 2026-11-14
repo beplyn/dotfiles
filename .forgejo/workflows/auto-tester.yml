@@ -15,12 +15,12 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      # every directory in hosts/ except common, like flake.nix
+      # every directory in hosts/, like flake.nix
       - name: List hosts
         id: list
         shell: bash
         run: |
-          hosts="$(find hosts -mindepth 1 -maxdepth 1 -type d ! -name common -printf '"%f"\n' | sort | paste -sd,)"
+          hosts="$(find hosts -mindepth 1 -maxdepth 1 -type d -printf '"%f"\n' | sort | paste -sd,)"
           echo "hosts=[$hosts]" >> "$GITHUB_OUTPUT"
 
   eval:
