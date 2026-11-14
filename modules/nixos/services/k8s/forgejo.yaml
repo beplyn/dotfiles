@@ -1,5 +1,6 @@
 # @x@ placeholders are filled in by apps.nix
-# https through Cloudflare, ssh on the LAN only (port 2222, Forgejo's built-in server).
+# https through Cloudflare, ssh on the LAN only (host port 22, Forgejo's built-in server on 2222
+# in the container: rootless can't bind 22; the host sshd is on 2222 and hostPort would shadow it).
 # The init container makes @username@ the admin on first start (password in the forgejo
 # Secret, ADMIN_PASSWORD) and keeps the Pocket ID login in sync with forgejo-oidc.
 # Only Pocket ID users can register.
@@ -72,7 +73,7 @@ spec:
             - name: FORGEJO__server__SSH_DOMAIN
               value: "@forgejo.host@"
             - name: FORGEJO__server__SSH_PORT
-              value: "2222"
+              value: "22"
             - name: FORGEJO__server__SSH_LISTEN_PORT
               value: "2222"
             - name: FORGEJO__security__INSTALL_LOCK
@@ -143,7 +144,7 @@ spec:
               containerPort: 3000
             - name: ssh
               containerPort: 2222
-              hostPort: 2222
+              hostPort: 22
           readinessProbe:
             httpGet:
               path: /api/healthz

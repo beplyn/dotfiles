@@ -53,7 +53,7 @@ let
         (app "${st.state}/forgejo/data")
       ];
       # git over ssh, LAN only: Cloudflare doesn't proxy it
-      lan.tcp = [ 2222 ];
+      lan.tcp = [ 22 ];
       oidc = true;
     };
     gatus =

@@ -62,7 +62,7 @@ not a fire or theft.
 
 3. Point the router's DHCP DNS at `192.168.2.200`. Blocky answers `beplyn.dev` and every app's
    subdomain with beacon's address, so the LAN skips Cloudflare (no 100 MB upload cap, video
-   doesn't go through it) and gets Forgejo's ssh: `git clone ssh://git@git.beplyn.dev:2222/<user>/<repo>.git`.
+   doesn't go through it) and gets Forgejo's ssh: `git clone git@git.beplyn.dev:<user>/<repo>.git`.
 
 ## Logins
 
