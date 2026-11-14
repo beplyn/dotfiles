@@ -45,6 +45,11 @@ spec:
                 gitea admin user create --admin --username "$ADMIN_USERNAME" \
                   --email "$ADMIN_EMAIL" --password "$ADMIN_PASSWORD" --must-change-password=false
               fi
+              # the old Pocket ID login, from before tinyauth; leave it if users still need it
+              id="$(gitea admin auth list | awk '$2 == "pocket-id" { print $1 }')"
+              if [ -n "$id" ]; then
+                gitea admin auth delete --id "$id" || echo "pocket-id auth source still in use, kept" >&2
+              fi
           env: &env
             # FORGEJO__section__KEY is written into app.ini on start
             - name: FORGEJO__database__DB_TYPE
