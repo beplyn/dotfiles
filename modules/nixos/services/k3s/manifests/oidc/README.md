@@ -9,6 +9,10 @@ Lets an app offer "log in with Pocket ID" next to its own login. Every app here 
 2. On beacon, from the repo, run this and paste the client ID and secret:
 
    ```sh
+   sudo k3s kubectl get svc -A -o wide
+   ```
+
+   ```sh
    sudo seal-oidc <app> > modules/nixos/services/k3s/manifests/oidc/<app>.sealed.yaml
    ```
 
