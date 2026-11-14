@@ -29,9 +29,8 @@ in
     {
       enable = true;
       role = "server";
-      # kubectl without sudo for wheel, except on gated hosts: cluster-admin is root
+      # kubectl without sudo for wheel
       extraFlags =
-        lib.optionals (!config.rebuildGate.enable)
         [
           "--write-kubeconfig-mode=0640"
           "--write-kubeconfig-group=wheel"

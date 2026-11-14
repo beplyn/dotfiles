@@ -1,8 +1,8 @@
-# own prompt; only pam_unix's "Password:" is swapped, the TOTP prompt stays its own
+# own prompt instead of pam_unix's "Password:"
 Defaults passprompt="󰌾 password for %p: "
 Defaults badpass_message=" wrong password"
 Defaults lecture=never
-# a * per character, the TOTP code included; shows the length, not the text
+# a * per character; shows the length, not the text
 Defaults pwfeedback
 
 # root commands only from root-owned paths, never ~/.local/bin or a caller's PATH

@@ -34,8 +34,7 @@ not a fire or theft.
 
 ## First deploy
 
-1. Push a signed commit; auto-deploy switches to it. The disks are `nofail`, so this is safe
-   before they exist.
+1. Run `rebuild` on beacon. The disks are `nofail`, so this is safe before they exist.
 2. Format the disks. **This erases them.** Check with
    `lsblk -o NAME,SIZE,MODEL,SERIAL,FSTYPE,LABEL`: the two 6T disks are the same model, so
    pick tank and backup by serial and use their `/dev/disk/by-id/` paths.
