@@ -13,6 +13,21 @@
 
 let
   secrets = config.rebuild.secrets;
+  auto = config.rebuild.auto;
+  hostName = config.networking.hostName;
+
+  autoRebuild = pkgs.writeShellApplication
+  {
+    name = "auto-rebuild";
+    runtimeInputs = with pkgs;
+    [
+      coreutils
+      gitMinimal
+      config.nix.package
+      config.system.build.nixos-rebuild
+    ];
+    text = builtins.readFile ./auto-rebuild.sh;
+  };
 
   # one `host_secret path what prefix kind units` call per secret
   secretLines = lib.concatStringsSep "\n" (lib.mapAttrsToList
@@ -43,7 +58,7 @@ let
     text = subst
       {
         inherit username email forgejoHost themeName;
-        hostName = config.networking.hostName;
+        inherit hostName;
         desktop = lib.boolToString (!headless);
         hostSecrets = secretLines;
       }
@@ -89,9 +104,71 @@ in
     description = "Secret files, keyed by absolute path, that rebuild prompts for.";
   };
 
+  # rebuild.secrets aren't asked for: they have to be there already
+  options.rebuild.auto =
+  {
+    enable = lib.mkEnableOption "switching to every new commit on rebuild.auto.branch, without a prompt";
+
+    url = lib.mkOption
+    {
+      type = lib.types.str;
+      default = "https://${forgejoHost}/${username}/dotfiles.git";
+      description = "Repo polled for the branch, over https so it needs no key.";
+    };
+
+    branch = lib.mkOption
+    {
+      type = lib.types.str;
+      default = hostName;
+      description = "Branch whose newest commit this host switches to; whoever can push to it is root here.";
+    };
+
+    interval = lib.mkOption
+    {
+      type = lib.types.str;
+      default = "5min";
+      description = "How long after one check ends the next one starts.";
+    };
+  };
+
   config =
   {
     environment.systemPackages = [ rebuild ];
+
+    # a switch would otherwise stop the unit doing the switch
+    systemd.services.auto-rebuild = lib.mkIf auto.enable
+    {
+      description = "Switch to the newest commit on ${auto.branch}";
+      wants = [ "network-online.target" ];
+      after = [ "network-online.target" ];
+      restartIfChanged = false;
+      unitConfig.X-StopOnRemoval = false;
+      # the host's failure alerts, where there are any (ntfy on k3s)
+      unitConfig.OnFailure = config.k3s.onFailure or [ ];
+      environment.HOME = "/root";
+      serviceConfig =
+      {
+        Type = "oneshot";
+        StateDirectory = "auto-rebuild";
+        ExecStart = lib.escapeShellArgs
+        [
+          (lib.getExe autoRebuild)
+          auto.url
+          auto.branch
+          "${hostName}-${themeName}"
+        ];
+      };
+    };
+
+    systemd.timers.auto-rebuild = lib.mkIf auto.enable
+    {
+      wantedBy = [ "timers.target" ];
+      timerConfig =
+      {
+        OnBootSec = "2min";
+        OnUnitInactiveSec = auto.interval;
+      };
+    };
 
     # /var/secrets and its subdirs stay root-only
     systemd.tmpfiles.rules = map (dir: "d ${dir} 0700 root root -")
