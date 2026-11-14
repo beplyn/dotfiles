@@ -15,6 +15,8 @@ in
   docker.enable = true;
   encryption.enable = false;
   services.openssh.enable = true;
+  # every push to the beacon branch, see README.md
+  rebuild.auto.enable = true;
 
   # the k3s ddns keeps the apex and *. pointed here; k3s.apps add their subdomains
   proxy =

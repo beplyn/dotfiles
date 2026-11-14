@@ -63,6 +63,21 @@ not a fire or theft.
    subdomain with beacon's address, so the LAN skips Cloudflare (no 100 MB upload cap, video
    doesn't go through it) and gets Forgejo's ssh: `git clone git@git.beplyn.dev:<user>/<repo>.git`.
 
+## Auto rebuild
+
+Every 5 minutes `auto-rebuild` checks the `beacon` branch on Codeberg and, when it moved,
+switches to exactly that commit (`git+https://codeberg.org/beplyn/dotfiles.git?ref=beacon&rev=…`),
+not to the checkout in `/etc/nixos`. Deploy by pushing there:
+
+```sh
+git push origin master:beacon
+```
+
+A commit that fails to build or switch is tried once and pushed to ntfy's `alerts`; the next
+push is tried again. A manual `rebuild` still works and stays until the branch moves again.
+`journalctl -u auto-rebuild` shows what it did, `/var/lib/auto-rebuild/rev` what it's on.
+Anyone who can push to the branch is root on beacon.
+
 ## Logins
 
 `home`, `status`, `git`, `rss` and `docs` are behind Tinyauth (`https://auth.beplyn.dev`): the
