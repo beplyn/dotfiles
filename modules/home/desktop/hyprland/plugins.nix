@@ -6,11 +6,7 @@
   ...
 }:
 
-# Plugins and the rest of the ecosystem around them, coloured from Stylix:
-# hyprtasking's overview, hyprfocus, borders-plus-plus, hyprsplit's
-# per-monitor workspaces, pyprland's dropdown terminal and zoom, hyprshade
-# with a palette shader, and Bibata as a hyprcursor. plugins.lua and
-# workspaces.lua configure them.
+# plugins and tools, Stylix-coloured; set up in plugins.lua and workspaces.lua
 let
   c = config.lib.stylix.colors;
   cursor = config.stylix.cursor;
@@ -38,9 +34,8 @@ let
   };
   hyprcursor = cursor.name == "Bibata-Modern-Classic";
 
-  # hl.get_config returns binds.workspace_back_and_forth as the number 0,
-  # which Lua treats as true; hyprsplit then took a clamped +1/-1 at the
-  # first or last workspace for back-and-forth and jumped the other way
+  # get_config returns back_and_forth as 0, which Lua treats as true,
+  # so hyprsplit jumped back at the first/last workspace
   hyprsplitLua = pkgs.runCommand "hyprsplit-init.lua" { } ''
     substitute ${pkgs.hyprlandPlugins.hyprsplit.src}/init.lua $out \
       --replace-fail 'hl.get_config("binds.workspace_back_and_forth")' \
