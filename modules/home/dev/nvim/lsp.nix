@@ -1,17 +1,9 @@
-{
-  pkgs,
-  osConfig,
-  themeName,
-  headless,
-  ...
-}:
+{ pkgs, osConfig, themeName, ... }:
 
 let
   # nixd: options from this flake and host
   flake = ''(builtins.getFlake "/etc/nixos")'';
   nixos = ''${flake}.nixosConfigurations."${osConfig.networking.hostName}-${themeName}"'';
-  # compiled langs only where their toolchains are (toolchains.nix)
-  full = !headless;
 in
 {
   programs.nixvim.plugins.lsp =
@@ -19,31 +11,31 @@ in
     enable = true;
     servers =
     {
-      clangd.enable = full;
+      clangd.enable = true;
       hls =
       {
-        enable = full;
+        enable = true;
         installGhc = true;
       };
       rust_analyzer =
       {
-        enable = full;
+        enable = true;
         installCargo = true;
         installRustc = true;
         installRustfmt = true;
         extraOptions.before_init.__raw = builtins.readFile ./lua/rust-detached.lua;
       };
-      zls.enable = full;
+      zls.enable = true;
       fish_lsp.enable = true;
       bashls.enable = true;
       csharp_ls =
       {
-        enable = full;
+        enable = true;
         # nixvim's own pin is built on an older glibc than our dotnet-sdk,
         # whose runtime it loads from PATH and then dies on
         package = pkgs.csharp-ls;
       };
-      gopls.enable = full;
+      gopls.enable = true;
       marksman.enable = true;
       nixd =
       {

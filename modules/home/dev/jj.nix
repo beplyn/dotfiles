@@ -2,6 +2,7 @@
   username,
   email,
   osConfig,
+  headless,
   ...
 }:
 {
@@ -16,7 +17,7 @@
         name = username;
         inherit email;
       };
-      ui.editor = "nvim";
+      ui.editor = if headless then "vim" else "nvim";
       signing =
       {
         behavior = "own";
