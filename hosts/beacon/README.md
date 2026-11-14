@@ -65,19 +65,36 @@ not a fire or theft.
 
 ## Logins
 
-Generated in the cluster on first start, never in git. Read one with
+`home`, `status`, `git`, `rss` and `docs` are behind Tinyauth (`https://auth.beplyn.dev`): the
+first visit goes to Pocket ID, your passkey logs you in, and the session cookie covers every
+subdomain. The apps take the username nginx passes on, so there's no second login.
+
+1. Make the Pocket ID admin at `https://id.beplyn.dev/setup`: username `beplyn`, the same
+   email as in git, and register a passkey.
+2. Seal Tinyauth's Pocket ID client: `modules/nixos/services/k8s/oidc/README.md`.
+
+Behind Tinyauth only existing users get in, and they're matched by name, so all three are
+`beplyn`. Miniflux and Paperless used to call theirs `admin`. Rename them once, **before**
+the rebuild that switches the name, or a second, empty `beplyn` gets created next to it:
+
+```sh
+sudo k3s kubectl -n miniflux exec deploy/miniflux-db -- \
+  psql -U miniflux -c "update users set username = 'beplyn' where username = 'admin'"
+sudo k3s kubectl -n paperless exec deploy/paperless -- python3 manage.py shell -c \
+  "from django.contrib.auth.models import User; u = User.objects.get(username='admin'); u.username = 'beplyn'; u.save()"
+```
+
+Passwords are generated in the cluster on first start, never in git. Behind Tinyauth they're
+only for the API and app clients. Read one with
 `sudo k3s kubectl -n <app> get secret <app> -o jsonpath='{.data.<KEY>}' | base64 -d`.
 
 | App         | Login                                                         |
 |-------------|---------------------------------------------------------------|
-| Forgejo     | `beplyn`, `ADMIN_PASSWORD`                                    |
-| Miniflux    | `admin`, `ADMIN_PASSWORD`                                     |
-| Paperless   | `admin`, `ADMIN_PASSWORD`                                     |
+| Forgejo     | `beplyn`, `ADMIN_PASSWORD`; git over ssh on the LAN           |
+| Miniflux    | `beplyn`, `ADMIN_PASSWORD`                                    |
+| Paperless   | `beplyn`, `ADMIN_PASSWORD`                                    |
 | ntfy        | `admin`, `ADMIN_PASSWORD`; subscribe to `alerts`              |
 | Vaultwarden | `/admin` with `ADMIN_TOKEN`, invite yourself, then register   |
 
-Only possible in the apps themselves: the Pocket ID admin's passkey (`https://id.beplyn.dev/setup`),
-the first Immich user (becomes admin), Jellyfin's setup wizard and libraries
-(`/media/music`, `/media/video`).
-
-Pocket ID logins for the other apps: `modules/nixos/services/k8s/oidc/README.md`.
+Only possible in the apps themselves: the first Immich user (becomes admin), Jellyfin's setup
+wizard and libraries (`/media/music`, `/media/video`).
