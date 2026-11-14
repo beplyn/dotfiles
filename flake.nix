@@ -103,7 +103,7 @@
           throw ''
             vars: only the repo's placeholders (vars/README.md). `rebuild` asks for the real ones;
             a rebuild from before vars can't, so once, from the checkout:
-              nix shell nixpkgs#yq-go -c bash /etc/nixos/modules/nixos/base/rebuild/vars.sh /etc/nixos/vars/vars.toml /var/secrets/dotfiles
+              nix shell nixpkgs#yq-go -c bash /etc/nixos/modules/nixos/base/rebuild/vars.sh /etc/nixos/vars/vars.toml /var/secrets/dotfiles <host>
               sudo nixos-rebuild switch --flake /etc/nixos#<host>-<theme> --override-input vars path:/var/secrets/dotfiles
             and plain `rebuild` from then on
           ''
@@ -112,7 +112,9 @@
       mkHost = import ./lib/mkHost.nix
       {
         inherit inputs themes;
-        inherit (vars) username email domain repo lan;
+        inherit (vars) username email domain repo;
+        # only beacon has them (vars.sh asks nowhere else); its network.nix asserts them
+        lan = vars.lan or { address = ""; gateway = ""; subnet = ""; };
         headlessHosts = [ "beacon" ];
       };
     in
