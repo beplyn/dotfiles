@@ -1,0 +1,139 @@
+# @x@ placeholders are filled in by apps.nix
+# public, so only links and up/down: nothing private on it
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: glance
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: glance
+  namespace: glance
+data:
+  glance.yml: |
+    server:
+      port: 8080
+    pages:
+      - name: Home
+        columns:
+          - size: small
+            widgets:
+              - type: clock
+                hour-format: 24h
+              - type: calendar
+                first-day-of-week: monday
+          - size: full
+            widgets:
+              - type: monitor
+                title: Services
+                cache: 1m
+                sites:
+                  - title: Vaultwarden
+                    url: "https://@vaultwarden.host@"
+                    check-url: http://vaultwarden.vaultwarden.svc/alive
+                    icon: di:vaultwarden
+                  - title: Forgejo
+                    url: "https://@forgejo.host@"
+                    check-url: http://forgejo.forgejo.svc/api/healthz
+                    icon: di:forgejo
+                  - title: Immich
+                    url: "https://@immich.host@"
+                    check-url: http://immich-server.immich.svc/api/server/ping
+                    icon: di:immich
+                  - title: Jellyfin
+                    url: "https://@jellyfin.host@"
+                    check-url: http://jellyfin.jellyfin.svc/health
+                    icon: di:jellyfin
+                  - title: Paperless
+                    url: "https://@paperless.host@"
+                    check-url: http://paperless.paperless.svc/
+                    icon: di:paperless-ngx
+                  - title: Miniflux
+                    url: "https://@miniflux.host@"
+                    check-url: http://miniflux.miniflux.svc/healthcheck
+                    icon: di:miniflux
+                  - title: ntfy
+                    url: "https://@ntfy.host@"
+                    check-url: http://ntfy.ntfy.svc/v1/health
+                    icon: di:ntfy
+                  - title: Pocket ID
+                    url: "https://@pocket-id.host@"
+                    check-url: http://pocket-id.pocket-id.svc/healthz
+                    icon: di:pocket-id
+                  - title: Status
+                    url: "https://@gatus.host@"
+                    check-url: http://gatus.gatus.svc/health
+                    icon: di:gatus
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: glance
+  namespace: glance
+  labels:
+    app: glance
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: glance
+  template:
+    metadata:
+      labels:
+        app: glance
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: glance
+          image: glanceapp/glance:v0.8.8
+          env:
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          volumeMounts:
+            - name: config
+              mountPath: /app/config
+              readOnly: true
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: @uid@
+            runAsGroup: @uid@
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 5m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+      volumes:
+        - name: config
+          configMap:
+            name: glance
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: glance
+  namespace: glance
+spec:
+  type: NodePort
+  selector:
+    app: glance
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @glance.port@

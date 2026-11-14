@@ -55,6 +55,11 @@ let
       port = 30081;
       dirs = [ (app "${st.state}/gatus") ];
     };
+    glance =
+    {
+      host = "home";
+      port = 30082;
+    };
     pocket-id =
     {
       host = "id";
