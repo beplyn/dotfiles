@@ -38,7 +38,8 @@ spec:
               value: "https://@tinyauth.host@"
             - name: TINYAUTH_AUTH_SECURECOOKIE
               value: "true"
-            # the image's workdir is read-only, so everything it writes goes to /data
+            # the root is read-only: the db (and its journal next to it) and keys go to /data,
+            # anything temporary to /tmp
             - name: TINYAUTH_DATABASE_PATH
               value: "/data/tinyauth.db"
             - name: TINYAUTH_OIDC_PRIVATEKEYPATH
@@ -88,6 +89,8 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /data
+            - name: tmp
+              mountPath: /tmp
           securityContext:
             runAsNonRoot: true
             runAsUser: @uid@
@@ -109,6 +112,8 @@ spec:
           hostPath:
             path: "@state@/tinyauth"
             type: Directory
+        - name: tmp
+          emptyDir: { }
 ---
 apiVersion: v1
 kind: Service
