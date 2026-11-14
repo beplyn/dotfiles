@@ -1,0 +1,108 @@
+# @x@ placeholders are filled in by apps.nix
+# not behind tinyauth: the phone apps log in themselves. The first visit makes the root user.
+# Libraries: /books (yours, read-only here) and /podcasts, which it downloads into
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: audiobookshelf
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: audiobookshelf
+  namespace: audiobookshelf
+  labels:
+    app: audiobookshelf
+spec:
+  replicas: 1
+  # one writer on the sqlite db
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: audiobookshelf
+  template:
+    metadata:
+      labels:
+        app: audiobookshelf
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: audiobookshelf
+          image: ghcr.io/advplyr/audiobookshelf:2.37.2
+          env:
+            # rootless can't bind 80
+            - name: PORT
+              value: "8080"
+            - name: CONFIG_PATH
+              value: /config
+            - name: METADATA_PATH
+              value: /metadata
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /healthcheck
+              port: http
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: metadata
+              mountPath: /metadata
+            - name: books
+              mountPath: /books
+              readOnly: true
+            - name: podcasts
+              mountPath: /podcasts
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: @uid@
+            runAsGroup: @uid@
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 10m
+              memory: 128Mi
+            limits:
+              memory: 1Gi
+      volumes:
+        - name: config
+          hostPath:
+            path: "@state@/audiobookshelf/config"
+            type: Directory
+        # covers, cache and its own backups
+        - name: metadata
+          hostPath:
+            path: "@state@/audiobookshelf/metadata"
+            type: Directory
+        - name: books
+          hostPath:
+            path: "@bulk@/books"
+            type: Directory
+        - name: podcasts
+          hostPath:
+            path: "@bulk@/books/podcasts"
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: audiobookshelf
+  namespace: audiobookshelf
+spec:
+  type: NodePort
+  selector:
+    app: audiobookshelf
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @audiobookshelf.port@

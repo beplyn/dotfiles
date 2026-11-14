@@ -1,0 +1,90 @@
+# @x@ placeholders are filled in by apps.nix
+# behind tinyauth, plus its own server password, set on the first visit: the budget files
+# sync through the server and that password is what guards them
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: actual
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: actual
+  namespace: actual
+  labels:
+    app: actual
+spec:
+  replicas: 1
+  # one writer on the sqlite dbs
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: actual
+  template:
+    metadata:
+      labels:
+        app: actual
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: actual
+          image: actualbudget/actual-server:26.11.0
+          env:
+            - name: ACTUAL_PORT
+              value: "5006"
+            - name: ACTUAL_DATA_DIR
+              value: /data
+            # nginx's body limit is 20m too
+            - name: ACTUAL_UPLOAD_FILE_SIZE_LIMIT_MB
+              value: "20"
+            - name: ACTUAL_UPLOAD_SYNC_ENCRYPTED_FILE_SYNC_SIZE_LIMIT_MB
+              value: "20"
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: http
+              containerPort: 5006
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: @uid@
+            runAsGroup: @uid@
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              memory: 512Mi
+      volumes:
+        - name: data
+          hostPath:
+            path: "@state@/actual"
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: actual
+  namespace: actual
+spec:
+  type: NodePort
+  selector:
+    app: actual
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @actual.port@

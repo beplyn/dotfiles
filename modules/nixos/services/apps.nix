@@ -22,6 +22,10 @@ let
   app = own "d" "0750" (toString uid) (toString uid);
   root = own "d" "0700" "root" "root";
   subvol = own "v" "0755" username "users";
+  # yours, for the apps that run as you so their files on tank are yours too
+  mine = own "d" "0700" username "users";
+  # tank dirs both you and the app write, new files staying in the users group
+  shared = own "d" "2775" (toString uid) "users";
 
   # host: subdomain (unset: not proxied), port: NodePort, body: nginx upload limit
   # (Cloudflare caps a request at 100m; the LAN has none), secrets: generated keys in the
@@ -149,7 +153,7 @@ let
         (app "${st.bulk}/documents/media")
         (app "${st.bulk}/documents/export")
         # drop files in here as ${username}
-        (own "d" "2775" (toString uid) "users" "${st.bulk}/documents/consume")
+        (shared "${st.bulk}/documents/consume")
       ];
       auth = true;
     };
@@ -192,6 +196,114 @@ let
         user = "postgres";
       };
     };
+    # plain .md files on tank, edited as ${username}
+    silverbullet =
+    {
+      host = "notes";
+      port = 30086;
+      body = "100m";
+      dirs = [ (subvol "${st.bulk}/notes") ];
+      auth = true;
+    };
+    # its bootstrap and task runner want root and drop to the image's www-data (33)
+    linkding =
+    {
+      host = "links";
+      port = 30087;
+      secrets = [ "ADMIN_PASSWORD" ];
+      dirs = [ (own "d" "0750" "33" "33" "${st.state}/linkding") ];
+      auth = true;
+      # the browser extension and apps send their API token
+      authSkipToken = true;
+    };
+    # the phone apps log in themselves, so not behind tinyauth
+    audiobookshelf =
+    {
+      host = "books";
+      port = 30088;
+      body = "100m";
+      dirs =
+      [
+        (app "${st.state}/audiobookshelf")
+        (app "${st.state}/audiobookshelf/config")
+        (app "${st.state}/audiobookshelf/metadata")
+        # yours to fill; it only gets it read-only, apart from the podcasts it downloads
+        (subvol "${st.bulk}/books")
+        (shared "${st.bulk}/books/podcasts")
+      ];
+    };
+    # nothing kept, every file only lives as long as its request
+    stirling-pdf =
+    {
+      host = "pdf";
+      port = 30089;
+      body = "100m";
+      auth = true;
+    };
+    # the GUI behind tinyauth; devices sync with it on the LAN (22000, QUIC on udp)
+    syncthing =
+    {
+      host = "sync";
+      port = 30384;
+      dirs =
+      [
+        (mine "${st.state}/syncthing")
+        (subvol "${st.bulk}/sync")
+      ];
+      lan =
+      {
+        tcp = [ 22000 ];
+        udp = [ 22000 ];
+      };
+      auth = true;
+    };
+    # all of tank, as ${username}; share links work without a login
+    filebrowser =
+    {
+      host = "files";
+      port = 30090;
+      body = "100m";
+      secrets = [ "ADMIN_PASSWORD" ];
+      dirs = [ (mine "${st.state}/filebrowser") ];
+      auth = true;
+      authSkip =
+      [
+        "^~ /share/"
+        "^~ /api/public/"
+        "^~ /static/"
+      ];
+    };
+    actual =
+    {
+      host = "budget";
+      port = 30506;
+      body = "20m";
+      dirs = [ (app "${st.state}/actual") ];
+      auth = true;
+    };
+    # making a paste needs the login, reading one doesn't: links go to people without one
+    wastebin =
+    {
+      host = "bin";
+      port = 30091;
+      body = "10m";
+      secrets = [ "SIGNING_KEY" "PASSWORD_SALT" ];
+      dirs = [ (app "${st.state}/wastebin") ];
+      auth = true;
+      authSkip =
+      [
+        "~ ^/(raw|dl|qr|burn)/"
+        # a paste, its assets; not the form or the API
+        "~ ^/(?!(new|api)(/|$))[^/]+$"
+      ];
+    };
+    searxng =
+    {
+      host = "search";
+      port = 30092;
+      secrets = [ "SECRET_KEY" ];
+      auth = true;
+    };
   };
 
   enabled = lib.filterAttrs (n: _: lib.elem n cfg.apps) apps;
@@ -215,6 +327,8 @@ let
     domain = config.proxy.domain;
     tz = config.time.timeZone;
     inherit uid username email alertTopic;
+    useruid = config.users.users.${username}.uid;
+    usergid = config.ids.gids.users;
     render = config.ids.gids.render;
     gpu = cfg.gpuResource;
     # a YAML block, indented to fit blocky's ConfigMap
@@ -341,6 +455,9 @@ in
         message = "tinyauth logs in through Pocket ID: add pocket-id to k3s.apps";
       }
     ];
+
+    # what the NixOS default gives the first user, pinned: pods run as it
+    users.users.${username}.uid = lib.mkDefault 1000;
 
     services.k3s =
     {

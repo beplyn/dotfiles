@@ -1,0 +1,82 @@
+# @x@ placeholders are filled in by apps.nix
+# a plain-Markdown wiki: every page is a .md file in @bulk@/notes, as @username@, so btrbk
+# snapshots it and it's yours to edit on beacon. Behind tinyauth, so no login of its own
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: silverbullet
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: silverbullet
+  namespace: silverbullet
+  labels:
+    app: silverbullet
+spec:
+  replicas: 1
+  # one writer on the files
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: silverbullet
+  template:
+    metadata:
+      labels:
+        app: silverbullet
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: silverbullet
+          image: ghcr.io/silverbulletmd/silverbullet:2.12.1
+          env:
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: http
+              containerPort: 3000
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          volumeMounts:
+            # not root, so the entrypoint runs it as is, no user switch
+            - name: data
+              mountPath: /data
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: @useruid@
+            runAsGroup: @usergid@
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              memory: 512Mi
+      volumes:
+        - name: data
+          hostPath:
+            path: "@bulk@/notes"
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: silverbullet
+  namespace: silverbullet
+spec:
+  type: NodePort
+  selector:
+    app: silverbullet
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @silverbullet.port@

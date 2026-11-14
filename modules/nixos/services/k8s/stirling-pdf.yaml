@@ -1,0 +1,96 @@
+# @x@ placeholders are filled in by apps.nix
+# PDF tools in the browser, behind tinyauth with its own login off. Keeps nothing: settings,
+# logs and every upload live in emptyDirs that go with the pod
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: stirling-pdf
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stirling-pdf
+  namespace: stirling-pdf
+  labels:
+    app: stirling-pdf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stirling-pdf
+  template:
+    metadata:
+      labels:
+        app: stirling-pdf
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: stirling-pdf
+          image: stirlingtools/stirling-pdf:3.3.0
+          env:
+            # init.sh starts as root, remaps its user to these and drops to it; LibreOffice
+            # gets a second user of its own
+            - name: PUID
+              value: "@uid@"
+            - name: PGID
+              value: "@uid@"
+            - name: SECURITY_ENABLELOGIN
+              value: "false"
+            - name: SYSTEM_ENABLEANALYTICS
+              value: "false"
+            - name: SYSTEM_MAXFILESIZE
+              value: "100"
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: http
+              containerPort: 8080
+          # the JVM and LibreOffice take a while
+          startupProbe:
+            tcpSocket:
+              port: http
+            periodSeconds: 5
+            failureThreshold: 60
+          readinessProbe:
+            tcpSocket:
+              port: http
+          volumeMounts:
+            - name: configs
+              mountPath: /configs
+            - name: logs
+              mountPath: /logs
+            - name: tmp
+              mountPath: /tmp
+          securityContext:
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 50m
+              memory: 512Mi
+            limits:
+              memory: 3Gi
+      volumes:
+        - name: configs
+          emptyDir: { }
+        - name: logs
+          emptyDir: { }
+        - name: tmp
+          emptyDir: { }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: stirling-pdf
+  namespace: stirling-pdf
+spec:
+  type: NodePort
+  selector:
+    app: stirling-pdf
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @stirling-pdf.port@

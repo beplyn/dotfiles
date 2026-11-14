@@ -1,0 +1,140 @@
+# @x@ placeholders are filled in by apps.nix
+# all of @bulk@ in the browser, as @username@: it can change what you can, photos (root's)
+# stay out. Proxy auth takes the Remote-User from tinyauth; the init container makes
+# @username@ the admin (password in the filebrowser Secret, ADMIN_PASSWORD, unused behind
+# the proxy). Share links and their downloads skip the login
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: filebrowser
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebrowser
+  namespace: filebrowser
+data:
+  # there, so init.sh doesn't copy its default with port 80 over it
+  settings.json: |
+    {
+      "port": 8080,
+      "address": "0.0.0.0",
+      "baseURL": "",
+      "log": "stdout",
+      "database": "/database/filebrowser.db",
+      "root": "/srv"
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: filebrowser
+  namespace: filebrowser
+  labels:
+    app: filebrowser
+spec:
+  replicas: 1
+  # one writer on the bolt db
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: filebrowser
+  template:
+    metadata:
+      labels:
+        app: filebrowser
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      initContainers:
+        - name: bootstrap
+          image: filebrowser/filebrowser:v2.63.23
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              db=/database/filebrowser.db
+              [ -f "$db" ] || filebrowser -d "$db" config init
+              filebrowser -d "$db" config set --auth.method=proxy --auth.header=Remote-User
+              filebrowser -d "$db" users find "$ADMIN_USERNAME" >/dev/null 2>&1 \
+                || filebrowser -d "$db" users add "$ADMIN_USERNAME" "$ADMIN_PASSWORD" --perm.admin
+          env:
+            - name: ADMIN_USERNAME
+              value: "@username@"
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: filebrowser
+                  key: ADMIN_PASSWORD
+          volumeMounts: &mounts
+            - name: config
+              mountPath: /config
+              readOnly: true
+            - name: database
+              mountPath: /database
+            - name: tank
+              mountPath: /srv
+            - name: tmp
+              mountPath: /tmp
+          securityContext: &security
+            runAsNonRoot: true
+            runAsUser: @useruid@
+            runAsGroup: @usergid@
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+      containers:
+        - name: filebrowser
+          image: filebrowser/filebrowser:v2.63.23
+          env:
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+          volumeMounts: *mounts
+          securityContext: *security
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 512Mi
+      volumes:
+        - name: config
+          configMap:
+            name: filebrowser
+        - name: database
+          hostPath:
+            path: "@state@/filebrowser"
+            type: Directory
+        - name: tank
+          hostPath:
+            path: "@bulk@"
+            type: Directory
+        # uploads come in chunks through here
+        - name: tmp
+          emptyDir: { }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: filebrowser
+  namespace: filebrowser
+spec:
+  type: NodePort
+  selector:
+    app: filebrowser
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @filebrowser.port@
