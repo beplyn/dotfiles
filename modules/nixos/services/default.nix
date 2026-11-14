@@ -8,5 +8,6 @@
     ./k3s.nix
     ./apps.nix
     ./k3s-backup
+    ./monitoring
   ];
 }
