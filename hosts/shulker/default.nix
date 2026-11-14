@@ -1,27 +1,9 @@
-{ pkgs, ... }:
-
 {
-  imports = [ ./hardware.nix ];
+  imports = [ ./hardware.nix ./hardware-extra.nix ];
 
   networking.hostName = "shulker";
   laptop.enable = true;
   toolbox.enable = true;
-  # early KMS: native-res Plymouth unlock (here, hardware.nix gets regenerated)
-  boot.initrd.kernelModules = [ "i915" ];
-
-  # Iris Xe (Tiger Lake): mesa covers iris/ANV; iHD + oneVPL for VA-API/QSV
-  hardware.enableRedistributableFirmware = true;
-  hardware.graphics =
-  {
-    enable = true;
-    extraPackages = with pkgs;
-    [
-      intel-media-driver
-      vpl-gpu-rt
-    ];
-  };
-  environment.sessionVariables.LIBVA_DRIVER_NAME = "iHD";
-  hardware.intel-gpu-tools.enable = true;
   services.xserver.xkb.layout = "us";
   console.keyMap = "us";
   monitors =
