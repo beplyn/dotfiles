@@ -60,6 +60,11 @@ let
     extraConfig = extra;
   };
 
+  noRemoteUser = ''
+    proxy_set_header Remote-User "";
+    proxy_set_header Remote-Email "";
+  '';
+
   vhost = name: host:
   {
     name = fqdn name;
@@ -69,8 +74,9 @@ let
       locations =
       {
         # logged out: off to the login page, which sends you back here. Remote-* are always
-        # set, so a client can't send its own past this; empty when the token skip let it through
-        "/" = upstream host (lib.optionalString host.auth ''
+        # set, so a client can't send its own past this; empty when the token skip let it through.
+        # Without auth they're always emptied, for an app that still trusts them
+        "/" = upstream host (if !host.auth then noRemoteUser else ''
           auth_request /tinyauth;
           auth_request_set $auth_location $upstream_http_x_tinyauth_location;
           auth_request_set $auth_user $upstream_http_remote_user;
@@ -103,10 +109,7 @@ let
         };
       }
       # the app's own clients log in themselves; still never with a Remote-User of theirs
-      // lib.genAttrs (lib.optionals host.auth host.authSkip) (_: upstream host ''
-        proxy_set_header Remote-User "";
-        proxy_set_header Remote-Email "";
-      '');
+      // lib.genAttrs (lib.optionals host.auth host.authSkip) (_: upstream host noRemoteUser);
       extraConfig = lib.optionalString cfg.cloudflareOnly ''
         # skipped Cloudflare and isn't on the LAN
         if ($allowed_peer = 0) { return 444; }
