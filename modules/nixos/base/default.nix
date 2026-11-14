@@ -3,6 +3,7 @@
   [
     ./boot
     ./encryption
+    ./laptop.nix
     ./locale.nix
     ./monitors.nix
     ./networking.nix
