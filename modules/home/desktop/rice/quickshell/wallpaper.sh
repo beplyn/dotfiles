@@ -1,8 +1,6 @@
 # wallpaper set IMAGE | random | current
-# Picks from the theme's recoloured set in @cache@ (quickshell/wallpaper.nix).
-# current.jpg links the pick; hyprpaper, hyprlock and the greeter (rebuild)
-# show it. Picks link the cache's name, not the store path, so a rebuild
-# into another theme recolours the current one too.
+# links the pick to current.jpg (hyprpaper, hyprlock, greeter); it points
+# into the cache, so a theme change recolours it too
 cache="@cache@"
 current="$cache/current.jpg"
 

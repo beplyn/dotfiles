@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# beszel-key.sh HUB_KEY OUT: the agent's KEY is the hub's public key; the hub makes its key
-# pair on first start, so wait for it, then write the public half to OUT for the agent
+# beszel-key.sh HUB_KEY OUT: wait for the hub's key pair, write its public key to OUT
 set -euo pipefail
 key="$1"
 out="$2"

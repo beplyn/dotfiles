@@ -1,9 +1,6 @@
-# xdph's screen share picker (custom_picker_binary): the shell shows the
-# choice (services/SharePicker.qml) and answers down a fifo. Prints
-# "[SELECTION]<flags>/<choice>" for xdph, nothing on cancel.
-#
-# Chromium apps (Discord) open a few sessions per share; the repeats within
-# a few seconds get the first answer instead of the picker again.
+# xdph share picker: quickshell asks, answers down a fifo.
+# Prints "[SELECTION]<flags>/<choice>", nothing on cancel.
+# Repeats within seconds (Chromium, Discord) reuse the first answer.
 
 STATE_DIR="${XDG_RUNTIME_DIR:-/tmp}/haku-share-picker"
 CACHE="$STATE_DIR/last"

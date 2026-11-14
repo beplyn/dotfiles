@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
-# vars.sh TEMPLATE DIR HOST: asks for every value in TEMPLATE (the repo's vars/vars.toml) that
-# DIR/vars.toml doesn't have yet, and writes it there, root-only. Runs as the user, sudo for
-# the file. lan.* is only asked on beacon, the one host with a static LAN address; the others
-# use DHCP
+# vars.sh TEMPLATE DIR HOST: ask for values missing from DIR/vars.toml, save root-only.
+# lan.* only on beacon (static IP), the rest use DHCP
 set -euo pipefail
 template="$1"
 dir="$2"

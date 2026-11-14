@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Fresh NixOS install: repo to ~/<reponame>, pick host and theme, generate
-# hardware config, link /etc/nixos, build. Works from a checkout or `curl | bash`.
+# fresh NixOS install: clone, pick host and theme, hardware config, build.
+# Works from a checkout or `curl | bash`.
 set -euo pipefail
 
 # asked for under `curl | bash`; a checkout uses itself
