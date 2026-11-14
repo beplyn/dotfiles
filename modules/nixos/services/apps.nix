@@ -35,8 +35,9 @@ let
   # auth: browsers log in through tinyauth first (the app trusts Remote-User), authSkip and
   # authSkipToken: what's left to the app's own login (proxy.hosts),
   # oidc: takes Pocket ID credentials from k8s/oidc/<app>.sealed.yaml.
-  # Apps with a login of their own, phone apps above all, aren't behind tinyauth: those
-  # that can offer Pocket ID as a second way in, with oidc
+  # Everything is behind tinyauth but what's used from phone apps, extensions or other
+  # clients that can't follow a browser login: those log in themselves, and the ones that
+  # can offer Pocket ID as a second way in have oidc
   apps =
   {
     vaultwarden =
@@ -254,7 +255,7 @@ let
       timeout = "5m";
       auth = true;
     };
-    # all of tank, as ${username}
+    # all of tank, as ${username}; share links work without a login
     filebrowser =
     {
       host = "files";
@@ -262,6 +263,13 @@ let
       body = "100m";
       secrets = [ "ADMIN_PASSWORD" ];
       dirs = [ (mine "${st.state}/filebrowser") ];
+      auth = true;
+      authSkip =
+      [
+        "^~ /share/"
+        "^~ /api/public/"
+        "^~ /static/"
+      ];
     };
     actual =
     {
