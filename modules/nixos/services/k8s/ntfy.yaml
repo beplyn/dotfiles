@@ -1,6 +1,6 @@
 # @x@ placeholders are filled in by apps.nix
-# nobody can read or publish until you add yourself:
-#   kubectl -n ntfy exec -it deploy/ntfy -- ntfy user add --role=admin <name>
+# users are declared: admin (password in the ntfy Secret, ADMIN_PASSWORD) and beacon, which
+# can only publish to @alertTopic@ with its token; subscribe to @alertTopic@ as admin
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -51,6 +51,28 @@ spec:
           env:
             - name: TZ
               value: "@tz@"
+            - name: ADMIN_HASH
+              valueFrom:
+                secretKeyRef:
+                  name: ntfy
+                  key: ADMIN_HASH
+            - name: ALERT_HASH
+              valueFrom:
+                secretKeyRef:
+                  name: ntfy
+                  key: ALERT_HASH
+            - name: ALERT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: ntfy
+                  key: ALERT_TOKEN
+            # comma-separated; created or updated on every start
+            - name: NTFY_AUTH_USERS
+              value: "admin:$(ADMIN_HASH):admin,beacon:$(ALERT_HASH):user"
+            - name: NTFY_AUTH_ACCESS
+              value: "beacon:@alertTopic@:wo"
+            - name: NTFY_AUTH_TOKENS
+              value: "beacon:$(ALERT_TOKEN):host alerts"
           ports:
             - name: http
               containerPort: 8080
