@@ -89,6 +89,38 @@ data:
                     url: "https://@searxng.host@"
                     check-url: http://searxng.searxng.svc/healthz
                     icon: di:searxng
+                  - title: Vikunja
+                    url: "https://@vikunja.host@"
+                    check-url: http://vikunja.vikunja.svc/api/v1/info
+                    icon: di:vikunja
+                  - title: Radicale
+                    url: "https://@radicale.host@"
+                    check-url: http://radicale.radicale.svc/
+                    icon: di:radicale
+                  - title: Navidrome
+                    url: "https://@navidrome.host@"
+                    check-url: http://navidrome.navidrome.svc/ping
+                    icon: di:navidrome
+                  - title: n8n
+                    url: "https://@n8n.host@"
+                    check-url: http://n8n.n8n.svc/healthz
+                    icon: di:n8n
+                  - title: Atuin
+                    url: "https://@atuin.host@"
+                    check-url: http://atuin.atuin.svc/
+                    icon: di:atuin
+                  - title: changedetection.io
+                    url: "https://@changedetection.host@"
+                    check-url: http://changedetection.changedetection.svc/
+                    icon: di:changedetection
+                  - title: Mealie
+                    url: "https://@mealie.host@"
+                    check-url: http://mealie.mealie.svc/api/app/about
+                    icon: di:mealie
+                  - title: Excalidraw
+                    url: "https://@excalidraw.host@"
+                    check-url: http://excalidraw.excalidraw.svc/
+                    icon: di:excalidraw
                   - title: ntfy
                     url: "https://@ntfy.host@"
                     check-url: http://ntfy.ntfy.svc/v1/health

@@ -109,6 +109,46 @@ data:
         url: http://searxng.searxng.svc/healthz
         interval: 1m
         conditions: ["[STATUS] == 200"]
+      - name: Vikunja
+        group: apps
+        url: http://vikunja.vikunja.svc/api/v1/info
+        interval: 1m
+        conditions: ["[STATUS] == 200"]
+      - name: Radicale
+        group: apps
+        url: http://radicale.radicale.svc/
+        interval: 1m
+        conditions: ["[STATUS] < 500"]
+      - name: Navidrome
+        group: apps
+        url: http://navidrome.navidrome.svc/ping
+        interval: 1m
+        conditions: ["[STATUS] == 200"]
+      - name: n8n
+        group: apps
+        url: http://n8n.n8n.svc/healthz
+        interval: 1m
+        conditions: ["[STATUS] == 200"]
+      - name: Atuin
+        group: apps
+        url: http://atuin.atuin.svc/
+        interval: 1m
+        conditions: ["[STATUS] == 200"]
+      - name: changedetection.io
+        group: apps
+        url: http://changedetection.changedetection.svc/
+        interval: 1m
+        conditions: ["[STATUS] == 200"]
+      - name: Mealie
+        group: apps
+        url: http://mealie.mealie.svc/api/app/about
+        interval: 1m
+        conditions: ["[STATUS] == 200"]
+      - name: Excalidraw
+        group: apps
+        url: http://excalidraw.excalidraw.svc/
+        interval: 1m
+        conditions: ["[STATUS] == 200"]
       - name: Glance
         group: apps
         url: http://glance.glance.svc/
