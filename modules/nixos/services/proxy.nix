@@ -51,21 +51,26 @@ let
         sslCertificateKey = "${creds}/key.pem";
       };
 
+  # Host, X-Real-IP, X-Forwarded-* via recommendedProxySettings
+  upstream = host: extra:
+  {
+    proxyPass = "http://${host.address}:${toString host.port}";
+    # Upgrade + Connection
+    proxyWebsockets = host.websockets;
+    extraConfig = extra;
+  };
+
   vhost = name: host:
   {
     name = fqdn name;
     value = tls //
     {
       forceSSL = true;
-      # Host, X-Real-IP, X-Forwarded-* via recommendedProxySettings
-      locations."/" =
+      locations =
       {
-        proxyPass = "http://${host.address}:${toString host.port}";
-        # Upgrade + Connection
-        proxyWebsockets = host.websockets;
         # logged out: off to the login page, which sends you back here. Remote-* are always
-        # set, so a client can't send its own past this
-        extraConfig = lib.optionalString host.auth ''
+        # set, so a client can't send its own past this; empty when the token skip let it through
+        "/" = upstream host (lib.optionalString host.auth ''
           auth_request /tinyauth;
           auth_request_set $auth_location $upstream_http_x_tinyauth_location;
           auth_request_set $auth_user $upstream_http_remote_user;
@@ -73,26 +78,35 @@ let
           error_page 401 403 =302 $auth_location;
           proxy_set_header Remote-User $auth_user;
           proxy_set_header Remote-Email $auth_email;
-        '';
-      };
-      # it takes the original URL from X-Original-URL and refuses the request when
-      # X-Forwarded-Host or -Uri come along too, so not recommendedProxySettings here
-      locations."= /tinyauth" = lib.mkIf host.auth
-      {
-        proxyPass = cfg.authRequest;
-        recommendedProxySettings = false;
-        extraConfig = ''
-          internal;
-          proxy_pass_request_body off;
-          proxy_set_header Content-Length "";
-          proxy_set_header X-Original-URL $scheme://$host$request_uri;
-          proxy_set_header X-Original-Method $request_method;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_set_header X-Forwarded-Host "";
-          proxy_set_header X-Forwarded-Uri "";
-        '';
-      };
+        '');
+        # it takes the original URL from X-Original-URL and refuses the request when
+        # X-Forwarded-Host or -Uri come along too, so not recommendedProxySettings here
+        "= /tinyauth" = lib.mkIf host.auth
+        {
+          proxyPass = cfg.authRequest;
+          recommendedProxySettings = false;
+          extraConfig = ''
+            internal;
+            proxy_pass_request_body off;
+            proxy_set_header Content-Length "";
+            proxy_set_header X-Original-URL $scheme://$host$request_uri;
+            proxy_set_header X-Original-Method $request_method;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Host "";
+            proxy_set_header X-Forwarded-Uri "";
+          ''
+          # an API token or git's basic auth: the app checks it, with no Remote-* from here
+          + lib.optionalString host.authSkipToken ''
+            if ($http_authorization != "") { return 200; }
+          '';
+        };
+      }
+      # the app's own clients log in themselves; still never with a Remote-User of theirs
+      // lib.genAttrs (lib.optionals host.auth host.authSkip) (_: upstream host ''
+        proxy_set_header Remote-User "";
+        proxy_set_header Remote-Email "";
+      '');
       extraConfig = ''
         # skipped Cloudflare and isn't on the LAN
         if ($allowed_peer = 0) { return 444; }
@@ -223,6 +237,19 @@ in
               Log in through proxy.authRequest first and pass Remote-User and Remote-Email on.
               Browsers only: app clients and API calls get sent to the login page.
             '';
+          };
+          authSkip = lib.mkOption
+          {
+            type = lib.types.listOf lib.types.str;
+            default = [ ];
+            example = [ "^~ /api/v1/" ];
+            description = "nginx locations (modifier and match) left to the app's own login, with no Remote-*.";
+          };
+          authSkipToken = lib.mkOption
+          {
+            type = lib.types.bool;
+            default = false;
+            description = "Let requests with an Authorization header through to the app, with no Remote-*.";
           };
         };
       });
