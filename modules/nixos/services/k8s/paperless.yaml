@@ -1,0 +1,177 @@
+# @x@ placeholders are filled in by apps.nix
+# index and sqlite on the SSD, the documents themselves on the mirror; log in as admin,
+# password in the paperless Secret (ADMIN_PASSWORD)
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: paperless
+---
+# only a task queue, nothing to keep
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paperless-redis
+  namespace: paperless
+  labels:
+    app: paperless-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: paperless-redis
+  template:
+    metadata:
+      labels:
+        app: paperless-redis
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: valkey
+          image: valkey/valkey:9-alpine
+          args: ["--save", "", "--appendonly", "no"]
+          ports:
+            - name: redis
+              containerPort: 6379
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: @uid@
+            runAsGroup: @uid@
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 5m
+              memory: 16Mi
+            limits:
+              memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: paperless-redis
+  namespace: paperless
+spec:
+  selector:
+    app: paperless-redis
+  ports:
+    - name: redis
+      port: 6379
+      targetPort: redis
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paperless
+  namespace: paperless
+  labels:
+    app: paperless
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: paperless
+  template:
+    metadata:
+      labels:
+        app: paperless
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        # starts as root and drops to USERMAP_UID itself
+        - name: paperless
+          image: ghcr.io/paperless-ngx/paperless-ngx:2.20
+          env:
+            - name: PAPERLESS_URL
+              value: "https://@paperless.host@"
+            - name: PAPERLESS_REDIS
+              value: "redis://paperless-redis:6379"
+            - name: PAPERLESS_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: paperless
+                  key: SECRET_KEY
+            - name: PAPERLESS_ADMIN_USER
+              value: admin
+            - name: PAPERLESS_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: paperless
+                  key: ADMIN_PASSWORD
+            - name: USERMAP_UID
+              value: "@uid@"
+            - name: USERMAP_GID
+              value: "@uid@"
+            - name: PAPERLESS_TIME_ZONE
+              value: "@tz@"
+            # hun is installed on start, eng ships with the image
+            - name: PAPERLESS_OCR_LANGUAGES
+              value: "hun"
+            - name: PAPERLESS_OCR_LANGUAGE
+              value: "hun+eng"
+          ports:
+            - name: http
+              containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 30
+          volumeMounts:
+            - name: data
+              mountPath: /usr/src/paperless/data
+            - name: media
+              mountPath: /usr/src/paperless/media
+            - name: consume
+              mountPath: /usr/src/paperless/consume
+            - name: export
+              mountPath: /usr/src/paperless/export
+          securityContext:
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 50m
+              memory: 512Mi
+            limits:
+              memory: 2Gi
+      volumes:
+        - name: data
+          hostPath:
+            path: "@state@/paperless"
+            type: Directory
+        - name: media
+          hostPath:
+            path: "@bulk@/documents/media"
+            type: Directory
+        - name: consume
+          hostPath:
+            path: "@bulk@/documents/consume"
+            type: Directory
+        - name: export
+          hostPath:
+            path: "@bulk@/documents/export"
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: paperless
+  namespace: paperless
+spec:
+  type: NodePort
+  selector:
+    app: paperless
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @paperless.port@

@@ -86,6 +86,23 @@ let
         (app "${st.state}/miniflux/postgres")
       ];
     };
+    paperless =
+    {
+      host = "docs";
+      port = 30085;
+      body = "100m";
+      secrets = [ "SECRET_KEY" "ADMIN_PASSWORD" ];
+      dirs =
+      [
+        (app "${st.state}/paperless")
+        (subvol "${st.bulk}/documents")
+        (snapshots "${st.bulk}/documents")
+        (app "${st.bulk}/documents/media")
+        (app "${st.bulk}/documents/export")
+        # drop files in here as ${username}
+        (own "d" "2775" (toString uid) "users" "${st.bulk}/documents/consume")
+      ];
+    };
   };
 
   enabled = lib.filterAttrs (n: _: lib.elem n cfg.apps) apps;
