@@ -183,7 +183,9 @@ let
         (root "${st.cache}/immich-models")
         (root "${st.scratch}/immich-encoded-video")
         (root "${st.state}/immich")
-        (root "${st.state}/immich/postgres")
+        # postgres in the image is 999: its entrypoint chowns this on start, and as root's
+        # every k3s-app-dirs run under the live database locked it out of its own files
+        (own "d" "0700" "999" "999" "${st.state}/immich/postgres")
       ];
       postgres =
       {
