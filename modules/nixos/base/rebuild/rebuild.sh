@@ -136,7 +136,7 @@ if @desktop@ && [ ! -e "$HOME/.pfp" ]; then
 fi
 
 # whose machines these are, out of the repo; asks for whatever is missing
-dotfiles-vars "$flake/vars/vars.toml" @varsDir@
+dotfiles-vars "$flake/vars/vars.toml" @varsDir@ @hostName@
 
 # new files reach the flake; nothing else gets staged
 git -C "$flake" add --intent-to-add .
