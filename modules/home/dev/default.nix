@@ -3,7 +3,7 @@
 {
   imports =
   [
-    ./git.nix
+    ./git
     ./jj.nix
     ./signing.nix
     ./opencode
