@@ -1,0 +1,90 @@
+# @x@ placeholders are filled in by apps.nix
+# vanilla 26.2 on tcp://<beacon>:25565; forward it on the router to play from outside.
+# Console: kubectl -n minecraft exec deploy/minecraft -- rcon-cli
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: minecraft
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minecraft
+  namespace: minecraft
+  labels:
+    app: minecraft
+spec:
+  replicas: 1
+  # one writer on the world and the hostPort
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: minecraft
+  template:
+    metadata:
+      labels:
+        app: minecraft
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      # saves the world on SIGTERM
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: minecraft
+          image: itzg/minecraft-server:2026.10.1-java25
+          env:
+            - name: EULA
+              value: "TRUE"
+            - name: TYPE
+              value: VANILLA
+            - name: VERSION
+              value: "26.2"
+            - name: MEMORY
+              value: 4G
+            - name: USE_AIKAR_FLAGS
+              value: "true"
+            - name: VIEW_DISTANCE
+              value: "10"
+            - name: SIMULATION_DISTANCE
+              value: "8"
+            - name: MOTD
+              value: beacon
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: game
+              containerPort: 25565
+              hostPort: 25565
+              protocol: TCP
+          readinessProbe:
+            exec:
+              command: ["mc-health"]
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          volumeMounts:
+            # world, server.properties, whitelist and ops
+            - name: data
+              mountPath: /data
+          # not root, so the entrypoint skips its chown
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: @uid@
+            runAsGroup: @uid@
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 500m
+              memory: 4Gi
+            # heap plus JVM overhead
+            limits:
+              memory: 5Gi
+      volumes:
+        - name: data
+          hostPath:
+            path: "@state@/minecraft"
+            type: Directory
