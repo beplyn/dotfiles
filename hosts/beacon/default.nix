@@ -60,6 +60,7 @@
     "changedetection"
     "mealie"
     "excalidraw"
+    "minecraft"
   ];
   k3s.lanAddress = lan.address;
   # app state and the cluster to the backup disk, daily
