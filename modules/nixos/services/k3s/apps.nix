@@ -371,6 +371,12 @@ let
       port = 30101;
       auth = true;
     };
+    # vanilla, LAN port 25565; nothing to proxy
+    minecraft =
+    {
+      dirs = [ (app "${st.state}/minecraft") ];
+      lan.tcp = [ 25565 ];
+    };
   };
 
   enabled = lib.filterAttrs (n: _: lib.elem n cfg.apps) apps;
