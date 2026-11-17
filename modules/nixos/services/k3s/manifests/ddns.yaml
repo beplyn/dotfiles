@@ -41,7 +41,7 @@ spec:
                   key: CLOUDFLARE_API_TOKEN
             - name: DOMAINS
               value: "@domains@"
-            # for new records; with proxy.cloudflareOnly nginx answers nothing else
+            # for new records, and what existing ones are checked against
             - name: PROXIED
               value: "@proxied@"
             - name: IP4_PROVIDER

@@ -87,8 +87,11 @@ in
         ddns.source = pkgs.writeText "ddns.yaml" (subst
         {
           domains = lib.concatStringsSep "," ([ domain "*.${domain}" ] ++ direct);
-          # Cloudflare's proxy only passes HTTP: the apps' non-HTTP subdomains skip it
-          proxied = if direct == [ ] then "true" else "!is(${lib.concatStringsSep "," direct})";
+          # DNS-only without proxy.cloudflareOnly; else proxied but the apps' non-HTTP subdomains
+          proxied =
+            if !config.proxy.cloudflareOnly then "false"
+            else if direct == [ ] then "true"
+            else "!is(${lib.concatStringsSep "," direct})";
         } (builtins.readFile (manifests + "/ddns.yaml")));
         ddns-token.source = sealedToken;
       };
