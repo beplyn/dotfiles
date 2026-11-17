@@ -41,7 +41,7 @@ spec:
             - name: VERSION
               value: "26.3"
             - name: MEMORY
-              value: 8G
+              value: 12G
             - name: USE_AIKAR_FLAGS
               value: "true"
             # chunks sent to clients, vanilla's max; clients still cap it at their own setting
@@ -81,10 +81,10 @@ spec:
           resources:
             requests:
               cpu: 500m
-              memory: 8Gi
+              memory: 12Gi
             # heap plus JVM overhead
             limits:
-              memory: 10Gi
+              memory: 14Gi
       volumes:
         - name: data
           hostPath:
