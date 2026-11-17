@@ -1,5 +1,5 @@
 # @x@ placeholders are filled in by apps.nix
-# vanilla 26.2 on tcp://<beacon>:25565; forward it on the router to play from outside.
+# vanilla 26.3 on tcp://<beacon>:25565; forward it on the router to play from outside.
 # Console: kubectl -n minecraft exec deploy/minecraft -- rcon-cli
 apiVersion: v1
 kind: Namespace
@@ -39,7 +39,7 @@ spec:
             - name: TYPE
               value: VANILLA
             - name: VERSION
-              value: "26.2"
+              value: "26.3"
             - name: MEMORY
               value: 4G
             - name: USE_AIKAR_FLAGS
