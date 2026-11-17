@@ -1,11 +1,4 @@
-/*
- * Waybar as a single floating capsule. default.nix prepends the Stylix
- * palette (@background, @surface, @accent, ...), @glass, fonts and the corner
- * radius, so nothing here hardcodes a color or a font.
- *
- * Inside the capsule, every module is its own pill on see-through grey;
- * grouped modules just sit a little closer together.
- */
+/* one floating capsule of pills; colors and fonts come from default.nix */
 
 *
 {

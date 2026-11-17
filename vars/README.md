@@ -12,7 +12,7 @@ value that file doesn't have yet.
 | `email`       | git commits, ACME, Pocket ID and the app admins                    |
 | `domain`      | the zone beacon serves its apps under                              |
 | `repo`        | this repo's https URL; auto-rebuild polls it, git pushes over ssh  |
-| `lan.address` | beacon's static address (other hosts: leave empty)                 |
+| `lan.address` | beacon's static address (only asked on beacon, the rest use DHCP)  |
 | `lan.gateway` | the router: gateway and DNS for beacon                             |
 | `lan.subnet`  | the LAN, let straight in past Cloudflare                           |
 

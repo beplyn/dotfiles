@@ -3,11 +3,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Events from vcal, the terminal calendar (calendar.nix), on the database
-// it shares with the TUI. `vcal query --format json` covers the days the
-// dashboard shows; it re-runs when `events.db.changed` moves (vcal touches
-// it on every write, wherever from) and when the day rolls over. Writes go
-// through `vcal add / edit / rm`, one at a time, then a reload.
+// vcal events for the dashboard; reloads when events.db.changed moves or the
+// day rolls over. Writes run one at a time
 Singleton {
     id: root
 
@@ -18,9 +15,7 @@ Singleton {
     property date first: addDays(today, -7)
     property date last: addDays(today, 35)
 
-    // Occurrences as vcal prints them: { id, occurrence, title, description,
-    // category, location, all_day, start, end, start_ts, end_ts, status,
-    // recurring, modified }. All-day rows carry dates, `end` exclusive.
+    // occurrences as `vcal query` prints them; all-day `end` is exclusive
     property var events: []
     property bool loaded: false
     // vcal's last complaint, for the agenda; "" when all is well
@@ -186,8 +181,7 @@ Singleton {
         run(a, done)
     }
 
-    // Only the fields in f change. `occurrence` (from the row) limits the
-    // change to that one occurrence; leave it out for the whole series.
+    // changes the fields in f; with `occurrence` only that one, else the series
     function edit(e, f, occurrence, done) {
         const a = ["edit", e.id].concat(flags(f))
         if (occurrence !== undefined && occurrence !== null) a.push("--occurrence=" + occurrence)

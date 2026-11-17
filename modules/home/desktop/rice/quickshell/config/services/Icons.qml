@@ -2,8 +2,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-// Nerd Font glyphs, kept as codepoints so editors and diffs can't mangle
-// them. Waybar's glyphs are picked the same way in waybar/default.nix.
+// Nerd Font glyphs as codepoints, so editors can't mangle them
 Singleton {
     function g(...cps) {
         return String.fromCodePoint(...cps)

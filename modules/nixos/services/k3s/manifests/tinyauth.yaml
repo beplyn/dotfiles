@@ -1,8 +1,7 @@
 # @x@ placeholders are filled in by apps.nix
-# forward auth for the browser-only apps: nginx asks /api/auth/nginx on every request and passes
-# Remote-User on. Logins go straight to Pocket ID (passkeys), its client from seal-oidc in
-# tinyauth-oidc; until that's sealed nobody gets past it. Sessions are rows in its sqlite db,
-# the cookie is set for the parent domain so one login covers every subdomain
+# forward auth for browser-only apps: nginx checks each request, passes Remote-User.
+# Logs in via Pocket ID; nobody gets in until tinyauth-oidc is sealed.
+# One login covers every subdomain
 apiVersion: v1
 kind: Namespace
 metadata:

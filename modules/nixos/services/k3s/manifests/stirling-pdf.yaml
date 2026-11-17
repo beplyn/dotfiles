@@ -1,6 +1,5 @@
 # @x@ placeholders are filled in by apps.nix
-# PDF tools in the browser, behind tinyauth with its own login off. Keeps nothing: settings,
-# logs and every upload live in emptyDirs that go with the pod
+# PDF tools behind tinyauth; keeps nothing (all in emptyDirs)
 apiVersion: v1
 kind: Namespace
 metadata:

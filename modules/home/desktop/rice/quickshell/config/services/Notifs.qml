@@ -4,8 +4,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Notifications
 
-// Notification daemon replacing swaync. Every notification stays in the
-// center until dismissed; popups are just the subset still on screen.
+// notification daemon: all stay in the center until dismissed, popups are on screen ones
 Singleton {
     id: root
 

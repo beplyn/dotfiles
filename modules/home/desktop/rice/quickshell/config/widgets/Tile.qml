@@ -2,8 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.services
 
-// Quick-settings toggle: glyph, title and a status line, filled with the
-// accent while active. The mouse event is passed on for right clicks.
+// quick-settings toggle, accent when active; passes the mouse event on
 Rectangle {
     id: root
 

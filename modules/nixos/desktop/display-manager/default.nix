@@ -1,4 +1,4 @@
-# greetd + ReGreet in Hyprland, Stylix-themed; patched layout (clock top right, avatar and session picker on the card)
+# greetd + ReGreet in Hyprland, Stylix-themed, patched layout
 {
   config,
   lib,
@@ -93,8 +93,7 @@ in
     SUBSYSTEM=="drm", KERNEL=="card[0-9]*", KERNELS=="${config.displayGpu}", SYMLINK+="dri/display"
   '';
 
-  # Hyprland instead of the module's cage: picks outputs; only the monitors' GPU, since rendering
-  # on the iGPU and copying over can make outputs drop out
+  # Hyprland instead of cage, on the monitors' GPU only (iGPU drops outputs)
   services.greetd.settings.default_session.command = lib.concatStringsSep " " (
     [ "${pkgs.dbus}/bin/dbus-run-session" ]
     ++ lib.optional (config.displayGpu != null) "${pkgs.coreutils}/bin/env AQ_DRM_DEVICES=/dev/dri/display"

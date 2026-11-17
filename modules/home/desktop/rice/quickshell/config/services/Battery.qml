@@ -4,10 +4,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Services.UPower
 
-// The laptop battery from UPower, and its charge over the last hours: a
-// sample a minute, kept in the shell's state dir so restarts and reboots
-// don't lose it. UPower's own history is root-only and resets with its
-// device id, so it isn't used.
+// battery from UPower, plus a charge sample a minute saved across reboots
 Singleton {
     id: root
 

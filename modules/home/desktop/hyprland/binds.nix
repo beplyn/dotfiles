@@ -5,9 +5,7 @@
   ...
 }:
 
-# niri-style binds, with the scrolling layout for its columns; where
-# Hyprland has no equivalent the closest action is noted. binds.lua turns
-# each into an hl.bind.
+# niri-style binds on the scrolling layout; binds.lua turns them into hl.bind
 let
   wezterm = lib.getExe config.programs.wezterm.package;
   dialog = lib.getExe' pkgs.hyprland-guiutils "hyprland-dialog";
@@ -85,8 +83,7 @@ let
         (show "Lock screen" (ModAlt "l" exec "${loginctl} lock-session"))
         (show "Power menu" (Mod "x" exec (ipc "panels" "toggle" [ "power" ])))
         (show "Show hotkeys" (Mod "slash" exec (ipc "panels" "toggle" [ "hotkeys" ])))
-        # this monitor's workspaces, Quickshell's while hyprtasking is off
-        # (plugins.nix); hyprtasking's was (Mod "Tab" "haku.overview" null)
+        # Quickshell's overview while hyprtasking is off (plugins.nix)
         (show "Overview" (noRepeat (Mod "Tab" exec (ipc "panels" "toggle" [ "overview" ]))))
       ];
     }

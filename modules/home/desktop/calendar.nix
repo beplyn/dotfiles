@@ -1,7 +1,4 @@
-# vcal, the terminal calendar (github:beplyn/vcal), and what the desktop
-# needs of it: one database for the TUI, the CLI and Quickshell
-# (services/Events.qml), and the command that opens the TUI, for
-# a right click on waybar's clock and the dashboard.
+# vcal (github:beplyn/vcal): one calendar db for the TUI, CLI and Quickshell
 {
   config,
   lib,

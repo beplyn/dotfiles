@@ -29,7 +29,7 @@ spec:
     spec:
       serviceAccountName: cloudflare-ddns
       automountServiceAccountToken: false
-      # IPv4 only, so the pod network is fine; for AAAA set hostNetwork: true (flannel is IPv4-only)
+      # IPv4 only; AAAA needs hostNetwork: true
       containers:
         - name: ddns
           image: favonia/cloudflare-ddns:1

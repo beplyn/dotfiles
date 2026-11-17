@@ -4,8 +4,7 @@ import Quickshell
 import Quickshell.Wayland
 import qs.services
 
-// Floating card under waybar. The full-output window only catches outside
-// clicks (and Escape) to close; it stays mapped, inert, while fading out.
+// floating card under waybar; outside clicks or Esc close it
 PanelWindow {
     id: root
 
@@ -32,9 +31,7 @@ PanelWindow {
 
     WlrLayershell.namespace: "haku-" + name
     WlrLayershell.layer: WlrLayer.Top
-    // not exclusive: Hyprland pins the pointer to an exclusive layer too, so
-    // waybar would go dead while a panel is open; on-demand still takes
-    // focus on map.
+    // not exclusive, or waybar goes dead while a panel is open
     WlrLayershell.keyboardFocus: open ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
     mask: Region {

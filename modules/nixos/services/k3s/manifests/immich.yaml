@@ -1,6 +1,6 @@
 # @x@ placeholders are filled in by apps.nix
-# originals on the mirror, thumbnails on the cache SSD, re-encoded video on the scratch
-# HDD, database on the system SSD; first user to sign up becomes admin
+# originals on tank, thumbs on the cache SSD, encodes on scratch, db on the system SSD.
+# First signup is admin
 apiVersion: v1
 kind: Namespace
 metadata:

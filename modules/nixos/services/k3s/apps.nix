@@ -8,8 +8,7 @@
   ...
 }:
 
-# k3s workloads, one manifest each in ./manifests with @var@s filled in from here.
-# nginx reaches them on NodePorts bound to loopback only; data lands on k3s.storage
+# k3s apps, one manifest each in ./manifests; nginx reaches them on loopback NodePorts
 let
   cfg = config.k3s;
   st = cfg.storage;
@@ -27,17 +26,13 @@ let
   # tank dirs both you and the app write, new files staying in the users group
   shared = own "d" "2775" (toString uid) "users";
 
-  # host: subdomain (unset: not proxied), port: NodePort, body: nginx upload limit
-  # (Cloudflare caps a request at 100m; the LAN has none), timeout: nginx's upstream read
-  # timeout, for long polls (Cloudflare gives up after 100s), secrets: generated keys in the
-  # Secret named like the app (see secrets.sh), dirs: what the pods mount,
-  # extra: more manifests, lan: host ports open to the LAN, postgres: what to pg_dumpall,
-  # auth: browsers log in through tinyauth first (the app trusts Remote-User), authSkip and
-  # authSkipToken: what's left to the app's own login (proxy.hosts),
-  # oidc: takes Pocket ID credentials from manifests/oidc/<app>.sealed.yaml.
-  # Everything is behind tinyauth but what's used from phone apps, extensions or other
-  # clients that can't follow a browser login: those log in themselves, and the ones that
-  # can offer Pocket ID as a second way in have oidc
+  # host: subdomain (unset = not proxied)  port: NodePort
+  # body: upload limit (Cloudflare: 100m)  timeout: upstream read timeout (Cloudflare: 100s)
+  # secrets: generated keys (secrets.sh)   dirs: what the pods mount
+  # extra: more manifests                  lan: host ports open to the LAN
+  # postgres: what to pg_dumpall           oidc: Pocket ID login (manifests/oidc)
+  # auth: tinyauth in front                authSkip(Token): paths left to the app's login
+  # apps with phone or CLI clients skip tinyauth and log in themselves
   apps =
   {
     vaultwarden =
@@ -185,8 +180,7 @@ let
         (root "${st.cache}/immich-models")
         (root "${st.scratch}/immich-encoded-video")
         (root "${st.state}/immich")
-        # postgres in the image is 999: its entrypoint chowns this on start, and as root's
-        # every k3s-app-dirs run under the live database locked it out of its own files
+        # postgres runs as 999 and owns this; root-owned locked it out
         (own "d" "0700" "999" "999" "${st.state}/immich/postgres")
       ];
       postgres =
@@ -377,6 +371,12 @@ let
       port = 30101;
       auth = true;
     };
+    # vanilla, LAN port 25565; nothing to proxy
+    minecraft =
+    {
+      dirs = [ (app "${st.state}/minecraft") ];
+      lan.tcp = [ 25565 ];
+    };
   };
 
   enabled = lib.filterAttrs (n: _: lib.elem n cfg.apps) apps;
@@ -566,8 +566,7 @@ in
 
     environment.systemPackages = lib.optional (lib.any (a: a.oidc or false) (lib.attrValues enabled)) sealOidc;
 
-    # created only with every disk mounted: pods mount hostPath type Directory, so a
-    # missing disk stops them instead of letting them fill the system SSD
+    # only once every disk is mounted, so pods fail instead of filling the system SSD
     systemd.services.k3s-app-dirs =
     {
       wantedBy = [ "k3s.service" ];

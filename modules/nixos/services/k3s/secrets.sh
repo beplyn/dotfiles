@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-# secrets.sh SPEC: for each "<namespace> <secret> <key>..." line, fill in the keys that Secret
-# lacks; ones already there are left alone so values never rotate under the apps.
-# A key is KEY (random hex), KEY=ntfy-token, or KEY=bcrypt:OTHER (hash of an earlier key)
+# secrets.sh SPEC: per "<namespace> <secret> <key>..." line, add missing keys, never rotate.
+# KEY = random hex, KEY=ntfy-token, KEY=bcrypt:OTHER (hash of another key)
 set -euo pipefail
 
 kubectl() { k3s kubectl "$@"; }
