@@ -85,9 +85,7 @@ function haku.move_column(direction)
     end
 end
 
--- niri's move-column-to-workspace: the focused window's whole column, still
--- stacked, to { workspace = n } or { offset = ±1 } on this monitor (n as
--- hyprsplit numbers it there); focus follows it
+-- move the focused column to { workspace = n } or { offset = ±1 }; focus follows
 function haku.move_column_to_workspace(target)
     return function()
         local focused = hl.get_active_window()

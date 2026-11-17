@@ -1,6 +1,5 @@
 # @x@ placeholders are filled in by apps.nix
-# no password signups: invite yourself from /admin (token in the vaultwarden Secret, ADMIN_TOKEN),
-# then register. Not behind tinyauth: the apps and browser extension log in themselves
+# own login, no signups: invite yourself from /admin (ADMIN_TOKEN), then register
 apiVersion: v1
 kind: Namespace
 metadata:

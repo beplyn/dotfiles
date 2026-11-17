@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-# backup.sh MOUNT TARGET STATE PGSPEC KEEP: a consistent copy of the app state and the cluster
-# itself into TARGET/current, then a read-only dated snapshot of it, keeping the newest KEEP.
-# Live sqlite files go through .backup and postgres through pg_dumpall, never a raw copy.
+# backup.sh MOUNT TARGET STATE PGSPEC KEEP: copy app state and the cluster to TARGET/current,
+# snapshot it, keep the newest KEEP. sqlite via .backup, postgres via pg_dumpall.
 # PGSPEC lines: "<namespace> <deployment> <user>"
 set -euo pipefail
 mount="$1"

@@ -1,7 +1,6 @@
 # @x@ placeholders are filled in by apps.nix
-# watches pages without feeds and sends the diffs on; behind tinyauth, leave its own password
-# unset. For ntfy, use the notification URL ntfys://@ntfy.host@/<topic>. Plain HTTP fetches
-# only: no browser for pages that need JavaScript
+# watches pages without feeds, behind tinyauth (no own password). ntfy URL:
+# ntfys://@ntfy.host@/<topic>. Plain HTTP only, no JavaScript pages
 apiVersion: v1
 kind: Namespace
 metadata:

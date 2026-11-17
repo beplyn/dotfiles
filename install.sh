@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Fresh NixOS install: repo to ~/<reponame>, pick host and theme, generate
-# hardware config, link /etc/nixos, build. Works from a checkout or `curl | bash`.
+# fresh NixOS install: clone, pick host and theme, hardware config, build.
+# Works from a checkout or `curl | bash`.
 set -euo pipefail
 
 # asked for under `curl | bash`; a checkout uses itself
@@ -106,16 +106,6 @@ fi
 
 cd "$repo_dir"
 
-# --- 1b. Whose machines: the vars, out of the repo -------------------------
-
-echo
-info "Your values (vars/README.md), saved root-only to $VARS_DIR/vars.toml:"
-bash modules/nixos/base/rebuild/vars.sh vars/vars.toml "$VARS_DIR"
-override=(--override-input vars "path:$VARS_DIR")
-
-user="$(sudo cat "$VARS_DIR/vars.toml" | yq -p toml '.username')"
-[[ "$USER" == "$user" ]] || warn "You are '$USER', but the config sets up the user '$user'."
-
 # --- 2. Host and theme ------------------------------------------------------
 
 mapfile -t hosts < <(find hosts -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort)
@@ -131,6 +121,16 @@ host="$(choose "Host: " "${hosts[@]}")"
 echo
 info "Which theme?"
 theme="$(choose "Theme: " "${themes[@]}")"
+
+# --- 2b. Whose machines: the vars, out of the repo -------------------------
+
+echo
+info "Your values (vars/README.md), saved root-only to $VARS_DIR/vars.toml:"
+bash modules/nixos/base/rebuild/vars.sh vars/vars.toml "$VARS_DIR" "$host"
+override=(--override-input vars "path:$VARS_DIR")
+
+user="$(sudo cat "$VARS_DIR/vars.toml" | yq -p toml '.username')"
+[[ "$USER" == "$user" ]] || warn "You are '$USER', but the config sets up the user '$user'."
 
 host_dir="hosts/$host"
 hw="$host_dir/hardware.nix"

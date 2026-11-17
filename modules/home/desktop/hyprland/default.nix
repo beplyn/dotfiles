@@ -4,9 +4,7 @@
   ...
 }:
 
-# Hyprland's Lua config. The .nix files hand values to Lua as data modules
-# (hypr/haku/data/*.lua); the .lua files next to them do the rest. Stylix
-# adds its colours to the generated hyprland.lua.
+# Lua config: .nix files pass data (hypr/haku/data/*.lua), .lua files use it
 let
   sessionWatch = pkgs.writeShellApplication
   {

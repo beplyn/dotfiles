@@ -37,9 +37,7 @@ PanelWindow {
         return combo.split("+").map(k => names[k] ?? (k.length === 1 ? k.toUpperCase() : k))
     }
 
-    // Sections into columns, each to the shortest one, flattened into grid
-    // cells: a header spanning both, then keys and title per bind. A long
-    // list gets three columns to fit the screen height.
+    // sections into the shortest column, then flat grid cells; long lists get 3 columns
     readonly property var columns: {
         const sections = Theme.hotkeys
         const total = sections.reduce((n, s) => n + s.binds.length + 1, 0)

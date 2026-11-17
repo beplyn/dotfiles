@@ -3,8 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// First backlight device, or else every monitor speaking DDC/CI, all set to
-// the same level; `available` stays false when there is neither.
+// first backlight, else every DDC/CI monitor at one level; `available` if any
 Singleton {
     id: root
 
@@ -65,8 +64,7 @@ Singleton {
     }
 
     // --- DDC/CI: the slider drives every external monitor ------------------
-    // A round trip takes a few hundred ms, so reads happen once and writes
-    // are coalesced while the slider moves.
+    // slow, so read once and batch writes while sliding
 
     Process {
         id: ddcDetect

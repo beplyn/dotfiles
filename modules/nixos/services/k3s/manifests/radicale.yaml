@@ -1,7 +1,6 @@
 # @x@ placeholders are filled in by apps.nix
-# CalDAV/CardDAV for phones and desktops, so not behind tinyauth: clients log in as @username@
-# with ADMIN_PASSWORD from the radicale Secret (ADMIN_HASH is its bcrypt). Point them at
-# https://@radicale.host@/; collections are flat files in @state@/radicale
+# CalDAV/CardDAV, own login as @username@ (ADMIN_PASSWORD in the Secret).
+# Point clients at https://@radicale.host@/
 apiVersion: v1
 kind: Namespace
 metadata:

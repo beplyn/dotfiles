@@ -60,7 +60,7 @@ pill track "@surface@"
 pill fill "@accent@"
 box thumb @px12@ @px3@ "@muted@" none 0 @px3@
 
-# background at the boot screen's size: diagonal gradient, dot grid, two-tone glowing snowflake, rainbow foot
+# boot background: gradient, dot grid, glowing snowflake, rainbow footer
 magick -size @width@x@height@ -define gradient:angle=135 gradient:"@mantle@"-"@background@" bg.png
 magick -size 32x32 xc:none -fill "@surface@" -draw "circle 16,16 17.2,16" dot.png
 magick -size @width@x@height@ tile:dot.png -channel A -evaluate multiply 0.55 +channel grid.png

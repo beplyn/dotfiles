@@ -1,6 +1,4 @@
--- Layout, decoration and motion. Gaps, borders and columns from the shell
--- theme (settings.nix); the curves are Material 3 motion, as in caelestia's and
--- end-4's rices. Stylix sets the colours in hyprland.lua.
+-- layout, decoration, animations; sizes from settings.nix, Material 3 curves
 local t = require("haku.data.theme")
 
 hl.config({
@@ -12,8 +10,7 @@ hl.config({
         gaps_workspaces = 50,
         border_size = t.border,
         resize_on_border = true,
-        -- focus stops at a column's ends, as in niri, rather than wrapping;
-        -- Mod+J/K then carry on to the next workspace (binds.lua)
+        -- no wrapping at column ends; Mod+J/K go on to the next workspace
         no_focus_fallback = true,
         snap = {
             enabled = true,

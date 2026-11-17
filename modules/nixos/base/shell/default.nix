@@ -46,8 +46,7 @@
     enableFishIntegration = true;
   };
 
-  # typos in fish and bash: an unknown command offers the closest match (fastftech -> fastfetch),
-  # `f` fixes the last command, ctrl-x ctrl-x the one being typed
+  # typo fixes: closest command match, `f` fixes the last one, ctrl-x ctrl-x the current
   programs.pay-respects =
   {
     enable = true;

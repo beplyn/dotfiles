@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# vars.sh TEMPLATE DIR: asks for every value in TEMPLATE (the repo's vars/vars.toml) that
-# DIR/vars.toml doesn't have yet, and writes it there, root-only. Runs as the user, sudo for
-# the file. lan.* may be left empty: only hosts with a static LAN address use them
+# vars.sh TEMPLATE DIR HOST: ask for values missing from DIR/vars.toml, save root-only.
+# lan.* only on beacon (static IP), the rest use DHCP
 set -euo pipefail
 template="$1"
 dir="$2"
+host="$3"
 file="$dir/vars.toml"
 
 current=""
@@ -17,17 +17,13 @@ updated="$current"
 while IFS=$'\t' read -r name example; do
   # the template's own marker, never a real value
   [ "$name" != placeholder ] || continue
-  # set already; an empty one was skipped on purpose
+  # DHCP hosts have no use for it
+  [[ "$name" != lan.* || "$host" == beacon ]] || continue
+  # set already
   if yq -p toml -e ".${name} != null" <<< "$current" > /dev/null 2>&1; then
     continue
   fi
-  optional=false
-  [[ "$name" == lan.* ]] && optional=true
   while true; do
-    if $optional; then
-      read -rp "$name (e.g. $example, empty if this host has no static LAN address): " value < /dev/tty
-      break
-    fi
     read -rp "$name (e.g. $example): " value < /dev/tty
     [ -n "$value" ] && break
     echo "$name is needed" >&2

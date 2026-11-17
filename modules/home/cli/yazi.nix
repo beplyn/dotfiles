@@ -148,9 +148,7 @@ in
             for = "unix";
           }
         ];
-        # binary in its own wezterm window with a shell left behind; it ignores
-        # SIGHUP so a gui app outlives the window, but stays in the foreground
-        # so stdin (scanf) still works
+        # in a new wezterm window; ignores SIGHUP so gui apps outlive it
         run =
         [
           {

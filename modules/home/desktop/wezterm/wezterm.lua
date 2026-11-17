@@ -1,5 +1,4 @@
--- merged over the stylix settings (color_scheme, font, window_background_opacity);
--- `wezterm` and `config` come from the Home Manager wrapper
+-- merged over stylix's settings; `wezterm` and `config` come from Home Manager
 
 -- no trail shaders in wezterm; the closest it gets is an eased blink
 config.default_cursor_style = "BlinkingUnderline"

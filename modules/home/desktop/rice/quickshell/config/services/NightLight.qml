@@ -3,8 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Warm screen through hyprsunset, whose own schedule and Mod+Alt+N change
-// it too, so its temperature is read back while the control center is open.
+// hyprsunset warmth, re-read while open (its schedule and Mod+Alt+N change it)
 Singleton {
     id: root
 

@@ -1,6 +1,5 @@
 # @x@ placeholders are filled in by apps.nix
-# behind tinyauth, plus n8n's own owner account, made on the first visit (it can't do without).
-# Webhooks and forms skip tinyauth (authSkip in apps.nix), so other services can call them
+# tinyauth plus n8n's owner account (first visit). Webhooks and forms skip tinyauth
 apiVersion: v1
 kind: Namespace
 metadata:

@@ -1,6 +1,5 @@
 # @x@ placeholders are filled in by apps.nix
-# the whiteboard as static files, behind tinyauth. Drawings stay in the browser unless saved
-# to a file; no collaboration server. Only latest and commit tags upstream, so by digest
+# whiteboard behind tinyauth, drawings stay in the browser. Pinned by digest (no version tags)
 apiVersion: v1
 kind: Namespace
 metadata:

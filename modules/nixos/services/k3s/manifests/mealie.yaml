@@ -1,7 +1,6 @@
 # @x@ placeholders are filled in by apps.nix
-# behind tinyauth, plus Mealie's own login, which it can't do without. First login:
-# changeme@example.com / MyPassword, then change both, the email to @email@. With mealie-oidc
-# sealed (oidc/README.md) "Login with Pocket ID" logs in as the user with that email
+# tinyauth plus Mealie's own login. First login changeme@example.com / MyPassword,
+# then change both (email to @email@). Pocket ID once mealie-oidc is sealed
 apiVersion: v1
 kind: Namespace
 metadata:

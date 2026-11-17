@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# ntfy-alert.sh UNIT PORT TOPIC: push UNIT's last log lines to the cluster's ntfy, run from
-# OnFailure=; the token is the publish-only one apps.nix provisions
+# ntfy-alert.sh UNIT PORT TOPIC: OnFailure= hook, sends UNIT's last log lines to ntfy
 set -euo pipefail
 unit="$1"
 port="$2"

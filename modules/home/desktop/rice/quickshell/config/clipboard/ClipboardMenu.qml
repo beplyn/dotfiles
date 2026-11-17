@@ -5,8 +5,7 @@ import Quickshell.Io
 import qs.services
 import qs.widgets
 
-// Clipboard history and pins (Mod+V), on cliphist, with vim keys: it opens in
-// normal mode (j/k, y, p, dd, D), / searches, ? or the (i) tab lists them all.
+// Mod+V: clipboard history and pins, vim keys (j/k, y, p, dd, D), / searches, ? lists keys
 Panel {
     id: root
 

@@ -5,8 +5,7 @@
   ...
 }:
 
-# daily consistent copy of everything the apps keep on the system SSD, plus the cluster itself,
-# as dated read-only btrfs snapshots on the backup disk
+# daily btrfs snapshots of app state and the cluster on the backup disk
 let
   cfg = config.k3s.backup;
   pgSpec = pkgs.writeText "k3s-backup-postgres" (lib.concatMapStrings

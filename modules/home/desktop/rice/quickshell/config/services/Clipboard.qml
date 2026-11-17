@@ -3,9 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// cliphist through `clipboard` (shell/clipboard): the history wl-paste keeps
-// and the pins, a cliphist db of their own. Both load when the panel opens;
-// deletes show at once, the reload after each edit confirms them.
+// cliphist history and pins via `clipboard`, loaded when the panel opens
 Singleton {
     id: root
 

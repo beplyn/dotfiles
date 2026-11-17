@@ -3,11 +3,8 @@ import QtQuick.Layouts
 import qs.services
 import qs.widgets
 
-// Add or change one event through vcal (services/Events.qml). Times take
-// whatever vcal reads: "2026-11-10 14:00", "tomorrow 9:00", "+2h"; the end
-// can be left empty for the default length. Edits send only what changed.
-// For a repeating event, "This one" changes the one occurrence; "All"
-// changes the series, but not its times, which belong to the TUI.
+// add or edit an event via vcal. Times: anything vcal reads ("tomorrow 9:00",
+// "+2h"), empty end = default length. Repeating: "This one" or "All" (not times)
 ColumnLayout {
     id: root
 

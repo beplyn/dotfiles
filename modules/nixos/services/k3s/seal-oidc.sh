@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # sudo seal-oidc APP > modules/nixos/services/k3s/manifests/oidc/APP.sealed.yaml
-# asks for the client ID and secret Pocket ID shows for APP and seals them as the APP-oidc
-# Secret against this cluster's controller; git add the file and the app picks it up
+# seals APP's Pocket ID client ID and secret; git add the file to use it
 set -euo pipefail
 app="${1:?usage: sudo seal-oidc <app> > modules/nixos/services/k3s/manifests/oidc/<app>.sealed.yaml}"
 
