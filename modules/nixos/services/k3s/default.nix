@@ -7,6 +7,8 @@ let
   sealedToken = manifests + "/cloudflare-api-token.sealed.yaml";
   # the proxy's ACME cert reuses the ddns token
   acmeToken = cfg.ddns.enable && config.proxy.enable && config.proxy.tls == "acme";
+  inherit (config.proxy) domain;
+  direct = map (h: "${h}.${domain}") cfg.dnsOnly;
 in
 {
   imports =
@@ -82,8 +84,12 @@ in
       }
       // lib.optionalAttrs cfg.ddns.enable
       {
-        ddns.source = pkgs.writeText "ddns.yaml"
-          (subst { inherit (config.proxy) domain; } (builtins.readFile (manifests + "/ddns.yaml")));
+        ddns.source = pkgs.writeText "ddns.yaml" (subst
+        {
+          domains = lib.concatStringsSep "," ([ domain "*.${domain}" ] ++ direct);
+          # Cloudflare's proxy only passes HTTP: the apps' non-HTTP subdomains skip it
+          proxied = if direct == [ ] then "true" else "!is(${lib.concatStringsSep "," direct})";
+        } (builtins.readFile (manifests + "/ddns.yaml")));
         ddns-token.source = sealedToken;
       };
     };

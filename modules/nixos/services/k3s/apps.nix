@@ -32,6 +32,7 @@ let
   # extra: more manifests                  lan: host ports open to the LAN
   # postgres: what to pg_dumpall           oidc: Pocket ID login (manifests/oidc)
   # auth: tinyauth in front                authSkip(Token): paths left to the app's login
+  # dnsOnly: unproxied subdomain (ddns)
   # apps with phone or CLI clients skip tinyauth and log in themselves
   apps =
   {
@@ -371,11 +372,12 @@ let
       port = 30101;
       auth = true;
     };
-    # vanilla, LAN port 25565; nothing to proxy
+    # vanilla on port 25565; mc. is DNS-only, Cloudflare's proxy only passes HTTP
     minecraft =
     {
       dirs = [ (app "${st.state}/minecraft") ];
       lan.tcp = [ 25565 ];
+      dnsOnly = "mc";
     };
   };
 
@@ -394,7 +396,7 @@ let
       "    ${config.proxy.domain}: ${cfg.lanAddress}"
     ]
     ++ map (h: "    ${h}.${config.proxy.domain}: ${cfg.lanAddress}")
-      (lib.filter (h: h != "@") (lib.attrNames config.proxy.hosts)));
+      (lib.filter (h: h != "@") (lib.attrNames config.proxy.hosts) ++ cfg.dnsOnly));
 
   vars =
   {
@@ -482,6 +484,14 @@ in
       default = lib.mapAttrsToList (n: a: a.postgres // { namespace = n; })
         (lib.filterAttrs (_: a: a ? postgres) enabled);
       description = "Postgres deployments of the enabled apps, for backups.";
+    };
+
+    dnsOnly = lib.mkOption
+    {
+      type = lib.types.listOf lib.types.str;
+      readOnly = true;
+      default = lib.mapAttrsToList (_: a: a.dnsOnly) (lib.filterAttrs (_: a: a ? dnsOnly) enabled);
+      description = "Subdomains of the enabled apps that ddns points here without Cloudflare's proxy.";
     };
 
     storage =
