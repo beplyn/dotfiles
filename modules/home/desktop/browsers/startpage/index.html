@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>New Tab</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <header class="hero">
+      <p class="greeting" id="greeting"></p>
+      <h1 class="clock" id="clock">--:--</h1>
+      <p class="date" id="date"></p>
+    </header>
+
+    <form class="search" id="search" action="https://www.startpage.com/sp/search" method="get" role="search">
+      <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"/>
+        <path d="m20 20-3.5-3.5"/>
+      </svg>
+      <input id="q" name="query" type="search" placeholder="Search Startpage, or type a service" autocomplete="off" spellcheck="false" autofocus aria-label="Search">
+      <kbd>/</kbd>
+    </form>
+    <p class="hint" id="hint" aria-live="polite"></p>
+
+    <div class="groups" id="groups"></div>
+  </main>
+
+  <script src="services.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
