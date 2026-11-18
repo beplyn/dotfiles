@@ -164,7 +164,6 @@ in
   [
     inputs.zen-browser.homeModules.beta
     ./sine.nix
-    ./startpage
     ./tor.nix
   ];
 
