@@ -141,6 +141,8 @@ dotfiles-vars "$flake/vars/vars.toml" @varsDir@ @hostName@
 # new files reach the flake; nothing else gets staged
 git -C "$flake" add --intent-to-add .
 sudo nixos-rebuild switch --flake "$flake#@hostName@-$theme" --override-input vars "path:@varsDir@"
+# when the last manual switch was, for the greeting on auto-rebuild hosts
+sudo install -Dm644 /dev/null /var/lib/rebuild/manual
 
 # units that were waiting on a new secret
 if [ ${#restart[@]} -gt 0 ]; then
