@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>services</title>
+  <link rel="stylesheet" href="stylix.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <label class="prompt" for="q">
+      <span class="prompt-symbol">&gt;</span>
+      <input id="q" type="text" placeholder="_" autocomplete="off" spellcheck="false" aria-label="Filter services">
+    </label>
+    <div class="panes" id="panes"></div>
+    <p class="empty" id="empty" hidden>no matches</p>
+  </main>
+
+  <footer class="statusbar">
+    <span class="mode" id="mode">NORMAL</span>
+    <span class="legend">
+      <span><kbd>/</kbd> filter</span>
+      <span><kbd>1-9</kbd> category</span>
+      <span><kbd>j/k</kbd> move</span>
+      <span><kbd>Enter</kbd> launch</span>
+      <span><kbd>Esc</kbd> clear</span>
+    </span>
+    <span class="status-right">
+      <span id="count">0/0</span>
+      <span class="sep">│</span>
+      <span id="clock">--:--:--</span>
+    </span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
