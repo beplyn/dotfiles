@@ -205,6 +205,130 @@ in
     enableCss = false;
   };
 
+  # Floorp: made to look like Zen, same containers and spaces
+  programs.floorp =
+  {
+    enable = true;
+    inherit policies;
+    profiles.default =
+    {
+      id = 0;
+      isDefault = true;
+      inherit extensions containers;
+      containersForce = true;
+      search = search (hidden [ "google" "bing" "perplexity" "wikipedia" ]);
+      settings = settings //
+      {
+        "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+
+        # Firefox's vertical tabs, always open
+        "sidebar.revamp" = true;
+        "sidebar.verticalTabs" = true;
+        "sidebar.visibility" = "always-show";
+        "sidebar.main.tools" = "bookmarks,history";
+        "sidebar.verticalTabs.dragToPinPromo.dismissed" = true;
+        "browser.toolbars.bookmarks.visibility" = "never";
+        # Zen is the default
+        "browser.shell.checkDefaultBrowser" = false;
+
+        # the tab strip is hidden, so workspaces go on the nav bar
+        "browser.uiCustomization.state" =
+          let
+            # addon id -> its toolbar button
+            widget = slug: lib.toLower (lib.replaceStrings [ "{" "}" "@" "." ] [ "_" "_" "_" "_" ] addons.${slug}) + "-browser-action";
+          in
+          builtins.toJSON
+          {
+            placements =
+            {
+              nav-bar =
+              [
+                "back-button" "forward-button" "stop-reload-button" "workspaces-toolbar-button"
+                "urlbar-container" "vertical-spacer" "zen-mode-button" "unified-extensions-button"
+              ] ++ map widget pinned;
+              unified-extensions-area = map widget (lib.subtractLists pinned (lib.attrNames addons));
+              TabsToolbar = [ ];
+              vertical-tabs = [ "tabbrowser-tabs" ];
+              toolbar-menubar = [ "menubar-items" ];
+              PersonalToolbar = [ "personal-bookmarks" ];
+              nora-statusbar = [ "screenshot-button" "fullscreen-button" "status-text" ];
+              widget-overflow-fixed-list = [ ];
+            };
+            # marked seen, else Floorp adds them back
+            seen =
+            [
+              "developer-button" "profile-manager-button" "undo-closed-tab" "ai-window-toggle"
+              "smartwindow-group-tabs-button" "reset-pbm-toolbar-button" "ipprotection-button"
+              "zen-mode-button" "workspaces-toolbar-button"
+            ] ++ map widget (lib.attrNames addons);
+            currentVersion = 28;
+            newElementCount = 0;
+          };
+
+        # merged over Floorp's defaults; Proton base, the look is userChrome
+        "floorp.design.configs" = builtins.toJSON
+        {
+          globalConfigs = { userInterface = "proton"; faviconColor = false; appliedUserJs = ""; };
+          tabbar = { tabbarStyle = "vertical"; tabbarPosition = "default"; };
+          uiCustomization.chromeExtras.hiddenSidebarHeader = true;
+        };
+
+        # no web panels in Zen
+        "floorp.panelSidebar.enabled" = false;
+
+        # reset each launch like Zen's spacesForce; tabs follow by id
+        "floorp.workspaces.enabled" = true;
+        "floorp.workspaces.v4.store" =
+          let
+            ordered = lib.sortOn (s: s.position) (lib.attrValues (lib.mapAttrs (name: s: s // { inherit name; }) spaces));
+            isDefault = s: s.id == spaces.General.id;
+          in
+          builtins.toJSON
+          {
+            defaultID = spaces.General.id;
+            # a Map in Floorp: [id, workspace] pairs
+            data = map (s:
+            [
+              s.id
+              {
+                inherit (s) name;
+                userContextId = s.container or 0;
+                isDefault = isDefault s;
+                isSelected = isDefault s;
+                icon = "floorp-icon:v1:${s.glyph}";
+              }
+            ]) ordered;
+            order = map (s: s.id) ordered;
+          };
+
+        # Floorp's Zen mode on Zen's compact-mode key, Ctrl+Alt+C
+        "floorp.keyboardshortcut.config" = builtins.toJSON
+        {
+          schemaVersion = 2;
+          enabled = true;
+          shortcuts =
+          {
+            floorp-toggle-command-palette =
+            {
+              key = "F2";
+              modifiers = { alt = false; ctrl = false; meta = false; shift = false; };
+              action = "floorp-toggle-command-palette";
+            };
+            floorp-toggle-zen-mode =
+            {
+              key = "KeyC";
+              modifiers = { alt = true; ctrl = true; meta = false; shift = false; };
+              action = "floorp-toggle-zen-mode";
+            };
+          };
+        };
+      };
+      userChrome = theme.override ./floorp/userChrome.css;
+      userContent = theme.override ./floorp/userContent.css;
+    };
+  };
+  stylix.targets.floorp.profileNames = [ "default" ];
+
   # LibreWolf: throwaway, wipes everything on close
   programs.librewolf =
   {
