@@ -100,6 +100,22 @@ let
   };
   hidden = ids: lib.genAttrs ids (_: { metaData.hidden = true; });
 
+  # ids from Zen, so cookies and tabs carry over
+  containers =
+  {
+    HomeLab = { id = 6; color = "purple"; icon = "vacation"; };
+    Uni = { id = 7; color = "blue"; icon = "fence"; };
+    Personal = { id = 8; color = "yellow"; icon = "fingerprint"; };
+  };
+  # Zen spaces = Floorp workspaces; glyph is the Floorp icon
+  spaces =
+  {
+    General = { id = "aaf6f51b-594d-4668-b351-774385971671"; position = 1000; icon = "🏠"; glyph = "compass"; };
+    Uni = { id = "ee7e508a-3519-45fa-bbcf-d616a7d6a558"; position = 2000; icon = "📚"; glyph = "book"; container = 7; };
+    HomeLab = { id = "0a6214cd-b40f-4c10-9be5-c46030ec2aca"; position = 3000; icon = "🖥️"; glyph = "network"; container = 6; };
+    Personal = { id = "bc2cccc5-0432-4574-9546-50b9f00f92f7"; position = 4000; icon = "📎"; glyph = "user"; container = 8; };
+  };
+
   extensions =
   {
     force = true;
@@ -165,23 +181,11 @@ in
       # Sine mod manager, pinned and non-updating
       sine.enable = true;
       search = search (hidden [ "google" "bing" "perplexity" "wikipedia" ]);
-      # ids are the ones Zen made, so the cookies and open tabs carry over
       containersForce = true;
-      containers =
-      {
-        HomeLab = { id = 6; color = "purple"; icon = "vacation"; };
-        Uni = { id = 7; color = "blue"; icon = "fence"; };
-        Personal = { id = 8; color = "yellow"; icon = "fingerprint"; };
-      };
+      inherit containers;
       # rewrites zen-sessions.jsonlz4, close Zen before switching
       spacesForce = true;
-      spaces =
-      {
-        General = { id = "aaf6f51b-594d-4668-b351-774385971671"; position = 1000; icon = "🏠"; };
-        Uni = { id = "ee7e508a-3519-45fa-bbcf-d616a7d6a558"; position = 2000; icon = "📚"; container = 7; };
-        HomeLab = { id = "0a6214cd-b40f-4c10-9be5-c46030ec2aca"; position = 3000; icon = "🖥️"; container = 6; };
-        Personal = { id = "bc2cccc5-0432-4574-9546-50b9f00f92f7"; position = 4000; icon = "📎"; container = 8; };
-      };
+      spaces = lib.mapAttrs (_: space: removeAttrs space [ "glyph" ]) spaces;
       settings = settings //
       {
         "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
