@@ -1,0 +1,121 @@
+/* Zen look: flat frame, vertical tabs, page as a rounded card */
+
+:root
+{
+  --zen-gap: 8px;
+  --zen-radius: 10px;
+  --zen-frame: @shade@;
+
+  /* one surface; old and Gecko 152 names */
+  --toolbox-bgcolor: var(--zen-frame) !important;
+  --toolbox-bgcolor-inactive: var(--zen-frame) !important;
+  --toolbox-background-color: var(--zen-frame) !important;
+  --toolbox-background-color-inactive: var(--zen-frame) !important;
+  --toolbar-bgcolor: var(--zen-frame) !important;
+  --toolbar-background-color: var(--zen-frame) !important;
+  --toolbox-textcolor: @foreground@ !important;
+  --toolbar-color: @foreground@ !important;
+  --toolbar-text-color: @foreground@ !important;
+  --sidebar-background-color: var(--zen-frame) !important;
+  --sidebar-text-color: @foreground@ !important;
+  --chrome-content-separator-color: transparent !important;
+
+  --toolbar-field-background-color: @mantle@ !important;
+  --toolbar-field-color: @foreground@ !important;
+  --toolbar-field-border-color: transparent !important;
+  --toolbar-field-focus-background-color: @background@ !important;
+  --toolbar-field-focus-color: @foreground@ !important;
+  --toolbar-field-focus-border-color: @accent@ !important;
+
+  --tab-selected-bgcolor: @surface@ !important;
+  --tab-selected-textcolor: @foreground@ !important;
+  --tab-hover-background-color: @mantle@ !important;
+  --tab-border-radius: 8px !important;
+
+  --arrowpanel-background: @background@ !important;
+  --arrowpanel-color: @foreground@ !important;
+  --arrowpanel-border-color: @surface@ !important;
+  --urlbarView-highlight-background: @surface@ !important;
+  --urlbarView-highlight-color: @foreground@ !important;
+  --focus-outline-color: @accent@ !important;
+  --tabpanel-background-color: @background@ !important;
+}
+
+#navigator-toolbox
+{
+  border-bottom: none !important;
+}
+
+#nav-bar
+{
+  box-shadow: none !important;
+  border-top: none !important;
+}
+
+#sidebar-container
+{
+  background-color: var(--zen-frame) !important;
+}
+
+/* page as a card */
+#tabbrowser-tabbox
+{
+  margin: 0 var(--zen-gap) var(--zen-gap) 0 !important;
+  border-radius: var(--zen-radius) !important;
+  overflow: clip !important;
+  outline: none !important;
+  box-shadow: 0 0 0 1px @surface@, 0 4px 16px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* floating urlbar */
+#urlbar[breakout][breakout-extend]
+{
+  position: fixed !important;
+  top: 22vh !important;
+  left: calc(50vw - min(760px, 80vw) / 2) !important;
+  width: min(760px, 80vw) !important;
+  z-index: 10 !important;
+}
+
+#urlbar[breakout][breakout-extend] > .urlbar-background
+{
+  border: 1px solid @accent@ !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55) !important;
+}
+
+/* dim the page behind it */
+:root:has(#urlbar[breakout-extend]) #tabbrowser-tabbox
+{
+  filter: brightness(0.6);
+  transition: filter 0.15s ease;
+}
+
+/* Zen mode (Ctrl+Alt+C): tabs slide out too, hover the left edge */
+:root[zenmode] #sidebar-container
+{
+  position: absolute !important;
+  inset-block: 0 !important;
+  inset-inline-start: 0 !important;
+  z-index: 5 !important;
+  translate: calc(-100% + var(--zen-gap)) 0 !important;
+  opacity: 0 !important;
+  border-radius: 0 var(--zen-radius) var(--zen-radius) 0;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.45);
+  transition: translate 0.2s ease, opacity 0.2s ease;
+}
+
+:root[zenmode] #sidebar-container:is(:hover, :focus-within)
+{
+  translate: 0 0 !important;
+  opacity: 1 !important;
+}
+
+:root[zenmode] #sidebar-launcher-splitter
+{
+  display: none !important;
+}
+
+:root[zenmode] #tabbrowser-tabbox
+{
+  margin: var(--zen-gap) !important;
+}

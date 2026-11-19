@@ -1,0 +1,25 @@
+/* Floorp pages in stylix colours */
+
+@-moz-document url-prefix("about:"), url-prefix("chrome://floorp"), url-prefix("chrome://noraneko")
+{
+  :root
+  {
+    --in-content-page-background: @background@ !important;
+    --in-content-page-color: @foreground@ !important;
+    --in-content-box-background: @mantle@ !important;
+    --in-content-border-color: @surface@ !important;
+    --in-content-primary-button-background: @accent@ !important;
+    --in-content-primary-button-text-color: @background@ !important;
+    --color-accent-primary: @accent@ !important;
+    --background-color-canvas: @background@ !important;
+    --text-color: @foreground@ !important;
+  }
+}
+
+@-moz-document url("about:newtab"), url("about:home")
+{
+  body
+  {
+    background-color: @background@ !important;
+  }
+}

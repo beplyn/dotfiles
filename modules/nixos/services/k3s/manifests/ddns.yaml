@@ -1,4 +1,4 @@
-# namespace comes from default.nix (phase 1); @domain@ is filled in there
+# namespace comes from default.nix (phase 1); @domains@ and @proxied@ are filled in there
 # no Kubernetes API access: no Role, no RoleBinding, no token
 apiVersion: v1
 kind: ServiceAccount
@@ -40,10 +40,10 @@ spec:
                   name: cloudflare-api-token
                   key: CLOUDFLARE_API_TOKEN
             - name: DOMAINS
-              value: "@domain@,*.@domain@"
-            # for new records; with proxy.cloudflareOnly nginx answers nothing else
+              value: "@domains@"
+            # for new records, and what existing ones are checked against
             - name: PROXIED
-              value: "true"
+              value: "@proxied@"
             - name: IP4_PROVIDER
               value: "cloudflare.trace"
             - name: IP6_PROVIDER
