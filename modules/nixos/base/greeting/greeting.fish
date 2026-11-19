@@ -26,6 +26,15 @@ function __greeting
     set -l built (stat -c %Y /nix/var/nix/profiles/system-$gen-link)
     set -a parts "gen $gen (built $(__greeting_age (math $now - $built)) ago)"
   end
+  # auto-rebuild hosts: when someone last switched by hand
+  if test -d /var/lib/auto-rebuild
+    set -l manual (stat -c %Y /var/lib/rebuild/manual 2>/dev/null)
+    if test -n "$manual"
+      set -a parts "manual $(__greeting_age (math $now - $manual)) ago"
+    else
+      set -a parts "manual never"
+    end
+  end
   set -l flake /etc/nixos
   test -d $flake; or set flake ~/dotfiles
   if test -d $flake/.git

@@ -1,5 +1,5 @@
 # @x@ placeholders are filled in by apps.nix
-# vanilla 26.2 on tcp://<beacon>:25565; forward it on the router to play from outside.
+# vanilla 26.3 on tcp://<beacon>:25565; forward it on the router to play from outside.
 # Console: kubectl -n minecraft exec deploy/minecraft -- rcon-cli
 apiVersion: v1
 kind: Namespace
@@ -39,15 +39,17 @@ spec:
             - name: TYPE
               value: VANILLA
             - name: VERSION
-              value: "26.2"
+              value: "26.3"
             - name: MEMORY
-              value: 4G
+              value: 12G
             - name: USE_AIKAR_FLAGS
               value: "true"
+            # chunks sent to clients, vanilla's max; clients still cap it at their own setting
             - name: VIEW_DISTANCE
-              value: "10"
+              value: "32"
+            # chunks that tick: the CPU cost, so kept well below
             - name: SIMULATION_DISTANCE
-              value: "8"
+              value: "12"
             - name: MOTD
               value: beacon
             - name: TZ
@@ -79,10 +81,10 @@ spec:
           resources:
             requests:
               cpu: 500m
-              memory: 4Gi
+              memory: 12Gi
             # heap plus JVM overhead
             limits:
-              memory: 5Gi
+              memory: 14Gi
       volumes:
         - name: data
           hostPath:
