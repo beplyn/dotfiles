@@ -35,7 +35,6 @@ let
     docs = { name = "Paperless"; category = "DAILY"; icon = "file"; tags = [ "documents" "scans" ]; };
 
     files = { name = "FileBrowser"; category = "TOOLS"; icon = "folder"; tags = [ "tank" "share" ]; };
-    sync = { name = "Syncthing"; category = "TOOLS"; icon = "sync"; tags = [ "devices" ]; };
     search = { name = "SearXNG"; category = "TOOLS"; icon = "search"; tags = [ "metasearch" ]; };
     pdf = { name = "Stirling PDF"; category = "TOOLS"; icon = "filetext"; tags = [ "merge" "convert" ]; };
     draw = { name = "Excalidraw"; category = "TOOLS"; icon = "shapes"; tags = [ "whiteboard" "diagram" ]; };

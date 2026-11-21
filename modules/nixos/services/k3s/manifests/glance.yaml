@@ -69,10 +69,6 @@ data:
                     url: "https://@stirling-pdf.host@"
                     check-url: http://stirling-pdf.stirling-pdf.svc/
                     icon: di:stirling-pdf
-                  - title: Syncthing
-                    url: "https://@syncthing.host@"
-                    check-url: http://syncthing.syncthing.svc/rest/noauth/health
-                    icon: di:syncthing
                   - title: FileBrowser
                     url: "https://@filebrowser.host@"
                     check-url: http://filebrowser.filebrowser.svc/health

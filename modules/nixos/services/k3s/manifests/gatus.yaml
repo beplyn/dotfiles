@@ -84,11 +84,6 @@ data:
         url: http://stirling-pdf.stirling-pdf.svc/
         interval: 1m
         conditions: ["[STATUS] < 500"]
-      - name: Syncthing
-        group: apps
-        url: http://syncthing.syncthing.svc/rest/noauth/health
-        interval: 1m
-        conditions: ["[STATUS] == 200"]
       - name: FileBrowser
         group: apps
         url: http://filebrowser.filebrowser.svc/health

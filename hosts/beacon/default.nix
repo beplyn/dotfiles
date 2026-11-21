@@ -47,7 +47,6 @@
     "linkding"
     "audiobookshelf"
     "stirling-pdf"
-    "syncthing"
     "filebrowser"
     "actual"
     "wastebin"
