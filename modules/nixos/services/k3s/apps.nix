@@ -359,6 +359,25 @@ let
       ];
       auth = true;
     };
+    # .torrent or magnet: done lands in jellyfin's video, partial on scratch
+    qbittorrent =
+    {
+      host = "torrent";
+      port = 30103;
+      body = "20m";
+      dirs =
+      [
+        (mine "${st.state}/qbittorrent")
+        (mine "${st.scratch}/qbittorrent")
+        (subvol "${st.bulk}/video")
+      ];
+      lan =
+      {
+        tcp = [ 6881 ];
+        udp = [ 6881 ];
+      };
+      auth = true;
+    };
     # nothing kept: drawings stay in the browser unless exported
     excalidraw =
     {
