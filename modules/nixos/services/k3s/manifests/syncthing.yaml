@@ -60,6 +60,10 @@ spec:
             # add folders under /sync
             - name: data
               mountPath: /sync
+            - name: music
+              mountPath: /music
+            - name: video
+              mountPath: /video
           # not root, so the entrypoint runs it as is
           securityContext:
             runAsNonRoot: true
@@ -85,6 +89,14 @@ spec:
         - name: data
           hostPath:
             path: "@bulk@/sync"
+            type: Directory
+        - name: music
+          hostPath:
+            path: "@bulk@/music"
+            type: Directory
+        - name: video
+          hostPath:
+            path: "@bulk@/video"
             type: Directory
 ---
 apiVersion: v1
