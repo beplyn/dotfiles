@@ -73,6 +73,10 @@ data:
                     url: "https://@filebrowser.host@"
                     check-url: http://filebrowser.filebrowser.svc/health
                     icon: di:filebrowser
+                  - title: MeTube
+                    url: "https://@metube.host@"
+                    check-url: http://metube.metube.svc/
+                    icon: di:metube
                   - title: Actual
                     url: "https://@actual.host@"
                     check-url: http://actual.actual.svc/health

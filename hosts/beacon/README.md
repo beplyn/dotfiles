@@ -142,6 +142,7 @@ All at `https://<subdomain>.<domain>`.
 | ntfy              | `ntfy`    |     | `admin` / `ADMIN_PASSWORD`, subscribe to `alerts`                   |
 | Linkding          | `links`   |     | `<username>` / `ADMIN_PASSWORD`. The extension uses an API token    |
 | Radicale          | `cal`     |     | `<username>` / `ADMIN_PASSWORD`, for CalDAV/CardDAV                 |
+| MeTube            | `dl`      |     | Paste a link, pick Audio for Navidrome (`/music`), Video for Jellyfin (`/video`) |
 | Navidrome         | `music`   |     | `admin` / `ADMIN_PASSWORD`, rename it in the app                    |
 | Vikunja           | `tasks`   |     | `<username>` / `ADMIN_PASSWORD` (see `k3s/manifests/vikunja.yaml`)  |
 | Immich            | `photos`  |     | The first user you create is admin                                  |
