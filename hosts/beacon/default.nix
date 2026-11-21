@@ -55,6 +55,7 @@
     "radicale"
     "navidrome"
     "metube"
+    "qbittorrent"
     "n8n"
     "atuin"
     "changedetection"
