@@ -34,6 +34,8 @@ let
     budget = { name = "Actual"; category = "DAILY"; icon = "card"; tags = [ "money" "finance" ]; };
     docs = { name = "Paperless"; category = "DAILY"; icon = "file"; tags = [ "documents" "scans" ]; };
 
+    dl = { name = "MeTube"; category = "MEDIA"; icon = "download"; tags = [ "youtube" "soundcloud" "yt-dlp" ]; };
+
     files = { name = "FileBrowser"; category = "TOOLS"; icon = "folder"; tags = [ "tank" "share" ]; };
     search = { name = "SearXNG"; category = "TOOLS"; icon = "search"; tags = [ "metasearch" ]; };
     pdf = { name = "Stirling PDF"; category = "TOOLS"; icon = "filetext"; tags = [ "merge" "convert" ]; };
