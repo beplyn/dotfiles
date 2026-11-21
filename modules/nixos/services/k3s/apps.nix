@@ -240,6 +240,8 @@ let
       [
         (mine "${st.state}/syncthing")
         (subvol "${st.bulk}/sync")
+        (subvol "${st.bulk}/music")
+        (subvol "${st.bulk}/video")
       ];
       lan =
       {
