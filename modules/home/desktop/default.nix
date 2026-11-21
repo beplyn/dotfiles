@@ -12,6 +12,7 @@
     ./browsers
     ./office.nix
     ./media.nix
+    ./media-upload
     ./cliamp.nix
     ./speci-local.nix
     ./kdeconnect.nix
