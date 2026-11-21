@@ -1,0 +1,111 @@
+# @x@ placeholders are filled in by apps.nix
+# yt-dlp in the browser as @username@, behind tinyauth: audio -> @bulk@/music, video -> @bulk@/video
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: metube
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metube
+  namespace: metube
+  labels:
+    app: metube
+spec:
+  replicas: 1
+  # one writer on its queue state
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: metube
+  template:
+    metadata:
+      labels:
+        app: metube
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: metube
+          image: alexta69/metube:2026.11.06
+          env:
+            - name: DOWNLOAD_DIR
+              value: /video
+            - name: AUDIO_DOWNLOAD_DIR
+              value: /music
+            - name: STATE_DIR
+              value: /state
+            - name: TEMP_DIR
+              value: /tmp/metube
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: http
+              containerPort: 8081
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          volumeMounts:
+            - name: state
+              mountPath: /state
+            - name: music
+              mountPath: /music
+            - name: video
+              mountPath: /video
+            - name: tmp
+              mountPath: /tmp
+            - name: cache
+              mountPath: /.cache
+          # not root, so the entrypoint skips its chown and runs it as is
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: @useruid@
+            runAsGroup: @usergid@
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 10m
+              memory: 128Mi
+            limits:
+              memory: 1Gi
+      volumes:
+        - name: state
+          hostPath:
+            path: "@state@/metube"
+            type: Directory
+        - name: music
+          hostPath:
+            path: "@bulk@/music"
+            type: Directory
+        - name: video
+          hostPath:
+            path: "@bulk@/video"
+            type: Directory
+        # partial downloads and ffmpeg's work
+        - name: tmp
+          emptyDir: { }
+        - name: cache
+          emptyDir: { }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: metube
+  namespace: metube
+spec:
+  type: NodePort
+  selector:
+    app: metube
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @metube.port@

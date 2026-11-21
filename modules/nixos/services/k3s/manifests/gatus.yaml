@@ -89,6 +89,11 @@ data:
         url: http://filebrowser.filebrowser.svc/health
         interval: 1m
         conditions: ["[STATUS] == 200"]
+      - name: MeTube
+        group: apps
+        url: http://metube.metube.svc/
+        interval: 1m
+        conditions: ["[STATUS] == 200"]
       - name: Actual
         group: apps
         url: http://actual.actual.svc/health

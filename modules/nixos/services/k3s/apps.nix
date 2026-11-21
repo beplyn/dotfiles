@@ -346,6 +346,19 @@ let
       auth = true;
       oidc = true;
     };
+    # paste a link: audio lands in navidrome's music, video in jellyfin's
+    metube =
+    {
+      host = "dl";
+      port = 30102;
+      dirs =
+      [
+        (mine "${st.state}/metube")
+        (subvol "${st.bulk}/music")
+        (subvol "${st.bulk}/video")
+      ];
+      auth = true;
+    };
     # nothing kept: drawings stay in the browser unless exported
     excalidraw =
     {
