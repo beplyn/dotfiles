@@ -231,27 +231,6 @@ let
       body = "100m";
       auth = true;
     };
-    # the GUI behind tinyauth; devices sync with it on the LAN (22000, QUIC on udp)
-    syncthing =
-    {
-      host = "sync";
-      port = 30384;
-      dirs =
-      [
-        (mine "${st.state}/syncthing")
-        (subvol "${st.bulk}/sync")
-        (subvol "${st.bulk}/music")
-        (subvol "${st.bulk}/video")
-      ];
-      lan =
-      {
-        tcp = [ 22000 ];
-        udp = [ 22000 ];
-      };
-      # the GUI long-polls /rest/events for up to a minute, right at nginx's default
-      timeout = "5m";
-      auth = true;
-    };
     # all of tank, as ${username}; share links work without a login
     filebrowser =
     {

@@ -127,7 +127,6 @@ All at `https://<subdomain>.<domain>`.
 | Gatus             | `status`  |     |                                                                     |
 | SilverBullet      | `notes`   |     | Pages are `.md` files in `/srv/tank/notes`                          |
 | Stirling PDF      | `pdf`     |     |                                                                     |
-| Syncthing         | `sync`    |     | Leave its GUI password unset. Folders go in `/sync`. Devices connect to `tcp://<beacon's address>:22000` |
 | FileBrowser       | `files`   |     | Shows tank, except photos                                           |
 | SearXNG           | `search`  |     | Browser search engine: `https://search.<domain>/search?q=%s`        |
 | n8n               | `flow`    |     | Create the owner account. `/webhook/` and `/form/` are public       |
@@ -155,5 +154,5 @@ All at `https://<subdomain>.<domain>`.
 Notes:
 
 - Immich and Audiobookshelf can add Pocket ID in their own admin settings.
-- SilverBullet, Syncthing and FileBrowser run as you (uid 1000), so their files on tank are yours.
+- SilverBullet and FileBrowser run as you (uid 1000), so their files on tank are yours.
 - Beszel and Scrutiny run on the host, not k3s, and aren't backed up (their data is regenerable).
