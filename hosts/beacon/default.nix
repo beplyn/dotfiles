@@ -67,7 +67,7 @@
   # Beszel and Scrutiny on the host, at metrics. and disks.
   monitoring.enable = true;
 
-  environment.systemPackages = [ pkgs.kitty.terminfo ];
+  environment.systemPackages = [ pkgs.kitty.terminfo pkgs.rsync ];
 
   system.stateVersion = "26.11";
 }
