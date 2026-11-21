@@ -54,6 +54,7 @@
     "vikunja"
     "radicale"
     "navidrome"
+    "metube"
     "n8n"
     "atuin"
     "changedetection"
