@@ -94,6 +94,11 @@ data:
         url: http://metube.metube.svc/
         interval: 1m
         conditions: ["[STATUS] == 200"]
+      - name: qBittorrent
+        group: apps
+        url: http://qbittorrent.qbittorrent.svc/api/v2/app/version
+        interval: 1m
+        conditions: ["[STATUS] == 200"]
       - name: Actual
         group: apps
         url: http://actual.actual.svc/health
