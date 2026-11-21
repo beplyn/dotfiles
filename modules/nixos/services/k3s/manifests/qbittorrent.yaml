@@ -1,0 +1,153 @@
+# @x@ placeholders are filled in by apps.nix
+# .torrent and magnet links as @username@, behind tinyauth: done -> @bulk@/video, partial -> @scratch@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: qbittorrent
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: qbittorrent
+  namespace: qbittorrent
+data:
+  # seeded once; qBittorrent rewrites it, so WebUI changes stick
+  # cluster pods (nginx via the NodePort included) skip the login, tinyauth guards the outside
+  qBittorrent.conf: |
+    [BitTorrent]
+    Session\DefaultSavePath=/video
+    Session\TempPath=/incomplete
+    Session\TempPathEnabled=true
+    Session\Port=6881
+
+    [Meta]
+    MigrationVersion=9999
+
+    [WebUI]
+    Port=8080
+    AuthSubnetWhitelistEnabled=true
+    AuthSubnetWhitelist=10.42.0.0/16
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qbittorrent
+  namespace: qbittorrent
+  labels:
+    app: qbittorrent
+spec:
+  replicas: 1
+  # one session on the hostPort
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: qbittorrent
+  template:
+    metadata:
+      labels:
+        app: qbittorrent
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      # time to save resume data
+      terminationGracePeriodSeconds: 300
+      initContainers:
+        - name: seed
+          image: qbittorrentofficial/qbittorrent-nox:5.3.0-2
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              conf=/config/qBittorrent/config/qBittorrent.conf
+              mkdir -p "${conf%/*}"
+              [ -f "$conf" ] || cp /seed/qBittorrent.conf "$conf"
+          volumeMounts: &mounts
+            - name: seed
+              mountPath: /seed
+              readOnly: true
+            - name: config
+              mountPath: /config
+            - name: video
+              mountPath: /video
+            - name: incomplete
+              mountPath: /incomplete
+            - name: tmp
+              mountPath: /tmp
+          securityContext: &security
+            runAsNonRoot: true
+            runAsUser: @useruid@
+            runAsGroup: @usergid@
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+      containers:
+        - name: qbittorrent
+          image: qbittorrentofficial/qbittorrent-nox:5.3.0-2
+          env:
+            - name: QBT_LEGAL_NOTICE
+              value: confirm
+            - name: HOME
+              value: /config
+            - name: UMASK
+              value: "022"
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: peers
+              containerPort: 6881
+              hostPort: 6881
+              protocol: TCP
+            - name: peers-udp
+              containerPort: 6881
+              hostPort: 6881
+              protocol: UDP
+          readinessProbe:
+            tcpSocket:
+              port: http
+          volumeMounts: *mounts
+          securityContext: *security
+          resources:
+            requests:
+              cpu: 10m
+              memory: 128Mi
+            limits:
+              memory: 2Gi
+      volumes:
+        - name: seed
+          configMap:
+            name: qbittorrent
+        - name: config
+          hostPath:
+            path: "@state@/qbittorrent"
+            type: Directory
+        - name: video
+          hostPath:
+            path: "@bulk@/video"
+            type: Directory
+        - name: incomplete
+          hostPath:
+            path: "@scratch@/qbittorrent"
+            type: Directory
+        - name: tmp
+          emptyDir: { }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qbittorrent
+  namespace: qbittorrent
+spec:
+  type: NodePort
+  selector:
+    app: qbittorrent
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @qbittorrent.port@
