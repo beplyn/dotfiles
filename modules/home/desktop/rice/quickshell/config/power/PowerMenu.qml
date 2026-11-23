@@ -178,7 +178,7 @@ PanelWindow {
                                 Layout.alignment: Qt.AlignHCenter
                                 implicitWidth: 64
                                 implicitHeight: 64
-                                radius: 32
+                                radius: height / 2
                                 color: tile.isArmed ? Theme.alpha(Theme.background, 0.2)
                                     : Theme.alpha(tile.tint, tile.selected ? 0.25 : 0.12)
 
@@ -209,7 +209,7 @@ PanelWindow {
                                 Layout.alignment: Qt.AlignHCenter
                                 implicitWidth: 22
                                 implicitHeight: 20
-                                radius: 6
+                                radius: Theme.innerRadius
                                 color: tile.isArmed ? Theme.alpha(Theme.background, 0.2) : Theme.well
 
                                 Text {

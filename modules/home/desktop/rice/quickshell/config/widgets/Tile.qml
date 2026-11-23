@@ -21,7 +21,7 @@ Rectangle {
         ColorAnimation { duration: Theme.fast }
     }
     Behavior on scale {
-        NumberAnimation { duration: 120 }
+        NumberAnimation { duration: Theme.quick }
     }
 
     RowLayout {

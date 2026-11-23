@@ -116,7 +116,7 @@ ColumnLayout {
                     Layout.fillHeight: true
                     Layout.topMargin: 2
                     Layout.bottomMargin: 2
-                    radius: 2
+                    radius: Theme.radiusSm
                     color: Events.color(row.e)
                 }
                 Text {
