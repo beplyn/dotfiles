@@ -26,15 +26,18 @@ Rectangle {
 
     RowLayout {
         anchors.fill: parent
-        anchors.leftMargin: 14
-        anchors.rightMargin: 10
-        spacing: 12
+        anchors.leftMargin: Theme.padMd
+        anchors.rightMargin: Theme.padSm
+        spacing: Theme.gapMd
 
         Text {
             text: root.icon
+            horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                Layout.preferredWidth: Theme.iconBox
             color: root.active ? Theme.background : Theme.accent
             font.family: Theme.font
-            font.pointSize: Theme.popupFontSize + 5
+            font.pointSize: Theme.iconMd
         }
 
         ColumnLayout {

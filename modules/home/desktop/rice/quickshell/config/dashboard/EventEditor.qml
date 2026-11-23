@@ -126,12 +126,12 @@ ColumnLayout {
         Events.remove(event, recurring && !all ? event.occurrence : null, finish)
     }
 
-    spacing: 6
+    spacing: Theme.padXs
 
     // --- which occurrences -------------------------------------------------
     RowLayout {
         visible: root.recurring
-        spacing: 6
+        spacing: Theme.padXs
 
         Text {
             text: Icons.repeat + "  Repeats:"
@@ -161,7 +161,7 @@ ColumnLayout {
     RowLayout {
         Layout.fillWidth: true
         visible: !root.timesLocked
-        spacing: 6
+        spacing: Theme.padXs
 
         Text {
             Layout.preferredWidth: 64
@@ -234,8 +234,8 @@ ColumnLayout {
     // --- actions ---------------------------------------------------------
     RowLayout {
         Layout.fillWidth: true
-        Layout.topMargin: 2
-        spacing: 6
+        Layout.topMargin: Theme.gapXs
+        spacing: Theme.padXs
 
         IconButton {
             visible: !root.isNew && !root.confirmDelete
@@ -292,7 +292,7 @@ ColumnLayout {
         property string placeholder: ""
 
         Layout.fillWidth: true
-        spacing: 6
+        spacing: Theme.padXs
 
         Text {
             Layout.preferredWidth: 64
@@ -306,14 +306,14 @@ ColumnLayout {
             implicitHeight: input.implicitHeight + 10
             radius: Theme.innerRadius
             color: Theme.well
-            border.width: 1
+            border.width: Theme.borderWidth
             border.color: input.activeFocus ? Theme.alpha(Theme.accent, 0.6) : "transparent"
 
             TextInput {
                 id: input
                 anchors.fill: parent
-                anchors.leftMargin: 8
-                anchors.rightMargin: 8
+                anchors.leftMargin: Theme.gapSm
+                anchors.rightMargin: Theme.gapSm
                 verticalAlignment: TextInput.AlignVCenter
                 color: Theme.foreground
                 selectionColor: Theme.alpha(Theme.accent, 0.4)

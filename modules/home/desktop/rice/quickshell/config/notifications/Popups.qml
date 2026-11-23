@@ -29,7 +29,7 @@ PanelWindow {
     Column {
         id: stack
         width: parent.width
-        spacing: 6
+        spacing: Theme.padXs
 
         Repeater {
             // ScriptModel keeps existing cards (and their timers) when one is added.

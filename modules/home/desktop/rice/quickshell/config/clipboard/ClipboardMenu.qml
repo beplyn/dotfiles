@@ -15,7 +15,7 @@ Panel {
     readonly property bool minimal: Clipboard.history.length === 0 && Clipboard.pinned.length === 0 && !showKeys
 
     cardWidth: minimal ? 420 : 800
-    spacing: 12
+    spacing: Theme.gapMd
 
     property string tab: "history"
     // the (i) tab: every key, over the list
@@ -253,7 +253,7 @@ Panel {
         radius: Theme.innerRadius
         color: Theme.well
         border.color: Theme.cardBorder
-        border.width: 1
+        border.width: Theme.borderWidth
 
         Text {
             id: capText
@@ -269,7 +269,7 @@ Panel {
     component KeyCaps: Row {
         id: keyRow
         property var keys: []
-        spacing: 4
+        spacing: Theme.gapXs
 
         Repeater {
             model: keyRow.keys
@@ -277,7 +277,7 @@ Panel {
             Row {
                 required property string modelData
                 required property int index
-                spacing: 4
+                spacing: Theme.gapXs
 
                 Text {
                     anchors.verticalCenter: parent.verticalCenter
@@ -298,7 +298,7 @@ Panel {
         id: hint
         property var keys: []
         property string label: ""
-        spacing: 6
+        spacing: Theme.padXs
 
         KeyCaps {
             keys: hint.keys
@@ -312,7 +312,7 @@ Panel {
     // --- header: title, tabs, clear --------------------------------------
     RowLayout {
         Layout.fillWidth: true
-        spacing: 12
+        spacing: Theme.gapMd
 
         Rectangle {
             implicitWidth: 42
@@ -323,9 +323,12 @@ Panel {
             Text {
                 anchors.centerIn: parent
                 text: Icons.clipboard
+                horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    Layout.preferredWidth: Theme.iconBox
                 color: Theme.background
                 font.family: Theme.font
-                font.pointSize: Theme.popupFontSize + 5
+                font.pointSize: Theme.iconMd
             }
         }
 
@@ -399,14 +402,17 @@ Panel {
 
                         Row {
                             anchors.centerIn: parent
-                            spacing: 7
+                            spacing: Theme.padXs
 
                             Text {
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: tabItem.modelData.icon
+                                horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                    Layout.preferredWidth: Theme.iconBox
                                 color: tabItem.fg
                                 font.family: Theme.font
-                                font.pointSize: Theme.popupFontSize + 1
+                                font.pointSize: Theme.iconSm
                             }
                             Text {
                                 anchors.verticalCenter: parent.verticalCenter
@@ -476,7 +482,7 @@ Panel {
         radius: Theme.innerRadius
         color: Theme.alpha(Theme.background, 0.6)
         border.color: root.searching ? Theme.green : Theme.surface
-        border.width: 1
+        border.width: Theme.borderWidth
 
         Behavior on border.color {
             ColorAnimation { duration: Theme.fast }
@@ -490,9 +496,9 @@ Panel {
 
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: 6
-            anchors.rightMargin: 12
-            spacing: 10
+            anchors.leftMargin: Theme.padXs
+            anchors.rightMargin: Theme.gapMd
+            spacing: Theme.padSm
 
             // vim's mode in the statusline
             Rectangle {
@@ -585,7 +591,7 @@ Panel {
 
         RowLayout {
             anchors.fill: parent
-            spacing: 12
+            spacing: Theme.gapMd
             visible: !root.showKeys
 
             ListView {
@@ -593,7 +599,7 @@ Panel {
                 Layout.preferredWidth: 410
                 Layout.fillHeight: true
                 clip: true
-                spacing: 4
+                spacing: Theme.gapXs
                 boundsBehavior: Flickable.StopAtBounds
                 currentIndex: root.current
                 highlightFollowsCurrentItem: false
@@ -617,7 +623,7 @@ Panel {
                     color: selected ? Theme.alpha(Theme.accent, 0.16)
                         : hovered ? Theme.alpha(Theme.surface, 0.5)
                         : "transparent"
-                    border.width: 1
+                    border.width: Theme.borderWidth
                     border.color: selected ? Theme.alpha(Theme.accent, 0.55) : "transparent"
 
                     Behavior on color {
@@ -634,8 +640,8 @@ Panel {
 
                     RowLayout {
                         anchors.fill: parent
-                        anchors.margins: 8
-                        spacing: 10
+                        anchors.margins: Theme.gapSm
+                        spacing: Theme.padSm
 
                         // kind glyph, the color itself, or the image
                         Rectangle {
@@ -643,7 +649,7 @@ Panel {
                             implicitHeight: 44
                             radius: Math.max(0, Theme.innerRadius - 2)
                             color: row.modelData.kind === "color" ? root.hexColor(row.modelData.preview) : Theme.alpha(row.kind.tint, 0.14)
-                            border.width: row.modelData.kind === "color" ? 1 : 0
+                            border.width: row.modelData.kind === "color" ? Theme.borderWidth : 0
                             border.color: Theme.cardBorder
                             clip: true
 
@@ -651,9 +657,12 @@ Panel {
                                 anchors.centerIn: parent
                                 visible: row.modelData.kind !== "color" && thumb.status !== Image.Ready
                                 text: row.kind.icon
+                                horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                    Layout.preferredWidth: Theme.iconBox
                                 color: row.kind.tint
                                 font.family: Theme.font
-                                font.pointSize: Theme.popupFontSize + 5
+                                font.pointSize: Theme.iconMd
                             }
 
                             Image {
@@ -677,7 +686,7 @@ Panel {
 
                         ColumnLayout {
                             Layout.fillWidth: true
-                            spacing: 2
+                            spacing: Theme.gapXs
 
                             Text {
                                 Layout.fillWidth: true
@@ -693,7 +702,7 @@ Panel {
                             }
 
                             Row {
-                                spacing: 6
+                                spacing: Theme.padXs
 
                                 Text {
                                     text: row.kind.label
@@ -712,9 +721,12 @@ Panel {
                                 Text {
                                     visible: row.pinned && root.tab === "history"
                                     text: Icons.pin
+                                    horizontalAlignment: Text.AlignHCenter
+                                        verticalAlignment: Text.AlignVCenter
+                                        Layout.preferredWidth: Theme.iconBox
                                     color: Theme.yellow
                                     font.family: Theme.font
-                                    font.pointSize: Theme.popupFontSize - 2
+                                    font.pointSize: Theme.iconSm
                                 }
                             }
                         }
@@ -759,7 +771,7 @@ Panel {
                     anchors.centerIn: parent
                     width: parent.width - 40
                     visible: root.entries.length === 0
-                    spacing: 8
+                    spacing: Theme.gapSm
 
                     Text {
                         Layout.alignment: Qt.AlignHCenter
@@ -810,13 +822,13 @@ Panel {
 
                 ColumnLayout {
                     anchors.fill: parent
-                    anchors.margins: 14
+                    anchors.margins: Theme.padMd
                     visible: !!preview.entry
-                    spacing: 10
+                    spacing: Theme.padSm
 
                     RowLayout {
                         Layout.fillWidth: true
-                        spacing: 8
+                        spacing: Theme.gapSm
 
                         Rectangle {
                             implicitWidth: chip.implicitWidth + 16
@@ -886,7 +898,7 @@ Panel {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         visible: preview.entry?.kind === "color"
-                        spacing: 12
+                        spacing: Theme.gapMd
 
                         readonly property color value: preview.entry?.kind === "color" ? root.hexColor(preview.entry.preview) : "transparent"
 
@@ -896,7 +908,7 @@ Panel {
                             radius: Theme.innerRadius
                             color: swatch.value
                             border.color: Theme.cardBorder
-                            border.width: 1
+                            border.width: Theme.borderWidth
                         }
                         Text {
                             text: preview.entry?.preview ?? ""
@@ -953,17 +965,19 @@ Panel {
 
             ColumnLayout {
                 anchors.fill: parent
-                anchors.margins: 20
-                spacing: 16
+                anchors.margins: Theme.padLg
+                spacing: Theme.gapLg
 
                 RowLayout {
-                    spacing: 10
+                    spacing: Theme.padSm
 
                     Text {
                         text: Icons.keyboard
+                        horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
                         color: Theme.accent
                         font.family: Theme.font
-                        font.pointSize: Theme.popupFontSize + 8
+                        font.pointSize: Theme.iconLg
                     }
                     ColumnLayout {
                         spacing: 0
@@ -984,7 +998,7 @@ Panel {
                 RowLayout {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    spacing: 32
+                    spacing: Theme.gapXl
 
                     Repeater {
                         model: [root.keymap.slice(0, 2), root.keymap.slice(2)]
@@ -994,7 +1008,7 @@ Panel {
                             required property var modelData
                             Layout.fillWidth: true
                             Layout.alignment: Qt.AlignTop
-                            spacing: 14
+                            spacing: Theme.padMd
 
                             Repeater {
                                 model: keyColumn.modelData
@@ -1002,7 +1016,7 @@ Panel {
                                 ColumnLayout {
                                     id: section
                                     required property var modelData
-                                    spacing: 7
+                                    spacing: Theme.padXs
 
                                     Text {
                                         text: section.modelData.name
@@ -1020,7 +1034,7 @@ Panel {
                                         RowLayout {
                                             id: bind
                                             required property var modelData
-                                            spacing: 12
+                                            spacing: Theme.gapMd
 
                                             KeyCaps {
                                                 Layout.preferredWidth: 140
@@ -1052,7 +1066,7 @@ Panel {
         Row {
             id: hints
             anchors.horizontalCenter: parent.horizontalCenter
-            spacing: 16
+            spacing: Theme.gapLg
             visible: !root.armed && !root.showKeys
 
             Hint { keys: ["j", "k"]; label: "Move" }
@@ -1067,7 +1081,7 @@ Panel {
 
         Row {
             anchors.horizontalCenter: parent.horizontalCenter
-            spacing: 16
+            spacing: Theme.gapLg
             visible: root.showKeys
 
             Hint { keys: ["?", "Esc"]; label: "Back to the list" }

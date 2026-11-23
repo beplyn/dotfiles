@@ -29,7 +29,7 @@ Panel {
     // --- header ----------------------------------------------------------
     RowLayout {
         Layout.fillWidth: true
-        spacing: 12
+        spacing: Theme.gapMd
 
         Rectangle {
             implicitWidth: 42
@@ -75,12 +75,12 @@ Panel {
     // --- gauges ------------------------------------------------------------
     Surface {
         Layout.fillWidth: true
-        padding: 14
+        padding: Theme.padMd
 
         // two rings centred, rather than spread like the dashboard's three
         RowLayout {
             Layout.alignment: Qt.AlignHCenter
-            spacing: 56
+            spacing: Theme.gapXxl
 
             StatRing {
                 icon: Battery.charging ? Icons.batteryCharging : Icons.level(Icons.battery, Battery.percent)
@@ -103,11 +103,11 @@ Panel {
     // --- history -----------------------------------------------------------
     Surface {
         Layout.fillWidth: true
-        padding: 12
+        padding: Theme.gapMd
 
         RowLayout {
             Layout.fillWidth: true
-            spacing: 8
+            spacing: Theme.gapSm
 
             ColumnLayout {
                 id: axis
@@ -146,8 +146,8 @@ Panel {
     GridLayout {
         Layout.fillWidth: true
         columns: 2
-        rowSpacing: 8
-        columnSpacing: 8
+        rowSpacing: Theme.gapSm
+        columnSpacing: Theme.gapSm
 
         Repeater {
             model: [
@@ -160,7 +160,7 @@ Panel {
             Surface {
                 required property var modelData
                 Layout.fillWidth: true
-                spacing: 2
+                spacing: Theme.gapXs
 
                 Label { text: modelData.label }
                 Text {
