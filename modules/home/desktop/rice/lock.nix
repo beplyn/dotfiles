@@ -113,11 +113,11 @@ in
         size = "340, 56";
         outline_thickness = 1;
         rounding = 2;
-        inner_color = panel;
-        outer_color = rgb p.surface;
-        font_color = rgb p.foreground;
+        inner_color = lib.mkForce (panel);
+        outer_color = lib.mkForce (rgb p.surface);
+        font_color = lib.mkForce (rgb p.foreground);
         check_color = lib.mkForce (rgb p.blue);
-        fail_color = rgb p.red;
+        fail_color = lib.mkForce (rgb p.red);
         dots_size = 0.22;
         dots_spacing = 0.4;
         dots_center = true;
