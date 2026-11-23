@@ -10,7 +10,7 @@
     autoUpdateNotification = false;
     enableOnlineThemes = true;
     useQuickCss = true;
-    transparent = true;
+    transparent = false;
     nativeTitleBar = false;
   };
 }
