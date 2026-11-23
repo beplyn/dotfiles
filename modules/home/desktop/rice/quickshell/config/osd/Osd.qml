@@ -105,7 +105,7 @@ PanelWindow {
             Rectangle {
                 Layout.fillWidth: true
                 implicitHeight: 6
-                radius: 3
+                radius: Theme.radiusSm
                 color: Theme.alpha(Theme.surface, 0.9)
 
                 Rectangle {
@@ -115,7 +115,7 @@ PanelWindow {
                     color: Theme.accent
 
                     Behavior on width {
-                        NumberAnimation { duration: 120; easing.type: Easing.OutCubic }
+                        NumberAnimation { duration: Theme.quick; easing.type: Easing.OutCubic }
                     }
                 }
             }

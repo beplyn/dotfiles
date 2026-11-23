@@ -41,7 +41,7 @@ RowLayout {
             anchors.verticalCenter: parent.verticalCenter
             width: parent.width
             height: 8
-            radius: 4
+            radius: Theme.radiusSm
             color: Theme.alpha(Theme.surface, 0.9)
 
             Rectangle {
@@ -68,7 +68,7 @@ RowLayout {
             border.width: 2
 
             Behavior on width {
-                NumberAnimation { duration: 120 }
+                NumberAnimation { duration: Theme.quick }
             }
         }
 

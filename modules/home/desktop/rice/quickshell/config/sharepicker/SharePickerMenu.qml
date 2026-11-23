@@ -155,7 +155,7 @@ Panel {
         Rectangle {
             implicitWidth: 42
             implicitHeight: 42
-            radius: 21
+            radius: height / 2
             color: Theme.accent
 
             Text {
@@ -278,7 +278,7 @@ Panel {
             Rectangle {
                 implicitWidth: 20
                 implicitHeight: 20
-                radius: 6
+                radius: Theme.innerRadius
                 color: SharePicker.remember ? Theme.accent : "transparent"
                 border.color: SharePicker.remember ? Theme.accent : Theme.muted
                 border.width: 2
