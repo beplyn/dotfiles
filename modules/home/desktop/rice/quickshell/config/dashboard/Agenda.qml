@@ -23,11 +23,11 @@ ColumnLayout {
     onDayChanged: close()
     onActiveChanged: if (!active) close()
 
-    spacing: 8
+    spacing: Theme.gapSm
 
     RowLayout {
         Layout.fillWidth: true
-        spacing: 6
+        spacing: Theme.padXs
 
         Text {
             Layout.fillWidth: true
@@ -85,7 +85,7 @@ ColumnLayout {
         visible: !root.isEditing && root.events.length > 0
         implicitHeight: Math.min(contentHeight, 220)
         clip: true
-        spacing: 2
+        spacing: Theme.gapXs
         boundsBehavior: Flickable.StopAtBounds
         model: root.events
 
@@ -107,15 +107,15 @@ ColumnLayout {
             RowLayout {
                 id: line
                 anchors.fill: parent
-                anchors.leftMargin: 6
-                anchors.rightMargin: 6
-                spacing: 8
+                anchors.leftMargin: Theme.padXs
+                anchors.rightMargin: Theme.padXs
+                spacing: Theme.gapSm
 
                 Rectangle {
                     Layout.preferredWidth: 3
                     Layout.fillHeight: true
-                    Layout.topMargin: 2
-                    Layout.bottomMargin: 2
+                    Layout.topMargin: Theme.gapXs
+                    Layout.bottomMargin: Theme.gapXs
                     radius: Theme.radiusSm
                     color: Events.color(row.e)
                 }
@@ -139,9 +139,12 @@ ColumnLayout {
                 Text {
                     visible: row.e.recurring
                     text: Icons.repeat
+                    horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        Layout.preferredWidth: Theme.iconBox
                     color: Theme.blue
                     font.family: Theme.font
-                    font.pointSize: Theme.popupFontSize - 1
+                    font.pointSize: Theme.iconSm
                 }
                 Text {
                     visible: (row.e.category ?? "") !== ""

@@ -33,7 +33,28 @@ Singleton {
     // Panels float this far from the screen edges and from waybar,
     // matching Hyprland's window gaps.
     readonly property int gap: Stylix.gap
-    readonly property int pad: 14
+    // spacing between items, and padding inside surfaces
+    readonly property int gapXs: 4
+    readonly property int gapSm: 8
+    readonly property int gapMd: 12
+    readonly property int gapLg: 16
+    readonly property int gapXl: 24
+    readonly property int gapXxl: 48
+    readonly property int padXs: 6
+    readonly property int padSm: 10
+    readonly property int padMd: 14
+    readonly property int padLg: 20
+    readonly property int pad: padMd
+    // from the screen edges, matching Hyprland's window gap
+    readonly property int screenMargin: gap
+
+    // Nerd Font glyph sizes, relative to popupFontSize
+    readonly property int iconSm: popupFontSize + 1
+    readonly property int iconMd: popupFontSize + 4
+    readonly property int iconLg: popupFontSize + 8
+    readonly property int iconXl: popupFontSize + 14
+    // fixed glyph width, so icons don't shift the text beside them
+    readonly property int iconBox: 24
 
     // shulker: shows the power-profile tile.
     readonly property bool laptop: Stylix.laptop
@@ -66,6 +87,10 @@ Singleton {
     readonly property color cardColor: alpha(background, glass)
     readonly property color cardBorder: alpha(surface, 0.9)
     readonly property color well: alpha(surface, 0.45)
+    // hairlines everywhere; strong for selected and focused edges
+    readonly property int borderWidth: 1
+    readonly property int borderWidthStrong: 2
+    readonly property color borderColor: cardBorder
 
     function alpha(c, a) {
         return Qt.rgba(c.r, c.g, c.b, a)

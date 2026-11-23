@@ -77,7 +77,7 @@ PanelWindow {
         radius: height / 2
         color: Theme.cardColor
         border.color: Theme.cardBorder
-        border.width: 1
+        border.width: Theme.borderWidth
         opacity: root.shown ? 1 : 0
 
         Behavior on opacity {
@@ -89,17 +89,18 @@ PanelWindow {
 
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: 20
-            anchors.rightMargin: 20
-            spacing: 14
+            anchors.leftMargin: Theme.padLg
+            anchors.rightMargin: Theme.padLg
+            spacing: Theme.padMd
 
             Text {
-                Layout.preferredWidth: 22
+                Layout.preferredWidth: Theme.iconBox
                 horizontalAlignment: Text.AlignHCenter
                 text: root.icon
+                verticalAlignment: Text.AlignVCenter
                 color: Theme.accent
                 font.family: Theme.font
-                font.pointSize: Theme.popupFontSize + 5
+                font.pointSize: Theme.iconMd
             }
 
             Rectangle {

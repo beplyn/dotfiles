@@ -18,7 +18,7 @@ ColumnLayout {
         NumberAnimation { duration: Theme.ring; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.easing }
     }
 
-    spacing: 6
+    spacing: Theme.padXs
 
     Item {
         Layout.alignment: Qt.AlignHCenter
@@ -66,9 +66,12 @@ ColumnLayout {
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: root.icon
+                horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    Layout.preferredWidth: Theme.iconBox
                 color: root.color
                 font.family: Theme.font
-                font.pointSize: Theme.popupFontSize + 1
+                font.pointSize: Theme.iconSm
             }
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter

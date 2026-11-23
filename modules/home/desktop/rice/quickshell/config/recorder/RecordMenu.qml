@@ -62,14 +62,14 @@ PanelWindow {
             x: 12
             y: 12
             width: parent.width - 24
-            spacing: 4
+            spacing: Theme.gapXs
 
             Text {
                 text: root.pickingSource ? "Select mic/source:" : "Select mode:"
                 color: Theme.subtext
                 font.family: Theme.font
                 font.pointSize: Theme.popupFontSize + 1
-                bottomPadding: 6
+                bottomPadding: Theme.padXs
             }
 
             Text {
