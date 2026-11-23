@@ -3,22 +3,22 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// vcal events for the dashboard; reloads when events.db.changed moves or the
+// calendar events for the dashboard; reloads when the calendar's .changed moves or the
 // day rolls over. Writes run one at a time
 Singleton {
     id: root
 
     readonly property string db: Theme.calendarDb
-    readonly property string bin: Theme.bin.vcal
+    readonly property string bin: Theme.bin.calendar
 
     // Days the dashboard asked for, [first, last); today is always added.
     property date first: addDays(today, -7)
     property date last: addDays(today, 35)
 
-    // occurrences as `vcal query` prints them; all-day `end` is exclusive
+    // occurrences as `haku-calendar query` prints them; all-day `end` is exclusive
     property var events: []
     property bool loaded: false
-    // vcal's last complaint, for the agenda; "" when all is well
+    // the tool's last complaint, for the agenda; "" when all is well
     property string error: ""
 
     property date today: midnight(new Date())
@@ -117,15 +117,15 @@ Singleton {
         }
         const from = first < today ? first : today
         const to = last > addDays(today, 1) ? last : addDays(today, 1)
-        query.command = [bin, "--db", db, "query", "--from", key(from), "--to", key(addDays(to, -1)), "--format", "json"]
+        query.command = [bin, "--dir", db, "query", "--from", key(from), "--to", key(addDays(to, -1)), "--format", "json"]
         query.running = true
     }
 
-    // vcal's message without its "vcal: " prefix, last line first
+    // the tool's message without its "haku-calendar: " prefix, last line first
     function complaint(err, code) {
-        const lines = err.trim().split("\n").filter(l => l !== "" && !l.includes("wrote the default config"))
-        const last = lines.length > 0 ? lines[lines.length - 1].replace(/^vcal: /, "") : ""
-        return last !== "" ? last : "vcal exited with " + code
+        const lines = err.trim().split("\n").filter(l => l !== "")
+        const last = lines.length > 0 ? lines[lines.length - 1].replace(/^haku-calendar: /, "") : ""
+        return last !== "" ? last : "calendar tool exited with " + code
     }
 
     Call {
@@ -137,7 +137,7 @@ Singleton {
                     root.events = JSON.parse(out)
                     root.error = ""
                 } catch (e) {
-                    root.error = "couldn't read vcal's output"
+                    root.error = "couldn't read the calendar's output"
                 }
             } else {
                 root.error = root.complaint(err, code)
@@ -173,11 +173,11 @@ Singleton {
     }
 
     // f: { title, start, end, allDay, category, location, description, rrule }
-    // done(ok, message) when vcal has answered.
+    // done(ok, message) when the tool has answered.
     function add(f, done) {
         const a = ["add"].concat(flags(f))
         if (f.allDay) a.push("--all-day")
-        // an empty rule means a single event; vcal reads "" as no rule anyway
+        // an empty rule means a single event
         run(a, done)
     }
 
@@ -196,16 +196,11 @@ Singleton {
         run(a, done)
     }
 
-    // The TUI on that day, in a terminal (calendar.nix builds the argv).
-    function openTui(date) {
-        Quickshell.execDetached(Theme.calendarOpen.concat(["--date", key(date)]))
-    }
-
-    // One vcal call at a time, in order.
+    // One tool call at a time, in order.
     property var queue: []
 
     function run(args, done) {
-        queue = queue.concat([{ args: [bin, "--db", db].concat(args), done: done }])
+        queue = queue.concat([{ args: [bin, "--dir", db].concat(args), done: done }])
         next()
     }
 
@@ -239,11 +234,11 @@ Singleton {
 
     FileView {
         id: sentinel
-        path: root.db === "" ? "" : root.db + ".changed"
+        path: root.db === "" ? "" : root.db + "/.changed"
         watchChanges: true
         printErrors: false
         onLoaded: root.watching = true
-        // not there until vcal first opens the database; the next query retries
+        // not there until the first run creates it; the next query retries
         onLoadFailed: root.watching = false
         onFileChanged: {
             reload()

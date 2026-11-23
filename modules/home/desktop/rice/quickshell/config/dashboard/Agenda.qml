@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import qs.services
 import qs.widgets
 
-// the picked day's events: click edits, + adds, terminal button opens the TUI
+// the picked day's events: click edits, + adds
 ColumnLayout {
     id: root
 
@@ -37,11 +37,6 @@ ColumnLayout {
             font.pointSize: Theme.popupFontSize + 1
             font.bold: true
             elide: Text.ElideRight
-        }
-        IconButton {
-            size: 28
-            icon: Icons.terminal
-            onClicked: Events.openTui(root.day)
         }
         IconButton {
             size: 28

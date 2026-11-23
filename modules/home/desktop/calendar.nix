@@ -1,76 +1,37 @@
-# vcal (github:beplyn/vcal): one calendar db for the TUI, CLI and Quickshell
+# the dashboard's calendar: one vdir of .ics files, read and written by
+# haku-calendar.py (icalendar, recurring-ical-events)
 {
   config,
   lib,
-  osConfig,
   pkgs,
   ...
 }:
 
 let
-  cfg = config.programs.vcal;
-  p = config.themes.palette;
+  dir = "${config.xdg.dataHome}/calendars/local";
 
-  # vcal's [theme] is the Base16 slots; fill them from the palette by name,
-  # in palette.nix's order, so no hex or baseXX lookups live here
-  names =
-  [
-    "background"
-    "mantle"
-    "surface"
-    "muted"
-    "subtext"
-    "foreground"
-    "bright"
-    "brightest"
-    "red"
-    "orange"
-    "yellow"
-    "green"
-    "cyan"
-    "blue"
-    "purple"
-    "brown"
-  ];
-  slotOf = name: "base0${lib.toHexString (lib.lists.findFirstIndex (n: n == name) null names)}";
-  theme = lib.listToAttrs (map (n: lib.nameValuePair (slotOf n) p.${n}) names);
-
-  vcal = lib.getExe cfg.package;
-  wezterm = lib.getExe config.programs.wezterm.package;
-  systemdRun = lib.getExe' osConfig.systemd.package "systemd-run";
-
-  # the TUI in a terminal, in a scope of its own so it outlives waybar or
-  # quickshell restarting; arguments go to vcal (`--date <day>`)
-  open = pkgs.writeShellScriptBin "vcal-open" ''
-    exec ${systemdRun} --user --scope --collect --quiet -- \
-      ${wezterm} start --class vcal -- ${vcal} --db ${lib.escapeShellArg cfg.databasePath} "$@"
-  '';
+  calendar = pkgs.writers.writePython3Bin "haku-calendar"
+  {
+    libraries = with pkgs.python3Packages; [
+      icalendar
+      python-dateutil
+      recurring-ical-events
+    ];
+    flakeIgnore = [ "E501" ];
+  }
+    (builtins.readFile ./haku-calendar.py);
 in
 {
-  programs.vcal =
-  {
-    enable = true;
-    # the palette above, not vcal's own Stylix lookup
-    stylix.enable = false;
-    settings.theme = theme //
-    {
-      # the shell's accent (palette.nix: purple) for selection and focus,
-      # so the TUI and the dashboard agree; blue for categories
-      roles =
-      {
-        accent = slotOf "purple";
-        tag = slotOf "blue";
-      };
-    };
-  };
+  home.packages = [ calendar ];
 
-  home.sessionVariables.VCAL_DB = cfg.databasePath;
+  # the folder exists before the first run, so the dashboard can watch it
+  home.activation.calendar = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    run mkdir -p "${dir}"
+  '';
 
   lib.haku.calendar =
   {
-    bin = vcal;
-    db = cfg.databasePath;
-    # argv that opens the TUI; append `--date <day>` to pick the day
-    open = [ (lib.getExe open) ];
+    bin = lib.getExe calendar;
+    db = dir;
   };
 }
