@@ -5,7 +5,7 @@ import qs.services
 import qs.widgets
 
 // Dropped from waybar's clock: the time, a calendar with the picked
-// day's events (vcal), the media player and system load.
+// day's events, the media player and system load.
 Panel {
     id: root
 
