@@ -124,6 +124,7 @@ ColumnLayout {
                     text: row.e.all_day ? "all day" : Qt.formatTime(new Date(row.e.start_ts * 1000), "HH:mm")
                     color: Theme.subtext
                     font.family: Theme.font
+                    font.features: Theme.numeric
                     font.pointSize: Theme.popupFontSize - 1
                 }
                 Text {
