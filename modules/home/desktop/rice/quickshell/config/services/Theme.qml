@@ -27,6 +27,8 @@ Singleton {
 
     readonly property int radius: Stylix.radius
     readonly property int innerRadius: radius - 4
+    // chips, bars and sliders
+    readonly property int radiusSm: 4
     readonly property real glass: Stylix.opacity
     // Panels float this far from the screen edges and from waybar,
     // matching Hyprland's window gaps.
@@ -50,8 +52,15 @@ Singleton {
 
     // hakuspace eases everything with cubic-bezier(0, 0.5, 0.35, 1).
     readonly property var easing: [0, 0.5, 0.35, 1, 1, 1]
+    readonly property int quick: 120
     readonly property int fast: 180
     readonly property int slow: 420
+    // stat ring sweep; progress bars glide between polls
+    readonly property int ring: 600
+    readonly property int progress: 1000
+
+    // tabular figures for clocks, percentages and counters
+    readonly property var numeric: ({ "tnum": 1 })
 
     // Card look shared by every panel and the OSD.
     readonly property color cardColor: alpha(background, glass)
