@@ -338,7 +338,6 @@ ColumnLayout {
 
                 TapHandler {
                     onTapped: root.selected = Events.midnight(cell.model.date)
-                    onDoubleTapped: Events.openTui(cell.model.date)
                 }
             }
         }

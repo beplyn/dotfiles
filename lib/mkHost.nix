@@ -86,7 +86,6 @@ nixpkgs.lib.nixosSystem
       home-manager.sharedModules =
       [
         inputs.nixvim.homeModules.nixvim
-        inputs.vcal.homeManagerModules.default
       ];
       home-manager.users.${username}.imports = [ ../users/me ];
     }

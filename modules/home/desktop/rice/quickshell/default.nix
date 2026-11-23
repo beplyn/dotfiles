@@ -146,8 +146,8 @@ let
     sleep = lib.getExe' pkgs.coreutils "sleep";
     # answers share-picker's fifo (services/SharePicker.qml)
     tee = lib.getExe' pkgs.coreutils "tee";
-    # the calendar CLI (services/Events.qml)
-    vcal = config.lib.haku.calendar.bin;
+    # the calendar tool (services/Events.qml)
+    calendar = config.lib.haku.calendar.bin;
   };
 
   # SIGRTMIN+n to refresh a waybar module
@@ -185,11 +185,10 @@ let
         (num "opacity" t.glass)
         (num "gap" t.gaps)
         (prop "bool" "laptop" (lib.boolToString laptop))
-        # one database for the TUI and the dashboard (calendar.nix)
+        # the calendar folder (calendar.nix)
         (str "calendarDb" config.lib.haku.calendar.db)
         # the recoloured wallpapers and their thumbnails (wallpaper.nix)
         (str "wallpapers" config.lib.haku.wallpaper.cache)
-        (prop "var" "calendarOpen" (builtins.toJSON config.lib.haku.calendar.open))
         # titled binds for the hotkey overlay
         (prop "var" "hotkeys" (builtins.toJSON config.lib.haku.hyprlandHotkeys))
         ""

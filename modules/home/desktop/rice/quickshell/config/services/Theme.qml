@@ -59,9 +59,8 @@ Singleton {
     // shulker: shows the power-profile tile.
     readonly property bool laptop: Stylix.laptop
 
-    // vcal: the database Events reads and the argv that opens the TUI
+    // the calendar folder Events reads and writes (calendar.nix)
     readonly property string calendarDb: Stylix.calendarDb
-    readonly property var calendarOpen: Stylix.calendarOpen
 
     // the recoloured wallpapers (quickshell/wallpaper.nix)
     readonly property string wallpapers: Stylix.wallpapers

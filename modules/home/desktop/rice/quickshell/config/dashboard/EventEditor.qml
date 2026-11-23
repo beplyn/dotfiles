@@ -3,8 +3,8 @@ import QtQuick.Layouts
 import qs.services
 import qs.widgets
 
-// add or edit an event via vcal. Times: anything vcal reads ("tomorrow 9:00",
-// "+2h"), empty end = default length. Repeating: "This one" or "All" (not times)
+// add or edit an event. Times: "2026-11-24 10:00" or "tomorrow 9:00", empty
+// end = default length. Repeating: "This one" or "All" (not times)
 ColumnLayout {
     id: root
 
@@ -47,7 +47,7 @@ ColumnLayout {
                 : new Date(day.getFullYear(), day.getMonth(), day.getDate(), 9)
             v = { title: "", allDay: false, start: Qt.formatDateTime(start, "yyyy-MM-dd HH:mm"), end: "", category: "", location: "", description: "", rrule: "" }
         } else if (e.all_day) {
-            // vcal prints an exclusive end date; the field takes the last day
+            // the calendar stores an exclusive end date; the field takes the last day
             const last = Events.addDays(Events.parseDate(e.end), -1)
             v = { title: e.title, allDay: true, start: e.start, end: Events.key(last), category: e.category ?? "", location: e.location ?? "", description: e.description, rrule: "" }
         } else {
@@ -195,7 +195,7 @@ ColumnLayout {
     Text {
         Layout.fillWidth: true
         visible: root.timesLocked
-        text: "The series' times are changed in the terminal calendar."
+        text: "A series' times can't change here; edit one occurrence to move it."
         color: Theme.muted
         wrapMode: Text.Wrap
         font.family: Theme.font
