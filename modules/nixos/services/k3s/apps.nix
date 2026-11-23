@@ -409,6 +409,11 @@ let
       lan.tcp = [ 25565 ];
       dnsOnly = "mc";
     };
+    # idles games for playtime and card drops; no web UI outside the cluster, login in the asf-bot secret
+    asf =
+    {
+      dirs = [ (app "${st.state}/asf") ];
+    };
   };
 
   enabled = lib.filterAttrs (n: _: lib.elem n cfg.apps) apps;
