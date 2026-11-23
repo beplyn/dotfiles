@@ -436,7 +436,6 @@
         "speci-local": "speci-local",
         "stylix": "stylix",
         "vars": "vars",
-        "vcal": "vcal",
         "zen-browser": "zen-browser"
       }
     },
@@ -541,21 +540,6 @@
         "type": "github"
       }
     },
-    "systems_4": {
-      "locked": {
-        "lastModified": 1791244623,
-        "narHash": "sha256-uuanbkFk8a313Zfrxdcz8Us/yQtaxNnKJtX8v0ZPpd8=",
-        "owner": "nix-systems",
-        "repo": "default",
-        "rev": "d36eeed142f88b5a636f2e3856a53c61654cf29b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-systems",
-        "repo": "default",
-        "type": "github"
-      }
-    },
     "tinted-kitty": {
       "flake": false,
       "locked": {
@@ -631,30 +615,6 @@
         "type": "path"
       },
       "parent": []
-    },
-    "vcal": {
-      "inputs": {
-        "home-manager": [
-          "home-manager"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "systems": "systems_4"
-      },
-      "locked": {
-        "lastModified": 1794352197,
-        "narHash": "sha256-w98yIIZdGs+uKPZ9X0lqaY7l8QvBTiSslpu7rX1WNqg=",
-        "owner": "beplyn",
-        "repo": "vcal",
-        "rev": "363e134441b7046ccb4e7066dd754450da804201",
-        "type": "github"
-      },
-      "original": {
-        "owner": "beplyn",
-        "repo": "vcal",
-        "type": "github"
-      }
     },
     "zen-browser": {
       "inputs": {

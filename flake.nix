@@ -30,13 +30,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    vcal =
-    {
-      url = "github:beplyn/vcal";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.home-manager.follows = "home-manager";
-    };
-
     stylix =
     {
       url = "github:danth/stylix";
