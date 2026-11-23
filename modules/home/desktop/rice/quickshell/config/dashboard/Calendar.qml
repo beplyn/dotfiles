@@ -87,7 +87,7 @@ ColumnLayout {
 
     onResetOnChanged: if (resetOn) reset()
 
-    spacing: 10
+    spacing: Theme.padSm
 
     SequentialAnimation {
         id: slide
@@ -118,7 +118,7 @@ ColumnLayout {
     // --- title -------------------------------------------------------------
     RowLayout {
         Layout.fillWidth: true
-        spacing: 6
+        spacing: Theme.padXs
 
         Item {
             Layout.fillWidth: true
@@ -126,7 +126,7 @@ ColumnLayout {
 
             Row {
                 id: title
-                spacing: 8
+                spacing: Theme.gapSm
 
                 Text {
                     id: monthName
@@ -183,8 +183,8 @@ ColumnLayout {
 
         Layout.fillWidth: true
         columns: 2
-        columnSpacing: 6
-        rowSpacing: 6
+        columnSpacing: Theme.padXs
+        rowSpacing: Theme.padXs
         transform: Translate { id: offset }
 
         Item { implicitWidth: 1 }
@@ -253,8 +253,8 @@ ColumnLayout {
                 // Today's week as one continuous band across the row.
                 Rectangle {
                     anchors.fill: parent
-                    anchors.topMargin: 2
-                    anchors.bottomMargin: 2
+                    anchors.topMargin: Theme.gapXs
+                    anchors.bottomMargin: Theme.gapXs
                     visible: cell.thisWeek
                     color: Theme.alpha(Theme.accent, 0.12)
                     topLeftRadius: cell.weekday === 0 ? height / 2 : 0
@@ -271,7 +271,7 @@ ColumnLayout {
                     radius: width / 2
                     visible: cell.isToday
                     color: "transparent"
-                    border.width: 2
+                    border.width: Theme.borderWidthStrong
                     border.color: Theme.alpha(Theme.accent, 0.35)
                 }
                 Rectangle {
@@ -308,7 +308,7 @@ ColumnLayout {
                     radius: width / 2
                     visible: cell.isSelected && !cell.isToday
                     color: "transparent"
-                    border.width: 1.5
+                    border.width: Theme.borderWidth
                     border.color: Theme.accent
                 }
 
@@ -316,8 +316,8 @@ ColumnLayout {
                 Row {
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 1
-                    spacing: 2
+                    anchors.bottomMargin: Theme.borderWidth
+                    spacing: Theme.gapXs
                     opacity: cell.inMonth ? 1 : 0.35
 
                     Repeater {

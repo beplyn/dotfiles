@@ -82,8 +82,8 @@ Rectangle {
     // --- player --------------------------------------------------------------
     RowLayout {
         anchors.fill: parent
-        anchors.margins: 12
-        spacing: 14
+        anchors.margins: Theme.gapMd
+        spacing: Theme.padMd
         visible: root.player !== null
 
         ClippingRectangle {
@@ -95,9 +95,11 @@ Rectangle {
             Text {
                 anchors.centerIn: parent
                 text: Icons.music
+                horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
                 color: Theme.muted
                 font.family: Theme.font
-                font.pointSize: Theme.popupFontSize + 14
+                font.pointSize: Theme.iconXl
             }
 
             Image {
@@ -111,7 +113,7 @@ Rectangle {
         ColumnLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            spacing: 2
+            spacing: Theme.gapXs
 
             Text {
                 Layout.fillWidth: true
@@ -169,7 +171,7 @@ Rectangle {
 
             RowLayout {
                 Layout.fillWidth: true
-                spacing: 6
+                spacing: Theme.padXs
 
                 Text {
                     visible: root.player?.lengthSupported ?? false

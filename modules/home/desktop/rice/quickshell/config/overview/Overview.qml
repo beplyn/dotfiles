@@ -220,7 +220,7 @@ PanelWindow {
                     Layout.preferredHeight: grid.tileHeight
                     radius: Theme.radius
                     color: picked ? Theme.alpha(Theme.surface, Math.min(1, Theme.glass + 0.15)) : Theme.cardColor
-                    border.width: current || picked || dropTarget ? 2 : 1
+                    border.width: current || picked || dropTarget ? Theme.borderWidthStrong : Theme.borderWidth
                     border.color: dropTarget ? Theme.green
                         : picked ? Theme.accent
                         : current ? Theme.subtext
@@ -310,7 +310,7 @@ PanelWindow {
                                 anchors.fill: parent
                                 radius: Theme.innerRadius
                                 color: Theme.well
-                                border.width: grab.containsMouse ? 2 : 1
+                                border.width: grab.containsMouse ? Theme.borderWidthStrong : Theme.borderWidth
                                 border.color: grab.containsMouse || win.modelData.focused ? Theme.accent : Theme.cardBorder
                                 clip: true
 
@@ -321,7 +321,7 @@ PanelWindow {
                                 ScreencopyView {
                                     id: shot
                                     anchors.fill: parent
-                                    anchors.margins: 1
+                                    anchors.margins: Theme.borderWidth
                                     captureSource: root.open ? win.modelData.toplevel : null
                                     live: root.open
                                     constraintSize: Qt.size(width, height)
@@ -365,7 +365,7 @@ PanelWindow {
                     Text {
                         anchors.left: parent.left
                         anchors.top: parent.top
-                        anchors.margins: 8
+                        anchors.margins: Theme.gapSm
                         text: String(tile.index + 1)
                         color: tile.current ? Theme.accent : Theme.subtext
                         font.family: Theme.font
@@ -390,7 +390,7 @@ PanelWindow {
                     Rectangle {
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.bottom: parent.bottom
-                        anchors.bottomMargin: 8
+                        anchors.bottomMargin: Theme.gapSm
                         width: Math.min(parent.width - 16, title.implicitWidth + 20)
                         height: title.implicitHeight + 8
                         radius: height / 2

@@ -12,7 +12,7 @@ Panel {
     name: "dashboard"
     align: Qt.AlignHCenter
     cardWidth: 700
-    spacing: 14
+    spacing: Theme.padMd
 
     SystemClock {
         id: clock
@@ -22,11 +22,11 @@ Panel {
     // --- header ----------------------------------------------------------
     RowLayout {
         Layout.fillWidth: true
-        Layout.leftMargin: 4
-        Layout.rightMargin: 4
+        Layout.leftMargin: Theme.gapXs
+        Layout.rightMargin: Theme.gapXs
 
         ColumnLayout {
-            spacing: -2
+            spacing: -Theme.gapXs / 2
 
             Text {
                 text: Qt.formatDateTime(clock.date, "HH:mm")
@@ -48,7 +48,7 @@ Panel {
 
         ColumnLayout {
             Layout.alignment: Qt.AlignBottom
-            spacing: 2
+            spacing: Theme.gapXs
 
             Text {
                 Layout.alignment: Qt.AlignRight
@@ -70,16 +70,16 @@ Panel {
     // --- body --------------------------------------------------------------
     RowLayout {
         Layout.fillWidth: true
-        spacing: 12
+        spacing: Theme.gapMd
 
         ColumnLayout {
             Layout.alignment: Qt.AlignTop
             Layout.preferredWidth: 300
-            spacing: 12
+            spacing: Theme.gapMd
 
             Surface {
                 Layout.fillWidth: true
-                padding: 14
+                padding: Theme.padMd
 
                 Calendar {
                     id: calendar
@@ -92,7 +92,7 @@ Panel {
 
             Surface {
                 Layout.fillWidth: true
-                padding: 12
+                padding: Theme.gapMd
 
                 Agenda {
                     Layout.fillWidth: true
@@ -105,7 +105,7 @@ Panel {
         ColumnLayout {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignTop
-            spacing: 12
+            spacing: Theme.gapMd
 
             MediaPlayer {
                 Layout.fillWidth: true
@@ -114,7 +114,7 @@ Panel {
 
             Surface {
                 Layout.fillWidth: true
-                padding: 14
+                padding: Theme.padMd
 
                 RowLayout {
                     Layout.fillWidth: true

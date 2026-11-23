@@ -14,7 +14,7 @@ Panel {
     name: "share"
     align: Qt.AlignHCenter
     cardWidth: 760
-    spacing: 14
+    spacing: Theme.padMd
 
     component Heading: Text {
         color: Theme.subtext
@@ -42,7 +42,7 @@ Panel {
         radius: Theme.innerRadius
         color: hovered ? Theme.alpha(Theme.accent, 0.14) : Theme.well
         border.color: hovered ? Theme.accent : "transparent"
-        border.width: 2
+        border.width: Theme.borderWidthStrong
         scale: mouse.pressed ? 0.97 : hovered ? 1.02 : 1
 
         Behavior on color {
@@ -68,7 +68,7 @@ Panel {
             // only while the picker is up, so nothing is captured otherwise
             ScreencopyView {
                 anchors.fill: parent
-                anchors.margins: 2
+                anchors.margins: Theme.gapXs
                 captureSource: root.open ? choice.source : null
                 live: root.open
                 paintCursor: false
@@ -90,8 +90,8 @@ Panel {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.bottom: parent.bottom
-            anchors.margins: 10
-            spacing: 8
+            anchors.margins: Theme.padSm
+            spacing: Theme.gapSm
 
             IconImage {
                 visible: choice.iconSource !== ""
@@ -150,7 +150,7 @@ Panel {
     // --- header ----------------------------------------------------------------
     RowLayout {
         Layout.fillWidth: true
-        spacing: 12
+        spacing: Theme.gapMd
 
         Rectangle {
             implicitWidth: 42
@@ -161,9 +161,12 @@ Panel {
             Text {
                 anchors.centerIn: parent
                 text: Icons.screenShare
+                horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    Layout.preferredWidth: Theme.iconBox
                 color: Theme.background
                 font.family: Theme.font
-                font.pointSize: Theme.popupFontSize + 6
+                font.pointSize: Theme.iconMd
             }
         }
 
@@ -199,8 +202,8 @@ Panel {
     GridLayout {
         Layout.fillWidth: true
         columns: Math.min(3, Math.max(2, Quickshell.screens.length))
-        rowSpacing: 10
-        columnSpacing: 10
+        rowSpacing: Theme.padSm
+        columnSpacing: Theme.padSm
 
         Repeater {
             model: Quickshell.screens
@@ -237,8 +240,8 @@ Panel {
             id: windowGrid
             width: parent.width
             columns: 3
-            rowSpacing: 10
-            columnSpacing: 10
+            rowSpacing: Theme.padSm
+            columnSpacing: Theme.padSm
 
             Repeater {
                 model: SharePicker.windows
@@ -271,9 +274,9 @@ Panel {
 
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: 12
-            anchors.rightMargin: 12
-            spacing: 10
+            anchors.leftMargin: Theme.gapMd
+            anchors.rightMargin: Theme.gapMd
+            spacing: Theme.padSm
 
             Rectangle {
                 implicitWidth: 20
@@ -281,7 +284,7 @@ Panel {
                 radius: Theme.innerRadius
                 color: SharePicker.remember ? Theme.accent : "transparent"
                 border.color: SharePicker.remember ? Theme.accent : Theme.muted
-                border.width: 2
+                border.width: Theme.borderWidthStrong
 
                 Behavior on color {
                     ColorAnimation { duration: Theme.fast }
@@ -291,9 +294,12 @@ Panel {
                     anchors.centerIn: parent
                     visible: SharePicker.remember
                     text: Icons.check
+                    horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        Layout.preferredWidth: Theme.iconBox
                     color: Theme.background
                     font.family: Theme.font
-                    font.pointSize: Theme.popupFontSize - 2
+                    font.pointSize: Theme.iconSm
                 }
             }
             Text {

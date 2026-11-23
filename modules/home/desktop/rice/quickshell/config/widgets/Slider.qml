@@ -15,15 +15,16 @@ RowLayout {
 
     readonly property real clamped: Math.max(0, Math.min(1, value))
 
-    spacing: 10
+    spacing: Theme.padSm
 
     Text {
-        Layout.preferredWidth: 24
+        Layout.preferredWidth: Theme.iconBox
         horizontalAlignment: Text.AlignHCenter
         text: root.icon
+        verticalAlignment: Text.AlignVCenter
         color: root.dimmed ? Theme.muted : Theme.accent
         font.family: Theme.font
-        font.pointSize: Theme.popupFontSize + 4
+        font.pointSize: Theme.iconMd
 
         MouseArea {
             anchors.fill: parent
@@ -65,7 +66,7 @@ RowLayout {
             radius: width / 2
             color: Theme.bright
             border.color: root.dimmed ? Theme.muted : Theme.accent
-            border.width: 2
+            border.width: Theme.borderWidthStrong
 
             Behavior on width {
                 NumberAnimation { duration: Theme.quick }

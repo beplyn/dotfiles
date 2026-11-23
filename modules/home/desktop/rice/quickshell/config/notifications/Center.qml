@@ -15,7 +15,7 @@ Panel {
 
     RowLayout {
         Layout.fillWidth: true
-        spacing: 8
+        spacing: Theme.gapSm
 
         Text {
             Layout.fillWidth: true
@@ -43,7 +43,7 @@ Panel {
         // Grow with the list, then scroll.
         Layout.preferredHeight: Notifs.count === 0 ? 120 : Math.min(contentHeight, 560)
         clip: true
-        spacing: 6
+        spacing: Theme.padXs
         model: ScriptModel {
             values: Notifs.list
         }
