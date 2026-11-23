@@ -45,6 +45,8 @@
     "immich"
     "silverbullet"
     "linkding"
+    "shlink"
+    "shortener"
     "audiobookshelf"
     "stirling-pdf"
     "filebrowser"

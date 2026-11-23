@@ -1,0 +1,93 @@
+# @x@ placeholders are filled in by apps.nix
+# word slugs for shlink, made behind tinyauth on short.<domain>; shares shlink's namespace and key
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: shlink
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shortener
+  namespace: shlink
+data:
+  short.py: |
+@shortener.script@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shortener
+  namespace: shlink
+  labels:
+    app: shortener
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shortener
+  template:
+    metadata:
+      labels:
+        app: shortener
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: shortener
+          image: python:3.13-alpine
+          command: ["python", "-u", "/app/short.py"]
+          env:
+            - name: SHLINK_URL
+              value: "http://shlink.shlink.svc.cluster.local/rest/v3"
+            - name: API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: shlink
+                  key: API_KEY
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          volumeMounts:
+            - name: app
+              mountPath: /app
+              readOnly: true
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: @uid@
+            runAsGroup: @uid@
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 5m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+      volumes:
+        - name: app
+          configMap:
+            name: shortener
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shortener
+  namespace: shlink
+spec:
+  type: NodePort
+  selector:
+    app: shortener
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @shortener.port@

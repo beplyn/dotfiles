@@ -378,6 +378,21 @@ let
       };
       auth = true;
     };
+    # go.<domain>/slug redirects, no login; its API key also lets the shortener make links
+    shlink =
+    {
+      host = "go";
+      port = 30105;
+      secrets = [ "API_KEY" ];
+      dirs = [ (app "${st.state}/shlink") ];
+    };
+    # paste a link, get /two-words back; logs in through tinyauth
+    shortener =
+    {
+      host = "short";
+      port = 30104;
+      auth = true;
+    };
     # nothing kept: drawings stay in the browser unless exported
     excalidraw =
     {
@@ -422,6 +437,9 @@ let
     gpu = cfg.gpuResource;
     # a YAML block, indented to fit blocky's ConfigMap
     "blocky.customDNS" = lib.concatMapStrings (l: "    ${l}\n") customDNS;
+    # the ConfigMap's script, indented under its key
+    "shortener.script" = lib.concatMapStringsSep "\n" (l: if l == "" then "" else "    ${l}")
+      (lib.splitString "\n" (lib.removeSuffix "\n" (builtins.readFile ./shortener/short.py)));
     inherit (st) state cache scratch bulk;
   }
   # every app's, so gatus and glance can list the others
