@@ -10,6 +10,8 @@
 
 let
   p = config.themes.palette;
+  radius = config.themes.shell.radius;
+  inner = 2;
   mono = config.stylix.fonts.monospace.name;
   sans = config.stylix.fonts.sansSerif.name;
 
@@ -99,50 +101,63 @@ in
     ++ lib.optional (config.displayGpu != null) "${pkgs.coreutils}/bin/env AQ_DRM_DEVICES=/dev/dri/display"
     ++ [ "${lib.getExe' hyprland "Hyprland"} --config ${greeterConfig}" ]);
 
-  # appended to Stylix's ReGreet colours
+  # the shell's flat look: one hairline card, sharp corners, blue only when active.
+  # 2px matches Theme.innerRadius in the shell (quickshell/config/services/Theme.qml)
   stylix.targets.regreet.extraCss = ''
     .login-card
     {
-      background-color: alpha(${p.background}, 0.55);
-      border: 1px solid alpha(${p.surface}, 0.9);
-      border-radius: 18px;
-      box-shadow: 0 8px 32px alpha(black, 0.35);
+      background-color: alpha(${p.background}, 0.94);
+      border: 1px solid ${p.surface};
+      border-radius: ${toString radius}px;
+      box-shadow: none;
     }
 
     .login-card .greeting
     {
       font-size: 18pt;
       font-weight: bold;
+      color: ${p.foreground};
     }
 
     .login-card entry,
     .login-card combobox button
     {
       min-height: 40px;
-      border-radius: 10px;
-      background-color: alpha(${p.surface}, 0.6);
+      border: 1px solid ${p.surface};
+      border-radius: ${toString inner}px;
+      background-color: transparent;
+      color: ${p.foreground};
+      box-shadow: none;
+    }
+
+    .login-card entry:focus,
+    .login-card combobox button:focus
+    {
+      border-color: ${p.blue};
     }
 
     .login-card button.login-button
     {
       min-height: 40px;
-      border-radius: 10px;
+      border: 1px solid ${p.blue};
+      border-radius: ${toString inner}px;
       font-weight: bold;
-      background-color: ${p.accent};
-      color: ${p.background};
+      background-color: transparent;
+      color: ${p.blue};
+      box-shadow: none;
     }
 
     .login-card button.login-button:hover
     {
-      background-color: mix(${p.accent}, ${p.foreground}, 0.15);
+      background-color: alpha(${p.blue}, 0.14);
     }
 
     .avatar
     {
-      border: 3px solid ${p.accent};
-      border-radius: 9999px;
-      box-shadow: 0 8px 32px alpha(black, 0.35);
-      background-color: alpha(${p.background}, 0.55);
+      border: 1px solid ${p.surface};
+      border-radius: ${toString inner}px;
+      box-shadow: none;
+      background-color: ${p.background};
     }
 
     .clock
@@ -151,7 +166,7 @@ in
       border: none;
       box-shadow: none;
       color: ${p.foreground};
-      text-shadow: 0 2px 12px alpha(black, 0.5);
+      text-shadow: none;
     }
 
     .corner button
@@ -159,20 +174,25 @@ in
       min-width: 40px;
       min-height: 40px;
       padding: 0;
-      border-radius: 9999px;
-      background-color: alpha(${p.background}, 0.55);
-      color: ${p.foreground};
+      border: 1px solid ${p.surface};
+      border-radius: ${toString inner}px;
+      background-color: transparent;
+      color: ${p.subtext};
+      box-shadow: none;
     }
 
     .corner button:hover
     {
-      background-color: alpha(${p.surface}, 0.9);
+      background-color: alpha(${p.blue}, 0.14);
+      border-color: ${p.blue};
+      color: ${p.blue};
     }
 
     .corner button.destructive-action:hover
     {
-      background-color: ${p.error};
-      color: ${p.background};
+      background-color: alpha(${p.red}, 0.14);
+      border-color: ${p.red};
+      color: ${p.red};
     }
   '';
 }
