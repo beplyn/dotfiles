@@ -158,4 +158,4 @@ Notes:
 - Immich and Audiobookshelf can add Pocket ID in their own admin settings.
 - SilverBullet and FileBrowser run as you (uid 1000), so their files on tank are yours.
 - Beszel and Scrutiny run on the host, not k3s, and aren't backed up (their data is regenerable).
-- ArchiSteamFarm (`asf`) has no URL. Give it a bot login once: `k3s kubectl -n asf create secret generic asf-bot --from-file=farm.json=<file>`, where `farm.json` has `SteamLogin`, `SteamPassword` and `GamesPlayedWhileIdle`. Control it with `k3s kubectl -n asf port-forward deploy/asf 1242:1242`.
+- ArchiSteamFarm (`asf`) has no URL. Give it a bot login once: `k3s kubectl -n asf create secret generic asf-bot --from-file=farm.json=<file>`, where `farm.json` has `SteamLogin`, `SteamPassword` and `GamesPlayedWhileIdle`. Control it with `k3s kubectl -n asf port-forward deploy/asf 1242:1242`. For Steam Guard, run `bash modules/nixos/services/k3s/asf-login.sh` from the checkout, then type the code or `Y`.
