@@ -73,9 +73,6 @@ spec:
               mountPath: /database
             - name: tank
               mountPath: /srv
-            - name: opt
-              mountPath: /srv/opt
-              readOnly: true
             - name: tmp
               mountPath: /tmp
           securityContext: &security
@@ -120,11 +117,6 @@ spec:
         - name: tank
           hostPath:
             path: "@bulk@"
-            type: Directory
-        # host /opt, read-only, shows up as /opt in the browser
-        - name: opt
-          hostPath:
-            path: /opt
             type: Directory
         # uploads come in chunks through here
         - name: tmp
