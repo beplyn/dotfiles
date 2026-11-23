@@ -23,6 +23,7 @@ let
   Mod = bind [ "SUPER" ];
   ModShift = bind [ "SUPER" "SHIFT" ];
   ModCtrl = bind [ "SUPER" "CTRL" ];
+  ModCtrlShift = bind [ "SUPER" "CTRL" "SHIFT" ];
   ModAlt = bind [ "SUPER" "ALT" ];
   None = bind [ ];
   Shift = bind [ "SHIFT" ];
@@ -126,11 +127,16 @@ let
         (show "Move window down" (ModShift "j" "window.move" { direction = "down"; }))
 
         # workspaces can't be reordered; send the workspace to the next monitor
-        (show "Move workspace to monitor right" (ModShift "u" "workspace.move" { monitor = "+1"; }))
-        (show "Move workspace to monitor left" (ModShift "i" "workspace.move" { monitor = "-1"; }))
+        (show "Move workspace to monitor right" (ModAlt "u" "workspace.move" { monitor = "+1"; }))
+        (show "Move workspace to monitor left" (ModAlt "i" "workspace.move" { monitor = "-1"; }))
+
+        (show "Move window to workspace below" (ModShift "u" "haku.move_window_to_workspace" 1))
+        (show "Move window to workspace above" (ModShift "i" "haku.move_window_to_workspace" (-1)))
 
         (show "Focus monitor left" (ModCtrl "h" "focus" { monitor = "l"; }))
         (show "Focus monitor right" (ModCtrl "l" "focus" { monitor = "r"; }))
+        (show "Move window to monitor left" (ModCtrlShift "h" "haku.move_window_to_monitor" "l"))
+        (show "Move window to monitor right" (ModCtrlShift "l" "haku.move_window_to_monitor" "r"))
 
         # follows the window, like move-column-to-workspace
         (show "Move column to next workspace" (ModCtrl "u" "haku.move_column_to_workspace" { offset = 1; }))
