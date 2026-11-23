@@ -127,7 +127,7 @@ All at `https://<subdomain>.<domain>`.
 | Gatus             | `status`  |     |                                                                     |
 | SilverBullet      | `notes`   |     | Pages are `.md` files in `/srv/tank/notes`                          |
 | Stirling PDF      | `pdf`     |     |                                                                     |
-| FileBrowser       | `files`   |     | Shows tank, except photos, and `/opt` read-only                     |
+| FileBrowser       | `files`   |     | Shows tank, except photos                                           |
 | SearXNG           | `search`  |     | Browser search engine: `https://search.<domain>/search?q=%s`        |
 | n8n               | `flow`    |     | Create the owner account. `/webhook/` and `/form/` are public       |
 | changedetection   | `watch`   |     | Notify with `ntfys://ntfy.<domain>/<topic>`                         |
@@ -143,7 +143,7 @@ All at `https://<subdomain>.<domain>`.
 | Linkding          | `links`   |     | `<username>` / `ADMIN_PASSWORD`. The extension uses an API token    |
 | Radicale          | `cal`     |     | `<username>` / `ADMIN_PASSWORD`, for CalDAV/CardDAV                 |
 | MeTube            | `dl`      |     | Paste a link, pick Audio for Navidrome (`/music`), Video for Jellyfin (`/video`) |
-| qBittorrent       | `torrent` |     | Add a `.torrent` or a magnet link; done goes to `/video` for Jellyfin. Forward 6881 tcp/udp on the router to seed |
+| qBittorrent       | `torrent` |     | Add a `.torrent` or a magnet link; pick a category: `movies` and `series` go to `/video/` for Jellyfin, `general` to `/torrents`. Forward 6881 tcp/udp on the router to seed |
 | Navidrome         | `music`   |     | `admin` / `ADMIN_PASSWORD`, rename it in the app                    |
 | Vikunja           | `tasks`   |     | `<username>` / `ADMIN_PASSWORD` (see `k3s/manifests/vikunja.yaml`)  |
 | Immich            | `photos`  |     | The first user you create is admin                                  |
@@ -158,3 +158,4 @@ Notes:
 - Immich and Audiobookshelf can add Pocket ID in their own admin settings.
 - SilverBullet and FileBrowser run as you (uid 1000), so their files on tank are yours.
 - Beszel and Scrutiny run on the host, not k3s, and aren't backed up (their data is regenerable).
+- ArchiSteamFarm (`asf`) has no URL. Give it a bot login once: `k3s kubectl -n asf create secret generic asf-bot --from-file=farm.json=<file>`, where `farm.json` has `SteamLogin`, `SteamPassword` and `GamesPlayedWhileIdle`. Control it with `k3s kubectl -n asf port-forward deploy/asf 1242:1242`. For Steam Guard, run `bash modules/nixos/services/k3s/asf-login.sh` from the checkout, then type the code or `Y`.

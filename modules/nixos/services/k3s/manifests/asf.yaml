@@ -1,0 +1,108 @@
+# @x@ placeholders are filled in by apps.nix
+# ArchiSteamFarm idles the games in farm.json for playtime and card drops. No web UI outside the cluster.
+# Login: farm.json in the asf-bot secret, so the pod runs idle until it's there:
+#   k3s kubectl -n asf create secret generic asf-bot --from-file=farm.json=<file>
+# Control: k3s kubectl -n asf port-forward deploy/asf 1242:1242, then IPC at http://127.0.0.1:1242
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: asf
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: asf
+  namespace: asf
+data:
+  # seeded once; ASF rewrites it, so changes made over IPC stick
+  ASF.json: |
+    {
+      "AutoUpdates": false,
+      "IPC": true
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: asf
+  namespace: asf
+  labels:
+    app: asf
+spec:
+  replicas: 1
+  # one login session per account
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: asf
+  template:
+    metadata:
+      labels:
+        app: asf
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      initContainers:
+        - name: seed
+          image: justarchi/archisteamfarm:6.3.11.7
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              [ -f /app/config/ASF.json ] || cp /seed/ASF.json /app/config/ASF.json
+              # the secret is the source of truth for the bot login
+              if [ -f /bot/farm.json ]; then cp /bot/farm.json /app/config/farm.json; fi
+          volumeMounts: &mounts
+            - name: config
+              mountPath: /app/config
+            - name: seed
+              mountPath: /seed
+              readOnly: true
+            - name: bot
+              mountPath: /bot
+              readOnly: true
+            - name: logs
+              mountPath: /app/logs
+            - name: tmp
+              mountPath: /tmp
+          securityContext: &security
+            runAsNonRoot: true
+            runAsUser: @uid@
+            runAsGroup: @uid@
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+      containers:
+        - name: asf
+          image: justarchi/archisteamfarm:6.3.11.7
+          env:
+            - name: TZ
+              value: "@tz@"
+          volumeMounts: *mounts
+          securityContext: *security
+          resources:
+            requests:
+              cpu: 10m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+      volumes:
+        - name: config
+          hostPath:
+            path: "@state@/asf"
+            type: Directory
+        - name: seed
+          configMap:
+            name: asf
+        - name: bot
+          secret:
+            secretName: asf-bot
+            optional: true
+        - name: logs
+          emptyDir: { }
+        - name: tmp
+          emptyDir: { }
