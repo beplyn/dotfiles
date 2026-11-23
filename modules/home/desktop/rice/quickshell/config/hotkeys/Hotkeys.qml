@@ -108,7 +108,7 @@ PanelWindow {
             radius: Theme.radius
             color: Theme.cardColor
             border.color: Theme.cardBorder
-            border.width: 1
+            border.width: Theme.borderWidth
 
             opacity: root.open ? 1 : 0
             scale: root.open ? 1 : 0.94
@@ -122,7 +122,7 @@ PanelWindow {
             ColumnLayout {
                 id: content
                 anchors.centerIn: parent
-                spacing: 18
+                spacing: Theme.padLg
 
                 Text {
                     text: "Hotkeys"
@@ -133,7 +133,7 @@ PanelWindow {
                 }
 
                 RowLayout {
-                    spacing: 40
+                    spacing: Theme.gapXxl
 
                     Repeater {
                         model: root.columns
@@ -143,8 +143,8 @@ PanelWindow {
                             required property var modelData
                             Layout.alignment: Qt.AlignTop
                             columns: 2
-                            columnSpacing: 16
-                            rowSpacing: 6
+                            columnSpacing: Theme.gapLg
+                            rowSpacing: Theme.padXs
 
                             Repeater {
                                 model: column.modelData
@@ -184,7 +184,7 @@ PanelWindow {
                                     Component {
                                         id: keysCell
                                         Row {
-                                            spacing: 4
+                                            spacing: Theme.gapXs
 
                                             Repeater {
                                                 model: cell.modelData.keys
@@ -197,7 +197,7 @@ PanelWindow {
                                                     radius: Theme.innerRadius
                                                     color: Theme.well
                                                     border.color: Theme.cardBorder
-                                                    border.width: 1
+                                                    border.width: Theme.borderWidth
 
                                                     Text {
                                                         id: cap

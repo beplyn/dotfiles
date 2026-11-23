@@ -61,7 +61,7 @@ PanelWindow {
         radius: Theme.radius
         color: Theme.cardColor
         border.color: Theme.cardBorder
-        border.width: 1
+        border.width: Theme.borderWidth
         clip: true
 
         opacity: root.open ? 1 : 0
@@ -93,7 +93,7 @@ PanelWindow {
             id: body
             anchors.fill: parent
             anchors.margins: Theme.pad
-            spacing: 12
+            spacing: Theme.gapMd
         }
     }
 }

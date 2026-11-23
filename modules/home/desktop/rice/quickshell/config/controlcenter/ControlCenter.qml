@@ -115,13 +115,13 @@ Panel {
         radius: Theme.innerRadius - 2
         color: Theme.alpha(Theme.background, 0.6)
         border.color: field.activeFocus ? Theme.accent : Theme.surface
-        border.width: 1
+        border.width: Theme.borderWidth
 
         TextInput {
             id: field
             anchors.fill: parent
-            anchors.leftMargin: 10
-            anchors.rightMargin: 10
+            anchors.leftMargin: Theme.padSm
+            anchors.rightMargin: Theme.padSm
             verticalAlignment: TextInput.AlignVCenter
             color: Theme.foreground
             font.family: Theme.font
@@ -144,7 +144,7 @@ Panel {
     // --- header: who, how long, lock / power ------------------------------
     RowLayout {
         Layout.fillWidth: true
-        spacing: 12
+        spacing: Theme.gapMd
 
         // ~/.pfp as rendered by lock.nix's pfp; the logo until it loads
         ClippingRectangle {
@@ -157,9 +157,12 @@ Panel {
                 anchors.centerIn: parent
                 visible: pfp.status !== Image.Ready
                 text: Icons.logo
+                horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    Layout.preferredWidth: Theme.iconBox
                 color: Theme.background
                 font.family: Theme.font
-                font.pointSize: Theme.popupFontSize + 6
+                font.pointSize: Theme.iconMd
             }
 
             Image {
@@ -225,7 +228,7 @@ Panel {
         RowLayout {
             id: session
             width: parent.width
-            spacing: 8
+            spacing: Theme.gapSm
 
             Repeater {
                 model: [
@@ -252,8 +255,8 @@ Panel {
     GridLayout {
         Layout.fillWidth: true
         columns: 2
-        rowSpacing: 8
-        columnSpacing: 8
+        rowSpacing: Theme.gapSm
+        columnSpacing: Theme.gapSm
 
         Tile {
             Layout.fillWidth: true
@@ -345,7 +348,7 @@ Panel {
     Surface {
         Layout.fillWidth: true
         visible: root.wifi !== null && Networking.wifiEnabled
-        spacing: 2
+        spacing: Theme.gapXs
 
         // Click to fold the list open.
         Item {
@@ -380,7 +383,7 @@ Panel {
 
         Text {
             visible: root.networksOpen && root.wifiNetworks.length === 0
-            Layout.topMargin: 4
+            Layout.topMargin: Theme.gapXs
             text: "Scanning…"
             color: Theme.subtext
             font.family: Theme.font
@@ -405,7 +408,7 @@ Panel {
                 readonly property bool asking: root.pskTarget === modelData
 
                 Layout.fillWidth: true
-                spacing: 4
+                spacing: Theme.gapXs
 
                 Connections {
                     target: entry.modelData
@@ -426,15 +429,18 @@ Panel {
 
                     RowLayout {
                         anchors.fill: parent
-                        anchors.leftMargin: 8
-                        anchors.rightMargin: 8
-                        spacing: 10
+                        anchors.leftMargin: Theme.gapSm
+                        anchors.rightMargin: Theme.gapSm
+                        spacing: Theme.padSm
 
                         Text {
                             text: Icons.level(Icons.wifiLevels, entry.modelData.signalStrength * 100)
+                            horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                Layout.preferredWidth: Theme.iconBox
                             color: entry.modelData.connected ? Theme.accent : Theme.foreground
                             font.family: Theme.font
-                            font.pointSize: Theme.popupFontSize + 2
+                            font.pointSize: Theme.iconSm
                         }
                         Text {
                             Layout.fillWidth: true
@@ -509,7 +515,7 @@ Panel {
         Text {
             visible: root.wifiError !== ""
             Layout.fillWidth: true
-            Layout.topMargin: 4
+            Layout.topMargin: Theme.gapXs
             text: root.wifiError
             wrapMode: Text.Wrap
             color: Theme.red
@@ -522,7 +528,7 @@ Panel {
     Surface {
         Layout.fillWidth: true
         visible: root.adapter?.enabled ?? false
-        spacing: 2
+        spacing: Theme.gapXs
 
         Item {
             Layout.fillWidth: true
@@ -556,7 +562,7 @@ Panel {
 
         Text {
             visible: root.btOpen && root.btList.length === 0
-            Layout.topMargin: 4
+            Layout.topMargin: Theme.gapXs
             text: "Searching…"
             color: Theme.subtext
             font.family: Theme.font
@@ -604,15 +610,18 @@ Panel {
 
                 RowLayout {
                     anchors.fill: parent
-                    anchors.leftMargin: 8
-                    anchors.rightMargin: 8
-                    spacing: 10
+                    anchors.leftMargin: Theme.gapSm
+                    anchors.rightMargin: Theme.gapSm
+                    spacing: Theme.padSm
 
                     Text {
                         text: Icons.btDevice(btEntry.modelData.icon)
+                        horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            Layout.preferredWidth: Theme.iconBox
                         color: btEntry.modelData.connected ? Theme.accent : Theme.foreground
                         font.family: Theme.font
-                        font.pointSize: Theme.popupFontSize + 2
+                        font.pointSize: Theme.iconSm
                     }
                     Text {
                         Layout.fillWidth: true
@@ -670,7 +679,7 @@ Panel {
         Text {
             visible: root.btError !== ""
             Layout.fillWidth: true
-            Layout.topMargin: 4
+            Layout.topMargin: Theme.gapXs
             text: root.btError
             wrapMode: Text.Wrap
             color: Theme.red
@@ -682,7 +691,7 @@ Panel {
     // --- sliders -------------------------------------------------------------
     Surface {
         Layout.fillWidth: true
-        spacing: 6
+        spacing: Theme.padXs
 
         Heading { text: "Sound" }
 
@@ -706,7 +715,7 @@ Panel {
 
         Heading {
             visible: Brightness.available
-            Layout.topMargin: 4
+            Layout.topMargin: Theme.gapXs
             text: "Display"
         }
 
@@ -722,7 +731,7 @@ Panel {
     // --- shortcuts -----------------------------------------------------------
     RowLayout {
         Layout.fillWidth: true
-        spacing: 8
+        spacing: Theme.gapSm
 
         IconButton {
             Layout.fillWidth: true

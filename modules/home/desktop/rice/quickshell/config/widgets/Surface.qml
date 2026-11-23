@@ -6,7 +6,7 @@ import qs.services
 Rectangle {
     id: root
 
-    property int padding: 12
+    property int padding: Theme.gapMd
     property alias spacing: column.spacing
     default property alias content: column.data
 
@@ -19,6 +19,6 @@ Rectangle {
         id: column
         anchors.fill: parent
         anchors.margins: root.padding
-        spacing: 8
+        spacing: Theme.gapSm
     }
 }

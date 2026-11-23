@@ -33,7 +33,7 @@ Rectangle {
 
     Rectangle {
         anchors.fill: parent
-        anchors.bottomMargin: 3
+        anchors.bottomMargin: Theme.gapXs
         radius: Theme.radius
         color: Theme.alpha(Theme.background, popup ? 0.9 : 0.8)
 
@@ -49,7 +49,7 @@ Rectangle {
         x: 16
         y: 16
         width: parent.width - 32
-        spacing: 12
+        spacing: Theme.gapMd
 
         ClippingRectangle {
             visible: root.picture !== ""
@@ -70,7 +70,7 @@ Rectangle {
 
         Column {
             width: body.width - (root.picture !== "" ? 60 : 0)
-            spacing: 4
+            spacing: Theme.gapXs
 
             Item {
                 width: parent.width
@@ -80,7 +80,7 @@ Rectangle {
                     id: summary
                     anchors.left: parent.left
                     anchors.right: meta.left
-                    anchors.rightMargin: 8
+                    anchors.rightMargin: Theme.gapSm
                     text: root.notif?.summary || root.notif?.appName || ""
                     elide: Text.ElideRight
                     color: root.critical ? Theme.red : Theme.accent
@@ -93,7 +93,7 @@ Rectangle {
                     id: meta
                     anchors.right: parent.right
                     anchors.verticalCenter: parent.verticalCenter
-                    spacing: 8
+                    spacing: Theme.gapSm
 
                     Text {
                         anchors.verticalCenter: parent.verticalCenter
@@ -112,7 +112,7 @@ Rectangle {
                         MouseArea {
                             id: close
                             anchors.fill: parent
-                            anchors.margins: -4
+                            anchors.margins: -Theme.gapXs
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
                             onClicked: root.notif.dismiss()
@@ -138,9 +138,9 @@ Rectangle {
 
             Flow {
                 width: parent.width
-                spacing: 6
+                spacing: Theme.padXs
                 visible: actions.count > 0
-                topPadding: 4
+                topPadding: Theme.gapXs
 
                 Repeater {
                     id: actions

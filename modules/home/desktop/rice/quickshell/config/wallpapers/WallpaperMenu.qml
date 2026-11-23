@@ -275,7 +275,7 @@ PanelWindow {
                         anchors.fill: parent
                         radius: Theme.radius
                         color: Theme.well
-                        border.width: card.middle ? 3 : 1
+                        border.width: card.middle ? Theme.borderWidthStrong : Theme.borderWidth
                         border.color: card.middle ? Theme.accent : Theme.cardBorder
 
                         Behavior on border.color {
@@ -301,12 +301,12 @@ PanelWindow {
                         visible: card.showing
                         anchors.top: parent.top
                         anchors.right: parent.right
-                        anchors.margins: 10
+                        anchors.margins: Theme.padSm
                         width: 10
                         height: 10
                         radius: Theme.radiusSm
                         color: Theme.accent
-                        border.width: 2
+                        border.width: Theme.borderWidthStrong
                         border.color: Theme.alpha(Theme.background, 0.7)
                     }
 
@@ -326,7 +326,7 @@ PanelWindow {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: view.bottom
                 anchors.topMargin: Theme.gap
-                spacing: 4
+                spacing: Theme.gapXs
 
                 Text {
                     anchors.horizontalCenter: parent.horizontalCenter

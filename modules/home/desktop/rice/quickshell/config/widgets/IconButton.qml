@@ -33,13 +33,16 @@ Rectangle {
     RowLayout {
         id: row
         anchors.centerIn: parent
-        spacing: 8
+        spacing: Theme.gapSm
 
         Text {
             text: root.icon
+            horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                Layout.preferredWidth: Theme.iconBox
             color: root.fg
             font.family: Theme.font
-            font.pointSize: Theme.popupFontSize + 3
+            font.pointSize: Theme.iconMd
         }
         Text {
             visible: root.label !== ""

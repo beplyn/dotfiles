@@ -35,7 +35,7 @@ Panel {
     // --- header ----------------------------------------------------------
     RowLayout {
         Layout.fillWidth: true
-        spacing: 12
+        spacing: Theme.gapMd
 
         Rectangle {
             implicitWidth: 42
@@ -46,9 +46,12 @@ Panel {
             Text {
                 anchors.centerIn: parent
                 text: root.icon
+                horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    Layout.preferredWidth: Theme.iconBox
                 color: root.color
                 font.family: Theme.font
-                font.pointSize: Theme.popupFontSize + 6
+                font.pointSize: Theme.iconMd
             }
         }
 
@@ -80,11 +83,11 @@ Panel {
     // --- graph -------------------------------------------------------------
     Surface {
         Layout.fillWidth: true
-        padding: 12
+        padding: Theme.gapMd
 
         RowLayout {
             Layout.fillWidth: true
-            spacing: 8
+            spacing: Theme.gapSm
 
             ColumnLayout {
                 Layout.fillHeight: true
@@ -110,8 +113,8 @@ Panel {
     GridLayout {
         Layout.fillWidth: true
         columns: 2
-        rowSpacing: 8
-        columnSpacing: 8
+        rowSpacing: Theme.gapSm
+        columnSpacing: Theme.gapSm
 
         Repeater {
             model: [
@@ -122,7 +125,7 @@ Panel {
             Surface {
                 required property var modelData
                 Layout.fillWidth: true
-                spacing: 2
+                spacing: Theme.gapXs
 
                 Label { text: modelData.label }
                 Text {

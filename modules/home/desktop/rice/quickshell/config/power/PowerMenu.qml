@@ -100,7 +100,7 @@ PanelWindow {
         ColumnLayout {
             id: content
             anchors.centerIn: parent
-            spacing: 28
+            spacing: Theme.gapXl
 
             opacity: root.open ? 1 : 0
             scale: root.open ? 1 : 0.94
@@ -114,7 +114,7 @@ PanelWindow {
             // --- header ---------------------------------------------------
             ColumnLayout {
                 Layout.alignment: Qt.AlignHCenter
-                spacing: 2
+                spacing: Theme.gapXs
 
                 Text {
                     Layout.alignment: Qt.AlignHCenter
@@ -136,7 +136,7 @@ PanelWindow {
             // --- actions --------------------------------------------------
             RowLayout {
                 Layout.alignment: Qt.AlignHCenter
-                spacing: 14
+                spacing: Theme.padMd
 
                 Repeater {
                     model: root.actions
@@ -155,7 +155,7 @@ PanelWindow {
                         color: isArmed ? tint
                             : selected ? Theme.alpha(tint, 0.18)
                             : Theme.cardColor
-                        border.width: selected ? 2 : 1
+                        border.width: selected ? Theme.borderWidthStrong : Theme.borderWidth
                         border.color: selected ? tint : Theme.cardBorder
                         scale: mouse.pressed ? 0.96 : selected ? 1.04 : 1
 
@@ -171,7 +171,7 @@ PanelWindow {
 
                         ColumnLayout {
                             anchors.centerIn: parent
-                            spacing: 10
+                            spacing: Theme.padSm
 
                             // glyph in a soft disc
                             Rectangle {
@@ -189,9 +189,11 @@ PanelWindow {
                                 Text {
                                     anchors.centerIn: parent
                                     text: tile.modelData.icon
+                                    horizontalAlignment: Text.AlignHCenter
+                                        verticalAlignment: Text.AlignVCenter
                                     color: tile.isArmed ? Theme.background : tile.tint
                                     font.family: Theme.font
-                                    font.pointSize: Theme.popupFontSize + 14
+                                    font.pointSize: Theme.iconXl
                                 }
                             }
 
