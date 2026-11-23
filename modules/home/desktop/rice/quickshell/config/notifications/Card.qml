@@ -151,13 +151,13 @@ Rectangle {
                         width: label.implicitWidth + 24
                         height: label.implicitHeight + 10
                         radius: Theme.innerRadius
-                        color: actionHover.containsMouse ? Theme.accent : Theme.alpha(Theme.surface, 0.8)
+                        color: actionHover.containsMouse ? Theme.activeTint : Theme.hover
 
                         Text {
                             id: label
                             anchors.centerIn: parent
                             text: parent.modelData.text
-                            color: actionHover.containsMouse ? Theme.background : Theme.accent
+                            color: actionHover.containsMouse ? Theme.activeColor : Theme.foreground
                             font.family: Theme.font
                             font.pointSize: Theme.popupFontSize
                             font.bold: true
