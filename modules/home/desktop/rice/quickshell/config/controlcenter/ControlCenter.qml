@@ -94,12 +94,11 @@ Panel {
     readonly property var profiles: [PowerProfile.PowerSaver, PowerProfile.Balanced, PowerProfile.Performance]
 
     component Heading: Text {
-        color: Theme.subtext
+        color: Theme.muted
         font.family: Theme.font
-        font.pointSize: Theme.popupFontSize - 1
-        font.bold: true
+        font.pointSize: Theme.micro
         font.capitalization: Font.AllUppercase
-        font.letterSpacing: 1
+        font.letterSpacing: Theme.tracking
     }
 
     // One line of the wi-fi credential prompt.
@@ -151,7 +150,7 @@ Panel {
             implicitWidth: 42
             implicitHeight: 42
             radius: height / 2
-            color: Theme.accent
+            color: Theme.mantle
 
             Text {
                 anchors.centerIn: parent
@@ -160,7 +159,7 @@ Panel {
                 horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     Layout.preferredWidth: Theme.iconBox
-                color: Theme.background
+                color: Theme.foreground
                 font.family: Theme.font
                 font.pointSize: Theme.iconMd
             }
@@ -345,6 +344,7 @@ Panel {
     }
 
     // --- wi-fi networks ------------------------------------------------------
+    Divider {}
     Surface {
         Layout.fillWidth: true
         visible: root.wifi !== null && Networking.wifiEnabled
@@ -421,7 +421,7 @@ Panel {
                     Layout.fillWidth: true
                     implicitHeight: 34
                     radius: Theme.innerRadius - 2
-                    color: row.containsMouse ? Theme.alpha(Theme.surface, 0.85) : "transparent"
+                    color: row.containsMouse ? Theme.hover : "transparent"
 
                     Behavior on color {
                         ColorAnimation { duration: Theme.fast }
@@ -438,7 +438,7 @@ Panel {
                             horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
                                 Layout.preferredWidth: Theme.iconBox
-                            color: entry.modelData.connected ? Theme.accent : Theme.foreground
+                            color: entry.modelData.connected ? Theme.activeColor : Theme.foreground
                             font.family: Theme.font
                             font.pointSize: Theme.iconSm
                         }
@@ -446,7 +446,7 @@ Panel {
                             Layout.fillWidth: true
                             text: entry.modelData.name
                             elide: Text.ElideRight
-                            color: entry.modelData.connected ? Theme.accent : Theme.foreground
+                            color: entry.modelData.connected ? Theme.activeColor : Theme.foreground
                             font.family: Theme.font
                             font.pointSize: Theme.popupFontSize
                             font.bold: entry.modelData.connected
@@ -525,6 +525,7 @@ Panel {
     }
 
     // --- bluetooth devices --------------------------------------------------
+    Divider {}
     Surface {
         Layout.fillWidth: true
         visible: root.adapter?.enabled ?? false
@@ -586,7 +587,7 @@ Panel {
                 Layout.fillWidth: true
                 implicitHeight: 34
                 radius: Theme.innerRadius - 2
-                color: btRow.containsMouse ? Theme.alpha(Theme.surface, 0.85) : "transparent"
+                color: btRow.containsMouse ? Theme.hover : "transparent"
 
                 Behavior on color {
                     ColorAnimation { duration: Theme.fast }
@@ -619,7 +620,7 @@ Panel {
                         horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
                             Layout.preferredWidth: Theme.iconBox
-                        color: btEntry.modelData.connected ? Theme.accent : Theme.foreground
+                        color: btEntry.modelData.connected ? Theme.activeColor : Theme.foreground
                         font.family: Theme.font
                         font.pointSize: Theme.iconSm
                     }
@@ -627,7 +628,7 @@ Panel {
                         Layout.fillWidth: true
                         text: btEntry.modelData.name
                         elide: Text.ElideRight
-                        color: btEntry.modelData.connected ? Theme.accent : Theme.foreground
+                        color: btEntry.modelData.connected ? Theme.activeColor : Theme.foreground
                         font.family: Theme.font
                         font.pointSize: Theme.popupFontSize
                         font.bold: btEntry.modelData.connected
@@ -689,6 +690,7 @@ Panel {
     }
 
     // --- sliders -------------------------------------------------------------
+    Divider {}
     Surface {
         Layout.fillWidth: true
         spacing: Theme.padXs

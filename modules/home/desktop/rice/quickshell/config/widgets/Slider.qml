@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.services
 
-// 0..1 slider row: clickable glyph (e.g. mute), track, percentage.
+// 0..1 slider row: clickable glyph (e.g. mute), hairline track, percentage.
 // Drag, click or scroll on the track to move it.
 RowLayout {
     id: root
@@ -22,7 +22,7 @@ RowLayout {
         horizontalAlignment: Text.AlignHCenter
         text: root.icon
         verticalAlignment: Text.AlignVCenter
-        color: root.dimmed ? Theme.muted : Theme.accent
+        color: root.dimmed ? Theme.muted : Theme.foreground
         font.family: Theme.font
         font.pointSize: Theme.iconMd
 
@@ -35,21 +35,19 @@ RowLayout {
 
     Item {
         Layout.fillWidth: true
-        implicitHeight: 24
+        implicitHeight: Theme.gapXl
 
         Rectangle {
             id: track
             anchors.verticalCenter: parent.verticalCenter
             width: parent.width
-            height: 8
-            radius: Theme.radiusSm
-            color: Theme.alpha(Theme.surface, 0.9)
+            height: Theme.trackHeight
+            color: Theme.surface
 
             Rectangle {
-                width: Math.max(height, track.width * root.clamped)
+                width: track.width * root.clamped
                 height: parent.height
-                radius: parent.radius
-                color: root.dimmed ? Theme.muted : Theme.accent
+                color: root.dimmed ? Theme.muted : Theme.activeColor
 
                 Behavior on width {
                     enabled: !drag.pressed
@@ -58,17 +56,15 @@ RowLayout {
             }
         }
 
+        // a single tick marks the value; no knob
         Rectangle {
             x: track.width * root.clamped - width / 2
             anchors.verticalCenter: parent.verticalCenter
-            width: drag.pressed || drag.containsMouse ? 16 : 12
-            height: width
-            radius: width / 2
-            color: Theme.bright
-            border.color: root.dimmed ? Theme.muted : Theme.accent
-            border.width: Theme.borderWidthStrong
+            width: Theme.trackHeight
+            height: drag.pressed || drag.containsMouse ? Theme.gapMd + Theme.gapXs : Theme.gapMd
+            color: root.dimmed ? Theme.muted : Theme.foreground
 
-            Behavior on width {
+            Behavior on height {
                 NumberAnimation { duration: Theme.quick }
             }
         }
@@ -88,7 +84,7 @@ RowLayout {
     }
 
     Text {
-        Layout.preferredWidth: 38
+        Layout.preferredWidth: Theme.gapXl + Theme.gapMd + Theme.gapXs
         horizontalAlignment: Text.AlignRight
         text: Math.round(root.clamped * 100) + "%"
         color: Theme.subtext

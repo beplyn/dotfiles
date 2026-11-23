@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.services
 
-// quick-settings toggle, accent when active; passes the mouse event on
+// quick-settings toggle: hairline when idle, a faint blue tint when active
 Rectangle {
     id: root
 
@@ -14,10 +14,15 @@ Rectangle {
 
     implicitHeight: 58
     radius: Theme.innerRadius
-    color: active ? Theme.accent : mouse.containsMouse ? Theme.alpha(Theme.surface, 0.85) : Theme.well
-    scale: mouse.pressed ? 0.97 : 1
+    color: active ? Theme.activeTint : mouse.containsMouse ? Theme.hover : "transparent"
+    border.width: Theme.borderWidth
+    border.color: active ? Theme.activeColor : Theme.idleBorder
+    scale: mouse.pressed ? 0.98 : 1
 
     Behavior on color {
+        ColorAnimation { duration: Theme.fast }
+    }
+    Behavior on border.color {
         ColorAnimation { duration: Theme.fast }
     }
     Behavior on scale {
@@ -33,9 +38,9 @@ Rectangle {
         Text {
             text: root.icon
             horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                Layout.preferredWidth: Theme.iconBox
-            color: root.active ? Theme.background : Theme.accent
+            verticalAlignment: Text.AlignVCenter
+            Layout.preferredWidth: Theme.iconBox
+            color: root.active ? Theme.activeColor : Theme.foreground
             font.family: Theme.font
             font.pointSize: Theme.iconMd
         }
@@ -48,17 +53,16 @@ Rectangle {
                 Layout.fillWidth: true
                 text: root.title
                 elide: Text.ElideRight
-                color: root.active ? Theme.background : Theme.foreground
+                color: root.active ? Theme.activeColor : Theme.foreground
                 font.family: Theme.font
                 font.pointSize: Theme.popupFontSize
-                font.bold: true
             }
             Text {
                 Layout.fillWidth: true
                 visible: text !== ""
                 text: root.subtitle
                 elide: Text.ElideRight
-                color: root.active ? Theme.alpha(Theme.background, 0.75) : Theme.subtext
+                color: Theme.subtext
                 font.family: Theme.font
                 font.pointSize: Theme.popupFontSize - 1
             }
