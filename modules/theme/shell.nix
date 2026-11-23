@@ -26,7 +26,7 @@ in
 
   config.themes.shell =
   {
-    radius = 12;
+    radius = 4;
     glass = config.stylix.opacity.desktop;
     gaps = 3;
     border = 2;
