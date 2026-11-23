@@ -7,7 +7,7 @@ dropped=0
 while IFS=$'\t' read -r -d '' added _ path
 do
   [[ $added == "-" ]] || continue
-  mime="$(git cat-file blob ":$path" | file -b --mime-type -)"
+  mime="$(git cat-file blob ":$path" | file -b --mime-type - || true)"
   [[ $mime == image/* ]] && continue
 
   git rm -q --cached -- "$path"
