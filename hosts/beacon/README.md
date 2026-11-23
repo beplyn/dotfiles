@@ -127,7 +127,7 @@ All at `https://<subdomain>.<domain>`.
 | Gatus             | `status`  |     |                                                                     |
 | SilverBullet      | `notes`   |     | Pages are `.md` files in `/srv/tank/notes`                          |
 | Stirling PDF      | `pdf`     |     |                                                                     |
-| FileBrowser       | `files`   |     | Shows tank, except photos, and `/opt` read-only                     |
+| FileBrowser       | `files`   |     | Shows tank, except photos                                           |
 | SearXNG           | `search`  |     | Browser search engine: `https://search.<domain>/search?q=%s`        |
 | n8n               | `flow`    |     | Create the owner account. `/webhook/` and `/form/` are public       |
 | changedetection   | `watch`   |     | Notify with `ntfys://ntfy.<domain>/<topic>`                         |
