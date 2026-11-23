@@ -8,7 +8,6 @@
 
 let
   t = config.themes.shell;
-  gap = t.gaps;
   signals = config.lib.haku.waybarSignals;
   cava = lib.getExe config.lib.haku.cava.cavaVisualizer;
   laptop = osConfig.laptop.enable;
@@ -44,10 +43,11 @@ in
     {
       layer = "top";
       position = "top";
-      height = 36;
-      margin-top = gap;
-      margin-left = gap;
-      margin-right = gap;
+      # flush to the top edge and the sides; the strip is one hairline
+      height = 26;
+      margin-top = 0;
+      margin-left = 0;
+      margin-right = 0;
       spacing = 4;
 
       # the clock alone in the middle, so music starting or a recording
@@ -296,10 +296,9 @@ in
       };
     };
 
-    # palette, glass, radius, fonts; layout in style.css
+    # palette, fonts, radius; layout in style.css
     style = ''
       ${t.css}
-      @define-color glass alpha(@background, ${toString (t.glass - 0.17)});
 
       *
       {
@@ -307,7 +306,6 @@ in
         font-size: ${toString t.fontSize}pt;
       }
 
-      window#waybar > box,
       tooltip,
       menu
       {
@@ -317,8 +315,7 @@ in
       #custom-cava
       {
         min-width: 196px;
-        color: @accent;
-        text-shadow: 0 0 8px alpha(@accent, 0.65);
+        color: @foreground;
         letter-spacing: 1px;
       }
     ''

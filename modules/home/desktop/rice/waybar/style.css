@@ -1,4 +1,4 @@
-/* one floating capsule of pills; colors and fonts come from default.nix */
+/* one flat strip, no pills; colors and fonts come from default.nix */
 
 *
 {
@@ -14,15 +14,15 @@ window#waybar
   color: @foreground;
 }
 
-/* The capsule. Hyprland blurs behind it (hyprland/look.lua). */
+/* The strip: nearly opaque base00, one hairline underneath. */
 window#waybar > box
 {
-  background: @glass;
-  border: 1px solid alpha(@surface, 0.9);
-  padding: 0 5px;
+  background: alpha(@background, 0.94);
+  border-bottom: 1px solid @surface;
+  padding: 0 6px;
 }
 
-/* --- shared module look ------------------------------------------------ */
+/* --- shared module look: glyphs on whitespace, no backgrounds ---------- */
 
 #custom-launcher,
 #workspaces,
@@ -33,13 +33,7 @@ window#waybar > box
 #privacy,
 #tray,
 #custom-notifications,
-#custom-control
-{
-  margin: 5px 0;
-  border-radius: 8px;
-}
-
-/* grouped modules are separate pills, a little closer together */
+#custom-control,
 #cpu,
 #memory,
 #temperature,
@@ -47,114 +41,75 @@ window#waybar > box
 #bluetooth,
 #battery
 {
-  margin: 5px 2px;
+  margin: 0;
+  padding: 0 9px;
+  background: transparent;
+  border-radius: 2px;
+  transition: color 150ms cubic-bezier(0, 0.5, 0.35, 1);
 }
 
-/* every pill sits on see-through grey so it reads over any wallpaper */
-#custom-launcher,
-#workspaces,
-#window,
-#mpris,
-#clock,
+/* a 1px hairline between the right-hand modules */
 #cpu,
 #memory,
 #temperature,
-#privacy,
 #network,
 #bluetooth,
 #battery,
 #tray,
-#custom-notifications
-{
-  background: alpha(@surface, 0.75);
-}
-
-#privacy
-{
-  padding: 0 10px;
-}
-
-#custom-launcher,
-#window,
-#mpris,
-#clock,
-#custom-recorder,
-#cpu,
-#memory,
-#temperature,
-#network,
-#bluetooth,
-#battery,
 #custom-notifications,
 #custom-control
 {
-  padding: 0 10px;
-  border-radius: 8px;
-  transition: background-color 200ms ease, color 200ms ease;
-}
-
-#custom-launcher:hover,
-#mpris:hover,
-#clock:hover,
-#cpu:hover,
-#memory:hover,
-#temperature:hover,
-#network:hover,
-#bluetooth:hover,
-#battery:hover,
-#custom-notifications:hover
-{
-  background: alpha(mix(@surface, @accent, 0.35), 0.75);
+  margin: 5px 0;
+  border-left: 1px solid alpha(@surface, 0.9);
 }
 
 /* --- left ---------------------------------------------------------------- */
 
 #custom-launcher
 {
-  color: @accent;
+  color: @subtext;
   font-size: 1.25em;
   padding: 0 12px 0 10px;
 }
 
 #workspaces
 {
-  padding: 0 3px;
+  padding: 0 2px;
 }
 
 #workspaces button
 {
-  min-width: 20px;
-  padding: 0 4px;
-  margin: 3px 1px;
-  border-radius: 6px;
-  color: alpha(@foreground, 0.55);
+  min-width: 18px;
+  padding: 0 5px;
+  margin: 0;
+  border-radius: 0;
+  border-bottom: 2px solid transparent;
+  color: alpha(@foreground, 0.4);
   background: transparent;
-  transition: all 250ms cubic-bezier(0, 0.5, 0.35, 1);
+  transition: color 150ms cubic-bezier(0, 0.5, 0.35, 1), border-color 150ms cubic-bezier(0, 0.5, 0.35, 1);
 }
 
 #workspaces button.empty
 {
-  color: alpha(@foreground, 0.25);
+  color: alpha(@foreground, 0.2);
 }
 
 #workspaces button:hover
 {
-  background: alpha(@accent, 0.18);
   color: @foreground;
 }
 
-/* shown on its output */
+/* the one accent in the bar: the workspace shown on its output */
 #workspaces button.active
 {
-  min-width: 34px;
-  background: @accent;
-  color: @background;
+  color: @accent;
+  border-bottom-color: @accent;
 }
 
 #workspaces button.urgent
 {
-  background: @red;
-  color: @background;
+  color: @red;
+  border-bottom-color: @red;
 }
 
 #window
@@ -177,14 +132,11 @@ window#waybar > box
 #clock
 {
   color: @foreground;
-  font-weight: bold;
 }
 
 #custom-recorder
 {
-  background: alpha(@red, 0.18);
   color: @red;
-  border: 1px solid alpha(@red, 0.6);
   animation: blink 1s ease-in-out infinite alternate;
 }
 
@@ -192,7 +144,7 @@ window#waybar > box
 {
   to
   {
-    background: alpha(@red, 0.05);
+    opacity: 0.4;
   }
 }
 
@@ -268,7 +220,7 @@ window#waybar > box
 #tray > .needs-attention
 {
   background: alpha(@red, 0.3);
-  border-radius: 6px;
+  border-radius: 2px;
 }
 
 #custom-notifications
@@ -286,17 +238,15 @@ window#waybar > box
   color: @muted;
 }
 
-/* The panel trigger: the one solid pill in the bar. */
+/* The panel trigger: a glyph like the rest, brighter on hover. */
 #custom-control
 {
-  margin-left: 2px;
-  background: @accent;
-  color: @background;
+  color: @foreground;
 }
 
 #custom-control:hover
 {
-  background: @blue;
+  color: @blue;
 }
 
 /* --- popups ----------------------------------------------------------- */
@@ -323,12 +273,12 @@ menu
 menuitem
 {
   padding: 4px 8px;
-  border-radius: 6px;
+  border-radius: 2px;
   color: @foreground;
 }
 
 menuitem:hover
 {
-  background: @accent;
-  color: @background;
+  background: alpha(@blue, 0.14);
+  color: @blue;
 }
