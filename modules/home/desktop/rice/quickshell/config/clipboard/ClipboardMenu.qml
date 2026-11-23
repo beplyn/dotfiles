@@ -373,7 +373,9 @@ Panel {
                 width: tabs.items[tabs.active].width
                 height: parent.height - 8
                 radius: Math.max(0, Theme.innerRadius - 3)
-                color: Theme.accent
+                color: Theme.activeTint
+                border.width: Theme.borderWidth
+                border.color: Theme.activeColor
 
                 Behavior on x {
                     NumberAnimation { duration: Theme.slow; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.easing }
@@ -395,7 +397,7 @@ Panel {
                         required property var modelData
                         required property int index
                         readonly property bool active: tabs.active === index
-                        readonly property color fg: active ? Theme.background : tabMouse.containsMouse ? Theme.foreground : Theme.subtext
+                        readonly property color fg: active ? Theme.activeColor : tabMouse.containsMouse ? Theme.foreground : Theme.subtext
 
                         width: modelData.width
                         height: 30

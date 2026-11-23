@@ -91,7 +91,7 @@ PanelWindow {
                     width: col.width
                     height: label.implicitHeight + 16
                     radius: Theme.innerRadius
-                    color: selected ? Theme.accent : "transparent"
+                    color: selected ? Theme.activeTint : "transparent"
 
                     Text {
                         id: label
@@ -100,7 +100,7 @@ PanelWindow {
                         width: parent.width - 24
                         elide: Text.ElideMiddle
                         text: modelData.label
-                        color: parent.selected ? Theme.background : Theme.accent
+                        color: parent.selected ? Theme.activeColor : Theme.foreground
                         font.family: Theme.font
                         font.pointSize: Theme.popupFontSize + 2
                         font.bold: true

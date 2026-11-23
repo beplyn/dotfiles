@@ -9,21 +9,27 @@ Rectangle {
 
     property string icon: ""
     property string label: ""
-    property color tint: Theme.accent
+    property color tint: Theme.activeColor
     property bool filled: false
     property int size: 36
     signal clicked(var mouse)
 
     readonly property bool hovered: mouse.containsMouse
-    readonly property color fg: filled ? Theme.background : hovered ? tint : Theme.foreground
+    readonly property bool lit: filled || hovered
+    readonly property color fg: lit ? tint : Theme.foreground
 
-    implicitWidth: label === "" ? size : row.implicitWidth + 24
+    implicitWidth: label === "" ? size : row.implicitWidth + Theme.gapXl
     implicitHeight: size
     radius: Theme.innerRadius
-    color: filled ? tint : hovered ? Theme.alpha(tint, 0.2) : Theme.well
-    scale: mouse.pressed ? 0.95 : 1
+    color: lit ? Theme.alpha(tint, 0.14) : "transparent"
+    border.width: Theme.borderWidth
+    border.color: lit ? tint : Theme.idleBorder
+    scale: mouse.pressed ? 0.98 : 1
 
     Behavior on color {
+        ColorAnimation { duration: Theme.fast }
+    }
+    Behavior on border.color {
         ColorAnimation { duration: Theme.fast }
     }
     Behavior on scale {
@@ -38,8 +44,8 @@ Rectangle {
         Text {
             text: root.icon
             horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                Layout.preferredWidth: Theme.iconBox
+            verticalAlignment: Text.AlignVCenter
+            Layout.preferredWidth: Theme.iconBox
             color: root.fg
             font.family: Theme.font
             font.pointSize: Theme.iconMd
@@ -50,7 +56,6 @@ Rectangle {
             color: root.fg
             font.family: Theme.font
             font.pointSize: Theme.popupFontSize
-            font.bold: true
         }
     }
 

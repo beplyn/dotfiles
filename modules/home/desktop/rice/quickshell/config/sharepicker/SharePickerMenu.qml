@@ -40,8 +40,8 @@ Panel {
 
         implicitHeight: preview.height + captionRow.implicitHeight + 24
         radius: Theme.innerRadius
-        color: hovered ? Theme.alpha(Theme.accent, 0.14) : Theme.well
-        border.color: hovered ? Theme.accent : "transparent"
+        color: hovered ? Theme.activeTint : "transparent"
+        border.color: hovered ? Theme.activeColor : Theme.idleBorder
         border.width: Theme.borderWidthStrong
         scale: mouse.pressed ? 0.97 : hovered ? 1.02 : 1
 
@@ -266,7 +266,7 @@ Panel {
         Layout.fillWidth: true
         implicitHeight: 40
         radius: Theme.innerRadius
-        color: rememberMouse.containsMouse ? Theme.alpha(Theme.surface, 0.85) : Theme.well
+        color: rememberMouse.containsMouse ? Theme.hover : "transparent"
 
         Behavior on color {
             ColorAnimation { duration: Theme.fast }
@@ -282,8 +282,8 @@ Panel {
                 implicitWidth: 20
                 implicitHeight: 20
                 radius: Theme.innerRadius
-                color: SharePicker.remember ? Theme.accent : "transparent"
-                border.color: SharePicker.remember ? Theme.accent : Theme.muted
+                color: SharePicker.remember ? Theme.activeTint : "transparent"
+                border.color: SharePicker.remember ? Theme.activeColor : Theme.muted
                 border.width: Theme.borderWidthStrong
 
                 Behavior on color {
@@ -297,7 +297,7 @@ Panel {
                     horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                         Layout.preferredWidth: Theme.iconBox
-                    color: Theme.background
+                    color: Theme.activeColor
                     font.family: Theme.font
                     font.pointSize: Theme.iconSm
                 }

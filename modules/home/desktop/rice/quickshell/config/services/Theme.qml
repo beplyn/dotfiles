@@ -26,9 +26,9 @@ Singleton {
     readonly property real popupFontSize: Stylix.popupFontSize
 
     readonly property int radius: Stylix.radius
-    readonly property int innerRadius: radius - 4
-    // chips, bars and sliders
-    readonly property int radiusSm: 4
+    // sharp, architectural: controls and bars are barely rounded
+    readonly property int innerRadius: 2
+    readonly property int radiusSm: 2
     readonly property real glass: Stylix.opacity
     // Panels float this far from the screen edges and from waybar,
     // matching Hyprland's window gaps.
@@ -83,14 +83,31 @@ Singleton {
     // tabular figures for clocks, percentages and counters
     readonly property var numeric: ({ "tnum": 1 })
 
-    // Card look shared by every panel and the OSD.
-    readonly property color cardColor: alpha(background, glass)
-    readonly property color cardBorder: alpha(surface, 0.9)
-    readonly property color well: alpha(surface, 0.45)
+    // One flat surface for every panel, popup and the OSD: base00 nearly
+    // opaque, a base02 hairline, no nested boxes.
+    readonly property real surfaceOpacity: 0.94
+    readonly property color cardColor: alpha(background, surfaceOpacity)
+    readonly property color cardBorder: surface
+    // no recessed wells; sections are separated by dividers, not boxes
+    readonly property color well: "transparent"
+    readonly property color idleBorder: surface
+    readonly property color hover: alpha(foreground, 0.05)
+
+    // Active = base0D: a faint tint and a hairline, never a solid fill.
+    readonly property color activeColor: blue
+    readonly property color activeTint: alpha(blue, 0.14)
+
     // hairlines everywhere; strong for selected and focused edges
     readonly property int borderWidth: 1
     readonly property int borderWidthStrong: 2
     readonly property color borderColor: cardBorder
+    // slider and progress bars: flat, thin, no knob
+    readonly property int trackHeight: 2
+    readonly property int dotSize: 4
+
+    // section headers: small, uppercase, tracked
+    readonly property int micro: popupFontSize - 3
+    readonly property real tracking: 1.2
 
     function alpha(c, a) {
         return Qt.rgba(c.r, c.g, c.b, a)
