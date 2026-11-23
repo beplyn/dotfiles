@@ -41,7 +41,6 @@ PanelWindow {
 
     function land() {
         const i = Array.from({ length: folder.count }, (_, i) => i).find(i => fileAt(i) === current)
-        if (i !== undefined) view.positionViewAtIndex(i, PathView.Center)
         view.currentIndex = i ?? 0
         preview.show(fileAt(view.currentIndex))
     }
@@ -98,7 +97,7 @@ PanelWindow {
         opacity: root.open ? 1 : 0
 
         Behavior on opacity {
-            NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic }
+            NumberAnimation { duration: Theme.fast; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.easing }
         }
 
         focus: root.open
@@ -114,7 +113,7 @@ PanelWindow {
             e.accepted = true
         }
 
-        // the picked one in full, crossfading between two images
+        // the picked one in full
         Item {
             id: preview
             anchors.fill: parent
@@ -132,10 +131,20 @@ PanelWindow {
                 else next.source = src
             }
 
+            // the thumbnail, at once, under the full picture while it decodes
+            Image {
+                id: base
+                anchors.fill: parent
+                fillMode: Image.PreserveAspectCrop
+                asynchronous: true
+                sourceSize: Qt.size(640, 360)
+                source: folder.count > 0 ? "file://" + root.thumbs + "/" + root.fileAt(view.currentIndex) : ""
+            }
+
             // a burst of steps loads only where it stops
             Timer {
                 id: settle
-                interval: 110
+                interval: 90
                 onTriggered: preview.show(root.fileAt(view.currentIndex))
             }
 
@@ -147,13 +156,13 @@ PanelWindow {
                 cache: false
                 sourceSize: Qt.size(root.width, root.height)
                 opacity: preview.shown === a ? 1 : 0
-                scale: preview.shown === a ? 1 : 1.04
+                scale: preview.shown === a ? 1 : 1.03
                 onStatusChanged: if (status === Image.Ready && preview.pending === a) preview.shown = a
                 Behavior on opacity {
-                    NumberAnimation { duration: Theme.slow; easing.type: Easing.OutCubic }
+                    NumberAnimation { duration: Theme.slow; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.easing }
                 }
                 Behavior on scale {
-                    NumberAnimation { duration: Theme.slow * 2; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.easing }
+                    NumberAnimation { duration: Theme.slow; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.easing }
                 }
             }
 
@@ -165,13 +174,13 @@ PanelWindow {
                 cache: false
                 sourceSize: Qt.size(root.width, root.height)
                 opacity: preview.shown === b ? 1 : 0
-                scale: preview.shown === b ? 1 : 1.04
+                scale: preview.shown === b ? 1 : 1.03
                 onStatusChanged: if (status === Image.Ready && preview.pending === b) preview.shown = b
                 Behavior on opacity {
-                    NumberAnimation { duration: Theme.slow; easing.type: Easing.OutCubic }
+                    NumberAnimation { duration: Theme.slow; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.easing }
                 }
                 Behavior on scale {
-                    NumberAnimation { duration: Theme.slow * 2; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.easing }
+                    NumberAnimation { duration: Theme.slow; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.easing }
                 }
             }
         }
@@ -201,6 +210,8 @@ PanelWindow {
 
             readonly property real thumbWidth: Math.min(root.width * 0.2, 640)
             readonly property real thumbHeight: thumbWidth * 9 / 16
+            // centre to centre, a little apart
+            readonly property real pitch: thumbWidth * 1.15
 
             anchors.left: parent.left
             anchors.right: parent.right
@@ -211,111 +222,113 @@ PanelWindow {
             // rises in after the backdrop
             opacity: root.open ? 1 : 0
             transform: Translate {
-                y: root.open ? 0 : 60
+                y: root.open ? 0 : Theme.gapXxl
                 Behavior on y {
                     NumberAnimation { duration: Theme.slow; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.easing }
                 }
             }
             Behavior on opacity {
-                NumberAnimation { duration: Theme.slow; easing.type: Easing.OutCubic }
+                NumberAnimation { duration: Theme.slow; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.easing }
             }
 
-            PathView {
+            // the cards sit on a line round the current index; each one
+            // animates to its slot, so moving never snaps
+            Item {
                 id: view
+
+                property int currentIndex: 0
 
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.top: parent.top
                 height: strip.thumbHeight + Theme.gap * 2
 
-                model: folder
-                pathItemCount: Math.min(5, folder.count)
-                preferredHighlightBegin: 0.5
-                preferredHighlightEnd: 0.5
-                highlightRangeMode: PathView.StrictlyEnforceRange
-                highlightMoveDuration: Theme.slow
-                snapMode: PathView.SnapToItem
-                // keys, the wheel and clicks drive it, not flicks
-                interactive: false
-
                 onCurrentIndexChanged: if (root.open) settle.restart()
 
-                path: Path {
-                    startX: 0
-                    startY: view.height / 2
-
-                    PathAttribute { name: "itemScale"; value: 0.6 }
-                    PathAttribute { name: "itemOpacity"; value: 0 }
-                    PathAttribute { name: "itemZ"; value: 0 }
-                    PathLine { x: view.width / 2; y: view.height / 2 }
-                    PathAttribute { name: "itemScale"; value: 1 }
-                    PathAttribute { name: "itemOpacity"; value: 1 }
-                    PathAttribute { name: "itemZ"; value: 10 }
-                    PathLine { x: view.width; y: view.height / 2 }
-                    PathAttribute { name: "itemScale"; value: 0.6 }
-                    PathAttribute { name: "itemOpacity"; value: 0 }
-                    PathAttribute { name: "itemZ"; value: 0 }
+                // signed distance from the current index, wrapped round the folder
+                function rel(i) {
+                    const n = folder.count
+                    if (n === 0) return 0
+                    let d = ((i - currentIndex) % n + n) % n
+                    if (d > n / 2) d -= n
+                    return d
                 }
 
-                delegate: Item {
-                    id: card
+                Repeater {
+                    model: folder
 
-                    required property int index
-                    required property string fileName
-                    readonly property bool middle: PathView.isCurrentItem
-                    readonly property bool showing: fileName === root.current
+                    delegate: Item {
+                        id: card
 
-                    width: strip.thumbWidth
-                    height: strip.thumbHeight
-                    scale: PathView.itemScale ?? 1
-                    opacity: PathView.itemOpacity ?? 1
-                    z: PathView.itemZ ?? 0
+                        required property int index
+                        required property string fileName
+                        readonly property int rel: view.rel(index)
+                        readonly property int absRel: Math.abs(rel)
+                        readonly property bool middle: rel === 0
+                        readonly property bool showing: fileName === root.current
 
-                    ClippingRectangle {
-                        anchors.fill: parent
-                        radius: Theme.radius
-                        color: Theme.well
-                        border.width: card.middle ? Theme.borderWidthStrong : Theme.borderWidth
-                        border.color: card.middle ? Theme.accent : Theme.cardBorder
+                        width: strip.thumbWidth
+                        height: strip.thumbHeight
+                        anchors.verticalCenter: parent.verticalCenter
+                        // with few pictures a card can jump across the strip; snap then
+                        x: view.width / 2 - width / 2 + rel * strip.pitch
+                        scale: absRel === 0 ? 1 : absRel === 1 ? 0.8 : 0.6
+                        opacity: absRel === 0 ? 1 : absRel === 1 ? 0.7 : absRel === 2 ? 0.3 : 0
+                        z: 10 - absRel
+                        visible: opacity > 0
 
-                        Behavior on border.color {
-                            ColorAnimation { duration: Theme.fast }
+                        Behavior on x {
+                            enabled: folder.count > 5
+                            NumberAnimation { duration: Theme.slow; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.easing }
+                        }
+                        Behavior on scale {
+                            NumberAnimation { duration: Theme.slow; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.easing }
+                        }
+                        Behavior on opacity {
+                            NumberAnimation { duration: Theme.slow; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.easing }
                         }
 
-                        Image {
+                        ClippingRectangle {
                             anchors.fill: parent
-                            source: "file://" + root.thumbs + "/" + card.fileName
-                            fillMode: Image.PreserveAspectCrop
-                            asynchronous: true
-                            sourceSize: Qt.size(640, 360)
-                            // the sides sit back in the dark
-                            opacity: card.middle ? 1 : 0.7
-                            Behavior on opacity {
-                                NumberAnimation { duration: Theme.fast }
+                            radius: Theme.radius
+                            color: Theme.well
+                            border.width: card.middle ? Theme.borderWidthStrong : Theme.borderWidth
+                            border.color: card.middle ? Theme.activeColor : Theme.cardBorder
+
+                            Behavior on border.color {
+                                ColorAnimation { duration: Theme.fast }
+                            }
+
+                            Image {
+                                anchors.fill: parent
+                                source: "file://" + root.thumbs + "/" + card.fileName
+                                fillMode: Image.PreserveAspectCrop
+                                asynchronous: true
+                                sourceSize: Qt.size(640, 360)
                             }
                         }
-                    }
 
-                    // the one on screen now
-                    Rectangle {
-                        visible: card.showing
-                        anchors.top: parent.top
-                        anchors.right: parent.right
-                        anchors.margins: Theme.padSm
-                        width: 10
-                        height: 10
-                        radius: Theme.radiusSm
-                        color: Theme.accent
-                        border.width: Theme.borderWidthStrong
-                        border.color: Theme.alpha(Theme.background, 0.7)
-                    }
+                        // the one on screen now
+                        Rectangle {
+                            visible: card.showing
+                            anchors.top: parent.top
+                            anchors.right: parent.right
+                            anchors.margins: Theme.padSm
+                            width: Theme.dotSize
+                            height: Theme.dotSize
+                            radius: Theme.radiusSm
+                            color: Theme.accent
+                            border.width: Theme.borderWidth
+                            border.color: Theme.alpha(Theme.background, 0.7)
+                        }
 
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: {
-                            if (card.middle) root.apply()
-                            else view.currentIndex = card.index
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                if (card.middle) root.apply()
+                                else view.currentIndex = card.index
+                            }
                         }
                     }
                 }
