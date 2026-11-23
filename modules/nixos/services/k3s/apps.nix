@@ -370,6 +370,8 @@ let
         (mine "${st.state}/qbittorrent")
         (mine "${st.scratch}/qbittorrent")
         (subvol "${st.bulk}/video")
+        # general torrent dir, also browsable in filebrowser
+        (subvol "${st.bulk}/torrents")
       ];
       lan =
       {
