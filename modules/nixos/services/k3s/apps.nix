@@ -370,6 +370,8 @@ let
         (mine "${st.state}/qbittorrent")
         (mine "${st.scratch}/qbittorrent")
         (subvol "${st.bulk}/video")
+        # general torrent dir, also browsable in filebrowser
+        (subvol "${st.bulk}/torrents")
       ];
       lan =
       {
@@ -406,6 +408,11 @@ let
       dirs = [ (app "${st.state}/minecraft") ];
       lan.tcp = [ 25565 ];
       dnsOnly = "mc";
+    };
+    # idles games for playtime and card drops; no web UI outside the cluster, login in the asf-bot secret
+    asf =
+    {
+      dirs = [ (app "${st.state}/asf") ];
     };
   };
 

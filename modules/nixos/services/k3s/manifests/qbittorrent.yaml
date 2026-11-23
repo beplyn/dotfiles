@@ -27,6 +27,13 @@ data:
     Port=8080
     AuthSubnetWhitelistEnabled=true
     AuthSubnetWhitelist=10.42.0.0/16
+  # categories, seeded with the config
+  categories.json: |
+    {
+      "movies": { "name": "movies", "savePath": "/video/movies" },
+      "series": { "name": "series", "savePath": "/video/series" },
+      "general": { "name": "general", "savePath": "/torrents" }
+    }
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -62,6 +69,8 @@ spec:
               conf=/config/qBittorrent/config/qBittorrent.conf
               mkdir -p "${conf%/*}"
               [ -f "$conf" ] || cp /seed/qBittorrent.conf "$conf"
+              cats=/config/qBittorrent/config/categories.json
+              [ -f "$cats" ] || cp /seed/categories.json "$cats"
           volumeMounts: &mounts
             - name: seed
               mountPath: /seed
@@ -70,6 +79,8 @@ spec:
               mountPath: /config
             - name: video
               mountPath: /video
+            - name: torrents
+              mountPath: /torrents
             - name: incomplete
               mountPath: /incomplete
             - name: tmp
@@ -129,6 +140,10 @@ spec:
         - name: video
           hostPath:
             path: "@bulk@/video"
+            type: Directory
+        - name: torrents
+          hostPath:
+            path: "@bulk@/torrents"
             type: Directory
         - name: incomplete
           hostPath:
