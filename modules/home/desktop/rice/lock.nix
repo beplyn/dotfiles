@@ -116,7 +116,7 @@ in
         inner_color = panel;
         outer_color = rgb p.surface;
         font_color = rgb p.foreground;
-        check_color = rgb p.blue;
+        check_color = lib.mkForce (rgb p.blue);
         fail_color = rgb p.red;
         dots_size = 0.22;
         dots_spacing = 0.4;
