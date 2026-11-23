@@ -92,6 +92,7 @@ RowLayout {
         text: Math.round(root.clamped * 100) + "%"
         color: Theme.subtext
         font.family: Theme.font
+        font.features: Theme.numeric
         font.pointSize: Theme.popupFontSize
     }
 }

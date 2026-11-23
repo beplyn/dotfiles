@@ -126,6 +126,7 @@ PanelWindow {
                 text: Math.round(root.value * 100) + "%"
                 color: Theme.foreground
                 font.family: Theme.font
+                font.features: Theme.numeric
                 font.pointSize: Theme.popupFontSize
                 font.bold: true
             }
