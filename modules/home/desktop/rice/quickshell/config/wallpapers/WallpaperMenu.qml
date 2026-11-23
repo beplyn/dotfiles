@@ -304,7 +304,7 @@ PanelWindow {
                         anchors.margins: 10
                         width: 10
                         height: 10
-                        radius: 5
+                        radius: Theme.radiusSm
                         color: Theme.accent
                         border.width: 2
                         border.color: Theme.alpha(Theme.background, 0.7)

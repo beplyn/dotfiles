@@ -150,7 +150,7 @@ Panel {
         ClippingRectangle {
             implicitWidth: 42
             implicitHeight: 42
-            radius: 21
+            radius: height / 2
             color: Theme.accent
 
             Text {

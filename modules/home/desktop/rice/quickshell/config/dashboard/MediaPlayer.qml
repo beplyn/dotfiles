@@ -42,10 +42,10 @@ Rectangle {
                 width: root.width / root.spectrum.length
                 height: root.height * (root.spectrum[index] ?? 0) / 7
                 color: Theme.accent
-                radius: 2
+                radius: Theme.radiusSm
 
                 Behavior on height {
-                    NumberAnimation { duration: 60 }
+                    NumberAnimation { duration: Theme.quick }
                 }
             }
         }
@@ -144,7 +144,7 @@ Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
                     width: parent.width
                     height: 4
-                    radius: 2
+                    radius: Theme.radiusSm
                     color: Theme.alpha(Theme.surface, 0.9)
 
                     Rectangle {
@@ -154,7 +154,7 @@ Rectangle {
                         color: Theme.accent
 
                         Behavior on width {
-                            NumberAnimation { duration: 1000 }
+                            NumberAnimation { duration: Theme.progress }
                         }
                     }
                 }

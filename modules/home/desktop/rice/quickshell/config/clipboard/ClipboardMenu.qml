@@ -250,7 +250,7 @@ Panel {
         property alias text: capText.text
         implicitWidth: Math.max(capText.implicitWidth + 12, implicitHeight)
         implicitHeight: capText.implicitHeight + 6
-        radius: 6
+        radius: Theme.innerRadius
         color: Theme.well
         border.color: Theme.cardBorder
         border.width: 1
@@ -317,7 +317,7 @@ Panel {
         Rectangle {
             implicitWidth: 42
             implicitHeight: 42
-            radius: 21
+            radius: height / 2
             color: Theme.accent
 
             Text {

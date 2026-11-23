@@ -55,7 +55,7 @@ Rectangle {
             visible: root.picture !== ""
             width: 48
             height: 48
-            radius: 8
+            radius: Theme.innerRadius
             color: "transparent"
 
             Image {
@@ -150,7 +150,7 @@ Rectangle {
                         required property NotificationAction modelData
                         width: label.implicitWidth + 24
                         height: label.implicitHeight + 10
-                        radius: 8
+                        radius: Theme.innerRadius
                         color: actionHover.containsMouse ? Theme.accent : Theme.alpha(Theme.surface, 0.8)
 
                         Text {

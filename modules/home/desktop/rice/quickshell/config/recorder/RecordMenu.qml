@@ -90,7 +90,7 @@ PanelWindow {
 
                     width: col.width
                     height: label.implicitHeight + 16
-                    radius: 8
+                    radius: Theme.innerRadius
                     color: selected ? Theme.accent : "transparent"
 
                     Text {

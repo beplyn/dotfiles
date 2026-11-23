@@ -194,7 +194,7 @@ PanelWindow {
                                                     required property string modelData
                                                     implicitWidth: Math.max(cap.implicitWidth + 12, implicitHeight)
                                                     implicitHeight: cap.implicitHeight + 6
-                                                    radius: 6
+                                                    radius: Theme.innerRadius
                                                     color: Theme.well
                                                     border.color: Theme.cardBorder
                                                     border.width: 1
