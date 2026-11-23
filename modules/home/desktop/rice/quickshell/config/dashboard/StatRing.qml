@@ -15,7 +15,7 @@ ColumnLayout {
 
     property real shown: Math.max(0, Math.min(1, value))
     Behavior on shown {
-        NumberAnimation { duration: 600; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.easing }
+        NumberAnimation { duration: Theme.ring; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.easing }
     }
 
     spacing: 6

@@ -93,8 +93,8 @@ ColumnLayout {
         id: slide
 
         ParallelAnimation {
-            NumberAnimation { target: body; property: "opacity"; to: 0; duration: 90 }
-            NumberAnimation { target: offset; property: "x"; to: -root.direction * 18; duration: 90 }
+            NumberAnimation { target: body; property: "opacity"; to: 0; duration: Theme.quick }
+            NumberAnimation { target: offset; property: "x"; to: -root.direction * 18; duration: Theme.quick }
         }
         ScriptAction {
             script: {
@@ -326,7 +326,7 @@ ColumnLayout {
                             required property var modelData
                             width: 4
                             height: 4
-                            radius: 2
+                            radius: Theme.radiusSm
                             color: Events.color(modelData)
                         }
                     }
