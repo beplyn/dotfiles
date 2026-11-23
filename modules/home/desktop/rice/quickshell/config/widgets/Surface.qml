@@ -2,18 +2,16 @@ import QtQuick
 import QtQuick.Layouts
 import qs.services
 
-// Recessed section inside a panel card; children stack in a column.
-Rectangle {
+// Section inside a panel: no box, just a column. Sections are split by Divider.
+Item {
     id: root
 
-    property int padding: Theme.gapMd
+    property int padding: 0
     property alias spacing: column.spacing
     default property alias content: column.data
 
     implicitWidth: column.implicitWidth + padding * 2
     implicitHeight: column.implicitHeight + padding * 2
-    radius: Theme.innerRadius
-    color: Theme.well
 
     ColumnLayout {
         id: column

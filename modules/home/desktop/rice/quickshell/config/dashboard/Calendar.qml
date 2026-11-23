@@ -279,7 +279,7 @@ ColumnLayout {
                     width: root.cellSize - 6
                     height: width
                     radius: width / 2
-                    color: cell.isToday ? Theme.accent
+                    color: cell.isToday ? Theme.activeTint
                         : hover.hovered ? Theme.alpha(Theme.foreground, 0.1)
                         : "transparent"
 
@@ -291,7 +291,7 @@ ColumnLayout {
                 Text {
                     anchors.centerIn: parent
                     text: cell.model.day
-                    color: cell.isToday ? Theme.background
+                    color: cell.isToday ? Theme.activeColor
                         : cell.weekend ? Theme.accent
                         : Theme.foreground
                     opacity: !cell.inMonth ? 0.25 : cell.past && !cell.thisWeek ? 0.55 : 1

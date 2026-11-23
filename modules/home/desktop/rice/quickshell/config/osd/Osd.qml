@@ -74,7 +74,7 @@ PanelWindow {
         y: root.shown ? 0 : 12
         width: parent.width
         height: parent.height
-        radius: height / 2
+        radius: Theme.radius
         color: Theme.cardColor
         border.color: Theme.cardBorder
         border.width: Theme.borderWidth
@@ -98,22 +98,20 @@ PanelWindow {
                 horizontalAlignment: Text.AlignHCenter
                 text: root.icon
                 verticalAlignment: Text.AlignVCenter
-                color: Theme.accent
+                color: Theme.foreground
                 font.family: Theme.font
                 font.pointSize: Theme.iconMd
             }
 
             Rectangle {
                 Layout.fillWidth: true
-                implicitHeight: 6
-                radius: Theme.radiusSm
-                color: Theme.alpha(Theme.surface, 0.9)
+                implicitHeight: Theme.trackHeight
+                color: Theme.surface
 
                 Rectangle {
                     width: parent.width * Math.max(0, Math.min(1, root.value))
                     height: parent.height
-                    radius: parent.radius
-                    color: Theme.accent
+                    color: Theme.activeColor
 
                     Behavior on width {
                         NumberAnimation { duration: Theme.quick; easing.type: Easing.OutCubic }
@@ -129,7 +127,6 @@ PanelWindow {
                 font.family: Theme.font
                 font.features: Theme.numeric
                 font.pointSize: Theme.popupFontSize
-                font.bold: true
             }
         }
     }
