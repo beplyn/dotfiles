@@ -10,6 +10,8 @@
 let
   p = config.themes.palette;
   rgb = color: "rgb(${lib.removePrefix "#" color})";
+  # the shell's panels: 94% base00
+  panel = "rgba(${lib.removePrefix "#" p.background}ee)";
   font = config.stylix.fonts.monospace.name;
   hyprlock = lib.getExe config.programs.hyprlock.package;
   pidof = lib.getExe' pkgs.procps "pidof";
@@ -96,9 +98,9 @@ in
         {
           path = avatar;
           size = 120;
-          rounding = -1;
-          border_size = 3;
-          border_color = rgb p.accent;
+          rounding = 2;
+          border_size = 1;
+          border_color = rgb p.surface;
           position = "0, 10";
           halign = "center";
           valign = "center";
@@ -109,8 +111,13 @@ in
       input-field =
       {
         size = "340, 56";
-        outline_thickness = 2;
-        rounding = 14;
+        outline_thickness = 1;
+        rounding = 2;
+        inner_color = panel;
+        outer_color = rgb p.surface;
+        font_color = rgb p.foreground;
+        check_color = rgb p.blue;
+        fail_color = rgb p.red;
         dots_size = 0.22;
         dots_spacing = 0.4;
         dots_center = true;
