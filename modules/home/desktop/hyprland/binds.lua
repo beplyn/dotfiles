@@ -117,6 +117,33 @@ function haku.move_column_to_workspace(target)
     end
 end
 
+-- the focused window alone to the workspace offset by ±1 on this monitor;
+-- focus follows
+function haku.move_window_to_workspace(offset)
+    return function()
+        local focused = hl.get_active_window()
+        if not focused then
+            return
+        end
+        local workspace = tonumber(hs.get_workspace_string(string.format("%+d", offset)))
+        if workspace < 1 or workspace == focused.workspace.id then
+            return
+        end
+        hl.dispatch(hl.dsp.window.move({
+            workspace = workspace,
+            follow = true,
+            window = "address:" .. focused.address,
+        }))
+    end
+end
+
+-- the focused window to the monitor at direction ("l", "r", "u", "d")
+function haku.move_window_to_monitor(direction)
+    return function()
+        hl.dispatch(hl.dsp.exec_cmd("hyprctl dispatch movewindow mon:" .. direction))
+    end
+end
+
 -- hyprsunset at this temperature, or back to none
 local night = false
 function haku.night_light(temperature)
