@@ -32,6 +32,7 @@ Panel {
                 text: Qt.formatDateTime(clock.date, "HH:mm")
                 color: Theme.foreground
                 font.family: Theme.font
+                font.features: Theme.numeric
                 font.pointSize: Theme.popupFontSize + 20
                 font.bold: true
             }

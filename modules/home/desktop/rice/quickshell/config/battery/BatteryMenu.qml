@@ -66,6 +66,7 @@ Panel {
             text: Battery.percent + "%"
             color: root.levelColor
             font.family: Theme.font
+            font.features: Theme.numeric
             font.pointSize: Theme.popupFontSize + 10
             font.bold: true
         }
