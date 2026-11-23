@@ -28,7 +28,7 @@ in
   {
     radius = 4;
     glass = config.stylix.opacity.desktop;
-    gaps = 3;
+    gaps = 1;
     border = 2;
 
     font = ''"${fonts.monospace.name}", monospace'';
