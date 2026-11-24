@@ -7,5 +7,6 @@
     ./proxy.nix
     ./k3s
     ./monitoring
+    ./pelican
   ];
 }
