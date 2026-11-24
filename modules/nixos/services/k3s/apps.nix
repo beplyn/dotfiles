@@ -43,6 +43,7 @@ let
       body = "100m";
       secrets = [ "ADMIN_TOKEN" ];
       dirs = [ (app "${st.state}/vaultwarden") ];
+      oidc = true;
     };
     forgejo =
     {
@@ -426,9 +427,20 @@ let
     ++ map (h: "    ${h}.${config.proxy.domain}: ${cfg.lanAddress}")
       (lib.filter (h: h != "@") (lib.attrNames config.proxy.hosts) ++ cfg.dnsOnly));
 
+  # tinyauth ACLs per forward-auth app: members of wheel or the app's own group
+  tinyauthAcl = lib.concatMapStrings (n:
+    let env = lib.toUpper (lib.replaceStrings [ "-" ] [ "_" ] n);
+    in
+    "            - name: TINYAUTH_APPS_${env}_CONFIG_DOMAIN\n"
+    + "              value: \"${fqdn enabled.${n}}\"\n"
+    + "            - name: TINYAUTH_APPS_${env}_OAUTH_GROUPS\n"
+    + "              value: \"wheel,${n}\"\n")
+    (lib.attrNames (lib.filterAttrs (_: a: a.auth or false && a ? host) enabled));
+
   vars =
   {
     domain = config.proxy.domain;
+    "tinyauth.acl" = tinyauthAcl;
     tz = config.time.timeZone;
     inherit uid username email alertTopic;
     useruid = config.users.users.${username}.uid;

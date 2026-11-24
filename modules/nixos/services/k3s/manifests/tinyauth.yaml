@@ -62,7 +62,9 @@ spec:
               value: "https://@tinyauth.host@/api/oauth/callback/pocketid"
             # Remote-User is preferred_username: name the Pocket ID user @username@
             - name: TINYAUTH_OAUTH_PROVIDERS_POCKETID_SCOPES
-              value: "openid email profile"
+              value: "openid email profile groups"
+            - name: TINYAUTH_OAUTH_PROVIDERS_POCKETID_CLAIMS_GROUPS
+              value: "groups"
             # from seal-oidc; absent until then
             - name: TINYAUTH_OAUTH_PROVIDERS_POCKETID_CLIENTID
               valueFrom:
@@ -76,7 +78,7 @@ spec:
                   name: tinyauth-oidc
                   key: CLIENT_SECRET
                   optional: true
-            - name: TZ
+@tinyauth.acl@            - name: TZ
               value: "@tz@"
           ports:
             - name: http
