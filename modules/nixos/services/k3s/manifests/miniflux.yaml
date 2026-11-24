@@ -143,21 +143,19 @@ spec:
               value: "https://@pocket-id.host@"
             - name: OAUTH2_REDIRECT_URL
               value: "https://@miniflux.host@/oauth2/oidc/callback"
-            # only accounts linked in Settings
+            # members of the miniflux group get an account on first login
             - name: OAUTH2_USER_CREATION
-              value: "0"
+              value: "1"
             - name: OAUTH2_CLIENT_ID
               valueFrom:
                 secretKeyRef:
                   name: miniflux-oidc
                   key: CLIENT_ID
-                  optional: true
             - name: OAUTH2_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: miniflux-oidc
                   key: CLIENT_SECRET
-                  optional: true
             # trust X-Forwarded-For only from nginx (pod network) and loopback
             - name: TRUSTED_REVERSE_PROXY_NETWORKS
               value: "10.42.0.0/16,127.0.0.0/8"
