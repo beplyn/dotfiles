@@ -41,6 +41,34 @@ spec:
                   key: ADMIN_PASSWORD
             - name: LD_CSRF_TRUSTED_ORIGINS
               value: "https://@linkding.host@"
+            # Pocket ID login next to the local one
+            - name: LD_ENABLE_OIDC
+              value: "True"
+            - name: OIDC_RP_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: linkding-oidc
+                  key: CLIENT_ID
+                  optional: true
+            - name: OIDC_RP_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: linkding-oidc
+                  key: CLIENT_SECRET
+                  optional: true
+            - name: OIDC_OP_AUTHORIZATION_ENDPOINT
+              value: "https://@pocket-id.host@/authorize"
+            - name: OIDC_OP_TOKEN_ENDPOINT
+              value: "https://@pocket-id.host@/api/oidc/token"
+            - name: OIDC_OP_USER_ENDPOINT
+              value: "https://@pocket-id.host@/api/oidc/userinfo"
+            - name: OIDC_OP_JWKS_ENDPOINT
+              value: "https://@pocket-id.host@/.well-known/jwks.json"
+            - name: OIDC_RP_SIGN_ALGO
+              value: "RS256"
+            # new accounts take their name from preferred_username (email if missing)
+            - name: OIDC_USERNAME_CLAIM
+              value: "preferred_username"
             - name: TZ
               value: "@tz@"
           ports:
