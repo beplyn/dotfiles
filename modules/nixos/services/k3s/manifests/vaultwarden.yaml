@@ -42,6 +42,23 @@ spec:
             # nginx puts the Cloudflare client's address here
             - name: IP_HEADER
               value: "X-Real-IP"
+            # Pocket ID as an extra login; the password login stays (SSO_ONLY false)
+            - name: SSO_ENABLED
+              value: "true"
+            - name: SSO_ONLY
+              value: "false"
+            - name: SSO_AUTHORITY
+              value: "https://@pocket-id.host@"
+            - name: SSO_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: vaultwarden-oidc
+                  key: CLIENT_ID
+            - name: SSO_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: vaultwarden-oidc
+                  key: CLIENT_SECRET
             - name: TZ
               value: "@tz@"
             - name: ADMIN_TOKEN
