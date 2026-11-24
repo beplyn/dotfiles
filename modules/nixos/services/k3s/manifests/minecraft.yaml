@@ -14,7 +14,8 @@ metadata:
   labels:
     app: minecraft
 spec:
-  replicas: 1
+  # off by default; start: kubectl -n minecraft scale deploy/minecraft --replicas=1
+  replicas: 0
   # one writer on the world and the hostPort
   strategy:
     type: Recreate
