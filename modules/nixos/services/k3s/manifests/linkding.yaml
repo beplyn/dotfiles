@@ -66,6 +66,9 @@ spec:
               value: "https://@pocket-id.host@/.well-known/jwks.json"
             - name: OIDC_RP_SIGN_ALGO
               value: "RS256"
+            # new accounts take their name from preferred_username (email if missing)
+            - name: OIDC_USERNAME_CLAIM
+              value: "preferred_username"
             - name: TZ
               value: "@tz@"
           ports:
