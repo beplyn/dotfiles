@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # Pelican servers -> mc-router routes; wake stopped ones on join; stop them when empty
 import asyncio
 import json
@@ -154,8 +153,8 @@ def players(port):
     try:
         with socket.create_connection(("127.0.0.1", port), timeout=5) as s:
             host = b"localhost"
-            hs = (b"\x00" + varint(765) + varint(len(host)) + host
-                  + struct.pack(">H", port) + varint(1))
+            hs = b"".join([b"\x00", varint(765), varint(len(host)), host,
+                           struct.pack(">H", port), varint(1)])
             s.sendall(varint(len(hs)) + hs + varint(1) + b"\x00")
             recv_len = read_varint(s)
             pkt = recv(s, recv_len)
