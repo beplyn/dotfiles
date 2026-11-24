@@ -66,6 +66,8 @@
     "asf"
   ];
   k3s.lanAddress = lan.address;
+  # Wings, mc-router and the Minecraft sync; the Panel itself is the minecraft app
+  pelican.enable = true;
   # app state and the cluster to the backup disk, daily
   k3s.backup.enable = true;
   # Beszel and Scrutiny on the host, at metrics. and disks.
