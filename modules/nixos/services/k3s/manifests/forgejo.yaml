@@ -49,7 +49,8 @@ spec:
                   --key "$OIDC_CLIENT_ID" --secret "$OIDC_CLIENT_SECRET" \
                   --auto-discover-url "https://$OIDC_HOST/.well-known/openid-configuration" \
                   --scopes "openid email profile groups" \
-                  --group-claim-name groups --admin-group wheel
+                  --group-claim-name groups --admin-group wheel \
+                  --skip-local-2fa
                 id="$(gitea admin auth list | awk '$2 == "pocket-id" { print $1 }')"
                 if [ -n "$id" ]; then
                   gitea admin auth update-oauth --id "$id" "$@"
