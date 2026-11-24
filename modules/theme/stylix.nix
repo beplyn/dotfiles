@@ -45,7 +45,18 @@ in
         fontconfig.enable = false;
       })
     ];
+    # Maple Mono for every role, so UI text matches the terminal
     fonts.monospace =
+    {
+      name = "Maple Mono NF";
+      package = pkgs.maple-mono.NF;
+    };
+    fonts.sansSerif =
+    {
+      name = "Maple Mono NF";
+      package = pkgs.maple-mono.NF;
+    };
+    fonts.serif =
     {
       name = "Maple Mono NF";
       package = pkgs.maple-mono.NF;
