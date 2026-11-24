@@ -65,6 +65,11 @@ spec:
                 secretKeyRef:
                   name: filebrowser
                   key: ADMIN_PASSWORD
+            # tinyauth already logged the user in; filebrowser takes their name from Remote-User
+            - name: FB_AUTH_METHOD
+              value: "proxy"
+            - name: FB_AUTH_HEADER
+              value: "Remote-User"
           volumeMounts: &mounts
             - name: config
               mountPath: /config
