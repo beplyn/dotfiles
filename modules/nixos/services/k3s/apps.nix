@@ -429,7 +429,8 @@ let
 
   # tinyauth ACLs per forward-auth app: members of wheel or the app's own group
   tinyauthAcl = lib.concatMapStrings (n:
-    let env = lib.toUpper (lib.replaceStrings [ "-" ] [ "_" ] n);
+    # tinyauth reads "_" as nesting, so the key segment has no separators
+    let env = lib.toUpper (lib.replaceStrings [ "-" ] [ "" ] n);
     in
     "            - name: TINYAUTH_APPS_${env}_CONFIG_DOMAIN\n"
     + "              value: \"${fqdn enabled.${n}}\"\n"
