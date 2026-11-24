@@ -175,6 +175,7 @@ let
       port = 30283;
       body = "100m";
       secrets = [ "DB_PASSWORD" ];
+      oidc = true;
       dirs =
       [
         (own "v" "0700" "root" "root" "${st.bulk}/photos")
@@ -207,6 +208,7 @@ let
       port = 30087;
       secrets = [ "ADMIN_PASSWORD" ];
       dirs = [ (own "d" "0750" "33" "33" "${st.state}/linkding") ];
+      oidc = true;
     };
     # the phone apps log in themselves, so not behind tinyauth
     audiobookshelf =
@@ -254,6 +256,7 @@ let
       port = 30506;
       body = "20m";
       dirs = [ (app "${st.state}/actual") ];
+      oidc = true;
     };
     # public: anyone can make and read pastes, no tinyauth
     wastebin =
@@ -305,6 +308,9 @@ let
         # jellyfin's too; it only gets it read-only
         (subvol "${st.bulk}/music")
       ];
+      auth = true;
+      # subsonic apps log in with navidrome's own password
+      authSkip = [ "^~ /rest/" ];
     };
     # webhooks and forms are called by other services, without a login
     n8n =
@@ -314,14 +320,6 @@ let
       body = "20m";
       secrets = [ "ENCRYPTION_KEY" ];
       dirs = [ (app "${st.state}/n8n") ];
-      auth = true;
-      authSkip =
-      [
-        "^~ /webhook/"
-        "^~ /webhook-test/"
-        "^~ /webhook-waiting/"
-        "^~ /form/"
-      ];
     };
     # the atuin client syncs with its own account
     atuin =
@@ -429,7 +427,8 @@ let
 
   # tinyauth ACLs per forward-auth app: members of wheel or the app's own group
   tinyauthAcl = lib.concatMapStrings (n:
-    let env = lib.toUpper (lib.replaceStrings [ "-" ] [ "_" ] n);
+    # tinyauth reads "_" as nesting, so the key segment has no separators
+    let env = lib.toUpper (lib.replaceStrings [ "-" ] [ "" ] n);
     in
     "            - name: TINYAUTH_APPS_${env}_CONFIG_DOMAIN\n"
     + "              value: \"${fqdn enabled.${n}}\"\n"
