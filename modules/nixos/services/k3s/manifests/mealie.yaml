@@ -52,6 +52,11 @@ spec:
               value: "false"
             - name: OIDC_USER_CLAIM
               value: email
+            # wheel members become mealie admins
+            - name: OIDC_GROUPS_CLAIM
+              value: groups
+            - name: OIDC_ADMIN_GROUP
+              value: wheel
             - name: OIDC_CLIENT_ID
               valueFrom:
                 secretKeyRef:
