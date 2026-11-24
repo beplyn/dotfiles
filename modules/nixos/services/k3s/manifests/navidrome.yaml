@@ -39,6 +39,11 @@ spec:
                   key: ADMIN_PASSWORD
             - name: ND_ENABLEINSIGHTSCOLLECTOR
               value: "false"
+            # tinyauth's login arrives as Remote-User; only the cluster network may send it
+            - name: ND_REVERSEPROXYUSERHEADER
+              value: "Remote-User"
+            - name: ND_REVERSEPROXYWHITELIST
+              value: "10.42.0.0/16"
             - name: TZ
               value: "@tz@"
           ports:
