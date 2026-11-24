@@ -149,6 +149,14 @@ data:
           - size: full
             widgets:
               - type: monitor
+                title: Game servers
+                cache: 1m
+                sites:
+                  - title: Pelican Panel
+                    url: "https://@minecraft.host@"
+                    check-url: http://pelican.minecraft.svc/
+                    icon: mdi:minecraft
+              - type: monitor
                 title: Productivity & Notes
                 cache: 1m
                 sites:
