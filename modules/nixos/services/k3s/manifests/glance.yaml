@@ -25,43 +25,6 @@ data:
             widgets:
               - type: clock
                 hour-format: 24h
-              - type: custom-api
-                title: beacon
-                cache: 1m
-                url: http://127.0.0.1:8081/rebuild-stats.json
-                template: |
-                  <div class="flex justify-between text-center">
-                    <div>
-                      <div class="color-highlight size-h3">{{ .JSON.Int "generation" }}</div>
-                      <div class="size-h6">GENERATION</div>
-                    </div>
-                    <div>
-                      <div class="color-highlight size-h4">{{ .JSON.String "built" }}</div>
-                      <div class="size-h6">BUILT</div>
-                    </div>
-                  </div>
-                  <ul class="list list-gap-10">
-                    <li class="flex justify-between">
-                      <span class="color-highlight">{{ .JSON.String "commit" }}</span>
-                      <span class="text-truncate">{{ .JSON.String "message" }}</span>
-                    </li>
-                    <li class="flex justify-between">
-                      <span>NixOS {{ .JSON.String "release" }}</span>
-                      <span>{{ .JSON.String "kernel" }}</span>
-                    </li>
-                    <li class="flex justify-between">
-                      <span>Theme</span>
-                      <span class="color-highlight">{{ .JSON.String "theme" }}</span>
-                    </li>
-                  </ul>
-                  <ul class="list list-gap-10">
-                  {{ range .JSON.Array "history" }}
-                    <li class="flex justify-between">
-                      <span class="color-highlight">#{{ .Int "generation" }}</span>
-                      <span class="size-h6">{{ .String "built" }}</span>
-                    </li>
-                  {{ end }}
-                  </ul>
               - type: weather
                 location: Budapest, Hungary
                 units: metric
@@ -84,149 +47,227 @@ data:
                   - title: Reddit
                     shortcut: "!r"
                     url: https://www.reddit.com/search?q={QUERY}
-              # each monitor is one tab, title is the tab label
-              - type: group
-                widgets:
-                  - type: monitor
-                    title: Media & Books
-                    style: compact
-                    cache: 1m
-                    sites:
-                      - title: Jellyfin
-                        url: "https://@jellyfin.host@"
-                        check-url: http://jellyfin.jellyfin.svc/health
-                        icon: di:jellyfin
-                      - title: Immich
-                        url: "https://@immich.host@"
-                        check-url: http://immich-server.immich.svc/api/server/ping
-                        icon: di:immich
-                      - title: Audiobookshelf
-                        url: "https://@audiobookshelf.host@"
-                        check-url: http://audiobookshelf.audiobookshelf.svc/healthcheck
-                        icon: di:audiobookshelf
-                      - title: Navidrome
-                        url: "https://@navidrome.host@"
-                        check-url: http://navidrome.navidrome.svc/ping
-                        icon: di:navidrome
-                      - title: MeTube
-                        url: "https://@metube.host@"
-                        check-url: http://metube.metube.svc/
-                        icon: di:metube
-                      - title: qBittorrent
-                        url: "https://@qbittorrent.host@"
-                        check-url: http://qbittorrent.qbittorrent.svc/api/v2/app/version
-                        icon: di:qbittorrent
-                  - type: monitor
-                    title: Productivity & Notes
-                    style: compact
-                    cache: 1m
-                    sites:
-                      - title: Paperless
-                        url: "https://@paperless.host@"
-                        check-url: http://paperless.paperless.svc/
-                        icon: di:paperless-ngx
-                      - title: SilverBullet
-                        url: "https://@silverbullet.host@"
-                        check-url: http://silverbullet.silverbullet.svc/
-                        icon: di:silverbullet.png
-                      - title: Actual
-                        url: "https://@actual.host@"
-                        check-url: http://actual.actual.svc/health
-                        icon: di:actual-budget
-                      - title: Vikunja
-                        url: "https://@vikunja.host@"
-                        check-url: http://vikunja.vikunja.svc/api/v1/info
-                        icon: di:vikunja
-                      - title: Mealie
-                        url: "https://@mealie.host@"
-                        check-url: http://mealie.mealie.svc/api/app/about
-                        icon: di:mealie
-                      - title: Excalidraw
-                        url: "https://@excalidraw.host@"
-                        check-url: http://excalidraw.excalidraw.svc/
-                        icon: di:excalidraw
-                      - title: Stirling-PDF
-                        url: "https://@stirling-pdf.host@"
-                        check-url: http://stirling-pdf.stirling-pdf.svc/
-                        icon: di:stirling-pdf
-                      - title: Radicale
-                        url: "https://@radicale.host@"
-                        check-url: http://radicale.radicale.svc/
-                        icon: di:radicale
-                      - title: wastebin
-                        url: "https://@wastebin.host@"
-                        check-url: http://wastebin.wastebin.svc/
-                        icon: mdi:trash-can-outline
-                  - type: monitor
-                    title: Feeds & Search
-                    style: compact
-                    cache: 1m
-                    sites:
-                      - title: Miniflux
-                        url: "https://@miniflux.host@"
-                        check-url: http://miniflux.miniflux.svc/healthcheck
-                        icon: di:miniflux-light
-                      - title: Linkding
-                        url: "https://@linkding.host@"
-                        check-url: http://linkding.linkding.svc/health
-                        icon: di:linkding
-                      - title: SearXNG
-                        url: "https://@searxng.host@"
-                        check-url: http://searxng.searxng.svc/healthz
-                        icon: di:searxng
-                      - title: changedetection.io
-                        url: "https://@changedetection.host@"
-                        check-url: http://changedetection.changedetection.svc/
-                        icon: di:changedetection
-                  - type: monitor
-                    title: Infra & Dev
-                    style: compact
-                    cache: 1m
-                    sites:
-                      - title: Forgejo
-                        url: "https://@forgejo.host@"
-                        check-url: http://forgejo.forgejo.svc/api/healthz
-                        icon: di:forgejo
-                      - title: FileBrowser
-                        url: "https://@filebrowser.host@"
-                        check-url: http://filebrowser.filebrowser.svc/health
-                        icon: di:filebrowser
-                      - title: n8n
-                        url: "https://@n8n.host@"
-                        check-url: http://n8n.n8n.svc/healthz
-                        icon: di:n8n
-                      - title: Atuin
-                        url: "https://@atuin.host@"
-                        check-url: http://atuin.atuin.svc/
-                        icon: di:atuin
-                      - title: ntfy
-                        url: "https://@ntfy.host@"
-                        check-url: http://ntfy.ntfy.svc/v1/health
-                        icon: di:ntfy
-                      - title: Status
-                        url: "https://@gatus.host@"
-                        check-url: http://gatus.gatus.svc/health
-                        icon: di:gatus
-                  - type: monitor
-                    title: Identity & Security
-                    style: compact
-                    cache: 1m
-                    sites:
-                      - title: Vaultwarden
-                        url: "https://@vaultwarden.host@"
-                        check-url: http://vaultwarden.vaultwarden.svc/alive
-                        icon: di:vaultwarden-light
-                      - title: Pocket ID
-                        url: "https://@pocket-id.host@"
-                        check-url: http://pocket-id.pocket-id.svc/healthz
-                        # healthz answers 204, which glance otherwise flags
-                        alt-status-codes: [204]
-                        icon: di:pocket-id
-                      - title: Tinyauth
-                        url: "https://@tinyauth.host@"
-                        check-url: http://tinyauth.tinyauth.svc/api/healthz
-                        # the svg is near-black, so invert it on dark themes
-                        icon: auto-invert https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@main/svg/tinyauth.svg
+              - type: monitor
+                title: Pinned
+                cache: 1m
+                sites:
+                  - title: Vaultwarden
+                    url: "https://@vaultwarden.host@"
+                    check-url: http://vaultwarden.vaultwarden.svc/alive
+                    icon: di:vaultwarden-light
+                  - title: Miniflux
+                    url: "https://@miniflux.host@"
+                    check-url: http://miniflux.miniflux.svc/healthcheck
+                    icon: di:miniflux-light
+                  - title: Paperless
+                    url: "https://@paperless.host@"
+                    check-url: http://paperless.paperless.svc/
+                    icon: di:paperless-ngx
+                  - title: Jellyfin
+                    url: "https://@jellyfin.host@"
+                    check-url: http://jellyfin.jellyfin.svc/health
+                    icon: di:jellyfin
+                  - title: Forgejo
+                    url: "https://@forgejo.host@"
+                    check-url: http://forgejo.forgejo.svc/api/healthz
+                    icon: di:forgejo
+                  - title: Immich
+                    url: "https://@immich.host@"
+                    check-url: http://immich-server.immich.svc/api/server/ping
+                    icon: di:immich
+          - size: small
+            widgets:
+              - type: rss
+                title: NixOS & Tech
+                limit: 10
+                collapse-after: 5
+                feeds:
+                  - url: https://discourse.nixos.org/latest.rss
+                    title: NixOS Discourse
+                  - url: https://nixos.org/blog/announcements-rss.xml
+                    title: NixOS announcements
+                  - url: https://www.phoronix.com/rss.php
+                    title: Phoronix
+      - name: Media
+        width: wide
+        columns:
+          - size: full
+            widgets:
+              - type: monitor
+                title: Media & Books
+                cache: 1m
+                sites:
+                  - title: Jellyfin
+                    url: "https://@jellyfin.host@"
+                    check-url: http://jellyfin.jellyfin.svc/health
+                    icon: di:jellyfin
+                  - title: Immich
+                    url: "https://@immich.host@"
+                    check-url: http://immich-server.immich.svc/api/server/ping
+                    icon: di:immich
+                  - title: Audiobookshelf
+                    url: "https://@audiobookshelf.host@"
+                    check-url: http://audiobookshelf.audiobookshelf.svc/healthcheck
+                    icon: di:audiobookshelf
+                  - title: Navidrome
+                    url: "https://@navidrome.host@"
+                    check-url: http://navidrome.navidrome.svc/ping
+                    icon: di:navidrome
+                  - title: MeTube
+                    url: "https://@metube.host@"
+                    check-url: http://metube.metube.svc/
+                    icon: di:metube
+                  - title: qBittorrent
+                    url: "https://@qbittorrent.host@"
+                    check-url: http://qbittorrent.qbittorrent.svc/api/v2/app/version
+                    icon: di:qbittorrent
+          - size: full
+            widgets:
+              - type: monitor
+                title: Feeds & Search
+                cache: 1m
+                sites:
+                  - title: Miniflux
+                    url: "https://@miniflux.host@"
+                    check-url: http://miniflux.miniflux.svc/healthcheck
+                    icon: di:miniflux-light
+                  - title: SearXNG
+                    url: "https://@searxng.host@"
+                    check-url: http://searxng.searxng.svc/healthz
+                    icon: di:searxng
+                  - title: Linkding
+                    url: "https://@linkding.host@"
+                    check-url: http://linkding.linkding.svc/health
+                    icon: di:linkding
+                  - title: changedetection.io
+                    url: "https://@changedetection.host@"
+                    check-url: http://changedetection.changedetection.svc/
+                    icon: di:changedetection
+      - name: Apps
+        width: wide
+        columns:
+          - size: full
+            widgets:
+              - type: monitor
+                title: Productivity & Notes
+                cache: 1m
+                sites:
+                  - title: Paperless
+                    url: "https://@paperless.host@"
+                    check-url: http://paperless.paperless.svc/
+                    icon: di:paperless-ngx
+                  - title: SilverBullet
+                    url: "https://@silverbullet.host@"
+                    check-url: http://silverbullet.silverbullet.svc/
+                    icon: di:silverbullet.png
+                  - title: Vikunja
+                    url: "https://@vikunja.host@"
+                    check-url: http://vikunja.vikunja.svc/api/v1/info
+                    icon: di:vikunja
+                  - title: Actual
+                    url: "https://@actual.host@"
+                    check-url: http://actual.actual.svc/health
+                    icon: di:actual-budget
+                  - title: Mealie
+                    url: "https://@mealie.host@"
+                    check-url: http://mealie.mealie.svc/api/app/about
+                    icon: di:mealie
+                  - title: Excalidraw
+                    url: "https://@excalidraw.host@"
+                    check-url: http://excalidraw.excalidraw.svc/
+                    icon: di:excalidraw
+                  - title: wastebin
+                    url: "https://@wastebin.host@"
+                    check-url: http://wastebin.wastebin.svc/
+                    icon: mdi:trash-can-outline
+                  - title: Stirling-PDF
+                    url: "https://@stirling-pdf.host@"
+                    check-url: http://stirling-pdf.stirling-pdf.svc/
+                    icon: di:stirling-pdf
+                  - title: FileBrowser
+                    url: "https://@filebrowser.host@"
+                    check-url: http://filebrowser.filebrowser.svc/health
+                    icon: di:filebrowser
+                  - title: Radicale
+                    url: "https://@radicale.host@"
+                    check-url: http://radicale.radicale.svc/
+                    icon: di:radicale
+      - name: System
+        width: wide
+        columns:
+          - size: small
+            widgets:
+              - type: custom-api
+                title: beacon
+                cache: 1m
+                url: http://127.0.0.1:8081/rebuild-stats.json
+                template: |
+                  <div class="flex justify-between text-center">
+                    <div>
+                      <div class="color-highlight size-h3">{{ .JSON.Int "generation" }}</div>
+                      <div class="size-h6">GENERATION</div>
+                    </div>
+                    <div>
+                      <div class="color-highlight size-h4">{{ .JSON.String "built" }}</div>
+                      <div class="size-h6">BUILT</div>
+                    </div>
+                  </div>
+                  <ul class="list list-gap-10">
+                    <li><span class="color-highlight">{{ .JSON.String "commit" }}</span> · <span class="text-truncate">{{ .JSON.String "message" }}</span></li>
+                    <li class="flex justify-between">
+                      <span>NixOS {{ .JSON.String "release" }}</span>
+                      <span>{{ .JSON.String "kernel" }}</span>
+                    </li>
+                    <li class="flex justify-between">
+                      <span>Theme</span>
+                      <span class="color-highlight">{{ .JSON.String "theme" }}</span>
+                    </li>
+                  </ul>
+                  <ul class="list list-gap-10">
+                  {{ range .JSON.Array "history" }}
+                    <li class="flex justify-between">
+                      <span class="color-highlight">#{{ .Int "generation" }}</span>
+                      <span class="size-h6">{{ .String "built" }}</span>
+                    </li>
+                  {{ end }}
+                  </ul>
+          - size: full
+            widgets:
+              - type: monitor
+                title: Infra, Dev & Identity
+                cache: 1m
+                sites:
+                  - title: Forgejo
+                    url: "https://@forgejo.host@"
+                    check-url: http://forgejo.forgejo.svc/api/healthz
+                    icon: di:forgejo
+                  - title: n8n
+                    url: "https://@n8n.host@"
+                    check-url: http://n8n.n8n.svc/healthz
+                    icon: di:n8n
+                  - title: Pocket ID
+                    url: "https://@pocket-id.host@"
+                    check-url: http://pocket-id.pocket-id.svc/healthz
+                    # healthz answers 204, which glance otherwise flags
+                    alt-status-codes: [204]
+                    icon: di:pocket-id
+                  - title: Tinyauth
+                    url: "https://@tinyauth.host@"
+                    check-url: http://tinyauth.tinyauth.svc/api/healthz
+                    # the svg is near-black, so invert it on dark themes
+                    icon: auto-invert https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@main/svg/tinyauth.svg
+                  - title: ntfy
+                    url: "https://@ntfy.host@"
+                    check-url: http://ntfy.ntfy.svc/v1/health
+                    icon: di:ntfy
+                  - title: Atuin
+                    url: "https://@atuin.host@"
+                    check-url: http://atuin.atuin.svc/
+                    icon: di:atuin
+                  - title: Status
+                    url: "https://@gatus.host@"
+                    check-url: http://gatus.gatus.svc/health
+                    icon: di:gatus
           - size: small
             widgets:
               - type: server-stats
@@ -239,17 +280,6 @@ data:
                       "/host":
                         name: Root
                         hide: false
-              - type: rss
-                title: NixOS & tech
-                limit: 10
-                collapse-after: 5
-                feeds:
-                  - url: https://discourse.nixos.org/latest.rss
-                    title: NixOS Discourse
-                  - url: https://nixos.org/blog/announcements-rss.xml
-                    title: NixOS announcements
-                  - url: https://www.phoronix.com/rss.php
-                    title: Phoronix
   user.css: |
     /* healthy sites: icon and title only; failing ones keep their ERROR text */
     .monitor-site:has(.monitor-site-status-icon svg[fill="var(--color-positive)"]) .list-horizontal-text {
