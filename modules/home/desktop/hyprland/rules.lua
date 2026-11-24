@@ -7,13 +7,14 @@ hl.window_rule({
     float = true,
 })
 
--- Steam toasts top right, unfocused
+-- Steam toasts top right, unfocused, just under the 26px waybar
+local t = require("haku.data.theme")
 hl.window_rule({
     name = "steam-toasts",
     match = { class = "^steam$", title = "^notificationtoasts_\\d+_desktop$" },
     float = true,
     no_initial_focus = true,
-    move = { "(monitor_w-window_w-10)", "10" },
+    move = { "(monitor_w-window_w-10)", tostring(26 + t.gaps) },
 })
 
 hl.window_rule({
