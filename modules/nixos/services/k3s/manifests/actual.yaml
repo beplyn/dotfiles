@@ -34,6 +34,9 @@ spec:
             # Pocket ID is the only login; a server that has logged in before keeps its budgets
             - name: ACTUAL_LOGIN_METHOD
               value: "openid"
+            # create the account on first OpenID login
+            - name: ACTUAL_USER_CREATION_MODE
+              value: "login"
             - name: ACTUAL_OPENID_DISCOVERY_URL
               value: "https://@pocket-id.host@/.well-known/openid-configuration"
             - name: ACTUAL_OPENID_SERVER_HOSTNAME
