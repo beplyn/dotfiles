@@ -399,7 +399,7 @@ let
     {
       dirs = [ (app "${st.state}/minecraft") ];
       lan.tcp = [ 25565 ];
-      dnsOnly = "mc";
+      dnsOnly = [ "mc" "*.mc" ];
     };
     # idles games for playtime and card drops; no web UI outside the cluster, login in the asf-bot secret
     asf =
@@ -529,7 +529,7 @@ in
     {
       type = lib.types.listOf lib.types.str;
       readOnly = true;
-      default = lib.mapAttrsToList (_: a: a.dnsOnly) (lib.filterAttrs (_: a: a ? dnsOnly) enabled);
+      default = lib.concatMap (a: a.dnsOnly) (lib.attrValues (lib.filterAttrs (_: a: a ? dnsOnly) enabled));
       description = "Subdomains of the enabled apps that ddns points here without Cloudflare's proxy.";
     };
 
