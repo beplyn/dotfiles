@@ -31,6 +31,25 @@ spec:
         - name: actual
           image: actualbudget/actual-server:26.11.0
           env:
+            # Pocket ID is the only login; a server that has logged in before keeps its budgets
+            - name: ACTUAL_LOGIN_METHOD
+              value: "openid"
+            - name: ACTUAL_OPENID_DISCOVERY_URL
+              value: "https://@pocket-id.host@/.well-known/openid-configuration"
+            - name: ACTUAL_OPENID_SERVER_HOSTNAME
+              value: "https://@actual.host@"
+            - name: ACTUAL_OPENID_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: actual-oidc
+                  key: CLIENT_ID
+                  optional: true
+            - name: ACTUAL_OPENID_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: actual-oidc
+                  key: CLIENT_SECRET
+                  optional: true
             - name: ACTUAL_PORT
               value: "5006"
             - name: ACTUAL_DATA_DIR
