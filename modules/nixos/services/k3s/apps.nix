@@ -395,9 +395,22 @@ let
       auth = true;
     };
     # vanilla on port 25565; mc. is DNS-only, Cloudflare's proxy only passes HTTP
+    # the Pelican Panel (extra manifest) for the game servers on beacon's Wings; Java itself is scaled to 0
     minecraft =
     {
-      dirs = [ (app "${st.state}/minecraft") ];
+      host = "mc";
+      port = 30110;
+      body = "100m";
+      secrets = [ "DB_ROOT_PASSWORD" "DB_PASSWORD" ];
+      dirs =
+      [
+        (app "${st.state}/minecraft")
+        (app "${st.state}/minecraft/pelican")
+        # mariadb runs as 999
+        (own "d" "0700" "999" "999" "${st.state}/minecraft/pelican-db")
+      ];
+      extra = [ "pelican" ];
+      oidc = true;
       lan.tcp = [ 25565 ];
       dnsOnly = [ "mc" "*.mc" ];
     };

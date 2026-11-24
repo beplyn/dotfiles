@@ -1,0 +1,194 @@
+# @x@ placeholders are filled in by apps.nix; extra manifest of the minecraft app, same namespace and secret
+# Panel at https://@minecraft.host@; finish setup at /installer (MariaDB and Redis below)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pelican-panel
+  namespace: minecraft
+  labels:
+    app: pelican-panel
+spec:
+  replicas: 1
+  # one writer on the panel's storage
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: pelican-panel
+  template:
+    metadata:
+      labels:
+        app: pelican-panel
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: panel
+          image: ghcr.io/pelican/panel:v1.0.0-rc.4@sha256:219045a24c160c711a18dfa964934b1c22aa3405d106826fdc0b3598863d45a8
+          env:
+            - name: APP_URL
+              value: "https://@minecraft.host@"
+            - name: ADMIN_EMAIL
+              value: "@email@"
+            - name: XDG_DATA_HOME
+              value: /pelican-data
+            # nginx on the host terminates TLS and reaches the pod via the cluster gateway
+            - name: BEHIND_PROXY
+              value: "true"
+            - name: TRUSTED_PROXIES
+              value: "10.42.0.0/16,127.0.0.1"
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: http
+              containerPort: 80
+          volumeMounts:
+            - name: data
+              mountPath: /pelican-data
+            - name: logs
+              mountPath: /var/www/html/storage/logs
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              memory: 1Gi
+      volumes:
+        - name: data
+          hostPath:
+            path: "@state@/minecraft/pelican"
+            type: Directory
+        - name: logs
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pelican
+  namespace: minecraft
+spec:
+  type: NodePort
+  selector:
+    app: pelican-panel
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 30110
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pelican-mariadb
+  namespace: minecraft
+  labels:
+    app: pelican-mariadb
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: pelican-mariadb
+  template:
+    metadata:
+      labels:
+        app: pelican-mariadb
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: mariadb
+          image: mariadb:11.8@sha256:e1d5495f445654134f226f55a41ce0da227116f6f27f283101f405c794d841fc
+          env:
+            - name: MARIADB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: minecraft
+                  key: DB_ROOT_PASSWORD
+            - name: MARIADB_DATABASE
+              value: pelican
+            - name: MARIADB_USER
+              value: pelican
+            - name: MARIADB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: minecraft
+                  key: DB_PASSWORD
+          ports:
+            - name: mysql
+              containerPort: 3306
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/mysql
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              memory: 1Gi
+      volumes:
+        - name: data
+          hostPath:
+            path: "@state@/minecraft/pelican-db"
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb
+  namespace: minecraft
+spec:
+  selector:
+    app: pelican-mariadb
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: mysql
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pelican-redis
+  namespace: minecraft
+  labels:
+    app: pelican-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pelican-redis
+  template:
+    metadata:
+      labels:
+        app: pelican-redis
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: redis
+          image: redis:7.4@sha256:6b645a37f49b0546582468706b32e71a8b7fbb5ba4583d0f9e27a8004716b738
+          # cache and sessions only: nothing worth saving to disk
+          args: ["redis-server", "--save", "", "--appendonly", "no"]
+          ports:
+            - name: redis
+              containerPort: 6379
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  namespace: minecraft
+spec:
+  selector:
+    app: pelican-redis
+  ports:
+    - name: redis
+      port: 6379
+      targetPort: redis
