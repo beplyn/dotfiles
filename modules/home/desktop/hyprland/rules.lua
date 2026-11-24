@@ -1,10 +1,4 @@
--- Translucent Steam, then floats for dialogs and the hypr tools.
-
-hl.window_rule({
-    name = "translucent",
-    match = { class = "^steam$" },
-    opacity = "0.75 0.75",
-})
+-- Floats for dialogs and the hypr tools.
 
 -- Steam toasts top right, unfocused
 hl.window_rule({
