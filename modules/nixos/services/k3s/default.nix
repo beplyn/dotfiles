@@ -15,6 +15,7 @@ in
   [
     ./apps.nix
     ./backup
+    ./glance.nix
   ];
 
   options.k3s =
