@@ -28,6 +28,7 @@ Lets an app offer "log in with Pocket ID" next to its own login. Every app here 
 | paperless | `https://docs.<domain>/accounts/oidc/pocket-id/login/callback/` | My Profile → connect Pocket ID                   |
 | vikunja   | `https://tasks.<domain>/auth/openid/pocketid`                   | Give your account your Pocket ID email first   |
 | mealie    | `https://recipes.<domain>/login`                                | Give your account your Pocket ID email first     |
+| vaultwarden | `https://vault.<domain>/identity/connect/oidc-signin`        | "Use single sign-on" on the login page, Pocket ID email |
 
  Vikunja makes a **second** account if the emails don't match.
 
@@ -40,5 +41,5 @@ Lets an app offer "log in with Pocket ID" next to its own login. Every app here 
   | Immich         | `https://photos.<domain>/auth/login`, `app.immich:///oauth-callback` |
   | Audiobookshelf | `https://books.<domain>/auth/openid/callback`, `audiobookshelf://oauth` |
 
-- **No Pocket ID:** Linkding (it would make a second account), Vaultwarden, Jellyfin, ntfy, Actual,
+- **No Pocket ID:** Linkding (it would make a second account), Jellyfin, ntfy, Actual,
   Radicale, Navidrome, Atuin.
