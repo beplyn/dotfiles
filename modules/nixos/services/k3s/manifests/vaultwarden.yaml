@@ -47,6 +47,12 @@ spec:
               value: "true"
             - name: SSO_ONLY
               value: "false"
+            # link the first SSO login to the existing account with the same email
+            - name: SSO_SIGNUPS_MATCH_EMAIL
+              value: "true"
+            # accept SSO logins whose email isn't marked verified (see README)
+            - name: SSO_ALLOW_UNKNOWN_EMAIL_VERIFICATION
+              value: "true"
             - name: SSO_AUTHORITY
               value: "https://@pocket-id.host@"
             - name: SSO_CLIENT_ID

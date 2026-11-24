@@ -49,7 +49,8 @@ spec:
                   --key "$OIDC_CLIENT_ID" --secret "$OIDC_CLIENT_SECRET" \
                   --auto-discover-url "https://$OIDC_HOST/.well-known/openid-configuration" \
                   --scopes "openid email profile groups" \
-                  --group-claim-name groups --admin-group wheel
+                  --group-claim-name groups --admin-group wheel \
+                  --skip-local-2fa
                 id="$(gitea admin auth list | awk '$2 == "pocket-id" { print $1 }')"
                 if [ -n "$id" ]; then
                   gitea admin auth update-oauth --id "$id" "$@"
@@ -82,6 +83,17 @@ spec:
               value: "true"
             - name: FORGEJO__service__DISABLE_REGISTRATION
               value: "true"
+            # browser logins go through Pocket ID only; SSH and API tokens are unaffected
+            - name: FORGEJO__service__ENABLE_PASSWORD_SIGNIN_FORM
+              value: "false"
+            - name: FORGEJO__service__ALLOW_ONLY_EXTERNAL_REGISTRATION
+              value: "true"
+            # Pocket ID already requires its own 2FA, so no local 2FA prompt after it
+            - name: FORGEJO__oauth2_client__SKIP_LOCAL_2FA
+              value: "true"
+            # link Pocket ID logins to an existing account with the same email
+            - name: FORGEJO__oauth2_client__ACCOUNT_LINKING
+              value: "auto"
             # from seal-oidc; absent until then
             - name: OIDC_HOST
               value: "@pocket-id.host@"
