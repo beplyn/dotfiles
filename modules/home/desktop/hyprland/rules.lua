@@ -1,9 +1,8 @@
--- Translucent apps and Steam toasts, then floats for dialogs and the hypr
--- tools.
+-- Translucent Steam, then floats for dialogs and the hypr tools.
 
 hl.window_rule({
     name = "translucent",
-    match = { class = "^(equibop|steam)$" },
+    match = { class = "^steam$" },
     opacity = "0.75 0.75",
 })
 
