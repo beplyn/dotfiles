@@ -1,5 +1,12 @@
 -- Floats for dialogs and the hypr tools.
 
+-- Steam's News and Friends List windows float by default
+hl.window_rule({
+    name = "steam-popups",
+    match = { class = "^steam$", title = "^(News|Friends List)$" },
+    float = true,
+})
+
 -- Steam toasts top right, unfocused
 hl.window_rule({
     name = "steam-toasts",
