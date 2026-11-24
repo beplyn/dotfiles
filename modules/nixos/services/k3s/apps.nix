@@ -405,7 +405,8 @@ let
       dirs =
       [
         (app "${st.state}/minecraft")
-        (app "${st.state}/minecraft/pelican")
+        # www-data in the panel image
+        (own "d" "0750" "82" "82" "${st.state}/minecraft/pelican")
         # mariadb runs as 999
         (own "d" "0700" "999" "999" "${st.state}/minecraft/pelican-db")
       ];
