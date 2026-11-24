@@ -131,11 +131,16 @@ spec:
             # Pocket ID next to the password (link under My Profile), no signups
             - name: PAPERLESS_APPS
               value: "allauth.socialaccount.providers.openid_connect"
+            # Pocket ID's client only admits wheel and paperless members, so signups stay closed to strangers
             - name: PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS
-              value: "false"
+              value: "true"
+            - name: PAPERLESS_SOCIAL_AUTO_SIGNUP
+              value: "true"
+            - name: PAPERLESS_SOCIAL_ACCOUNT_SYNC_GROUPS
+              value: "true"
             - name: PAPERLESS_SOCIALACCOUNT_PROVIDERS
               value: >-
-                {"openid_connect": {"OAUTH_PKCE_ENABLED": true, "APPS": [{"provider_id": "pocket-id",
+                {"openid_connect": {"OAUTH_PKCE_ENABLED": true, "email_authentication": true, "APPS": [{"provider_id": "pocket-id",
                 "name": "Pocket ID", "client_id": "$(OIDC_CLIENT_ID)", "secret": "$(OIDC_CLIENT_SECRET)",
                 "settings": {"server_url": "https://@pocket-id.host@"}}]}}
           ports:
