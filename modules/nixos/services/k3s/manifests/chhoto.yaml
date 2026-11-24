@@ -1,0 +1,94 @@
+# @x@ placeholders are filled in by apps.nix
+# go.<domain>/slug redirects and the link maker on one host; admin is CHHOTO_PASSWORD
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: chhoto
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chhoto
+  namespace: chhoto
+  labels:
+    app: chhoto
+spec:
+  replicas: 1
+  # one writer on the sqlite db
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: chhoto
+  template:
+    metadata:
+      labels:
+        app: chhoto
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: chhoto
+          image: sintan1729/chhoto-url:7.11.7
+          env:
+            - name: CHHOTO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: chhoto
+                  key: ADMIN_PASSWORD
+            - name: CHHOTO_SITE_URL
+              value: "https://@chhoto.host@"
+            - name: CHHOTO_DB_URL
+              value: "/data/urls.sqlite"
+            - name: CHHOTO_SQLITE_USE_WAL_MODE
+              value: "True"
+            - name: CHHOTO_EXIT_ON_NO_AUTH
+              value: "True"
+            - name: CHHOTO_SLUG_STYLE
+              value: "Pair"
+            - name: CHHOTO_TRY_LONGER_SLUG
+              value: "True"
+            # scratch image has no curl/wget for its healthcheck; the readiness probe covers it
+            - name: CHHOTO_HEALTH_PORT
+              value: "0"
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: http
+              containerPort: 4567
+          readinessProbe:
+            tcpSocket:
+              port: http
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          securityContext:
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 5m
+              memory: 16Mi
+            limits:
+              memory: 128Mi
+      volumes:
+        - name: data
+          hostPath:
+            path: "@state@/chhoto"
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chhoto
+  namespace: chhoto
+spec:
+  type: NodePort
+  selector:
+    app: chhoto
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @chhoto.port@
