@@ -6,6 +6,24 @@ kind: Namespace
 metadata:
   name: immich
 ---
+# the oauth block; the init container fills in the client from immich-oidc
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: immich-oidc-template
+  namespace: immich
+data:
+  immich.yaml: |
+    oauth:
+      enabled: true
+      issuerUrl: https://@pocket-id.host@/.well-known/openid-configuration
+      clientId: CLIENT_ID_PLACEHOLDER
+      clientSecret: CLIENT_SECRET_PLACEHOLDER
+      scope: openid email profile
+      buttonText: Login with Pocket ID
+      autoRegister: true
+      autoLaunch: false
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -232,10 +250,45 @@ spec:
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
+      initContainers:
+        # | as the sed delimiter: Pocket ID secrets don't contain one
+        - name: oidc-config
+          image: docker.io/library/busybox:1.37
+          command:
+            - sh
+            - -c
+            - sed -e "s|CLIENT_ID_PLACEHOLDER|$CLIENT_ID|" -e "s|CLIENT_SECRET_PLACEHOLDER|$CLIENT_SECRET|" /template/immich.yaml > /config/immich.yaml
+          env:
+            - name: CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: immich-oidc
+                  key: CLIENT_ID
+                  optional: true
+            - name: CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: immich-oidc
+                  key: CLIENT_SECRET
+                  optional: true
+          volumeMounts:
+            - name: oidc-template
+              mountPath: /template
+              readOnly: true
+            - name: oidc-config
+              mountPath: /config
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
       containers:
         - name: server
           image: ghcr.io/immich-app/immich-server:v3
           env:
+            - name: IMMICH_CONFIG_FILE
+              value: /config/immich.yaml
             - name: DB_HOSTNAME
               value: immich-postgres
             - name: DB_USERNAME
@@ -259,6 +312,9 @@ spec:
               path: /api/server/ping
               port: http
           volumeMounts:
+            - name: oidc-config
+              mountPath: /config
+              readOnly: true
             - name: library
               mountPath: /data
             - name: thumbs
@@ -276,6 +332,11 @@ spec:
             limits:
               memory: 4Gi
       volumes:
+        - name: oidc-template
+          configMap:
+            name: immich-oidc-template
+        - name: oidc-config
+          emptyDir: { }
         - name: library
           hostPath:
             path: "@bulk@/photos"
