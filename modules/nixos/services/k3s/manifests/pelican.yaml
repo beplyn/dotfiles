@@ -22,6 +22,26 @@ spec:
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
+      # www-data (82) in the panel image; hostPath ownership is set by the initContainer
+      securityContext:
+        fsGroup: 82
+      initContainers:
+        # runs as root: hostPath ownership is not changed by fsGroup
+        - name: data-perms
+          image: ghcr.io/pelican/panel:v1.0.0-rc.4@sha256:219045a24c160c711a18dfa964934b1c22aa3405d106826fdc0b3598863d45a8
+          command: ["sh", "-c", "mkdir -p /pelican-data/caddy /pelican-data/database /pelican-data/storage /pelican-data/logs && chown -R 82:82 /pelican-data"]
+          securityContext:
+            runAsUser: 0
+            runAsNonRoot: false
+          volumeMounts:
+            - name: data
+              mountPath: /pelican-data
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              memory: 64Mi
       containers:
         - name: panel
           image: ghcr.io/pelican/panel:v1.0.0-rc.4@sha256:219045a24c160c711a18dfa964934b1c22aa3405d106826fdc0b3598863d45a8
@@ -32,6 +52,24 @@ spec:
               value: "@email@"
             - name: XDG_DATA_HOME
               value: /pelican-data
+            # service names in this namespace: mariadb and redis
+            - name: DB_CONNECTION
+              value: mariadb
+            - name: DB_HOST
+              value: mariadb
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_DATABASE
+              value: pelican
+            - name: DB_USERNAME
+              value: pelican
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: minecraft
+                  key: DB_PASSWORD
+            - name: REDIS_HOST
+              value: redis
             # nginx on the host terminates TLS and reaches the pod via the cluster gateway
             - name: BEHIND_PROXY
               value: "true"
