@@ -59,17 +59,8 @@ spec:
               value: "true"
             - name: OCIS_BASE_DATA_PATH
               value: /var/lib/ocis
-            - name: OCIS_SYSTEM_USER_ID
-              value: "9d0a5798-80c8-4d8f-881a-d10f46ff7972"
-            - name: STORAGE_USERS_MOUNT_ID
-              value: "060caa65-c1cf-4f7b-93ba-ec43732bded3"
-            - name: GRAPH_APPLICATION_ID
-              value: "1b68fba3-027f-4163-ab81-2a701f46e3c5"
-            - name: OCIS_SYSTEM_USER_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: ocis
-                  key: OCIS_SYSTEM_USER_API_KEY
+            - name: OCIS_CONFIG_DIR
+              value: /var/lib/ocis/config
             - name: OCIS_JWT_SECRET
               valueFrom:
                 secretKeyRef:

@@ -294,7 +294,7 @@ let
       host = "drive";
       port = 30106;
       body = "100m";
-      secrets = [ "OCIS_JWT_SECRET" "OCIS_TRANSFER_SECRET" "OCIS_MACHINE_AUTH_API_KEY" "OCIS_SERVICE_ACCOUNT_SECRET" "OCIS_SYSTEM_USER_API_KEY" "OCIS_SYSTEM_USER_API_KEY" ];
+      secrets = [ "OCIS_JWT_SECRET" "OCIS_TRANSFER_SECRET" "OCIS_MACHINE_AUTH_API_KEY" "OCIS_SERVICE_ACCOUNT_SECRET" "OCIS_SYSTEM_USER_API_KEY" ];
       dirs = [ (app "${st.state}/ocis") ];
       oidc = true;
     };
