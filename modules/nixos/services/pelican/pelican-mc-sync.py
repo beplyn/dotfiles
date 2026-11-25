@@ -65,7 +65,7 @@ def servers():
             label = ident
         used.add(label)
         state = panel("GET", f"/servers/{ident}/resources")["attributes"]["current_state"]
-        found[ident] = {"label": label, "port": alloc["port"], "state": state}
+        found[ident] = {"label": label, "ip": alloc["ip"], "port": alloc["port"], "state": state}
     return found
 
 
@@ -178,7 +178,9 @@ async def sync_routes(found):
         port = s["port"]
         await ensure_waker(ident, port)
         # only a running server gets its real port; anything else goes to the waker
-        want[host] = f"127.0.0.1:{port}" if s["state"] == "running" else f"127.0.0.1:{port + WAKER_OFFSET}"
+        # docker publishes on the allocation's IP, so loopback misses it unless it is 0.0.0.0
+        ip = s["ip"] if s["ip"] != "0.0.0.0" else "127.0.0.1"
+        want[host] = f"{ip}:{port}" if s["state"] == "running" else f"127.0.0.1:{port + WAKER_OFFSET}"
     current = await asyncio.to_thread(router, "GET", "/routes")
     for host in current:
         if host.endswith("." + SUFFIX) and host not in want:
