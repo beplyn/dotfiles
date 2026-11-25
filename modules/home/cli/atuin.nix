@@ -9,8 +9,7 @@
   {
     enable = true;
     enableFishIntegration = true;
-    enableBashIntegration = true;
-    # Ctrl-R only: up keeps fish's prefix search and ble.sh's substring search
+    # Ctrl-R only: up keeps fish's prefix search
     flags = [ "--disable-up-arrow" ];
     settings =
     {
