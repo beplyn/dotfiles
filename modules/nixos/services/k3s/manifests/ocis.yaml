@@ -63,6 +63,9 @@ spec:
               value: /var/lib/ocis/config
             - name: PROXY_CSP_CONFIG_FILE_LOCATION
               value: /var/lib/ocis/config/csp.yaml
+            # temporary: show claims during role debugging
+            - name: OCIS_LOG_LEVEL
+              value: debug
             - name: OCIS_JWT_SECRET
               valueFrom:
                 secretKeyRef:
