@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 
@@ -10,11 +11,19 @@
 let
   cfg = config.wireguard;
   keyFile = "/var/secrets/wireguard/wg0.key";
+  # NetworkManager reads the key from an env file, so it is copied into /run at boot
+  nmKeyEnv = "/run/wireguard-nm/key.env";
+  nmPeers = lib.filter (p: p.publicKey != "") cfg.peers;
 in
 {
   options.wireguard =
   {
     enable = lib.mkEnableOption "the wg0 WireGuard interface";
+
+    networkManager = lib.mkEnableOption ''
+      running wg0 as a NetworkManager profile instead of a systemd interface, so it
+      can be toggled from the tray (desktops; the server keeps the systemd one)
+    '';
 
     address = lib.mkOption
     {
@@ -71,23 +80,80 @@ in
     };
   };
 
-  config = lib.mkIf cfg.enable
-  {
-    networking.wireguard.enable = true;
-
-    networking.wireguard.interfaces.wg0 =
+  config = lib.mkIf cfg.enable (lib.mkMerge
+  [
     {
-      ips = [ cfg.address ];
-      listenPort = cfg.listenPort;
-      privateKeyFile = keyFile;
-      peers = map (p:
+      networking.firewall.allowedUDPPorts = lib.optional (cfg.listenPort != null) cfg.listenPort;
+
+      rebuild.secrets.${keyFile}.description = "WireGuard private key for wg0 (wg genkey | tee key | wg pubkey)";
+    }
+
+    (lib.mkIf (!cfg.networkManager)
+    {
+      networking.wireguard.enable = true;
+
+      networking.wireguard.interfaces.wg0 =
       {
-        inherit (p) publicKey allowedIPs endpoint persistentKeepalive;
-      }) (lib.filter (p: p.publicKey != "") cfg.peers);
-    };
+        ips = [ cfg.address ];
+        listenPort = cfg.listenPort;
+        privateKeyFile = keyFile;
+        peers = map (p:
+        {
+          inherit (p) publicKey allowedIPs endpoint persistentKeepalive;
+        }) nmPeers;
+      };
+    })
 
-    networking.firewall.allowedUDPPorts = lib.optional (cfg.listenPort != null) cfg.listenPort;
+    (lib.mkIf cfg.networkManager
+    {
+      systemd.services.wireguard-nm-key =
+      {
+        description = "Copy the wg0 private key into an env file for NetworkManager";
+        before = [ "NetworkManager.service" "networkmanager-ensure-profiles.service" ];
+        wantedBy = [ "multi-user.target" ];
+        serviceConfig =
+        {
+          Type = "oneshot";
+          RemainAfterExit = true;
+          RuntimeDirectory = "wireguard-nm";
+          RuntimeDirectoryMode = "0700";
+          ExecStart = pkgs.writeShellScript "wireguard-nm-key" ''
+            printf 'WG_PRIVATE_KEY=%s\n' "$(cat ${keyFile})" > ${nmKeyEnv}
+          '';
+        };
+      };
 
-    rebuild.secrets.${keyFile}.description = "WireGuard private key for wg0 (wg genkey | tee key | wg pubkey)";
-  };
+      networking.networkmanager.ensureProfiles =
+      {
+        environmentFiles = [ nmKeyEnv ];
+        profiles.wg0 =
+        {
+          connection =
+          {
+            id = "wg0";
+            # fixed, so the profile is the same on every rebuild
+            uuid = "6f1c2a9e-3b7d-4e8a-9c21-5d4b8e7f0a13";
+            type = "wireguard";
+            interface-name = "wg0";
+            autoconnect = false;
+          };
+          wireguard.private-key = "$WG_PRIVATE_KEY";
+          ipv4 =
+          {
+            method = "manual";
+            address1 = cfg.address;
+          };
+          ipv6.method = "disabled";
+        }
+        # each peer is its own keyfile section, named by its public key
+        // lib.listToAttrs (map (p: lib.nameValuePair "wireguard-peer.${p.publicKey}"
+        {
+          allowed-ips = lib.concatMapStrings (ip: "${ip};") p.allowedIPs;
+        }
+        // lib.optionalAttrs (p.endpoint != null) { endpoint = p.endpoint; }
+        // lib.optionalAttrs (p.persistentKeepalive != null) { persistent-keepalive = toString p.persistentKeepalive; }
+        ) nmPeers);
+      };
+    })
+  ]);
 }

@@ -9,6 +9,8 @@
   {
     enable = true;
     address = "10.100.0.3/24";
+    # a NetworkManager profile, toggled from the tray
+    networkManager = true;
     peers =
     [
       {

@@ -12,5 +12,6 @@
     ./ddc.nix
     ./touchpad.nix
     ./hyprland.nix
+    ./wireguard-gui.nix
   ];
 }
