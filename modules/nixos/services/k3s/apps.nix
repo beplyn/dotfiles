@@ -292,7 +292,7 @@ let
     ocis =
     {
       host = "drive";
-      port = 30104;
+      port = 30106;
       body = "100m";
       secrets = [ "OCIS_JWT_SECRET" "OCIS_TRANSFER_SECRET" "OCIS_MACHINE_AUTH_API_KEY" "OCIS_SERVICE_ACCOUNT_SECRET" ];
       dirs = [ (app "${st.state}/ocis") ];
