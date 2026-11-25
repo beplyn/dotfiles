@@ -7,6 +7,13 @@ config="$3"
 vars="$4"
 done="$STATE_DIRECTORY/rev"
 failed="$STATE_DIRECTORY/failed"
+last_pull="$STATE_DIRECTORY/last-pull"
+
+record_pull() {
+  local tmp="$STATE_DIRECTORY/.last-pull.tmp"
+  date +%s > "$tmp"
+  mv -f "$tmp" "$last_pull"
+}
 
 rev="$(git ls-remote "$url" "refs/heads/$branch" | cut -f1)"
 if [ -z "$rev" ]; then
@@ -16,10 +23,12 @@ if [ -z "$rev" ]; then
 fi
 
 if [ "$(cat "$done" 2>/dev/null)" = "$rev" ]; then
+  record_pull
   echo "$branch is at $rev, already switched to"
   exit 0
 fi
 if [ "$(cat "$failed" 2>/dev/null)" = "$rev" ]; then
+  record_pull
   echo "$branch is at $rev, which failed; waiting for the next push"
   exit 0
 fi
@@ -33,8 +42,10 @@ fi
 echo "$branch moved to $rev, switching"
 if nixos-rebuild switch --flake "git+$url?ref=$branch&rev=$rev#$config" --override-input vars "path:$vars"; then
   printf '%s\n' "$rev" > "$done"
+  record_pull
   rm -f "$failed"
 else
   printf '%s\n' "$rev" > "$failed"
+  record_pull
   exit 1
 fi

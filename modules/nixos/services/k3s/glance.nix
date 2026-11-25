@@ -53,7 +53,7 @@ let
   };
 in
 {
-  # runs on every switch and boot, before k3s reads the hostPath
+  # runs on every switch/boot and whenever auto-rebuild polls the remote repo
   config = lib.mkIf (builtins.elem "glance" config.k3s.apps)
   {
     system.activationScripts.glanceRebuildStats =
@@ -62,6 +62,22 @@ in
       text = ''
         ${stats}/bin/glance-rebuild-stats || echo "glance-rebuild-stats failed" >&2
       '';
+    };
+
+    systemd.services.glance-rebuild-stats =
+    {
+      description = "Refresh Glance NixOS rebuild and repo pull stats";
+      serviceConfig =
+      {
+        Type = "oneshot";
+        ExecStart = "${stats}/bin/glance-rebuild-stats";
+      };
+    };
+
+    systemd.paths.glance-rebuild-stats =
+    {
+      wantedBy = [ "multi-user.target" ];
+      pathConfig.PathChanged = "/var/lib/auto-rebuild/last-pull";
     };
   };
 }

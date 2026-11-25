@@ -184,9 +184,10 @@ in
       };
     };
 
-    # /var/secrets and its subdirs stay root-only
+    # /var/secrets and its subdirs stay root-only; auto-rebuild state dir exists at boot for path watchers
     systemd.tmpfiles.rules = map (dir: "d ${dir} 0700 root root -")
       (lib.unique (lib.concatMap (path: [ "/var/secrets" (dirOf path) ])
-        (lib.filter (lib.hasPrefix "/var/secrets/") (lib.attrNames secrets))));
+        (lib.filter (lib.hasPrefix "/var/secrets/") (lib.attrNames secrets))))
+      ++ lib.optional auto.enable "d /var/lib/auto-rebuild 0755 root root -";
   };
 }

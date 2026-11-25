@@ -212,16 +212,23 @@ data:
                 template: |
                   <div class="flex justify-between text-center">
                     <div>
-                      <div class="color-highlight size-h3">{{ .JSON.Int "generation" }}</div>
+                      <div class="color-highlight size-h3">#{{ .JSON.Int "generation" }}</div>
                       <div class="size-h6">GENERATION</div>
                     </div>
                     <div>
-                      <div class="color-highlight size-h4">{{ .JSON.String "built" }}</div>
-                      <div class="size-h6">BUILT</div>
+                      <div class="color-highlight size-h3">{{ .JSON.String "commit" }}</div>
+                      <div class="size-h6">COMMIT</div>
                     </div>
                   </div>
                   <ul class="list list-gap-10">
-                    <li><span class="color-highlight">{{ .JSON.String "commit" }}</span> · <span class="text-truncate">{{ .JSON.String "message" }}</span></li>
+                    <li class="flex justify-between">
+                      <span>Last Repo Pull</span>
+                      <span class="color-highlight">{{ .JSON.String "last_pull" }}</span>
+                    </li>
+                    <li class="flex justify-between">
+                      <span>Last Rebuild</span>
+                      <span class="color-highlight">{{ .JSON.String "last_rebuild" }}</span>
+                    </li>
                     <li class="flex justify-between">
                       <span>NixOS {{ .JSON.String "release" }}</span>
                       <span>{{ .JSON.String "kernel" }}</span>
@@ -355,10 +362,10 @@ spec:
               memory: 32Mi
             limits:
               memory: 128Mi
-        # serves rebuild-stats.json to the glance container on localhost
+        # serves rebuild-stats.json to the glance container on pod loopback
         - name: stats
           image: docker.io/library/busybox:1.37
-          command: ["httpd", "-f", "-v", "-p", "8081", "-h", "/srv"]
+          command: ["httpd", "-f", "-v", "-p", "127.0.0.1:8081", "-h", "/srv"]
           ports:
             - name: stats
               containerPort: 8081
