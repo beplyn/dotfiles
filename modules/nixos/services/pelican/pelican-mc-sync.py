@@ -179,7 +179,7 @@ async def sync_routes(found):
         port = s["port"]
         await ensure_waker(ident, port)
         # only a running server gets its real port; anything else goes to the waker
-        ip = s["ip"] if s["ip"] != "0.0.0.0" else GAME_HOST
+        ip = GAME_HOST if s["ip"] in ("0.0.0.0", "127.0.0.1") else s["ip"]
         want[host] = f"{ip}:{port}" if s["state"] == "running" else f"127.0.0.1:{port + WAKER_OFFSET}"
     current = await asyncio.to_thread(router, "GET", "/routes")
     for host in current:
