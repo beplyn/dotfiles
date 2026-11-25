@@ -32,7 +32,7 @@ spec:
           args: ["server"]
           env:
             - name: OCIS_URL
-              value: "https://@drive.host@"
+              value: "https://@ocis.host@"
             - name: OCIS_INSECURE
               value: "false"
             - name: PROXY_TLS
