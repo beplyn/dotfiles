@@ -36,6 +36,16 @@ in
       { base = "172.30.0.0/16"; size = 24; }
     ];
 
+    # wings looks for this user and runs useradd when it is missing; declared here, it is there
+    users.groups.pelican = { };
+    users.users.pelican =
+    {
+      isSystemUser = true;
+      group = "pelican";
+      home = "/var/lib/pelican";
+      description = "Pelican Wings";
+    };
+
     systemd.tmpfiles.rules =
     [
       "d /var/lib/pelican 0750 root root -"
