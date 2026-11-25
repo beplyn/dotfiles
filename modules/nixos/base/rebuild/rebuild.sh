@@ -1,6 +1,8 @@
-theme="${1:-@themeName@}"
+# shellcheck shell=bash
 # the checkout /etc/nixos links to; DOTFILES overrides it
 flake="${DOTFILES:-$(readlink -f /etc/nixos)}"
+host="@hostName@"
+theme="@themeName@"
 cache="${XDG_CACHE_HOME:-$HOME/.cache}"
 # per-host identities, kept in ~/.ssh and the gpg keyring, never in the repo
 uid="@username@ (@hostName@) <@email@>"
@@ -13,6 +15,18 @@ err() { printf '\e[31m\e[0m %s\n' "$*" >&2; }
 upload() { printf '\e[36m\e[0m %s\n' "$*"; }
 key=$'\e[35m'""$'\e[0m'
 ask=$'\e[35m'""$'\e[0m'
+
+# rebuild [--host HOST] [THEME]. Keys, secrets and vars always belong to this machine.
+while (( $# )); do
+  case "$1" in
+    -H | --host) host="${2:?--host needs a name}"; shift 2 ;;
+    --host=*) host="${1#--host=}"; shift ;;
+    -h | --help) echo "usage: rebuild [--host HOST] [THEME]"; exit 0 ;;
+    -*) err "unknown option: $1"; exit 2 ;;
+    *) theme="$1"; shift ;;
+  esac
+done
+[ -f "$flake/hosts/$host/default.nix" ] || { err "no host $host in $flake/hosts"; exit 1; }
 
 # read_hidden VAR PROMPT: like read -s, but a * per character; backspace takes one back
 read_hidden() {
@@ -121,7 +135,10 @@ host_secret() {
     restart+=($units)
   fi
 }
+# this machine's secrets only; an override host has its own
+if [ "$host" = "@hostName@" ]; then
 @hostSecrets@
+fi
 
 # profile picture for hyprlock and the greeter, desktops only
 if @desktop@ && [ ! -e "$HOME/.pfp" ]; then
@@ -137,11 +154,11 @@ if @desktop@ && [ ! -e "$HOME/.pfp" ]; then
 fi
 
 # whose machines these are, out of the repo; asks for whatever is missing
-dotfiles-vars "$flake/vars/vars.toml" @varsDir@ @hostName@
+dotfiles-vars "$flake/vars/vars.toml" @varsDir@ @staticLan@
 
 # new files reach the flake; nothing else gets staged
 git -C "$flake" add --intent-to-add .
-sudo nixos-rebuild switch --flake "$flake#@hostName@-$theme" --override-input vars "path:@varsDir@"
+sudo nixos-rebuild switch --flake "$flake#$host-$theme" --override-input vars "path:@varsDir@"
 # when the last manual switch was, for the greeting on auto-rebuild hosts
 sudo install -Dm644 /dev/null /var/lib/rebuild/manual
 

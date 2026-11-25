@@ -201,9 +201,17 @@ hw="$host_dir/hardware.nix"
 [[ -f vars/vars.toml ]] || die "vars/vars.toml is missing from the repo (the template for the values)."
 [[ -f modules/nixos/base/rebuild/vars.sh ]] || die "modules/nixos/base/rebuild/vars.sh is missing from the repo."
 
+# hosts/<name>/meta.nix staticLan: LAN address vars, asked only for static-IP hosts
+static=false
+if [[ -f "$host_dir/meta.nix" ]]; then
+  static="$(nix eval --raw --file "$host_dir/meta.nix" \
+    --apply 'm: if m.staticLan or false then "true" else "false"')" \
+    || die "Could not read $host_dir/meta.nix."
+fi
+
 echo
 info "Your values (docs/vars.md), saved root-only to $VARS_DIR/vars.toml:"
-bash modules/nixos/base/rebuild/vars.sh vars/vars.toml "$VARS_DIR" "$host" \
+bash modules/nixos/base/rebuild/vars.sh vars/vars.toml "$VARS_DIR" "$static" \
   || die "Saving the values failed (see above)."
 
 vars_content="$(sudo cat "$VARS_DIR/vars.toml")" \
@@ -221,7 +229,7 @@ missing=()
 for key in username email domain repo; do
   [[ -n "$(vars_get "$key")" ]] || missing+=("$key")
 done
-if [[ "$host" == beacon ]]; then
+if [[ "$static" == true ]]; then
   for key in lan.address lan.gateway lan.subnet; do
     [[ -n "$(vars_get "$key")" ]] || missing+=("$key")
   done

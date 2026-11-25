@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# vars.sh TEMPLATE DIR HOST: ask for values missing from DIR/vars.toml, save root-only.
-# lan.* only on beacon (static IP), the rest use DHCP
+# vars.sh TEMPLATE DIR STATIC: ask for values missing from DIR/vars.toml, save root-only.
+# STATIC=true (hosts/<name>/meta.nix staticLan) asks for lan.*; DHCP hosts skip them
 set -euo pipefail
 template="$1"
 dir="$2"
-host="$3"
+static="$3"
 file="$dir/vars.toml"
 
 current=""
@@ -18,7 +18,7 @@ while IFS=$'\t' read -r name example; do
   # the template's own marker, never a real value
   [ "$name" != placeholder ] || continue
   # DHCP hosts have no use for it
-  [[ "$name" != lan.* || "$host" == beacon ]] || continue
+  [[ "$name" != lan.* || "$static" == true ]] || continue
   # set already
   if yq -p toml -e ".${name} != null" <<< "$current" > /dev/null 2>&1; then
     continue
