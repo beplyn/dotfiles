@@ -73,7 +73,7 @@ let
       forceSSL = true;
       locations =
       {
-        # logged out: redirect to login. Remote-* are always overwritten so clients can't
+                # logged out: redirect to login. Remote-* are overwritten, so clients can't fake them
         # fake them (cleared without auth)
         "/" = upstream host (if !host.auth then noRemoteUser else ''
           auth_request /tinyauth;
@@ -100,13 +100,13 @@ let
             proxy_set_header X-Forwarded-Host "";
             proxy_set_header X-Forwarded-Uri "";
           ''
-          # an API token or git's basic auth: the app checks it, with no Remote-* from here
+                    # an API token or basic auth: the app checks it, so no Remote-* from here
           + lib.optionalString host.authSkipToken ''
             if ($http_authorization != "") { return 200; }
           '';
         };
       }
-      # the app's own clients log in themselves; still never with a Remote-User of theirs
+            # apps with their own clients log in themselves; still no Remote-User from here
       // lib.genAttrs (lib.optionals host.auth host.authSkip) (_: upstream host noRemoteUser);
       extraConfig = lib.optionalString cfg.cloudflareOnly ''
         # skipped Cloudflare and isn't on the LAN

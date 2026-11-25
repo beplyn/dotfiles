@@ -2,7 +2,7 @@
 { pkgs, ... }:
 
 {
-  # headless doesn't enable graphics; iHD + oneVPL for VA-API/QSV, compute-runtime for OpenCL
+  # no graphics stack here: iHD and oneVPL (VA-API, QSV), compute-runtime (OpenCL)
   hardware.enableRedistributableFirmware = true;
   hardware.graphics =
   {

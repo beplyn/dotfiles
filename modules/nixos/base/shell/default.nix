@@ -40,7 +40,7 @@
     '';
     interactiveShellInit = builtins.readFile ./init.fish;
   };
-  # zsh's own config is home-manager's (cli/zsh); NixOS enables it for the hooks it wires into /etc/zshrc
+    # zsh's config is home-manager's (cli/zsh); NixOS only wires its /etc/zshrc hooks
   programs.zsh =
   {
     enable = true;
@@ -54,7 +54,7 @@
     enableFishIntegration = true;
   };
 
-  # typo fixes: closest command match, `f` fixes the last one, ctrl-x ctrl-x the current
+    # typo fixes: closest match, `f` for the last command, ctrl-x ctrl-x for this one
   programs.pay-respects =
   {
     enable = true;

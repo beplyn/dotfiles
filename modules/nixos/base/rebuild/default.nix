@@ -18,7 +18,7 @@ let
   auto = config.rebuild.auto;
   hostName = config.networking.hostName;
 
-  # the real vars (docs/vars.md), root-only beside the host secrets; install.sh has it too
+    # root-only vars (docs/vars.md); install.sh uses the same path
   varsDir = "/var/secrets/dotfiles";
 
   # asks for what vars.toml lacks, from the template in the checkout
@@ -54,7 +54,7 @@ let
     ])
     secrets);
 
-  # rebuild [theme]: prompts for missing secrets and ~/.pfp, then switches to <host>-<theme>
+    # rebuild: asks for missing secrets and ~/.pfp, then switches to the host
   rebuild = pkgs.writeShellApplication
   {
     name = "rebuild";
@@ -185,7 +185,7 @@ in
       };
     };
 
-    # /var/secrets and its subdirs stay root-only; auto-rebuild state dir exists at boot for path watchers
+        # /var/secrets stays root-only; the auto-rebuild state dir exists at boot
     systemd.tmpfiles.rules = map (dir: "d ${dir} 0700 root root -")
       (lib.unique (lib.concatMap (path: [ "/var/secrets" (dirOf path) ])
         (lib.filter (lib.hasPrefix "/var/secrets/") (lib.attrNames secrets))))

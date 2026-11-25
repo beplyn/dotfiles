@@ -394,7 +394,7 @@ let
       port = 30101;
       auth = true;
     };
-    # vanilla on 25565; mc. is DNS-only (Cloudflare only proxies HTTP). Java is scaled to 0, Pelican runs the servers
+        # vanilla on 25565; mc. is DNS-only (Cloudflare proxies only HTTP); Java scaled to 0
     minecraft =
     {
       host = "mc";
@@ -414,7 +414,7 @@ let
       lan.tcp = [ 25565 ];
       dnsOnly = [ "mc" "*.mc" ];
     };
-    # idles games for card drops; no web UI outside the cluster, login is in the asf-bot secret
+        # idles games for card drops; no web UI outside the cluster; asf-bot holds the login
     asf =
     {
       dirs = [ (app "${st.state}/asf") ];
@@ -441,7 +441,7 @@ let
       "  mapping:"
       "    ${config.proxy.domain}: ${cfg.lanAddress}"
     ]
-    # subdomains resolve on their own, so "mc" covers every <label>.mc; "*" names aren't valid keys
+        # subdomains resolve on their own: "mc" covers every <label>.mc; "*" isn't a valid key
     ++ map (h: "    ${h}.${config.proxy.domain}: ${cfg.lanAddress}")
       (lib.unique (lib.filter (h: h != "@") (lib.attrNames config.proxy.hosts)
         ++ lib.filter (h: !lib.hasPrefix "*" h) cfg.dnsOnly)));
@@ -613,10 +613,10 @@ in
         name = "app-${name}";
         value.source = manifest name;
       }) manifests)
-      # phase 2, like the ddns token: sealed with `seal-oidc` once Pocket ID made the client
+            # phase 2, like the ddns token: sealed with seal-oidc once Pocket ID has the client
       // lib.mapAttrs' (n: _: lib.nameValuePair "app-${n}-oidc" { source = sealedOidc n; })
         (lib.filterAttrs hasOidc enabled)
-      # split-horizon in the cluster: pods resolve proxied hosts to lanAddress, no NAT hairpin
+            # split-horizon in the cluster: pods resolve proxied hosts to lanAddress (no hairpin)
       # (own .server block, so CoreDNS does not duplicate NodeHosts)
       // lib.optionalAttrs (cfg.lanAddress != null)
       {
@@ -661,7 +661,7 @@ in
 
     environment.systemPackages = lib.optional (lib.any (a: a.oidc or false) (lib.attrValues enabled)) sealOidc;
 
-    # only once every disk is mounted, so pods fail instead of filling the system SSD
+        # only once every disk is mounted: pods fail rather than fill the system SSD
     systemd.services.k3s-app-dirs =
     {
       wantedBy = [ "k3s.service" ];

@@ -1,4 +1,4 @@
-# Pelican servers -> mc-router routes; wake stopped ones on join; stop them when empty
+# Pelican servers -> mc-router routes; wake on join; stop when empty
 import asyncio
 import json
 import os
@@ -87,7 +87,7 @@ async def start_if_offline(ident, state):
 
 
 async def handle(reader, writer, port):
-    # a player hit a stopped server: boot it, hold the connection, then pipe it through
+        # a player hit a stopped server: boot it, hold the connection, pipe it through
     ident = wakers[port]
     last_active[ident] = time.time()
     try:

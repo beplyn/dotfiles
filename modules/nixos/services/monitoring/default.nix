@@ -49,7 +49,7 @@ in
       environment =
       {
         APP_URL = "https://${cfg.metricsHost}.${config.proxy.domain}";
-        # tinyauth's login: the Beszel user with your Pocket ID email, no second password
+                # tinyauth login: the Beszel user with your Pocket ID email, no second password
         TRUSTED_AUTH_HEADER = "Remote-Email";
       };
     };

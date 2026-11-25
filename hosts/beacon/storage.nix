@@ -37,7 +37,7 @@ in
     interval = "monthly";
   };
 
-  # daily read-only snapshots of every tank subvolume, sent incrementally to the backup disk
+  # read-only daily snapshots of tank, sent incrementally to the backup disk
   services.btrbk.instances.tank =
   {
     onCalendar = "daily";

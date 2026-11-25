@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 
-# Pelican Wings on beacon, mc-router on :25565, and the sync that ties them to Panel in K3s
+# Wings on beacon, mc-router on :25565, and the sync that ties them to Panel in k3s
 let
   cfg = config.pelican;
   inherit (config.proxy) domain;
@@ -19,7 +19,7 @@ let
   routerImage = "docker.io/itzg/mc-router:1.56.5@sha256:e2f002006d617b2df898c9beec963baa212c685aae1df83de5a13ebf5b5966c9";
   routerApi = "127.0.0.1:25560";
 
-  # wakers listen at allocation port + this, so a stopped server's route lands on one
+    # wakers listen at allocation port + offset, so a stopped server's route lands there
   wakerOffset = 100;
 
   sync = pkgs.writers.writePython3Bin "pelican-mc-sync" { flakeIgnore = [ "E501" ]; }
@@ -30,13 +30,13 @@ in
 
   config = lib.mkIf cfg.enable
   {
-    # game containers on their own range, clear of K3s pods (10.42) and services (10.43)
+        # game containers' own range, clear of k3s 10.42 and 10.43
     virtualisation.docker.daemon.settings.default-address-pools =
     [
       { base = "172.30.0.0/16"; size = 24; }
     ];
 
-    # wings looks for this user and runs useradd when it is missing; declared here, it is there
+        # wings runs useradd for this user if it's missing; declared here, it exists
     users.groups.pelican = { };
     users.users.pelican =
     {
@@ -52,7 +52,7 @@ in
       "d /etc/pelican 0750 root root -"
     ];
 
-    # Wings reads the config Panel generates for this node; without it, it stays down
+        # Wings reads the config Panel generates for this node; without it, it stays down
     systemd.services.pelican-wings =
     {
       description = "Pelican Wings game node";
@@ -111,7 +111,7 @@ in
       };
     };
 
-    # routes, wake-on-join and idle stop; needs the Panel API token in /var/lib/pelican
+        # routes, wake-on-join and idle stop; needs the Panel API token in /var/lib/pelican
     systemd.services.pelican-mc-sync =
     {
       description = "Sync Pelican servers into mc-router, wake on join, stop when idle";

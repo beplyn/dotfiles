@@ -21,9 +21,9 @@
   {
     enable = true;
     inherit domain;
-    # split-horizon: blocky sends the LAN here directly; k3s pods/services arrive via CoreDNS
+    # split-horizon: blocky sends the LAN here; k3s pods arrive via CoreDNS
     lanSubnets = [ lan.subnet "10.42.0.0/16" "10.43.0.0/16" ];
-    # the records are DNS-only, so clients come straight here, not through Cloudflare
+    # DNS-only records: clients come straight here, not through Cloudflare
     cloudflareOnly = false;
   };
 
@@ -73,13 +73,13 @@
   # Beszel and Scrutiny on the host, at metrics. and disks.
   monitoring.enable = true;
 
-  # the wg0 server: the desktops dial in on 51820 and ssh to beacon over 10.100.0.1
+  # wg0 server: desktops dial in on 51820, ssh to beacon at 10.100.0.1
   wireguard =
   {
     enable = true;
     address = "10.100.0.1/24";
     listenPort = 51820;
-    # keys come from the vars file (scripts/wireguard); a peer with no key is left out
+    # keys come from vars.toml (scripts/wireguard); no key, no peer
     peers =
     [
       {
