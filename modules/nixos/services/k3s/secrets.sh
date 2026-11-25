@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# secrets.sh SPEC: per "<namespace> <secret> <key>..." line, add missing keys, never rotate.
+# secrets.sh SPEC: add missing keys per line; never rotate existing ones.
 # KEY = random hex, KEY=ntfy-token, KEY=bcrypt:OTHER (hash of another key)
 set -euo pipefail
 

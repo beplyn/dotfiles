@@ -19,7 +19,7 @@ grub-mkfont -n Maple -s @px16@ -r "$range" -o maple-16.pf2 "$regular"
 grub-mkfont -n Maple -s @px20@ -r "$range" -o maple-20.pf2 "$regular"
 grub-mkfont -n Maple -s @px48@ -r "$range" -o maple-bold-48.pf2 "$bold"
 
-# slice file name size corner: cut a square image into GRUB's nine styled-box parts
+# slice <file> <name> <size> <corner>: cut a square into GRUB's nine box parts
 slice() {
   local f=$1 name=$2 s=$3 c=$4
   local m=$((s - 2 * c)) far=$((s - c))
@@ -44,7 +44,7 @@ box() {
   slice box.png "$name" "$s" "$c"
 }
 
-# pill name colour: 8px bar centred in the 28px GRUB gives every progress bar (at 1080p)
+# pill <name> <colour>: 8px bar, centred in GRUB's 28px row, for every progress bar
 pill() {
   magick -size @px28@x@px28@ xc:none -fill "$2" -draw "roundrectangle 0,@px10@ $((@px28@ - 1)),@px17@ @px4@,@px4@" pill.png
   slice pill.png "$1" @px28@ @px10@

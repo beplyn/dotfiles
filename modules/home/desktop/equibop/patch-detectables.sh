@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# arRPC's Discord database lists CS2 only as its Windows binary; add the native one
+# arRPC's database lists CS2 only as the Windows binary; add the native one
 set -euo pipefail
 db="${1:?usage: patch-detectables.sh <arrpc-detectable-db.json>}"
 [ -f "$db" ] || exit 0

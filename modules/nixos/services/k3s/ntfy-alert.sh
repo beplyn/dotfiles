@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ntfy-alert.sh UNIT PORT TOPIC: OnFailure= hook, sends UNIT's last log lines to ntfy
+# ntfy-alert.sh UNIT PORT TOPIC: OnFailure= hook; sends UNIT's last log lines to ntfy
 set -euo pipefail
 unit="$1"
 port="$2"

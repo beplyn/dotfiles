@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Make this host's wg0 private key (root-only) if missing, then print its public key.
+# Make this host's wg0 private key (root-only) if missing; print its public key.
 set -euo pipefail
 
 key=/var/secrets/wireguard/wg0.key

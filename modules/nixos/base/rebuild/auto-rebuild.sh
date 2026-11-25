@@ -1,7 +1,7 @@
 # shellcheck shell=bash
-# auto-rebuild URL BRANCH CONFIG VARS: switch to BRANCH's newest commit, once per commit.
+# auto-rebuild URL BRANCH CONFIG VARS: switch to BRANCH's newest commit, once.
 # Remembers the last good and failed commit, so a broken one alerts only once.
-# Builds the pushed commit itself, never the local checkout, so a failed build leaves the running system alone.
+# Builds the pushed commit, never the checkout: a failed build leaves the system running.
 set -euo pipefail
 url="$1"
 branch="$2"

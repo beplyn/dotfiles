@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# vars.sh TEMPLATE DIR STATIC: ask for values missing from DIR/vars.toml, save root-only.
-# STATIC=true (hosts/<name>/meta.nix staticLan) asks for lan.*; DHCP hosts skip them
+# vars.sh TEMPLATE DIR STATIC: ask for missing values, save root-only in DIR/vars.toml.
+# STATIC=true (staticLan hosts) asks for lan.*; DHCP hosts skip them
 set -euo pipefail
 template="$1"
 dir="$2"

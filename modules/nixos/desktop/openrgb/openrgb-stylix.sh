@@ -24,7 +24,7 @@ while read -r line; do
     [0-9]*:\ *) dev="${line%%:*}" ;;
     Type:*) type="${line#Type:}"; type="${type// /}" ;;
     Modes:*)
-      # "Modes: Direct [Static] 'Color Cycle' ..." -> " direct static color cycle ... "
+            # mode names from openrgb's list, lowercased
       modes=" ${line#Modes:} "
       modes="${modes//[\[\]\']/}"
       modes="${modes,,}"
@@ -52,5 +52,5 @@ if [ "${#args[@]}" -eq 0 ]; then
   exit 0
 fi
 
-# profile for the GUI to load at login; must be saved in the same run or it fails
+# the GUI loads this profile at login; save it in the same run or it fails
 exec openrgb --nodetect "${args[@]}" --save-profile stylix

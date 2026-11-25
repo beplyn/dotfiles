@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# backup.sh MOUNT TARGET STATE PGSPEC KEEP: copy app state and the cluster to TARGET/current,
-# snapshot it, keep the newest KEEP. sqlite via .backup, postgres via pg_dumpall.
+# backup.sh MOUNT TARGET STATE PGSPEC KEEP: copy state and cluster to TARGET/current,
+# snapshot it, keep the newest KEEP. sqlite: .backup; postgres: pg_dumpall.
 # PGSPEC lines: "<namespace> <deployment> <user>"
 set -euo pipefail
 mount="$1"
@@ -30,7 +30,7 @@ find "$state" -name postgres -prune -o -type f -size +0 -print0 \
   done > "$tmp/dbs"
 tr '\0' '\n' < "$tmp/dbs" | sed 's|^|/|' > "$tmp/exclude"
 
-# everything else as is; the dbs, their journals and postgres' raw files are skipped
+# everything else as is; dbs, their journals and postgres raw files are skipped
 rsync -a --delete \
   --exclude-from="$tmp/exclude" \
   --exclude='*-wal' --exclude='*-shm' --exclude='*-journal' \
@@ -49,7 +49,7 @@ while read -r ns deploy user; do
   mv "$tmp/$ns.sql.zst" "$cur/postgres/$ns.sql.zst"
 done < "$pgspec"
 
-# the cluster: every object and Secret (the sealed-secrets key too), and its join token
+# the cluster: every object and Secret (sealed-secrets key too) and the join token
 sqlite3 -readonly -cmd '.timeout 30000' "$k3s_dir/server/db/state.db" ".backup '$cur/k3s/state.db'"
 cp "$k3s_dir/server/token" "$cur/k3s/token"
 k3s kubectl get secrets -A -o yaml > "$cur/k3s/secrets.yaml"

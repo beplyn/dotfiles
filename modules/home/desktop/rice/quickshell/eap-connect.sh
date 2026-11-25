@@ -1,4 +1,4 @@
-# eap-connect.sh <ssid>: join WPA-Enterprise (PEAP + MSCHAPv2, no CA, e.g. eduroam).
+# eap-connect.sh <ssid>: join WPA-Enterprise (PEAP, MSCHAPv2, no CA), e.g. eduroam.
 # Credentials come in EAP_IDENTITY / EAP_PASSWORD to keep them out of argv.
 
 ssid=$1
@@ -10,7 +10,7 @@ nmcli connection add type wifi con-name "$ssid" ssid "$ssid" \
   802-1x.identity "$EAP_IDENTITY" \
   802-1x.password-flags 0 >/dev/null
 
-# save the secrets (flags 0 = system owned); nmcli's agent needs the identity too
+# flags 0 = system owned; nmcli's agent needs the identity too
 if ! printf '802-1x.identity:%s\n802-1x.password:%s\n' "$EAP_IDENTITY" "$EAP_PASSWORD" \
   | nmcli --wait 45 connection up id "$ssid" passwd-file /dev/stdin >/dev/null
 then

@@ -15,7 +15,7 @@ history=$(for l in /nix/var/nix/profiles/system-*-link; do
 done | sort -rn | head -n 5 | jq -Rs \
   'split("\n") | map(select(length > 0) | split("\t") | {generation: (.[0] | tonumber), built: .[1]})')
 
-# auto-rebuild deploys without touching /etc/nixos, so prefer its recorded rev when present
+# auto-rebuild never touches /etc/nixos, so prefer its recorded rev
 repo=/etc/nixos
 rev_file=/var/lib/auto-rebuild/rev
 if [ -s "$rev_file" ]; then

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# asf-login: one-off interactive Steam login (Steam Guard code or Y). Run on beacon.
+# asf-login: one-off interactive Steam login (Steam Guard code or Y), on beacon.
 # Stops asf, runs ASF in a terminal sharing its state, restores asf on exit.
 set -euo pipefail
 
@@ -18,7 +18,7 @@ trap restore EXIT
 kubectl -n "$ns" scale deploy/asf --replicas=0
 kubectl -n "$ns" wait --for=delete pod -l app=asf --timeout=120s >/dev/null || true
 
-# seed farm.json from the secret like the deployment does, then start ASF with a terminal
+# seed farm.json from the secret as the deployment does, then start ASF with a tty
 overrides=$(cat <<EOF
 {
   "spec": {

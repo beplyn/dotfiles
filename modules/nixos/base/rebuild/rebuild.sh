@@ -8,7 +8,7 @@ cache="${XDG_CACHE_HOME:-$HOME/.cache}"
 uid="@username@ (@hostName@) <@email@>"
 sshKey="$HOME/.ssh/id_ed25519"
 
-# nerd font glyphs in the terminal's palette: info, warning, error, secret and yes/no prompts
+# nerd font glyphs: info, warning, error, secret and yes/no prompts
 info() { printf '\e[34m\e[0m %s\n' "$*"; }
 warn() { printf '\e[33m\e[0m %s\n' "$*" >&2; }
 err() { printf '\e[31m\e[0m %s\n' "$*" >&2; }
@@ -16,7 +16,7 @@ upload() { printf '\e[36m\e[0m %s\n' "$*"; }
 key=$'\e[35m'""$'\e[0m'
 ask=$'\e[35m'""$'\e[0m'
 
-# rebuild [--host HOST] [THEME]. Keys, secrets and vars always belong to this machine.
+# rebuild [--host HOST] [THEME]; keys, secrets and vars stay with this machine.
 while (( $# )); do
   case "$1" in
     -H | --host) host="${2:?--host needs a name}"; shift 2 ;;
@@ -28,7 +28,7 @@ while (( $# )); do
 done
 [ -f "$flake/hosts/$host/default.nix" ] || { err "no host $host in $flake/hosts"; exit 1; }
 
-# read_hidden VAR PROMPT: like read -s, but a * per character; backspace takes one back
+# read_hidden VAR PROMPT: read -s with a * per character; backspace works
 read_hidden() {
   local -n into="$1"
   local ch
@@ -103,7 +103,7 @@ pick() {
     | fzf --prompt "$prompt  " || true
 }
 
-# host secrets (rebuild.secrets): root-only, never in the repo; delete one to be asked again
+# rebuild.secrets: root-only, never in git; delete one to be asked again
 restart=()
 # shellcheck disable=SC2329 # no calls on hosts without secrets
 host_secret() {

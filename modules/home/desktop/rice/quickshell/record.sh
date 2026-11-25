@@ -1,4 +1,4 @@
-# Screen recorder, ported from hakuspace's record_ctl.sh (deps via writeShellApplication).
+# Screen recorder, ported from hakuspace's record_ctl.sh.
 
 SAVE_DIR=${SCREENREC_SAVE_DIR:-"$HOME/Videos/Recordings"}
 STATE_DIR="${XDG_RUNTIME_DIR:-/tmp}/haku-record"
