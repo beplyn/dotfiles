@@ -155,6 +155,6 @@ data:
           role_mapping:
             # the admin's email is a plain string claim, so it matches reliably
             - role_name: admin
-              claim_value: me@beplyn\.dev
+              claim_value: "@email@"
             - role_name: user
               claim_value: ".*"
