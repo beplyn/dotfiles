@@ -151,10 +151,10 @@ data:
       role_assignment:
         driver: oidc
         oidc_role_mapper:
-          role_claim: groups
+          role_claim: email
           role_mapping:
-            # "wheel" is admin; "ocis" is a normal user (no catch-all: it matches the first group)
+            # the admin's email is a plain string claim, so it matches reliably
             - role_name: admin
-              claim_value: wheel
+              claim_value: me@beplyn\.dev
             - role_name: user
-              claim_value: ocis
+              claim_value: ".*"
