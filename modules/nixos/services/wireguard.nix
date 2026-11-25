@@ -153,13 +153,13 @@ in
           ipv6.method = "disabled";
         }
         # each peer is its own keyfile section, named by its public key
-        // lib.listToAttrs (map (p: lib.nameValuePair "wireguard-peer.${p.publicKey}"
-        {
-          allowed-ips = lib.concatMapStrings (ip: "${ip};") p.allowedIPs;
-        }
-        // lib.optionalAttrs (p.endpoint != null) { endpoint = p.endpoint; }
-        // lib.optionalAttrs (p.persistentKeepalive != null) { persistent-keepalive = toString p.persistentKeepalive; }
-        ) nmPeers);
+        // lib.listToAttrs (map (p: lib.nameValuePair "wireguard-peer.${p.publicKey}" (
+          {
+            allowed-ips = lib.concatMapStrings (ip: "${ip};") p.allowedIPs;
+          }
+          // lib.optionalAttrs (p.endpoint != null) { endpoint = p.endpoint; }
+          // lib.optionalAttrs (p.persistentKeepalive != null) { persistent-keepalive = toString p.persistentKeepalive; }
+        )) nmPeers);
       };
     })
   ]);
