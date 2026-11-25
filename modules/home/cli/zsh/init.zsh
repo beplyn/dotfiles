@@ -32,7 +32,7 @@ __prepend_sudo()
 zle -N __prepend_sudo
 bindkey '^[s' __prepend_sudo
 
-# ctrl-f: cycles $(fzf) -> directories -> nothing at the end of the line
+# alt-f: cycles $(fzf) -> directories -> nothing at the end of the line, same as fish
 __append_fzf()
 {
   local cmd=$BUFFER
@@ -51,7 +51,7 @@ __append_fzf()
   CURSOR=${#cmd}
 }
 zle -N __append_fzf
-bindkey '^F' __append_fzf
+bindkey '^[f' __append_fzf
 
 # `f` (pay-respects) and zoxide are wired by NixOS's /etc/zshrc, not here
 

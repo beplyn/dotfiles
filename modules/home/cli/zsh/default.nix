@@ -35,7 +35,7 @@ in
     enable = true;
     enableCompletion = true;
 
-    # fish's grey suggestion, accepted with right arrow or end (ctrl-f is fzf)
+    # fish's grey suggestion, accepted with right or ctrl-f
     autosuggestion =
     {
       enable = true;
