@@ -70,7 +70,7 @@ in
         # root for the docker socket; everything else locked down
         ProtectSystem = "strict";
         # wings writes its machine-id into its config dir at start
-        ReadWritePaths = [ "/var/lib/pelican" "/var/log/pelican" "/etc/pelican" ];
+        ReadWritePaths = [ "/var/lib/pelican" "/var/log/pelican" "/etc/pelican" "/tmp" ];
         ProtectHome = true;
         # wings writes install scripts to /tmp/pelican and docker bind-mounts them;
         # the daemon runs outside this unit, so it needs the real /tmp
