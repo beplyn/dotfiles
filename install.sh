@@ -7,7 +7,7 @@ shopt -s inherit_errexit
 
 # asked for under `curl | bash`; a checkout uses itself
 REPO_URL="${REPO_URL:-}"
-# whose machines these are (vars/README.md), root-only; the rebuild module has it too
+# whose machines these are (docs/vars.md), root-only; the rebuild module has it too
 VARS_DIR=/var/secrets/dotfiles
 NIX_CONFIG="${NIX_CONFIG:-}"$'\n'"experimental-features = nix-command flakes"
 export NIX_CONFIG
@@ -202,7 +202,7 @@ hw="$host_dir/hardware.nix"
 [[ -f modules/nixos/base/rebuild/vars.sh ]] || die "modules/nixos/base/rebuild/vars.sh is missing from the repo."
 
 echo
-info "Your values (vars/README.md), saved root-only to $VARS_DIR/vars.toml:"
+info "Your values (docs/vars.md), saved root-only to $VARS_DIR/vars.toml:"
 bash modules/nixos/base/rebuild/vars.sh vars/vars.toml "$VARS_DIR" "$host" \
   || die "Saving the values failed (see above)."
 
