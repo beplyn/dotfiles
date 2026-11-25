@@ -12,6 +12,7 @@
     ./ripgrep.nix
     ./lazyclis.nix
     ./tmux.nix
+    ./zsh
     ./yazi.nix
     ./tools.nix
     ./fastfetch.nix
