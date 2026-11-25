@@ -8,13 +8,13 @@
     ./signing.nix
     ./opencode
     ./openclaw.nix
+    ./claude.nix
   ]
-  # servers: no compilers, no agents, plain vim
+  # servers: no compilers or editor plugins, plain vim
   ++ lib.optionals (!headless)
   [
     ./nvim
     ./toolchains.nix
-    ./claude.nix
   ];
 
   # nixvim's defaultEditor sets these elsewhere
