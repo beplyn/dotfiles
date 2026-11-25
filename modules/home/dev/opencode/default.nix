@@ -15,7 +15,7 @@ in
     enable = true;
     # search before guessing
     context = ./rules.md;
-        # stylix writes tui.json, which OpenCode 2 ignores; the theme goes in cli.json
+    # stylix writes tui.json, which OpenCode 2 ignores; the theme goes in cli.json
     tui = lib.mkForce { };
     cli.theme.name = "stylix";
     settings =

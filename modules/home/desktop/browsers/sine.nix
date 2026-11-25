@@ -21,7 +21,7 @@ let
   '';
 in
 {
-    # librewolf.cfg is LibreWolf's autoconfig; the bootloader is appended to it
+  # librewolf.cfg is LibreWolf's autoconfig; the bootloader is appended to it
   programs.librewolf.package = pkgs.librewolf.override (old:
   {
     extraPrefsFiles = old.extraPrefsFiles or [ ] ++ [ "${bootloader}/program/config.js" ];

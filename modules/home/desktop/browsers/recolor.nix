@@ -27,7 +27,7 @@ let
     lib.replaceStrings (from ++ map lib.toUpper from) (to ++ to) (builtins.readFile file);
 in
 {
-    # catppuccin/*: every Mocha colour; base16 lacks some, so those are blends
+  # catppuccin/*: every Mocha colour; base16 lacks some, so those are blends
   catppuccin = replace (with colors;
   {
     "#f5e0dc" = bright; # rosewater

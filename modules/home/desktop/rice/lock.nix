@@ -21,7 +21,7 @@ let
   dpms = action: "${hyprctl} dispatch 'hl.dsp.dpms({ action = \"${action}\" })'";
   avatar = "${config.xdg.cacheHome}/pfp.png";
 
-    # ~/.pfp (set at rebuild) -> square png; snowflake if missing or unreadable
+  # ~/.pfp (set at rebuild) -> square png; snowflake if missing or unreadable
   pfp = pkgs.writeShellApplication
   {
     name = "pfp";

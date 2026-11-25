@@ -31,7 +31,7 @@ in
     ./services.nix
   ];
 
-    # value -> hypr/haku/data/<name>.lua, read by require("haku.data.<name>")
+  # value -> hypr/haku/data/<name>.lua, read by require("haku.data.<name>")
   lib.haku.hyprlandData = name: value:
   {
     "haku/data/${name}" =

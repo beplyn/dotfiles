@@ -87,7 +87,7 @@ async def start_if_offline(ident, state):
 
 
 async def handle(reader, writer, port):
-        # a player hit a stopped server: boot it, hold the connection, pipe it through
+    # a player hit a stopped server: boot it, hold the connection, pipe it through
     ident = wakers[port]
     last_active[ident] = time.time()
     try:

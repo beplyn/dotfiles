@@ -11,7 +11,7 @@
 let
   cfg = config.wireguard;
   keyFile = "/var/secrets/wireguard/wg0.key";
-    # NetworkManager reads the key from an env file, copied into /run at boot
+  # NetworkManager reads the key from an env file, copied into /run at boot
   nmKeyEnv = "/run/wireguard-nm/key.env";
   nmPeers = lib.filter (p: p.publicKey != "") cfg.peers;
 in

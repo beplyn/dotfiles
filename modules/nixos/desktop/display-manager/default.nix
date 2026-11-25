@@ -23,7 +23,7 @@ let
 
   regreet = pkgs.regreet.overrideAttrs (old:
   {
-        # monitors follow outputs as they come and go, no freezing on a vanished one
+    # monitors follow outputs as they come and go, no freezing on a vanished one
     patches = (old.patches or [ ]) ++ [ ./regreet-layout.patch ./regreet-monitors.patch ];
   });
 
@@ -43,7 +43,7 @@ let
   } (builtins.readFile ./greeter-hyprland.lua));
 in
 {
-    # rebuild fills these (the greeter can't read homes); Stylix art until then
+  # rebuild fills these (the greeter can't read homes); Stylix art until then
   systemd.tmpfiles.rules =
   [
     "d /var/lib/wallpaper 0755 root root -"
@@ -90,7 +90,7 @@ in
     };
   };
 
-    # stable name for the monitors' GPU; AQ_DRM_DEVICES splits on ':', so no by-path
+  # stable name for the monitors' GPU; AQ_DRM_DEVICES splits on ':', so no by-path
   services.udev.extraRules = lib.mkIf (config.displayGpu != null) ''
     SUBSYSTEM=="drm", KERNEL=="card[0-9]*", KERNELS=="${config.displayGpu}", SYMLINK+="dri/display"
   '';
@@ -101,8 +101,8 @@ in
     ++ lib.optional (config.displayGpu != null) "${pkgs.coreutils}/bin/env AQ_DRM_DEVICES=/dev/dri/display"
     ++ [ "${lib.getExe' hyprland "Hyprland"} --config ${greeterConfig}" ]);
 
-    # shell's flat look: one hairline card, sharp corners, blue only when active.
-    # 2px matches Theme.innerRadius in quickshell/config/services/Theme.qml
+  # shell's flat look: one hairline card, sharp corners, blue only when active.
+  # 2px matches Theme.innerRadius in quickshell/config/services/Theme.qml
   stylix.targets.regreet.extraCss = ''
     .login-card
     {
