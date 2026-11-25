@@ -59,7 +59,8 @@ in
         RestartSec = "10s";
         # root for the docker socket; everything else locked down
         ProtectSystem = "strict";
-        ReadWritePaths = [ "/var/lib/pelican" "/var/log/pelican" ];
+        # wings writes its machine-id into its config dir at start
+        ReadWritePaths = [ "/var/lib/pelican" "/var/log/pelican" "/etc/pelican" ];
         ProtectHome = true;
         PrivateTmp = true;
         ProtectKernelTunables = true;
