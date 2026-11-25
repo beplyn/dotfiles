@@ -99,11 +99,6 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /var/lib/ocis
-            # group wheel -> admin role
-            - name: proxy-config
-              mountPath: /var/lib/ocis/config/proxy.yaml
-              subPath: proxy.yaml
-              readOnly: true
           securityContext:
             runAsNonRoot: true
             runAsUser: @uid@
@@ -118,9 +113,6 @@ spec:
           hostPath:
             path: "@state@/ocis"
             type: Directory
-        - name: proxy-config
-          configMap:
-            name: ocis-proxy-config
 ---
 apiVersion: v1
 kind: Service
@@ -136,22 +128,3 @@ spec:
       port: 80
       targetPort: http
       nodePort: @ocis.port@
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: ocis-proxy-config
-  namespace: ocis
-data:
-  proxy.yaml: |
-    proxy:
-      role_assignment:
-        driver: oidc
-        oidc_role_mapper:
-          role_claim: email
-          role_mapping:
-            # the admin's email is a plain string claim, so it matches reliably
-            - role_name: admin
-              claim_value: "@email@"
-            - role_name: user
-              claim_value: ".*"
