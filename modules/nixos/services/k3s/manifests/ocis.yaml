@@ -153,8 +153,8 @@ data:
         oidc_role_mapper:
           role_claim: groups
           role_mapping:
-            # Pocket ID group "wheel" is admin; everyone else is a user
+            # "wheel" is admin; "ocis" is a normal user (no catch-all: it matches the first group)
             - role_name: admin
               claim_value: wheel
             - role_name: user
-              claim_value: ".*"
+              claim_value: ocis
