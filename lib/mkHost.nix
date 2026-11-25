@@ -9,6 +9,8 @@
   repo,
   # beacon's static LAN address, gateway and subnet; empty elsewhere
   lan,
+  # wg0 public keys by host name, from the vars file; empty until filled in
+  wgKeys,
   # every theme in the flake, for the rebuild shortcuts
   themes,
   # servers: no GUI
@@ -31,6 +33,7 @@ let
       domain
       repo
       lan
+      wgKeys
       forgejoHost
       themes
       themeName

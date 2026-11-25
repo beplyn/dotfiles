@@ -107,6 +107,7 @@
         inherit (vars) username email domain repo;
         # only beacon has them (vars.sh asks nowhere else); its network.nix asserts them
         lan = vars.lan or { address = ""; gateway = ""; subnet = ""; };
+        wgKeys = vars.wireguard or { };
         headlessHosts = [ "beacon" ];
       };
     in

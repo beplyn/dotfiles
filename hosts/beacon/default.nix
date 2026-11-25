@@ -1,4 +1,4 @@
-{ pkgs, domain, lan, ... }:
+{ pkgs, domain, lan, wgKeys, ... }:
 
 {
   imports =
@@ -79,15 +79,17 @@
     enable = true;
     address = "10.100.0.1/24";
     listenPort = 51820;
-    # fill in each desktop's `wg pubkey`; a peer with no key is left out
+    # keys come from the vars file (scripts/wireguard); a peer with no key is left out
     peers =
     [
       {
         # anvil
+        publicKey = wgKeys.anvil or "";
         allowedIPs = [ "10.100.0.2/32" ];
       }
       {
         # shulker
+        publicKey = wgKeys.shulker or "";
         allowedIPs = [ "10.100.0.3/32" ];
       }
     ];

@@ -1,4 +1,4 @@
-{ domain, ... }:
+{ domain, wgKeys, ... }:
 
 {
   imports = [ ./hardware.nix ./hardware-extra.nix ];
@@ -12,8 +12,7 @@
     peers =
     [
       {
-        # beacon's public key (its wg pubkey)
-        publicKey = "";
+        publicKey = wgKeys.beacon or "";
         allowedIPs = [ "10.100.0.1/32" ];
         endpoint = "${domain}:51820";
         persistentKeepalive = 25;

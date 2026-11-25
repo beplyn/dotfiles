@@ -6,7 +6,7 @@
 
 # one wg0 mesh: beacon listens (listenPort), the desktops dial in (endpoint).
 # The private key stays root-only in /var/secrets (rebuild asks for it); the
-# public keys are not secret and live in each host's file.
+# public keys come from the root-only vars file (scripts/wireguard).
 let
   cfg = config.wireguard;
   keyFile = "/var/secrets/wireguard/wg0.key";
