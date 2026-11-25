@@ -126,7 +126,6 @@ in
         return-type = "json";
         signal = signals.recorder;
         format = "${glyph 984138} {}";
-        # hide when `status` is empty
         hide-empty-text = true;
         tooltip = false;
         on-click = ipc "recorder" "stop" [ ];

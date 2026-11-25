@@ -13,7 +13,7 @@ let
 
   theme = import ./recolor.nix { inherit lib subst; palette = p; };
   zenTheme = "${inputs.catppuccin-zen}/themes/Mocha/Mauve";
-  # upstream's `background` shorthand on preferences buttons wipes Sine's icon images
+  # `background` shorthand on preferences buttons wipes Sine's icon images
   zenContent = pkgs.writeText "userContent.css" (lib.replaceStrings
     [ "background: #313244 !important;" ] [ "background-color: #313244 !important;" ]
     (builtins.readFile "${zenTheme}/userContent.css"));
@@ -61,7 +61,6 @@ let
     "font.name.serif.x-western" = lib.mkForce config.stylix.fonts.monospace.name;
     # open and save dialogs through the portal, which hands them to Nautilus
     "widget.use-xdg-desktop-portal.file-picker" = 1;
-    # ask where to save every download
     "browser.download.useDownloadDir" = false;
   };
 
@@ -131,7 +130,7 @@ let
       # local storage only, sync would shadow these
       syncSettings = false;
       enabled = true;
-      # else it backs off on sites with their own dark mode, dropping the stylix colours
+            # backs off on sites with their own dark mode, dropping the stylix colours
       detectDarkTheme = false;
       theme =
       {
@@ -229,7 +228,6 @@ in
         "sidebar.main.tools" = "bookmarks,history";
         "sidebar.verticalTabs.dragToPinPromo.dismissed" = true;
         "browser.toolbars.bookmarks.visibility" = "never";
-        # Zen is the default
         "browser.shell.checkDefaultBrowser" = false;
 
         # the tab strip is hidden, so workspaces go on the nav bar

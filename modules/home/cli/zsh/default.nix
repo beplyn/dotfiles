@@ -7,11 +7,11 @@
   ...
 }:
 
-# zsh with fish's feel: the same aliases, abbrs, keys, suggestions and greeting; only the syntax is bash's
+# fish's aliases, abbrs, keys and greeting, in zsh syntax
 let
   fish = osConfig.programs.fish;
 
-  # y and lg are cd-on-quit functions from yazi and lazygit's zsh integration, an alias would shadow them
+  # y and lg must stay functions: they cd on quit, an alias would shadow them
   aliases = removeAttrs fish.shellAliases [ "y" "lg" ];
 
   # one associative array for init.zsh: key value key value ...
@@ -80,7 +80,7 @@ in
     ];
   };
 
-  # completions for the commands zsh's own completion doesn't cover, fish has most of these built in
+  # completions zsh's own system doesn't cover; fish has most built in
   programs.carapace =
   {
     enable = true;

@@ -167,7 +167,7 @@ def touch(dirpath):
         os.utime(os.path.join(dirpath, SENTINEL), None)
 
 
-# --- reading -------------------------------------------------------------------
+# --- reading ---
 
 
 def inherited(comp, master, name):

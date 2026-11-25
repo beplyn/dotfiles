@@ -1,6 +1,6 @@
 { config, lib, ... }:
 
-# hyprtoolkit theme for hyprlauncher, hyprshutdown, hyprpwcenter, hyprland-dialog
+# hyprtoolkit theme for the hypr* utilities and hyprland-dialog
 let
   p = config.themes.palette;
   s = config.themes.shell;

@@ -237,7 +237,6 @@ in
     }
   '';
 
-  # reload on config change
   systemd.user.services.quickshell.Unit.X-Restart-Triggers = [ "${shellConfig}" ];
 
   home.packages = [ record ];

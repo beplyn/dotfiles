@@ -1,4 +1,4 @@
-# Nix only wires stylix (colours, font, opacity) and the shells; the rest is wezterm.lua
+# Nix wires only stylix (colours, font, opacity) and the shells; wezterm.lua does the rest
 {
   programs.wezterm =
   {
