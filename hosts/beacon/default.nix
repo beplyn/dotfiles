@@ -53,6 +53,7 @@
     "wastebin"
     "searxng"
     "vikunja"
+    "ocis"
     "radicale"
     "navidrome"
     "metube"

@@ -1,0 +1,123 @@
+# ownCloud Infinite Scale: native OIDC against Pocket ID, TLS ends at nginx (docs/drive.md)
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ocis
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ocis
+  namespace: ocis
+  labels:
+    app: ocis
+spec:
+  replicas: 1
+  # one writer on the data dir
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: ocis
+  template:
+    metadata:
+      labels:
+        app: ocis
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: ocis
+          image: owncloud/ocis:8.2
+          args: ["server"]
+          env:
+            - name: OCIS_URL
+              value: "https://@drive.host@"
+            - name: OCIS_INSECURE
+              value: "false"
+            - name: PROXY_TLS
+              value: "false"
+            - name: OCIS_OIDC_ISSUER
+              value: "https://@pocket-id.host@"
+            - name: PROXY_OIDC_ISSUER
+              value: "https://@pocket-id.host@"
+            # desktop and mobile apps discover the provider through oCIS
+            - name: PROXY_OIDC_REWRITE_WELLKNOWN
+              value: "true"
+            # the web client's ID; the sealed ocis-oidc secret fills it in
+            - name: WEB_OIDC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: ocis-oidc
+                  key: CLIENT_ID
+                  optional: true
+            # create the account on a user's first Pocket ID login
+            - name: PROXY_AUTOPROVISION_ACCOUNTS
+              value: "true"
+            # autoprovisioning needs a writable user backend
+            - name: GRAPH_LDAP_SERVER_WRITE_ENABLED
+              value: "true"
+            - name: OCIS_BASE_DATA_PATH
+              value: /var/lib/ocis
+            - name: OCIS_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: ocis
+                  key: OCIS_JWT_SECRET
+            - name: OCIS_TRANSFER_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: ocis
+                  key: OCIS_TRANSFER_SECRET
+            - name: OCIS_MACHINE_AUTH_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ocis
+                  key: OCIS_MACHINE_AUTH_API_KEY
+            - name: OCIS_SERVICE_ACCOUNT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: ocis
+                  key: OCIS_SERVICE_ACCOUNT_SECRET
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: http
+              containerPort: 9200
+          readinessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/ocis
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: @uid@
+            runAsGroup: @uid@
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+      volumes:
+        - name: data
+          hostPath:
+            path: "@state@/ocis"
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ocis
+  namespace: ocis
+spec:
+  type: NodePort
+  selector:
+    app: ocis
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: @ocis.port@

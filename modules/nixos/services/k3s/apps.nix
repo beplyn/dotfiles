@@ -288,6 +288,16 @@ let
       ];
       oidc = true;
     };
+    # ownCloud Infinite Scale (Google Drive replacement); native OIDC, so no tinyauth
+    ocis =
+    {
+      host = "drive";
+      port = 30104;
+      body = "100m";
+      secrets = [ "OCIS_JWT_SECRET" "OCIS_TRANSFER_SECRET" "OCIS_MACHINE_AUTH_API_KEY" "OCIS_SERVICE_ACCOUNT_SECRET" ];
+      dirs = [ (app "${st.state}/ocis") ];
+      oidc = true;
+    };
     # CalDAV/CardDAV clients log in with basic auth
     radicale =
     {
