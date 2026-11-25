@@ -1,4 +1,4 @@
-# placeholders, real values in /var/secrets/dotfiles/vars.toml (see README.md)
+# placeholders, real values in /var/secrets/dotfiles/vars.toml (see docs/vars.md)
 placeholder = true
 
 username = "user"

@@ -17,7 +17,7 @@ let
   auto = config.rebuild.auto;
   hostName = config.networking.hostName;
 
-  # the real vars (vars/README.md), root-only beside the host secrets; install.sh has it too
+  # the real vars (docs/vars.md), root-only beside the host secrets; install.sh has it too
   varsDir = "/var/secrets/dotfiles";
 
   # asks for what vars.toml lacks, from the template in the checkout

@@ -1,6 +1,6 @@
 { lib, lan, ... }:
 
-# its address, gateway and subnet are vars (vars/README.md), not in the repo
+# its address, gateway and subnet are vars (docs/vars.md), not in the repo
 let
   inherit (lan) address subnet gateway;
   prefix = lib.last (lib.splitString "/" subnet);

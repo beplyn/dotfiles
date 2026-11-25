@@ -3,7 +3,7 @@
   {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    # placeholders; real values via --override-input vars (vars/README.md)
+    # placeholders; real values via --override-input vars (docs/vars.md)
     vars =
     {
       url = "path:./vars";
@@ -93,7 +93,7 @@
         in
         if v.placeholder or false then
           throw ''
-            vars: only the repo's placeholders (vars/README.md). `rebuild` asks for the real ones;
+            vars: only the repo's placeholders (docs/vars.md). `rebuild` asks for the real ones;
             a rebuild from before vars can't, so once, from the checkout:
               nix shell nixpkgs#yq-go -c bash /etc/nixos/modules/nixos/base/rebuild/vars.sh /etc/nixos/vars/vars.toml /var/secrets/dotfiles <host>
               sudo nixos-rebuild switch --flake /etc/nixos#<host>-<theme> --override-input vars path:/var/secrets/dotfiles

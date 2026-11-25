@@ -94,7 +94,7 @@ git push origin master:beacon
 That's it. Every 5 minutes beacon checks the `beacon` branch on Codeberg and switches to the new
 commit.
 
-- It needs `/var/secrets/dotfiles/vars.toml` (see `vars/README.md`), otherwise it just fails.
+- It needs `/var/secrets/dotfiles/vars.toml` (see [`vars.md`](vars.md)), otherwise it just fails.
 - It builds the pushed commit, not the checkout in `/etc/nixos`.
 - A broken commit is tried once and sends an alert. Push a fix to try again.
 - A manual `rebuild` works too, until the next push replaces it.
@@ -107,7 +107,7 @@ commit.
 1. Go to `https://id.<domain>/setup` and create the admin: username `<username>`, your git email,
    and a passkey.
 2. Optional: let apps log in with Pocket ID, see
-   [`oidc/README.md`](../../modules/nixos/services/k3s/manifests/oidc/README.md).
+   [`pocket-id.md`](pocket-id.md).
 
 ### How it works
 

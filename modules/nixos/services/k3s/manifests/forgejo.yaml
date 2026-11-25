@@ -1,7 +1,7 @@
 # @x@ placeholders are filled in by apps.nix
 # own login, no registration; @username@ is admin (ADMIN_PASSWORD in the Secret).
 # ssh on LAN port 22 (2222 inside, rootless can't bind 22).
-# Pocket ID login once forgejo-oidc is sealed (oidc/README.md)
+# Pocket ID login once forgejo-oidc is sealed (docs/pocket-id.md)
 apiVersion: v1
 kind: Namespace
 metadata:
