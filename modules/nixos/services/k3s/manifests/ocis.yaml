@@ -61,6 +61,8 @@ spec:
               value: /var/lib/ocis
             - name: OCIS_CONFIG_DIR
               value: /var/lib/ocis/config
+            - name: PROXY_CSP_CONFIG_FILE_LOCATION
+              value: /var/lib/ocis/config/csp.yaml
             - name: OCIS_JWT_SECRET
               valueFrom:
                 secretKeyRef:
