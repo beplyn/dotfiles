@@ -40,6 +40,14 @@
     '';
     interactiveShellInit = builtins.readFile ./init.fish;
   };
+  # zsh's own config is home-manager's (cli/zsh); NixOS enables it for the hooks it wires into /etc/zshrc
+  programs.zsh =
+  {
+    enable = true;
+    # home-manager runs compinit
+    enableCompletion = false;
+  };
+
   programs.zoxide =
   {
     enable = true;
