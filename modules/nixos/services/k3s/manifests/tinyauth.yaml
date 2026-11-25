@@ -45,11 +45,9 @@ spec:
               value: "/data/oidc/key.pem"
             - name: TINYAUTH_OIDC_PUBLICKEYPATH
               value: "/data/oidc/key.pub"
-            # no local users: Pocket ID or nothing, and only your account there
+            # no local users: Pocket ID or nothing; OIDC client groups control access
             - name: TINYAUTH_OAUTH_AUTOREDIRECT
               value: "pocketid"
-            - name: TINYAUTH_OAUTH_WHITELIST
-              value: ""
             - name: TINYAUTH_OAUTH_PROVIDERS_POCKETID_NAME
               value: "Pocket ID"
             - name: TINYAUTH_OAUTH_PROVIDERS_POCKETID_AUTHURL
