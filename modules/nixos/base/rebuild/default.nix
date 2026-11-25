@@ -9,6 +9,7 @@
   forgejoHost,
   themeName,
   headless,
+  staticLan,
   ...
 }:
 
@@ -70,9 +71,9 @@ let
     ++ lib.optional (!headless) imagemagick;
     text = subst
       {
-        inherit username email forgejoHost themeName varsDir;
-        inherit hostName;
+        inherit username email forgejoHost themeName varsDir hostName;
         desktop = lib.boolToString (!headless);
+        staticLan = lib.boolToString staticLan;
         hostSecrets = secretLines;
       }
       (builtins.readFile ./rebuild.sh);

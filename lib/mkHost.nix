@@ -13,15 +13,17 @@
   wgKeys,
   # every theme in the flake, for the rebuild shortcuts
   themes,
-  # servers: no GUI
-  headlessHosts ? [ ],
 }:
 
 hostname: themeName:
 
 let
   inherit (inputs) nixpkgs home-manager;
-  headless = builtins.elem hostname headlessHosts;
+  # optional hosts/<name>/meta.nix: headless, staticLan (docs/layout.md)
+  metaFile = ../hosts + "/${hostname}/meta.nix";
+  meta = if builtins.pathExists metaFile then import metaFile else { };
+  headless = meta.headless or false;
+  staticLan = meta.staticLan or false;
   # https://<host>/<owner>/<name>.git
   forgejoHost = builtins.head (builtins.match "https?://([^/]+)/.*" repo);
   specialArgs =
@@ -38,6 +40,7 @@ let
       themes
       themeName
       headless
+      staticLan
       ;
     subst = import ./subst.nix { inherit (nixpkgs) lib; };
   };
