@@ -50,7 +50,7 @@ spec:
             # link the first SSO login to the existing account with the same email
             - name: SSO_SIGNUPS_MATCH_EMAIL
               value: "true"
-            # accept SSO logins whose email isn't marked verified (see README)
+            # accept SSO logins whose email isn't marked verified
             - name: SSO_ALLOW_UNKNOWN_EMAIL_VERIFICATION
               value: "true"
             - name: SSO_AUTHORITY

@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 
-# disks (setup in README.md), mounted by label, nofail:
+# disks (docs/disks.md), mounted by label, nofail:
 #   sdc  Kingston 480G SSD  /, k3s, app state, databases
 #   sdb  WD Green 120G SSD  caches: thumbnails, metadata, ML models
 #   sda  Barracuda 2T HDD   throwaway: transcodes, encoded video
