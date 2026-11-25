@@ -21,8 +21,8 @@
   {
     enable = true;
     inherit domain;
-    # split-horizon: blocky sends the LAN here directly
-    lanSubnets = [ lan.subnet ];
+    # split-horizon: blocky sends the LAN here directly; k3s pods/services arrive via CoreDNS
+    lanSubnets = [ lan.subnet "10.42.0.0/16" "10.43.0.0/16" ];
     # the records are DNS-only, so clients come straight here, not through Cloudflare
     cloudflareOnly = false;
   };

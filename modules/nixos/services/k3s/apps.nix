@@ -430,6 +430,12 @@ let
   hasOidc = n: a: a.oidc or false && builtins.pathExists (sealedOidc n);
 
   # LAN clients go straight to nginx: the apex and every proxied host, apps or not
+  splitHorizonHosts =
+    [ config.proxy.domain ]
+    ++ map (h: "${h}.${config.proxy.domain}")
+      (lib.unique (lib.filter (h: h != "@") (lib.attrNames config.proxy.hosts)
+        ++ lib.filter (h: !lib.hasPrefix "*" h) cfg.dnsOnly));
+
   customDNS = lib.optionals (cfg.lanAddress != null)
     ([
       "customDNS:"
@@ -608,7 +614,32 @@ in
       }) manifests)
       # phase 2, like the ddns token: sealed with `seal-oidc` once Pocket ID made the client
       // lib.mapAttrs' (n: _: lib.nameValuePair "app-${n}-oidc" { source = sealedOidc n; })
-        (lib.filterAttrs hasOidc enabled);
+        (lib.filterAttrs hasOidc enabled)
+      # split-horizon inside the cluster: pods resolve proxied hosts directly to lanAddress,
+      # avoiding router NAT hairpinning (separate .server block so CoreDNS doesn't duplicate NodeHosts)
+      // lib.optionalAttrs (cfg.lanAddress != null)
+      {
+        coredns-custom.content =
+        {
+          apiVersion = "v1";
+          kind = "ConfigMap";
+          metadata =
+          {
+            name = "coredns-custom";
+            namespace = "kube-system";
+          };
+          data."${config.proxy.domain}.server" = ''
+            ${config.proxy.domain}:53 {
+              errors
+              cache 30
+              hosts {
+            ${lib.concatMapStrings (h: "    ${cfg.lanAddress} ${h}\n") splitHorizonHosts}    fallthrough
+              }
+              forward . /etc/resolv.conf
+            }
+          '';
+        };
+      };
     };
 
     proxy.hosts = lib.mapAttrs' (_: a: lib.nameValuePair a.host

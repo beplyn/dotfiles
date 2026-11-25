@@ -133,6 +133,7 @@ in
     proxy.hosts.wings =
     {
       port = 8080;
+      auth = false;
       websockets = true;
       maxBodySize = "100m";
     };
