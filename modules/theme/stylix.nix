@@ -83,8 +83,6 @@ in
   [
     # no rofi; its target sets the renamed programs.rofi.font
     { stylix.targets.rofi.enable = false; }
-    # wayprompt is gone from nixpkgs; its target sets programs.wayprompt
-    { stylix.targets.wayprompt.enable = false; }
   ]
   # servers: terminal targets only
   ++ lib.optional headless
