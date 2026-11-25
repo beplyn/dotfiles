@@ -73,6 +73,26 @@
   # Beszel and Scrutiny on the host, at metrics. and disks.
   monitoring.enable = true;
 
+  # the wg0 server: the desktops dial in on 51820 and ssh to beacon over 10.100.0.1
+  wireguard =
+  {
+    enable = true;
+    address = "10.100.0.1/24";
+    listenPort = 51820;
+    # fill in each desktop's `wg pubkey`; a peer with no key is left out
+    peers =
+    [
+      {
+        # anvil
+        allowedIPs = [ "10.100.0.2/32" ];
+      }
+      {
+        # shulker
+        allowedIPs = [ "10.100.0.3/32" ];
+      }
+    ];
+  };
+
   environment.systemPackages = [ pkgs.kitty.terminfo pkgs.rsync ];
 
   system.stateVersion = "26.11";

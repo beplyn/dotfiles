@@ -1,7 +1,25 @@
+{ domain, ... }:
+
 {
   imports = [ ./hardware.nix ./hardware-extra.nix ];
 
   networking.hostName = "anvil";
+  # beacon's wg0 peer; it is reached at its DDNS name
+  wireguard =
+  {
+    enable = true;
+    address = "10.100.0.2/24";
+    peers =
+    [
+      {
+        # beacon's public key (its wg pubkey)
+        publicKey = "";
+        allowedIPs = [ "10.100.0.1/32" ];
+        endpoint = "${domain}:51820";
+        persistentKeepalive = 25;
+      }
+    ];
+  };
   encryption.device = "/dev/disk/by-uuid/52043e38-4ee0-4e79-9f48-53379ba2b743";
   docker.enable = true;
   qbittorrent.enable = true;
