@@ -8,5 +8,6 @@
     ./k3s
     ./monitoring
     ./pelican
+    ./wireguard.nix
   ];
 }
