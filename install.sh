@@ -298,7 +298,7 @@ if $regenerate; then
   if [[ -n "$luks_dev" && -n "$luks_name" ]]; then
     generated="$(grep -vE '^\s*boot\.initrd\.luks\.devices\.' <<< "$generated")"
     # the module opens it as cryptroot, so the root fs must mount that
-    generated="$(sed "s|/dev/mapper/$luks_name\"|/dev/mapper/cryptroot\"|" <<< "$generated")"
+    generated="${generated//\/dev\/mapper\/$luks_name\"//dev/mapper/cryptroot\"}"
     insert_after_hostname "$host_dir/default.nix" "encryption.device = \"$luks_dev\";"
     info "LUKS root detected ($luks_dev), using the themed unlock prompt"
   else

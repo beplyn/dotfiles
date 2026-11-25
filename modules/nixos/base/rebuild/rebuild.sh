@@ -1,5 +1,6 @@
 theme="${1:-@themeName@}"
-flake=/etc/nixos
+# the checkout /etc/nixos links to; DOTFILES overrides it
+flake="${DOTFILES:-$(readlink -f /etc/nixos)}"
 cache="${XDG_CACHE_HOME:-$HOME/.cache}"
 # per-host identities, kept in ~/.ssh and the gpg keyring, never in the repo
 uid="@username@ (@hostName@) <@email@>"

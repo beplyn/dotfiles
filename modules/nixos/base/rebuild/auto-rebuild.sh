@@ -1,10 +1,13 @@
+# shellcheck shell=bash
 # auto-rebuild URL BRANCH CONFIG VARS: switch to BRANCH's newest commit, once per commit.
-# Remembers the last good and failed commit, so a broken one alerts only once
+# Remembers the last good and failed commit, so a broken one alerts only once.
+# Builds the pushed commit itself, never the local checkout, so a failed build leaves the running system alone.
 set -euo pipefail
 url="$1"
 branch="$2"
 config="$3"
 vars="$4"
+: "${STATE_DIRECTORY:?set by systemd}"
 done="$STATE_DIRECTORY/rev"
 failed="$STATE_DIRECTORY/failed"
 last_pull="$STATE_DIRECTORY/last-pull"
@@ -15,7 +18,8 @@ record_pull() {
   mv -f "$tmp" "$last_pull"
 }
 
-rev="$(git ls-remote "$url" "refs/heads/$branch" | cut -f1)"
+# a hung network fails the run (and alerts) instead of blocking the timer
+rev="$(timeout 60 git ls-remote "$url" "refs/heads/$branch" | cut -f1)"
 if [ -z "$rev" ]; then
   # nothing pushed there yet: not an error, or it would alert every few minutes
   echo "no $branch branch at $url, nothing to do"
