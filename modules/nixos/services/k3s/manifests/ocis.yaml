@@ -102,10 +102,10 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /var/lib/ocis
-            # group wheel -> admin role
+            # role mapping; oCIS reads ocis.yaml, not proxy.yaml
             - name: proxy-config
-              mountPath: /var/lib/ocis/config/proxy.yaml
-              subPath: proxy.yaml
+              mountPath: /var/lib/ocis/config/ocis.yaml
+              subPath: ocis.yaml
               readOnly: true
           securityContext:
             runAsNonRoot: true
@@ -146,7 +146,7 @@ metadata:
   name: ocis-proxy-config
   namespace: ocis
 data:
-  proxy.yaml: |
+  ocis.yaml: |
     proxy:
       role_assignment:
         driver: oidc
