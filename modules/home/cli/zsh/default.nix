@@ -35,7 +35,7 @@ in
     enable = true;
     enableCompletion = true;
 
-    # fish's grey suggestion, accepted with right or ctrl-f
+    # fish's grey suggestion, accepted with right arrow or end (ctrl-f is fzf)
     autosuggestion =
     {
       enable = true;
@@ -74,6 +74,7 @@ in
       ''
         typeset -gA __abbrs=( ${abbrs} )
       ''
+      (builtins.readFile ./abbr.zsh)
       (builtins.readFile ./init.zsh)
       (lib.mkAfter (subst greeting (builtins.readFile ./greeting.zsh)))
     ];

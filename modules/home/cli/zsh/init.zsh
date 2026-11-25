@@ -1,4 +1,4 @@
-# fish's interactive bits for zsh: completion, abbrs, keys and the fish-style PATH
+# fish's interactive bits for zsh: completion, keys and the fish-style PATH
 # (aliases, history and the suggestion and highlight plugins are in default.nix)
 
 # completion: case-insensitive, a menu with descriptions and groups, not a column dump
@@ -9,32 +9,6 @@ zstyle ':completion:*' group-name ''
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':completion:*:descriptions' format '%F{244}-- %d --%f'
 zstyle ':completion:*:warnings' format '%F{red}no matches%f'
-
-# abbrs: a word in command position (the start of the line, or after | ; & or a bracket)
-# becomes its expansion when space or enter follows, so the line you run is the one you saw
-__abbr_expand()
-{
-  [[ $LBUFFER =~ '(^|[|;&(][[:space:]]*)([^[:space:]|;&()]+)$' ]] || return 0
-  local word=$match[2]
-  (( ${+__abbrs[$word]} )) || return 0
-  LBUFFER=${LBUFFER%$word}${__abbrs[$word]}
-}
-
-__abbr_space()
-{
-  __abbr_expand
-  zle self-insert
-}
-
-__abbr_enter()
-{
-  __abbr_expand
-  zle .accept-line
-}
-
-zle -N __abbr_space
-zle -N accept-line __abbr_enter
-bindkey ' ' __abbr_space
 
 # alt-s: toggles sudo -> sudo -E -> nothing, an empty line takes the last command
 __prepend_sudo()
@@ -58,7 +32,7 @@ __prepend_sudo()
 zle -N __prepend_sudo
 bindkey '^[s' __prepend_sudo
 
-# alt-f: cycles $(fzf) -> directories -> nothing at the end of the line
+# ctrl-f: cycles $(fzf) -> directories -> nothing at the end of the line
 __append_fzf()
 {
   local cmd=$BUFFER
@@ -77,7 +51,7 @@ __append_fzf()
   CURSOR=${#cmd}
 }
 zle -N __append_fzf
-bindkey '^[f' __append_fzf
+bindkey '^F' __append_fzf
 
 # `f` (pay-respects) and zoxide are wired by NixOS's /etc/zshrc, not here
 
