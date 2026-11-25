@@ -72,7 +72,9 @@ in
         # wings writes its machine-id into its config dir at start
         ReadWritePaths = [ "/var/lib/pelican" "/var/log/pelican" "/etc/pelican" ];
         ProtectHome = true;
-        PrivateTmp = true;
+        # wings writes install scripts to /tmp/pelican and docker bind-mounts them;
+        # the daemon runs outside this unit, so it needs the real /tmp
+        PrivateTmp = false;
         ProtectKernelTunables = true;
         ProtectKernelModules = true;
         ProtectControlGroups = true;
