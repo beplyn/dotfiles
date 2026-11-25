@@ -394,8 +394,7 @@ let
       port = 30101;
       auth = true;
     };
-    # vanilla on port 25565; mc. is DNS-only, Cloudflare's proxy only passes HTTP
-    # the Pelican Panel (extra manifest) for the game servers on beacon's Wings; Java itself is scaled to 0
+    # vanilla on 25565; mc. is DNS-only (Cloudflare only proxies HTTP). Java is scaled to 0, Pelican runs the servers
     minecraft =
     {
       host = "mc";
@@ -415,7 +414,7 @@ let
       lan.tcp = [ 25565 ];
       dnsOnly = [ "mc" "*.mc" ];
     };
-    # idles games for playtime and card drops; no web UI outside the cluster, login in the asf-bot secret
+    # idles games for card drops; no web UI outside the cluster, login is in the asf-bot secret
     asf =
     {
       dirs = [ (app "${st.state}/asf") ];
@@ -442,8 +441,10 @@ let
       "  mapping:"
       "    ${config.proxy.domain}: ${cfg.lanAddress}"
     ]
+    # subdomains resolve on their own, so "mc" covers every <label>.mc; "*" names aren't valid keys
     ++ map (h: "    ${h}.${config.proxy.domain}: ${cfg.lanAddress}")
-      (lib.filter (h: h != "@") (lib.attrNames config.proxy.hosts) ++ cfg.dnsOnly));
+      (lib.unique (lib.filter (h: h != "@") (lib.attrNames config.proxy.hosts)
+        ++ lib.filter (h: !lib.hasPrefix "*" h) cfg.dnsOnly)));
 
   # tinyauth ACLs per forward-auth app: members of wheel or the app's own group
   tinyauthAcl = lib.concatMapStrings (n:
@@ -615,8 +616,8 @@ in
       # phase 2, like the ddns token: sealed with `seal-oidc` once Pocket ID made the client
       // lib.mapAttrs' (n: _: lib.nameValuePair "app-${n}-oidc" { source = sealedOidc n; })
         (lib.filterAttrs hasOidc enabled)
-      # split-horizon inside the cluster: pods resolve proxied hosts directly to lanAddress,
-      # avoiding router NAT hairpinning (separate .server block so CoreDNS doesn't duplicate NodeHosts)
+      # split-horizon in the cluster: pods resolve proxied hosts to lanAddress, no NAT hairpin
+      # (own .server block, so CoreDNS does not duplicate NodeHosts)
       // lib.optionalAttrs (cfg.lanAddress != null)
       {
         coredns-custom.content =
@@ -654,7 +655,7 @@ in
 
     proxy.authRequest = lib.mkIf (enabled ? tinyauth) "http://127.0.0.1:${toString apps.tinyauth.port}/api/auth/nginx";
 
-    # hostPorts are DNATed past INPUT anyway; listed so the firewall says what's open
+    # hostPorts bypass INPUT anyway; listed so the firewall shows what is open
     networking.firewall.allowedTCPPorts = lanPorts "tcp";
     networking.firewall.allowedUDPPorts = lanPorts "udp";
 
