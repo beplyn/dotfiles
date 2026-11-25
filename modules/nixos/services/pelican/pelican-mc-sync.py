@@ -12,6 +12,7 @@ PANEL = os.environ["PANEL_URL"].rstrip("/")
 ROUTER = os.environ["ROUTER_URL"].rstrip("/")
 SUFFIX = os.environ["ROUTE_SUFFIX"]
 WAKER_OFFSET = int(os.environ["WAKER_OFFSET"])
+GAME_HOST = os.environ.get("GAME_HOST", "127.0.0.1")  # where docker publishes game ports
 IDLE = int(os.environ["IDLE_SECONDS"])
 CREDS = os.environ["CREDENTIALS_DIRECTORY"]
 with open(os.path.join(CREDS, "api-token")) as f:
@@ -178,8 +179,7 @@ async def sync_routes(found):
         port = s["port"]
         await ensure_waker(ident, port)
         # only a running server gets its real port; anything else goes to the waker
-        # docker publishes on the allocation's IP, so loopback misses it unless it is 0.0.0.0
-        ip = s["ip"] if s["ip"] != "0.0.0.0" else "127.0.0.1"
+        ip = s["ip"] if s["ip"] != "0.0.0.0" else GAME_HOST
         want[host] = f"{ip}:{port}" if s["state"] == "running" else f"127.0.0.1:{port + WAKER_OFFSET}"
     current = await asyncio.to_thread(router, "GET", "/routes")
     for host in current:

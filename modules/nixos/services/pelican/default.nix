@@ -125,6 +125,7 @@ in
         ROUTER_URL = "http://${routerApi}";
         ROUTE_SUFFIX = "mc.${domain}";
         WAKER_OFFSET = toString wakerOffset;
+        GAME_HOST = "172.18.0.1";
         IDLE_SECONDS = "900";
       };
       serviceConfig =
