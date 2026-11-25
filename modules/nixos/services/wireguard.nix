@@ -109,7 +109,7 @@ in
       systemd.services.wireguard-nm-key =
       {
         description = "Copy the wg0 private key into an env file for NetworkManager";
-        before = [ "NetworkManager.service" "networkmanager-ensure-profiles.service" ];
+        before = [ "NetworkManager.service" "NetworkManager-ensure-profiles.service" ];
         wantedBy = [ "multi-user.target" ];
         serviceConfig =
         {
@@ -121,6 +121,13 @@ in
             printf 'WG_PRIVATE_KEY=%s\n' "$(cat ${keyFile})" > ${nmKeyEnv}
           '';
         };
+      };
+
+      # the profile reads the key env file, so its unit must wait for the copy
+      systemd.services.NetworkManager-ensure-profiles =
+      {
+        after = [ "wireguard-nm-key.service" ];
+        requires = [ "wireguard-nm-key.service" ];
       };
 
       networking.networkmanager.ensureProfiles =
