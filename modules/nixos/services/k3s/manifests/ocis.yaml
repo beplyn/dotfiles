@@ -51,6 +51,9 @@ spec:
                   name: ocis-oidc
                   key: CLIENT_ID
                   optional: true
+            # request the groups claim so the wheel -> admin mapping can match
+            - name: WEB_OIDC_SCOPE
+              value: "openid profile email groups"
             # create the account on a user's first Pocket ID login
             - name: PROXY_AUTOPROVISION_ACCOUNTS
               value: "true"
