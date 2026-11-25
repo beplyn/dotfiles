@@ -51,7 +51,7 @@ def slug(name, ident):
 def servers():
     found = {}
     used = set()
-    for item in panel("GET", "")["data"]:
+    for item in panel("GET", "?type=admin-all")["data"]:
         a = item["attributes"]
         ident = a["identifier"]
         allocs = panel("GET", f"/servers/{ident}")["attributes"]["relationships"]["allocations"]["data"]
