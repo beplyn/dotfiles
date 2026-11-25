@@ -21,9 +21,10 @@ Docker game containers get their own address range, `172.30.0.0/16`, clear of k3
 
 A server named "Survival World" gets the label `survival-world`, so its address is
 `survival-world.mc.<domain>`. Two servers with the same label use their identifier instead.
-Outside the LAN, the Cloudflare wildcard record points `*.mc.<domain>` at beacon. On the LAN, check
-after setup with `dig <label>.mc.<domain>` against beacon's DNS. If it doesn't return beacon's LAN
-address, that name needs an entry in Blocky's `customDNS`.
+Blocky maps `mc.<domain>` to beacon's LAN address in `customDNS`. Subdomains of a mapped name resolve on
+their own, so every `<label>.mc.<domain>` answers on the LAN. Outside the LAN, the Cloudflare wildcard
+record sends them to beacon. Check after setup: `dig +short <label>.mc.<domain>` on a LAN client.
+It should return beacon's LAN address.
 
 ## Routing
 

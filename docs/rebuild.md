@@ -22,6 +22,9 @@ Run as your user. It:
 4. Runs `sudo nixos-rebuild switch --flake /etc/nixos#<host>-<theme> --override-input vars path:/var/secrets/dotfiles`.
 5. Restarts units that were waiting on a new secret.
 
+Build another host from this machine with `rebuild --host <name> [theme]`. The keys, secrets and vars
+prompts still belong to this machine; only the flake target changes.
+
 Use another checkout with `DOTFILES=/path/to/repo rebuild`. The default is wherever `/etc/nixos`
 points.
 

@@ -38,10 +38,12 @@ Modules read values from options, not hardcoded names. The main ones:
 | `rebuild.auto.*`          | `hosts/beacon/default.nix`    | Auto-rebuild URL, branch and interval             |
 | `wireguard.peers`         | `hosts/<host>/default.nix`    | WireGuard peers; empty keys are left out         |
 | `pelican.enable`          | `hosts/beacon/default.nix`    | Wings, mc-router and the Minecraft sync          |
+| `hosts/<name>/meta.nix`   | Per host                      | `headless` (no GUI) and `staticLan` (asks for lan.* vars) |
 
 ## Adding a host
 
-1. `mkdir hosts/<name>` with a `default.nix` that sets `networking.hostName`.
+1. `mkdir hosts/<name>` with a `default.nix` that sets `networking.hostName`. Add a `meta.nix` only if it
+   is headless or has a static LAN address; the flake and install script read it, nothing else needs edits.
 2. Run `install.sh` on the machine and pick the new host. It generates `hardware.nix`.
 
 ## Adding a k3s app
