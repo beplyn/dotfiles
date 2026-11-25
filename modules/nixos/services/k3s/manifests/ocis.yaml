@@ -59,6 +59,13 @@ spec:
               value: "true"
             - name: OCIS_BASE_DATA_PATH
               value: /var/lib/ocis
+            - name: OCIS_SYSTEM_USER_ID
+              value: "9d0a5798-80c8-4d8f-881a-d10f46ff7972"
+            - name: OCIS_SYSTEM_USER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ocis
+                  key: OCIS_SYSTEM_USER_API_KEY
             - name: OCIS_JWT_SECRET
               valueFrom:
                 secretKeyRef:
