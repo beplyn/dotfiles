@@ -24,7 +24,7 @@ while read -r line; do
     [0-9]*:\ *) dev="${line%%:*}" ;;
     Type:*) type="${line#Type:}"; type="${type// /}" ;;
     Modes:*)
-            # mode names from openrgb's list, lowercased
+      # mode names from openrgb's list, lowercased
       modes=" ${line#Modes:} "
       modes="${modes//[\[\]\']/}"
       modes="${modes,,}"
