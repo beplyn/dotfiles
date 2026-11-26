@@ -7,6 +7,11 @@
     # C / C++
     gcc
     gnumake
+    cmake
+    ninja
+    gdb
+    # clangd, clang-format, clang-tidy on PATH (not just inside nvim)
+    clang-tools
     # Haskell
     ghc
     cabal-install
