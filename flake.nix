@@ -48,6 +48,12 @@
       flake = false;
     };
 
+    serein =
+    {
+      url = "github:ViceVerse-cz/Serein";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     cliamp =
     {
       url = "github:bjarneo/cliamp";

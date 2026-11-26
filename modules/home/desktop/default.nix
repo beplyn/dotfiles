@@ -15,6 +15,7 @@
     ./media-upload
     ./cliamp.nix
     ./speci-local.nix
+    ./serein.nix
     ./kdeconnect.nix
     ./hyprland
     ./rice
