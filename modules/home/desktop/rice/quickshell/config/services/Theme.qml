@@ -83,10 +83,10 @@ Singleton {
     readonly property var numeric: ({ "tnum": 1 })
 
     // One flat surface for every panel, popup and the OSD: base00 nearly
-    // opaque, a base02 hairline, no nested boxes.
+    // opaque, an accent hairline, no nested boxes.
     readonly property real surfaceOpacity: 0.94
     readonly property color cardColor: alpha(background, surfaceOpacity)
-    readonly property color cardBorder: surface
+    readonly property color cardBorder: alpha(accent, 0.55)
     // no recessed wells; sections are separated by dividers, not boxes
     readonly property color well: "transparent"
     readonly property color idleBorder: surface
