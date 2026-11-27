@@ -36,12 +36,12 @@ points.
 Config: `modules/nixos/base/rebuild/default.nix`. Enable with `rebuild.auto.enable = true`.
 
 ```sh
-git push origin master:beacon
+git push origin master
 ```
 
 Every 5 minutes beacon:
 
-1. Asks the repo (`rebuild.auto.url`) for the newest commit on `rebuild.auto.branch` (default: the host name).
+1. Asks the repo (`rebuild.auto.url`) for the newest commit on `rebuild.auto.branch` (default: `master`).
 2. Does nothing if that commit is already live, or already failed.
 3. Otherwise builds that exact commit with `nixos-rebuild switch`. It never builds `/etc/nixos`, so
    local edits and untracked files on the host have no effect.

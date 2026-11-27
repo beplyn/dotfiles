@@ -13,7 +13,7 @@
   docker.enable = true;
   encryption.enable = false;
   services.openssh.enable = true;
-  # every push to the beacon branch, see docs/rebuild.md
+  # every push to master, see docs/rebuild.md
   rebuild.auto.enable = true;
 
   # the k3s ddns keeps the apex and *. pointed here; k3s.apps add their subdomains

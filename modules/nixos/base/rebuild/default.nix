@@ -142,7 +142,7 @@ in
     branch = lib.mkOption
     {
       type = lib.types.str;
-      default = hostName;
+      default = "master";
       description = "Branch whose newest commit this host switches to; whoever can push to it is root here.";
     };
 
