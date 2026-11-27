@@ -6,19 +6,12 @@
   pkgs,
   subst,
   themeName,
+  themeTable,
   ...
 }:
 
 let
   hyprctl = lib.getExe' osConfig.programs.hyprland.package "hyprctl";
-
-  # lutgen palette per theme, matching the Stylix schemes
-  palettes =
-  {
-    catppuccin = "catppuccin-mocha";
-    gruvbox = "gruvbox-dark-hard";
-    rose-pine = "rose-pine";
-  };
 
   # uncoloured sources; git skips an empty folder
   sources = lib.optionalString (builtins.pathExists ./wallpapers) "${./wallpapers}";
@@ -35,7 +28,7 @@ let
     ${lib.optionalString (sources != "") ''
       for src in ${sources}/*; do
         stem="$(basename "''${src%.*}")"
-        lutgen apply -p ${palettes.${themeName}} -o "$out/$stem.jpg" "$src"
+        lutgen apply -p ${themeTable.${themeName}.scheme} -o "$out/$stem.jpg" "$src"
       done
     ''}
     magick ${config.stylix.image} -quality 95 "$out/stylix.jpg"
@@ -70,9 +63,9 @@ let
       for img in "$@"; do
         stem="$(basename "''${img%.*}")"
         dir="''${out:-$(dirname "$img")}"
-        ${lib.concatLines (lib.mapAttrsToList (theme: palette: ''
-          lutgen apply -p ${palette} -o "$dir/$stem-${theme}.png" "$img"
-        '') palettes)}
+        ${lib.concatLines (lib.mapAttrsToList (name: t: ''
+          lutgen apply -p ${t.scheme} -o "$dir/$stem-${name}.png" "$img"
+        '') themeTable)}
       done
     '';
   };

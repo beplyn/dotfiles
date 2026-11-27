@@ -85,12 +85,8 @@
     let
       inherit (nixpkgs) lib;
       hosts = lib.attrNames (lib.filterAttrs (n: t: t == "directory") (builtins.readDir ./hosts));
-      themes =
-      [
-        "catppuccin"
-        "gruvbox"
-        "rose-pine"
-      ];
+      themeTable = import ./lib/themes.nix;
+      themes = lib.attrNames themeTable;
       # an auto-rebuild or a plain nixos-rebuild without the override would build "user"
       # at example.com; refuse instead
       vars =
@@ -109,7 +105,7 @@
           v;
       mkHost = import ./lib/mkHost.nix
       {
-        inherit inputs themes;
+        inherit inputs themes themeTable;
         inherit (vars) username email domain repo;
         # lan.* is asked for only on hosts with staticLan (hosts/<name>/meta.nix)
         lan = vars.lan or { address = ""; gateway = ""; subnet = ""; };

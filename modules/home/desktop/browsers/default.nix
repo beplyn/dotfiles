@@ -5,6 +5,7 @@
   pkgs,
   subst,
   themeName,
+  themeTable,
   ...
 }:
 
@@ -122,7 +123,7 @@ let
     settings."{bbb880ce-43c9-47ae-b746-c3e0096c5b76}".settings =
     {
       flavor = "mocha";
-      monochrome = themeName != "catppuccin";
+      monochrome = !(themeTable.${themeName}.mocha or false);
     };
     # Dark Reader follows the Stylix scheme
     settings."addon@darkreader.org".settings =

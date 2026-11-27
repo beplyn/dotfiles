@@ -3,25 +3,13 @@
   lib,
   pkgs,
   themeName,
+  themeTable,
   headless,
   ...
 }:
 
 let
-  base16Schemes =
-  {
-    catppuccin = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
-    gruvbox = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
-    rose-pine = "${pkgs.base16-schemes}/share/themes/rose-pine.yaml";
-  };
-
-  # Papirus folder colour per accent
-  folderColors =
-  {
-    catppuccin = "violet";
-    gruvbox = "pink";
-    rose-pine = "pink";
-  };
+  theme = themeTable.${themeName};
 in
 {
   stylix =
@@ -30,7 +18,7 @@ in
     # all schemes are dark
     polarity = "dark";
     image = lib.mkIf (!headless) (import ./wallpaper.nix { inherit config pkgs; });
-    base16Scheme = base16Schemes.${themeName};
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/${theme.scheme}.yaml";
     targets = lib.mkMerge
     [
       # own theme: modules/nixos/base/boot/grub-theme.nix
@@ -73,7 +61,7 @@ in
     icons = lib.mkIf (!headless)
     {
       enable = true;
-      package = pkgs.papirus-icon-theme.override { color = folderColors.${themeName}; };
+      package = pkgs.papirus-icon-theme.override { color = theme.folder; };
       dark = "Papirus-Dark";
       light = "Papirus-Light";
     };

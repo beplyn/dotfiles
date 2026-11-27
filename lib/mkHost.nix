@@ -13,6 +13,8 @@
   wgKeys,
   # every theme in the flake, for the rebuild shortcuts
   themes,
+  # per-theme data, see lib/themes.nix
+  themeTable,
 }:
 
 hostname: themeName:
@@ -38,6 +40,7 @@ let
       wgKeys
       forgejoHost
       themes
+      themeTable
       themeName
       headless
       staticLan

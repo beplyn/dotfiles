@@ -3,21 +3,16 @@
   lib,
   pkgs,
   themeName,
+  themeTable,
   ...
 }:
 
 # OpenRGB server, every LED in the theme's colour
 let
   cfg = config.services.hardware.openrgb;
-  # the pastel accents wash out to near white on LEDs, so darker, saturated
-  # takes on them; keyboards get their own, brighter one
-  colors =
-  {
-    catppuccin = { main = "1a0033"; keyboard = "8000ff"; }; # dark purple
-    rose-pine = { main = "5c1a2e"; keyboard = "d4507a"; }; # dark rose, deeper love
-    gruvbox = { main = "b04a08"; keyboard = "b04a08"; }; # orange-brown
-  };
-  inherit (colors.${themeName}) main keyboard;
+  # the pastel accents wash out to near white on LEDs, so lib/themes.nix
+  # has darker, saturated takes on them
+  inherit (themeTable.${themeName}.leds) main keyboard;
 
   openrgb-stylix = pkgs.writeShellApplication
   {
