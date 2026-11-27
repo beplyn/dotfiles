@@ -158,16 +158,18 @@ spec:
             path: "@state@/adguard"
             type: Directory
 ---
-# for gatus
+# nginx reaches the UI on the NodePort; gatus uses the same port in-cluster
 apiVersion: v1
 kind: Service
 metadata:
   name: adguard
   namespace: adguard
 spec:
+  type: NodePort
   selector:
     app: adguard
   ports:
     - name: http
       port: 3000
       targetPort: http
+      nodePort: @adguard.port@
