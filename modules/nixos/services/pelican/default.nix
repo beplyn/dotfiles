@@ -154,7 +154,8 @@ in
 
     networking.firewall =
     {
-      allowedTCPPorts = [ 25565 ];
+      # 2022: Wings' SFTP for server files
+      allowedTCPPorts = [ 25565 2022 ];
       allowedUDPPorts = [ 25565 ];
     };
   };
