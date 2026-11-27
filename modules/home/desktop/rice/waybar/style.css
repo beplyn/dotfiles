@@ -14,11 +14,12 @@ window#waybar
   color: @foreground;
 }
 
-/* The strip: nearly opaque base00, one hairline underneath. */
+/* The strip: nearly opaque base00, a hairline underneath in the accents. */
 window#waybar > box
 {
   background: alpha(@background, 0.94);
-  border-bottom: 1px solid @surface;
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(to right, @red, @orange, @yellow, @green, @cyan, @blue, @purple) 1 stretch;
   padding: 0 6px;
 }
 
@@ -48,7 +49,7 @@ window#waybar > box
   transition: color 150ms cubic-bezier(0, 0.5, 0.35, 1);
 }
 
-/* a 1px hairline between the right-hand modules */
+/* a 1px hairline between the right-hand modules, in the module's colour */
 #cpu,
 #memory,
 #temperature,
@@ -61,6 +62,47 @@ window#waybar > box
 {
   margin: 5px 0;
   border-left: 1px solid alpha(@surface, 0.9);
+}
+
+#cpu
+{
+  border-left-color: alpha(@blue, 0.8);
+}
+
+#memory
+{
+  border-left-color: alpha(@cyan, 0.8);
+}
+
+#temperature
+{
+  border-left-color: alpha(@orange, 0.8);
+}
+
+#network,
+#bluetooth
+{
+  border-left-color: alpha(@purple, 0.8);
+}
+
+#battery
+{
+  border-left-color: alpha(@green, 0.8);
+}
+
+#tray
+{
+  border-left-color: alpha(@yellow, 0.8);
+}
+
+#custom-notifications
+{
+  border-left-color: alpha(@red, 0.8);
+}
+
+#custom-control
+{
+  border-left-color: alpha(@accent, 0.8);
 }
 
 /* --- left ---------------------------------------------------------------- */
@@ -254,7 +296,7 @@ window#waybar > box
 tooltip
 {
   background: alpha(@background, 0.95);
-  border: 1px solid @surface;
+  border: 1px solid alpha(@accent, 0.6);
 }
 
 tooltip label
@@ -266,7 +308,7 @@ tooltip label
 menu
 {
   background: alpha(@background, 0.95);
-  border: 1px solid @surface;
+  border: 1px solid alpha(@accent, 0.6);
   padding: 4px;
 }
 
