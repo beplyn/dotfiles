@@ -296,8 +296,6 @@ in
       {
         icon-size = 16;
         spacing = 8;
-        # the network applet; wifi and vpn stay in the control center
-        ignore-items = [ "nm-applet" ];
       };
 
       "custom/notifications" =
