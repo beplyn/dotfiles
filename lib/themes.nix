@@ -16,20 +16,6 @@
     leds = { main = "1a0033"; keyboard = "8000ff"; };
   };
 
-  catppuccin-macchiato =
-  {
-    scheme = "catppuccin-macchiato";
-    folder = "violet";
-    leds = { main = "1d1036"; keyboard = "9b6cf0"; };
-  };
-
-  catppuccin-frappe =
-  {
-    scheme = "catppuccin-frappe";
-    folder = "violet";
-    leds = { main = "1f1638"; keyboard = "a46ee0"; };
-  };
-
   gruvbox =
   {
     scheme = "gruvbox-dark-hard";
