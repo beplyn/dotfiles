@@ -10,6 +10,13 @@
 
 let
   theme = themeTable.${themeName};
+  scheme = "${pkgs.base16-schemes}/share/themes/${theme.scheme}.yaml";
+  # base0E is the palette's accent; a copy with the primary swapped in
+  withPrimary = pkgs.runCommand "${theme.scheme}-${theme.primary or "base"}" { }
+    ''
+      mkdir $out
+      sed 's/^  base0E: .*/  base0E: "#${theme.primary}" # accent/' ${scheme} > $out/${theme.scheme}.yaml
+    '';
 in
 {
   stylix =
@@ -18,7 +25,7 @@ in
     # all schemes are dark
     polarity = "dark";
     image = lib.mkIf (!headless) (import ./wallpaper.nix { inherit config pkgs; });
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/${theme.scheme}.yaml";
+    base16Scheme = if theme ? primary then "${withPrimary}/${theme.scheme}.yaml" else scheme;
     targets = lib.mkMerge
     [
       # own theme: modules/nixos/base/boot/grub-theme.nix
