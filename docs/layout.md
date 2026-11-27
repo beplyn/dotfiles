@@ -33,7 +33,7 @@ Modules read values from options, not hardcoded names. The main ones:
 | `proxy.hosts.<name>`      | Modules (for example pelican) | An nginx vhost, with its own TLS and auth        |
 | `k3s.apps`                | `hosts/beacon/default.nix`    | Which apps from `apps.nix` run                    |
 | `k3s.storage.*`           | `hosts/beacon/storage.nix`    | Mount points for the app data disks              |
-| `k3s.lanAddress`          | `hosts/beacon/default.nix`    | Blocky's LAN DNS mapping                         |
+| `k3s.lanAddress`          | `hosts/beacon/default.nix`    | AdGuard's LAN DNS mapping                        |
 | `rebuild.secrets.<path>`  | Any module                    | A root-only file that `rebuild` asks for          |
 | `rebuild.auto.*`          | `hosts/beacon/default.nix`    | Auto-rebuild URL, branch and interval             |
 | `wireguard.peers`         | `hosts/<host>/default.nix`    | WireGuard peers; empty keys are left out         |

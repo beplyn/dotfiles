@@ -21,7 +21,7 @@ Start with [docs/install.md](docs/install.md) for a fresh machine, or [docs/layo
 | [logins.md](docs/logins.md)                  | Tinyauth passkey and first-time admin setup              |
 | [pocket-id.md](docs/pocket-id.md)            | Pocket ID OIDC clients, sealed with `seal-oidc`          |
 | [drive.md](docs/drive.md)                  | Self-hosted files (ownCloud oCIS), logins through Pocket ID |
-| [networking.md](docs/networking.md)          | Public names, LAN DNS (Blocky), WireGuard, ports         |
+| [networking.md](docs/networking.md)          | Public names, LAN DNS (AdGuard Home), WireGuard, ports         |
 | [minecraft.md](docs/minecraft.md)            | Pelican Panel, Wings, mc-router, wake-on-join, idle stop |
 
 Licence: see [LICENSE](LICENSE).

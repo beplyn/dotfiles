@@ -57,7 +57,7 @@ only to restrict which clients can sign in.
 Nothing to add by hand. `drive` is a proxied host, so:
 
 - nginx serves `drive.<domain>` over TLS and forwards to the NodePort (`30104`).
-- Blocky maps `drive.<domain>` to beacon's LAN address, so LAN clients skip Cloudflare.
+- AdGuard maps `drive.<domain>` to beacon's LAN address, so LAN clients skip Cloudflare.
   Outside the LAN, the DDNS record points the name at beacon.
 - Cloudflare limits uploads to 100 MB, so big uploads work best on the LAN.
 

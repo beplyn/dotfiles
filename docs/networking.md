@@ -13,7 +13,7 @@ that record current. Apps are proxied by nginx (`modules/nixos/services/proxy.ni
 beacon has a static LAN address, set in `vars.toml` (`lan.*`, see [vars.md](vars.md)). Its
 `networking.networkmanager` profile is in `hosts/beacon/network.nix`.
 
-Blocky (k3s, `manifests/blocky.yaml`) answers DNS on the LAN. Its `customDNS` maps each proxied
+AdGuard Home (k3s, `manifests/adguard.yaml`) answers DNS on the LAN and blocks the lists it declares. Its `rewrites` map each proxied
 name to beacon's LAN address, so at home:
 
 - Apps are reached directly, faster, and without the 100 MB Cloudflare upload limit.
