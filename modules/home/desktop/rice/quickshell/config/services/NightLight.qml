@@ -4,7 +4,8 @@ import Quickshell
 import Quickshell.Io
 
 // Night light on a sunset ramp, through hyprsunset. From 5 minutes before sunset
-// the warmth climbs from neutral to `warmest` over 3 hours, then holds there.
+// the warmth climbs from neutral to `warmest` over 3 hours, holds there, and
+// goes back to neutral at sunrise.
 // Scrolling the tile sets `warmest`; clicking it turns the schedule off or on.
 Singleton {
     id: root
@@ -31,8 +32,11 @@ Singleton {
     property string sunsetText: ""
     property int applied: -1
 
-    // sunset (NOAA's simplified solar formulas, a minute or so out) for the day of `date`
-    function sunset(date) {
+    function sunset(date) { return solarEvent(date, -1) }
+    function sunrise(date) { return solarEvent(date, 1) }
+
+    // NOAA's simplified solar formulas, a minute or so out; sign 1 is sunrise, -1 sunset
+    function solarEvent(date, sign) {
         const r = Math.PI / 180
         const dayStart = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
         const doy = (dayStart - Date.UTC(date.getFullYear(), 0, 0)) / 86400000
@@ -45,16 +49,23 @@ Singleton {
         const lat = latitude * r
         const ha = Math.acos(Math.cos(90.833 * r) / (Math.cos(lat) * Math.cos(decl))
             - Math.tan(lat) * Math.tan(decl)) / r
-        const utcMinutes = 720 - 4 * (longitude + ha) - eqtime
+        const utcMinutes = 720 - 4 * (longitude + sign * ha) - eqtime
         return new Date(dayStart + utcMinutes * 60000)
     }
 
+    // warm from the evening ramp until sunrise, neutral through the day
     function temperatureAt(date) {
-        const set = sunset(date).getTime()
-        const from = set - rampLeadMs
         const t = date.getTime()
-        if (t <= from) return neutral
-        const frac = Math.min(1, (t - from) / (rampLeadMs + rampMs))
+        const from = sunset(date).getTime() - rampLeadMs
+        if (t >= from) return ramp(t - from)
+        const yesterday = new Date(t - 86400000)
+        const nightFrom = sunset(yesterday).getTime() - rampLeadMs
+        if (t >= nightFrom && t < sunrise(date).getTime()) return ramp(t - nightFrom)
+        return neutral
+    }
+
+    function ramp(elapsed) {
+        const frac = Math.min(1, elapsed / (rampLeadMs + rampMs))
         return Math.round(neutral + (warmest - neutral) * frac)
     }
 
