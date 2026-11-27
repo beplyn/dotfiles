@@ -159,9 +159,9 @@ data:
         url: http://glance.glance.svc/
         interval: 1m
         conditions: ["[STATUS] == 200"]
-      - name: Blocky
+      - name: AdGuard
         group: network
-        url: http://blocky.blocky.svc:4000/api/blocking/status
+        url: http://adguard.adguard.svc:3000/
         interval: 1m
         conditions: ["[STATUS] == 200"]
       - name: Public

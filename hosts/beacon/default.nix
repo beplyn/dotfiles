@@ -21,7 +21,7 @@
   {
     enable = true;
     inherit domain;
-    # split-horizon: blocky sends the LAN here; k3s pods arrive via CoreDNS
+    # split-horizon: adguard sends the LAN here; k3s pods arrive via CoreDNS
     lanSubnets = [ lan.subnet "10.42.0.0/16" "10.43.0.0/16" ];
     # DNS-only records: clients come straight here, not through Cloudflare
     cloudflareOnly = false;
@@ -37,7 +37,7 @@
     "glance"
     "pocket-id"
     "tinyauth"
-    "blocky"
+    "adguard"
     "ntfy"
     "miniflux"
     "paperless"

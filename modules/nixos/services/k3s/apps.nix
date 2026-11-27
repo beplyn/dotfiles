@@ -93,14 +93,19 @@ let
       ];
       oidc = true;
     };
-    # LAN DNS, nothing to proxy
-    blocky =
+    # LAN DNS with ad and tracker lists; the admin UI sits behind tinyauth
+    adguard =
     {
+      host = "dns";
+      port = 30111;
+      secrets = [ "ADMIN_PASSWORD" "ADMIN_HASH=bcrypt:ADMIN_PASSWORD" ];
+      dirs = [ (app "${st.state}/adguard") ];
       lan =
       {
         tcp = [ 53 ];
         udp = [ 53 ];
       };
+      auth = true;
     };
     # admin is you; beacon is the publish-only user the host's failure alerts use
     ntfy =
@@ -445,16 +450,12 @@ let
       (lib.unique (lib.filter (h: h != "@") (lib.attrNames config.proxy.hosts)
         ++ lib.filter (h: !lib.hasPrefix "*" h) cfg.dnsOnly));
 
-  customDNS = lib.optionals (cfg.lanAddress != null)
-    ([
-      "customDNS:"
-      "  mapping:"
-      "    ${config.proxy.domain}: ${cfg.lanAddress}"
-    ]
-    # subdomains resolve on their own: "mc" covers every <label>.mc; "*" isn't a valid key
-    ++ map (h: "    ${h}.${config.proxy.domain}: ${cfg.lanAddress}")
-      (lib.unique (lib.filter (h: h != "@") (lib.attrNames config.proxy.hosts)
-        ++ lib.filter (h: !lib.hasPrefix "*" h) cfg.dnsOnly)));
+  # AdGuard rewrites: the apex and every proxied name, dnsOnly ones too ("*.mc" covers <label>.mc)
+  rewrites = lib.optionals (cfg.lanAddress != null)
+    (map (d: "\n        - domain: \"${d}\"\n          answer: ${cfg.lanAddress}")
+      ([ config.proxy.domain ]
+        ++ map (h: "${h}.${config.proxy.domain}")
+          (lib.unique (lib.filter (h: h != "@") (lib.attrNames config.proxy.hosts) ++ cfg.dnsOnly))));
 
   # tinyauth ACLs per forward-auth app: members of wheel or the app's own group
   tinyauthAcl = lib.concatMapStrings (n:
@@ -477,8 +478,8 @@ let
     usergid = config.ids.gids.users;
     render = config.ids.gids.render;
     gpu = cfg.gpuResource;
-    # a YAML block, indented to fit blocky's ConfigMap
-    "blocky.customDNS" = lib.concatMapStrings (l: "    ${l}\n") customDNS;
+    # AdGuard's rewrites list, as YAML
+    "adguard.rewrites" = lib.concatStrings rewrites;
     inherit (st) state cache scratch bulk;
   }
   # every app's, so gatus and glance can list the others
@@ -525,7 +526,7 @@ in
       default = null;
       example = "192.168.1.10";
       description = ''
-        This host's LAN address. Blocky answers the domain and every app's subdomain with it
+        This host's LAN address. AdGuard answers the domain and every app's subdomain with it
         (split-horizon), so LAN clients reach nginx directly; needs proxy.lanSubnets.
       '';
     };

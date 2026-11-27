@@ -1,0 +1,171 @@
+# @x@ placeholders are filled in by apps.nix; HASH_PLACEHOLDER gets ADMIN_HASH at start
+# ad and tracker blocking LAN DNS on port 53, set it as the router's DHCP DNS.
+# Lists and upstreams live here; the config is read-only, so UI changes last until a restart
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: adguard
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: adguard
+  namespace: adguard
+data:
+  AdGuardHome.yaml: |
+    schema_version: 35
+    users:
+      - name: admin
+        password: HASH_PLACEHOLDER
+    http:
+      address: 0.0.0.0:3000
+    dns:
+      bind_hosts:
+        - 0.0.0.0
+      # unprivileged; hostPort 53 maps onto it
+      port: 5353
+      upstream_dns:
+        - https://one.one.one.one/dns-query
+        - https://dns.quad9.net/dns-query
+      bootstrap_dns:
+        - 1.1.1.1
+        - 9.9.9.9
+      rewrites:@adguard.rewrites@
+    filters:
+      - enabled: true
+        id: 1001
+        name: HaGeZi Multi PRO
+        url: https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt
+      - enabled: true
+        id: 1002
+        name: AdGuard CNAME disguised trackers
+        url: https://raw.githubusercontent.com/AdguardTeam/cname-trackers/master/data/combined_disguised_trackers.txt
+      - enabled: true
+        id: 1003
+        name: EasyPrivacy
+        url: https://v.firebog.net/hosts/Easyprivacy.txt
+      - enabled: true
+        id: 1004
+        name: HaGeZi Threat Intelligence Feeds
+        url: https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/tif.txt
+    user_rules: []
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adguard
+  namespace: adguard
+  labels:
+    app: adguard
+spec:
+  replicas: 1
+  # the hostPort can't be held twice
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: adguard
+  template:
+    metadata:
+      labels:
+        app: adguard
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      initContainers:
+        # the bcrypt hash comes from the Secret, so it's written in at start
+        - name: render
+          image: busybox:1.37.0
+          command: ["sh", "-c", 'sed "s|HASH_PLACEHOLDER|$ADMIN_HASH|" /template/AdGuardHome.yaml > /conf/AdGuardHome.yaml']
+          env:
+            - name: ADMIN_HASH
+              valueFrom:
+                secretKeyRef:
+                  name: adguard
+                  key: ADMIN_HASH
+          volumeMounts:
+            - name: template
+              mountPath: /template
+              readOnly: true
+            - name: conf
+              mountPath: /conf
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: @uid@
+            runAsGroup: @uid@
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+      containers:
+        - name: adguard
+          image: adguard/adguardhome:v1.0.0
+          args: ["-c", "/opt/adguardhome/conf/AdGuardHome.yaml", "-w", "/opt/adguardhome/work", "--no-check-update"]
+          env:
+            - name: TZ
+              value: "@tz@"
+          ports:
+            - name: dns-udp
+              containerPort: 5353
+              hostPort: 53
+              protocol: UDP
+            - name: dns-tcp
+              containerPort: 5353
+              hostPort: 53
+              protocol: TCP
+            - name: http
+              containerPort: 3000
+          readinessProbe:
+            tcpSocket:
+              port: dns-tcp
+          volumeMounts:
+            - name: conf
+              mountPath: /opt/adguardhome/conf
+            - name: data
+              mountPath: /opt/adguardhome/work
+            - name: tmp
+              mountPath: /tmp
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: @uid@
+            runAsGroup: @uid@
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 10m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+      volumes:
+        - name: template
+          configMap:
+            name: adguard
+        - name: conf
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}
+        - name: data
+          hostPath:
+            path: "@state@/adguard"
+            type: Directory
+---
+# for gatus
+apiVersion: v1
+kind: Service
+metadata:
+  name: adguard
+  namespace: adguard
+spec:
+  selector:
+    app: adguard
+  ports:
+    - name: http
+      port: 3000
+      targetPort: http
