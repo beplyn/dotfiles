@@ -17,7 +17,7 @@
 let
   secrets = config.rebuild.secrets;
   # fish completes these after `rebuild` and `rebuild --host`
-  hostNames = lib.attrNames (lib.filterAttrs (_: t: t == "directory") (builtins.readDir ../../../hosts));
+  hostNames = lib.attrNames (lib.filterAttrs (_: t: t == "directory") (builtins.readDir ../../../../hosts));
   auto = config.rebuild.auto;
   hostName = config.networking.hostName;
 
