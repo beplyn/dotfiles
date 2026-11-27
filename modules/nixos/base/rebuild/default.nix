@@ -8,6 +8,7 @@
   repo,
   forgejoHost,
   themeName,
+  themes,
   headless,
   staticLan,
   ...
@@ -15,6 +16,8 @@
 
 let
   secrets = config.rebuild.secrets;
+  # fish completes these after `rebuild` and `rebuild --host`
+  hostNames = lib.attrNames (lib.filterAttrs (_: t: t == "directory") (builtins.readDir ../../../hosts));
   auto = config.rebuild.auto;
   hostName = config.networking.hostName;
 
@@ -77,6 +80,20 @@ let
         hostSecrets = secretLines;
       }
       (builtins.readFile ./rebuild.sh);
+  };
+  # the lists the shell completions offer (fish and zsh), filled into the files next to this one
+  completionVars =
+  {
+    themes = lib.concatStringsSep " " themes;
+    hosts = lib.concatStringsSep " " hostNames;
+  };
+
+  # zsh loads _rebuild from the system's site-functions; compinit (home-manager) picks it up
+  zshCompletions = pkgs.writeTextFile
+  {
+    name = "rebuild-zsh-completions";
+    destination = "/share/zsh/site-functions/_rebuild";
+    text = subst completionVars (builtins.readFile ./completions.zsh);
   };
 in
 {
@@ -147,7 +164,10 @@ in
 
   config =
   {
-    environment.systemPackages = [ rebuild ];
+    environment.systemPackages = [ rebuild zshCompletions ];
+    environment.pathsToLink = [ "/share/zsh" ];
+
+    programs.fish.interactiveShellInit = lib.mkAfter (subst completionVars (builtins.readFile ./completions.fish));
 
     # a switch would otherwise stop the unit doing the switch
     systemd.services.auto-rebuild = lib.mkIf auto.enable
