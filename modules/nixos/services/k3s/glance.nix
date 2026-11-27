@@ -1,39 +1,47 @@
-{ config, lib, pkgs, subst, themeName, ... }:
+{ config, lib, pkgs, subst, themeName, themeTable, ... }:
 
 let
   dir = "/var/lib/glance";
 
-  # hsl values from docs/themes.md; rose-pine derived from its palette
-  themes =
+  # "H S L" from a base16 hex, the form glance takes
+  hsl = hex:
+    let
+      channel = i: lib.fromHexString (builtins.substring i 2 hex) / 255.0;
+      r = channel 0;
+      g = channel 2;
+      b = channel 4;
+      hi = lib.max (lib.max r g) b;
+      lo = lib.min (lib.min r g) b;
+      d = hi - lo;
+      l = (hi + lo) / 2;
+      s = if d == 0 then 0 else d / (1 - (if 2 * l - 1 < 0 then 1 - 2 * l else 2 * l - 1));
+      hue0 =
+        if d == 0 then 0
+        else if hi == r then (g - b) / d
+        else if hi == g then (b - r) / d + 2
+        else (r - g) / d + 4;
+      hue = if hue0 < 0 then hue0 + 6 else hue0;
+      round = x: toString (builtins.floor (x + 0.5));
+    in
+    "${round (hue * 60)} ${round (s * 100)} ${round (l * 100)}";
+
+  base = config.lib.stylix.colors;
+  glance =
   {
-    catppuccin =
-    {
-      background-color = "240 21 15";
-      primary-color = "217 92 83";
-      positive-color = "115 54 76";
-      negative-color = "347 70 65";
-      contrast-multiplier = "1.2";
-    };
-    gruvbox =
-    {
-      background-color = "0 0 16";
-      primary-color = "43 59 81";
-      positive-color = "61 66 44";
-      negative-color = "6 96 59";
-    };
-    rose-pine =
-    {
-      background-color = "249 22 12";
-      primary-color = "189 43 73";
-      positive-color = "197 49 38";
-      negative-color = "343 76 68";
-    };
+    background-color = hsl base.base00;
+    primary-color = hsl base.base0D;
+    positive-color = hsl base.base0B;
+    negative-color = hsl base.base08;
+  }
+  // lib.optionalAttrs (themeTable.${themeName} ? contrast)
+  {
+    contrast-multiplier = themeTable.${themeName}.contrast;
   };
 
   # block yaml: glance splices $include text in as-is, so flow style won't parse
   themeFile = pkgs.writeText "glance-theme.yml" ("theme:\n" + lib.concatStrings
     (lib.mapAttrsToList (k: v: "  ${k}: ${v}\n")
-    (themes.${themeName} //
+    (glance //
     {
       disable-picker = "true";
       custom-css-file = "/assets/user.css";
