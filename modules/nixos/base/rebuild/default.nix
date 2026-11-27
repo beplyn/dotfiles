@@ -81,19 +81,11 @@ let
       }
       (builtins.readFile ./rebuild.sh);
   };
-  # the lists the shell completions offer (fish and zsh), filled into the files next to this one
+  # the lists the fish completion offers, filled into completions.fish
   completionVars =
   {
     themes = lib.concatStringsSep " " themes;
     hosts = lib.concatStringsSep " " hostNames;
-  };
-
-  # zsh loads _rebuild from the system's site-functions; compinit (home-manager) picks it up
-  zshCompletions = pkgs.writeTextFile
-  {
-    name = "rebuild-zsh-completions";
-    destination = "/share/zsh/site-functions/_rebuild";
-    text = subst completionVars (builtins.readFile ./completions.zsh);
   };
 in
 {
@@ -164,8 +156,7 @@ in
 
   config =
   {
-    environment.systemPackages = [ rebuild zshCompletions ];
-    environment.pathsToLink = [ "/share/zsh" ];
+    environment.systemPackages = [ rebuild ];
 
     programs.fish.interactiveShellInit = lib.mkAfter (subst completionVars (builtins.readFile ./completions.fish));
 
