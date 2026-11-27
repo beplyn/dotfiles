@@ -89,7 +89,7 @@
       [
         "catppuccin"
         "gruvbox"
-        "nord"
+        "rose-pine"
       ];
       # an auto-rebuild or a plain nixos-rebuild without the override would build "user"
       # at example.com; refuse instead

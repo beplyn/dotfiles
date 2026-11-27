@@ -14,7 +14,7 @@ let
   colors =
   {
     catppuccin = { main = "1a0033"; keyboard = "8000ff"; }; # dark purple
-    nord = { main = "0a2a9c"; keyboard = "0a2a9c"; }; # dark blue
+    rose-pine = { main = "2a1f4d"; keyboard = "7a5cc7"; }; # dark iris purple
     gruvbox = { main = "b04a08"; keyboard = "b04a08"; }; # orange-brown
   };
   inherit (colors.${themeName}) main keyboard;

@@ -12,7 +12,7 @@ let
   {
     catppuccin = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
     gruvbox = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
-    nord = "${pkgs.base16-schemes}/share/themes/nord.yaml";
+    rose-pine = "${pkgs.base16-schemes}/share/themes/rose-pine.yaml";
   };
 
   # Papirus folder colour per accent
@@ -20,7 +20,7 @@ let
   {
     catppuccin = "violet";
     gruvbox = "pink";
-    nord = "nordic";
+    rose-pine = "pink";
   };
 in
 {

@@ -22,7 +22,7 @@
       ".." = "cd ..";
       "..." = "cd ../..";
     }
-    # one per theme: `nord` -> rebuild nord
+    # one per theme: `rose-pine` -> rebuild rose-pine
     // lib.genAttrs themes (t: "rebuild ${t}");
     shellAliases =
     {

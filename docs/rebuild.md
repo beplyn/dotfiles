@@ -11,7 +11,7 @@ Two ways to apply the config. Both build `<host>-<theme>` from the flake.
 
 ```sh
 rebuild            # current theme
-rebuild nord       # another theme
+rebuild rose-pine  # another theme
 ```
 
 Run as your user. It:

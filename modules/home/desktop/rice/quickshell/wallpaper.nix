@@ -17,7 +17,7 @@ let
   {
     catppuccin = "catppuccin-mocha";
     gruvbox = "gruvbox-dark-hard";
-    nord = "nord";
+    rose-pine = "rose-pine";
   };
 
   # uncoloured sources; git skips an empty folder

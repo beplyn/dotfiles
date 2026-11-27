@@ -3,7 +3,7 @@
 let
   dir = "/var/lib/glance";
 
-  # hsl values from docs/themes.md; nord derived from its palette
+  # hsl values from docs/themes.md; rose-pine derived from its palette
   themes =
   {
     catppuccin =
@@ -21,12 +21,12 @@ let
       positive-color = "61 66 44";
       negative-color = "6 96 59";
     };
-    nord =
+    rose-pine =
     {
-      background-color = "220 16 22";
-      primary-color = "193 43 67";
-      positive-color = "92 28 65";
-      negative-color = "354 42 57";
+      background-color = "249 22 12";
+      primary-color = "189 43 73";
+      positive-color = "197 49 38";
+      negative-color = "343 76 68";
     };
   };
 
