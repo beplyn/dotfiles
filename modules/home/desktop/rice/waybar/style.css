@@ -131,22 +131,7 @@ window#waybar > box
   transition: color 150ms cubic-bezier(0, 0.5, 0.35, 1), border-color 150ms cubic-bezier(0, 0.5, 0.35, 1);
 }
 
-#workspaces button.empty
-{
-  color: alpha(@foreground, 0.2);
-}
-
-#workspaces button:hover
-{
-  color: @foreground;
-}
-
-/* the one accent in the bar: the workspace shown on its output */
-#workspaces button.active
-{
-  color: @accent;
-  border-bottom-color: @accent;
-}
+/* each workspace's colour, active/empty/hover: generated in default.nix */
 
 #workspaces button.urgent
 {

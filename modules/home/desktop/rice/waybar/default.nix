@@ -29,6 +29,37 @@ let
     }"'';
   glyphs = map glyph;
 
+  # workspace n takes the scheme's accent n, cycling; dim when idle, full when shown
+  workspaceColours = lib.concatMapStrings (i:
+    let
+      accents = config.themes.accents;
+      c = builtins.elemAt accents (lib.mod i (builtins.length accents));
+      b = "#workspaces button:nth-child(${toString (i + 1)})";
+    in
+    ''
+      ${b}
+      {
+        color: alpha(${c}, 0.45);
+        border-bottom-color: transparent;
+      }
+
+      ${b}:hover,
+      ${b}.active
+      {
+        color: ${c};
+      }
+
+      ${b}.active
+      {
+        border-bottom-color: ${c};
+      }
+
+      ${b}.empty
+      {
+        color: alpha(${c}, 0.2);
+      }
+    '') (lib.range 0 9);
+
 in
 {
   # Stylix's waybar CSS fights the capsule
@@ -316,6 +347,7 @@ in
         letter-spacing: 1px;
       }
     ''
+    + workspaceColours
     + builtins.readFile ./style.css;
   };
 }
