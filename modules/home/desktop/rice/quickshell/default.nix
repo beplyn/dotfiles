@@ -135,6 +135,8 @@ let
     ddcutil = lib.getExe pkgs.ddcutil;
     # night light (services/NightLight.qml) through hyprsunset
     hyprctl = lib.getExe' osConfig.programs.hyprland.package "hyprctl";
+    # the wg0 profile toggle (services/VPN.qml)
+    nmcli = lib.getExe' osConfig.networking.networkmanager.package "nmcli";
     # the hypr audio mixer, as on Mod+Alt+A
     mixer = lib.getExe pkgs.hyprpwcenter;
     # set, random, current (wallpaper.nix)

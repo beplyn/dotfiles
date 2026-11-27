@@ -23,6 +23,31 @@ Panel {
     readonly property var wifi: Networking.devices.values.find(d => d.type === DeviceType.Wifi) ?? null
     readonly property var wifiNetwork: wifi?.networks.values.find(n => n.connected) ?? null
     readonly property var wired: Networking.devices.values.find(d => d.type === DeviceType.Wired) ?? null
+    // One network tile: "wifi", "ethernet" or "offline". Ethernet only counts while a cable is in.
+    readonly property bool cable: wired?.hasLink ?? false
+    readonly property bool wiredUp: wired?.connected ?? false
+    readonly property string netMode: wiredUp ? "ethernet"
+        : (wifi && Networking.wifiEnabled) ? "wifi" : "offline"
+    // wifi, then ethernet if a cable is in, then offline, around again
+    function nextNetMode() {
+        const modes = []
+        if (wifi) modes.push("wifi")
+        if (cable) modes.push("ethernet")
+        modes.push("offline")
+        return modes[(modes.indexOf(netMode) + 1) % modes.length]
+    }
+    function setNetMode(mode) {
+        if (mode === "wifi") {
+            Networking.wifiEnabled = true
+            if (wiredUp) wired.disconnect()
+        } else if (mode === "ethernet") {
+            Networking.wifiEnabled = false
+            wired.network?.connect()
+        } else {
+            Networking.wifiEnabled = false
+            if (wiredUp) wired.disconnect()
+        }
+    }
     // Connected first, then strongest; hidden SSIDs dropped.
     readonly property var wifiNetworks: !wifi ? [] : wifi.networks.values
         .filter(n => n.name !== "")
@@ -259,28 +284,17 @@ Panel {
 
         Tile {
             Layout.fillWidth: true
-            visible: root.wifi !== null
-            icon: Networking.wifiEnabled ? Icons.wifi : Icons.wifiOff
-            title: "Wi-Fi"
-            subtitle: !Networking.wifiEnabled ? "Off" : root.wifiNetwork?.name ?? "Not connected"
-            active: Networking.wifiEnabled
-            onClicked: Networking.wifiEnabled = !Networking.wifiEnabled
-        }
-        Tile {
-            Layout.fillWidth: true
-            visible: root.wired !== null
-            readonly property bool connected: root.wired?.connected ?? false
-            icon: Icons.ethernet
-            title: "Ethernet"
-            subtitle: !(root.wired?.hasLink ?? false) ? "Cable unplugged"
-                : !connected ? "Disconnected"
-                : root.wired.linkSpeed > 0 ? root.wired.linkSpeed + " Mb/s"
-                : "Connected"
-            active: connected
-            onClicked: {
-                if (connected) root.wired.disconnect()
-                else root.wired.network?.connect()
-            }
+            visible: root.wifi !== null || root.wired !== null
+            readonly property string mode: root.netMode
+            icon: mode === "ethernet" ? Icons.ethernet
+                : mode === "wifi" ? Icons.wifi
+                : Icons.wifiOff
+            title: mode === "ethernet" ? "Ethernet" : mode === "wifi" ? "Wi-Fi" : "Offline"
+            subtitle: mode === "ethernet" ? (root.wired.linkSpeed > 0 ? root.wired.linkSpeed + " Mb/s" : "Connected")
+                : mode === "wifi" ? (root.wifiNetwork?.name ?? "Not connected")
+                : "Wi-Fi and cable off"
+            active: mode !== "offline"
+            onClicked: root.setNetMode(root.nextNetMode())
         }
         Tile {
             Layout.fillWidth: true
@@ -296,19 +310,23 @@ Panel {
         }
         Tile {
             Layout.fillWidth: true
-            icon: Notifs.dnd ? Icons.bellOff : Icons.bell
-            title: "Do not disturb"
-            subtitle: Notifs.dnd ? "On" : "Off"
-            active: Notifs.dnd
-            onClicked: Notifs.dnd = !Notifs.dnd
+            visible: VPN.available
+            icon: Icons.vpn
+            title: "VPN"
+            subtitle: VPN.active ? "wg0 connected" : "Off"
+            active: VPN.active
+            onClicked: VPN.toggle()
         }
         Tile {
             Layout.fillWidth: true
-            icon: NightLight.active ? Icons.nightLight : Icons.daylight
+            icon: NightLight.enabled ? Icons.nightLight : Icons.daylight
             title: "Night light"
-            subtitle: NightLight.active ? NightLight.temperature + " K" : "Off"
-            active: NightLight.active
+            subtitle: !NightLight.enabled ? "Off"
+                : NightLight.temperature < NightLight.neutral ? NightLight.temperature + " K"
+                : "Sunset " + NightLight.sunsetText
+            active: NightLight.enabled && NightLight.temperature < NightLight.neutral
             onClicked: NightLight.toggle()
+            onScrolled: d => NightLight.nudge(d)
         }
         Tile {
             Layout.fillWidth: true

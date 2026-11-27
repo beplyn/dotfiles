@@ -90,6 +90,7 @@ Singleton {
     readonly property string chevronDown: g(0xF0140)
     readonly property string chevronUp: g(0xF0143)
     readonly property string ethernet: g(0xF0200)
+    readonly property string vpn: g(0xF0121)
     readonly property var wifiLevels: [0xF092F, 0xF091F, 0xF0922, 0xF0925, 0xF0928].map(c => g(c))
     readonly property string check: g(0xF012C)
 
