@@ -28,23 +28,12 @@ in
     };
   };
 
-  # warm at night, Mod+Alt+N toggles. Mornings use 6000 K: identity leaves
-  # hyprctl reporting the evening value
+  # the daemon only; the sunset schedule and warmth come from the shell's
+  # services/NightLight.qml, so no profiles here to fight it
   services.hyprsunset =
   {
     enable = true;
     systemdTarget = target;
-    settings.profile =
-    [
-      {
-        time = "7:00";
-        temperature = 6000;
-      }
-      {
-        time = "21:00";
-        temperature = 4000;
-      }
-    ];
   };
 
   services.hyprpolkitagent.enable = true;

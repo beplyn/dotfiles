@@ -11,6 +11,8 @@ Rectangle {
     property string subtitle: ""
     property bool active: false
     signal clicked(var mouse)
+    // +1 for wheel up, -1 for wheel down
+    signal scrolled(int direction)
 
     implicitHeight: 58
     radius: Theme.innerRadius
@@ -76,5 +78,6 @@ Rectangle {
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         cursorShape: Qt.PointingHandCursor
         onClicked: m => root.clicked(m)
+        onWheel: w => root.scrolled(w.angleDelta.y > 0 ? 1 : -1)
     }
 }
