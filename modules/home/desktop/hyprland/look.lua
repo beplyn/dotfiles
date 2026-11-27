@@ -19,7 +19,7 @@ hl.config({
         gaps_workspaces = 50,
         border_size = t.border,
         col = {
-            active_border = table.concat(focused, " ") .. " 45deg",
+            active_border = { colors = focused, angle = 45 },
             inactive_border = rgb(t.inactive_border),
         },
         resize_on_border = true,
