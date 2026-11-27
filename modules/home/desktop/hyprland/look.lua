@@ -1,6 +1,15 @@
 -- layout, decoration, animations; sizes from settings.nix, Material 3 curves
 local t = require("haku.data.theme")
 
+-- "1d2021" -> "rgb(1d2021)"; focused gets the accents as a gradient
+local function rgb(hex)
+    return "rgb(" .. hex .. ")"
+end
+local focused = {}
+for i, c in ipairs(t.border_colors) do
+    focused[i] = rgb(c)
+end
+
 hl.config({
     general = {
         -- tiling; niri's columns (scrolling) on Mod+T
@@ -9,6 +18,10 @@ hl.config({
         gaps_out = t.gaps,
         gaps_workspaces = 50,
         border_size = t.border,
+        col = {
+            active_border = table.concat(focused, " ") .. " 45deg",
+            inactive_border = rgb(t.inactive_border),
+        },
         resize_on_border = true,
         -- no wrapping at column ends; Mod+J/K go on to the next workspace
         no_focus_fallback = true,
