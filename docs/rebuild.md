@@ -14,6 +14,9 @@ rebuild            # current theme
 rebuild rose-pine  # another theme
 ```
 
+Themes are listed in `lib/themes.nix`. Add or remove one there; the flake, completions and shell
+shortcuts follow.
+
 Run as your user. It:
 
 1. Creates your GPG and SSH keys if missing.
