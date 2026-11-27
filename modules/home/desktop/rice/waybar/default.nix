@@ -234,8 +234,9 @@ in
       network =
       {
         format-wifi = "{icon}";
-        format-ethernet = glyph 983552; # ethernet
-        format-linked = glyph 983552;
+        # wired shows no icon; the control center still has it
+        format-ethernet = "";
+        format-linked = "";
         format-disconnected = glyph 985390; # wifi-strength-off
         format-disabled = glyph 985390;
         format-icons = glyphs
