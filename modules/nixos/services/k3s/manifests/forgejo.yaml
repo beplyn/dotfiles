@@ -30,6 +30,29 @@ spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
       initContainers:
+        # uid 3000 has no passwd entry in the image; ssh (push mirrors) aborts on
+        # "No user exists for uid". Copy the image's passwd and add one for it.
+        - name: passwd
+          image: codeberg.org/forgejo/forgejo:17-rootless
+          command: ["/bin/sh", "-ec"]
+          args:
+            - |
+              cp /etc/passwd /out/passwd
+              if ! awk -F: '$3 == 3000 { found = 1 } END { exit !found }' /out/passwd; then
+                printf '\nforgejo:x:3000:3000::/var/lib/gitea:/bin/sh\n' >> /out/passwd
+              fi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: @uid@
+            runAsGroup: @uid@
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - name: passwd
+              mountPath: /out
         - name: bootstrap
           image: codeberg.org/forgejo/forgejo:17-rootless
           # the image's entrypoint writes app.ini from the env first
@@ -133,6 +156,9 @@ spec:
           volumeMounts: &mounts
             - name: data
               mountPath: /var/lib/gitea
+            - name: passwd
+              mountPath: /etc/passwd
+              subPath: passwd
           securityContext: &security
             runAsNonRoot: true
             runAsUser: @uid@
@@ -169,6 +195,8 @@ spec:
           hostPath:
             path: "@state@/forgejo/data"
             type: Directory
+        - name: passwd
+          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
