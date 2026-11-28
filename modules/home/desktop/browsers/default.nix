@@ -4,8 +4,6 @@
   lib,
   pkgs,
   subst,
-  themeName,
-  themeTable,
   ...
 }:
 
@@ -34,7 +32,7 @@ let
     steam-database = "firefox-extension@steamdb.info";
     protondb-for-steam = "{30280527-c46c-4e03-bb16-2e3ed94fa57c}";
     steamartworkhubessentials = "{bb53f7e1-a291-485a-88d7-2dca7b20c3a7}";
-    catppuccin-web-file-icons = "{bbb880ce-43c9-47ae-b746-c3e0096c5b76}";
+    material-icons-for-github = "{eac6e624-97fa-4f28-9d24-c06c9b8aa713}";
     vimium-ff = "{d7742d87-e61d-4b78-b8a1-b469842139fa}";
   };
   # on the toolbar, the rest in the extensions menu
@@ -119,12 +117,6 @@ let
   extensions =
   {
     force = true;
-    # forge icons: mocha on catppuccin, single neutral colour on the others
-    settings."{bbb880ce-43c9-47ae-b746-c3e0096c5b76}".settings =
-    {
-      flavor = "mocha";
-      monochrome = !(themeTable.${themeName}.mocha or false);
-    };
     # Dark Reader follows the Stylix scheme
     settings."addon@darkreader.org".settings =
     {
