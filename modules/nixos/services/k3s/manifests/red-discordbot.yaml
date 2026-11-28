@@ -1,0 +1,75 @@
+# @x@ placeholders are filled in by apps.nix
+# Red-DiscordBot (cog-creators), run from the community image: upstream publishes no image.
+# No web UI outside the cluster. Login: TOKEN and OWNER in the red-discordbot secret, read on
+# start; the bot saves them, so the secret can go once it's online:
+#   k3s kubectl -n red-discordbot create secret generic red-discordbot --from-literal=TOKEN=<token> --from-literal=OWNER=<discord user id>
+# The image updates Red to the latest PyPI release on every start.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: red-discordbot
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: red-discordbot
+  namespace: red-discordbot
+  labels:
+    app: red-discordbot
+spec:
+  replicas: 1
+  # one writer on the data dir
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: red-discordbot
+  template:
+    metadata:
+      labels:
+        app: red-discordbot
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: red-discordbot
+          image: phasecorex/red-discordbot:latest@sha256:d8f5a1b66b1b6716296a905e0017c0d39df8a7d4574f1f4241dd1820df66e276
+          env:
+            # /data files are owned by the app uid on the host
+            - name: PUID
+              value: "@uid@"
+            - name: PGID
+              value: "@uid@"
+            - name: TZ
+              value: "@tz@"
+            - name: TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: red-discordbot
+                  key: TOKEN
+                  optional: true
+            - name: OWNER
+              valueFrom:
+                secretKeyRef:
+                  name: red-discordbot
+                  key: OWNER
+                  optional: true
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          # the image starts as root to fix up /data, then drops to PUID
+          securityContext:
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              memory: 1Gi
+      volumes:
+        - name: data
+          hostPath:
+            path: "@state@/red-discordbot"
+            type: Directory

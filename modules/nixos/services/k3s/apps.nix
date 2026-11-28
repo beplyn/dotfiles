@@ -434,6 +434,11 @@ let
     {
       dirs = [ (app "${st.state}/asf") ];
     };
+    # Discord bot, no web UI; the red-discordbot secret holds its token and owner
+    red-discordbot =
+    {
+      dirs = [ (app "${st.state}/red-discordbot") ];
+    };
   };
 
   enabled = lib.filterAttrs (n: _: lib.elem n cfg.apps) apps;

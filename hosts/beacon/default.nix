@@ -65,6 +65,7 @@
     "excalidraw"
     "minecraft"
     "asf"
+    "red-discordbot"
   ];
   k3s.lanAddress = lan.address;
   # Wings, mc-router and the Minecraft sync; the Panel itself is the minecraft app
