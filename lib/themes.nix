@@ -4,7 +4,6 @@
 # scheme: base16-schemes file name, also the lutgen preset name
 # folder: Papirus folder colour
 # leds:   OpenRGB colours, dark enough to avoid washing out to white
-# mocha:  forge icons use the Catppuccin Mocha flavour
 # primary: hex replacing base0E (the palette's accent); unset keeps the scheme's
 # contrast: optional Glance contrast-multiplier
 {
@@ -12,7 +11,6 @@
   {
     scheme = "catppuccin-mocha";
     folder = "violet";
-    mocha = true;
     contrast = "1.2";
     leds = { main = "1a0033"; keyboard = "8000ff"; };
   };
@@ -22,7 +20,6 @@
   {
     scheme = "catppuccin-mocha";
     folder = "palebrown";
-    mocha = true;
     primary = "f5e0dc";
     leds = { main = "494342"; keyboard = "ab9c9a"; };
   };
@@ -31,7 +28,6 @@
   {
     scheme = "catppuccin-mocha";
     folder = "pink";
-    mocha = true;
     primary = "f2cdcd";
     leds = { main = "483d3d"; keyboard = "a98f8f"; };
   };
@@ -40,7 +36,6 @@
   {
     scheme = "catppuccin-mocha";
     folder = "pink";
-    mocha = true;
     primary = "f5c2e7";
     leds = { main = "493a45"; keyboard = "ab87a1"; };
   };
@@ -49,7 +44,6 @@
   {
     scheme = "catppuccin-mocha";
     folder = "red";
-    mocha = true;
     primary = "f38ba8";
     leds = { main = "482932"; keyboard = "aa6175"; };
   };
@@ -58,7 +52,6 @@
   {
     scheme = "catppuccin-mocha";
     folder = "red";
-    mocha = true;
     primary = "eba0ac";
     leds = { main = "463033"; keyboard = "a47078"; };
   };
@@ -67,7 +60,6 @@
   {
     scheme = "catppuccin-mocha";
     folder = "orange";
-    mocha = true;
     primary = "fab387";
     leds = { main = "4b3528"; keyboard = "af7d5e"; };
   };
@@ -76,7 +68,6 @@
   {
     scheme = "catppuccin-mocha";
     folder = "yellow";
-    mocha = true;
     primary = "f9e2af";
     leds = { main = "4a4334"; keyboard = "ae9e7a"; };
   };
@@ -85,7 +76,6 @@
   {
     scheme = "catppuccin-mocha";
     folder = "green";
-    mocha = true;
     primary = "a6e3a1";
     leds = { main = "314430"; keyboard = "749e70"; };
   };
@@ -94,7 +84,6 @@
   {
     scheme = "catppuccin-mocha";
     folder = "teal";
-    mocha = true;
     primary = "94e2d5";
     leds = { main = "2c433f"; keyboard = "679e95"; };
   };
@@ -103,7 +92,6 @@
   {
     scheme = "catppuccin-mocha";
     folder = "cyan";
-    mocha = true;
     primary = "89dceb";
     leds = { main = "294246"; keyboard = "5f9aa4"; };
   };
@@ -112,7 +100,6 @@
   {
     scheme = "catppuccin-mocha";
     folder = "blue";
-    mocha = true;
     primary = "74c7ec";
     leds = { main = "223b46"; keyboard = "518ba5"; };
   };
@@ -121,7 +108,6 @@
   {
     scheme = "catppuccin-mocha";
     folder = "blue";
-    mocha = true;
     primary = "89b4fa";
     leds = { main = "29364b"; keyboard = "5f7eaf"; };
   };
@@ -130,7 +116,6 @@
   {
     scheme = "catppuccin-mocha";
     folder = "indigo";
-    mocha = true;
     primary = "b4befe";
     leds = { main = "36394c"; keyboard = "7e85b1"; };
   };
