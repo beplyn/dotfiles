@@ -73,7 +73,6 @@ nixpkgs.lib.nixosSystem
           netspd = withSystemLibs inputs.netspd.packages.${system}.default [ final.aws-lc ];
           # upstream player test compares EOF error strings and is flaky
           cliamp = inputs.cliamp.packages.${system}.default.overrideAttrs { doCheck = false; };
-          speci-local = inputs.speci-local.packages.${system}.default;
           serein = inputs.serein.packages.${system}.default;
         })
       ];

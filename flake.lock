@@ -551,7 +551,6 @@
         "nixpkgs": "nixpkgs",
         "nixvim": "nixvim",
         "serein": "serein",
-        "speci-local": "speci-local",
         "stylix": "stylix",
         "vars": "vars",
         "zen-browser": "zen-browser"
@@ -575,26 +574,6 @@
       "original": {
         "owner": "ViceVerse-cz",
         "repo": "Serein",
-        "type": "github"
-      }
-    },
-    "speci-local": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1795081121,
-        "narHash": "sha256-1evUV/w+1dKQofgXk08swQ6cHXDtw0NVzVuZq0XMYGc=",
-        "owner": "FCsab",
-        "repo": "speci-local",
-        "rev": "7e17374374622b1ce980ce96255505eb9b594054",
-        "type": "github"
-      },
-      "original": {
-        "owner": "FCsab",
-        "repo": "speci-local",
         "type": "github"
       }
     },
