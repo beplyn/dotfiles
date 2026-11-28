@@ -28,6 +28,26 @@ lib.mkIf llm.enable
   # agent on local Ollama; SearXNG for web_search
   home.packages = [ openclaw ];
 
+  # store path tracks the package, a hand-installed unit goes stale on rebuild
+  systemd.user.services.openclaw-gateway =
+  {
+    Unit =
+    {
+      Description = "OpenClaw Gateway";
+      After = [ "network-online.target" ];
+      Wants = [ "network-online.target" ];
+      StartLimitIntervalSec = 60;
+      StartLimitBurst = 5;
+    };
+    Service =
+    {
+      ExecStart = "${openclaw}/bin/openclaw gateway --port 18789";
+      Restart = "always";
+      RestartSec = 5;
+    };
+    Install.WantedBy = [ "default.target" ];
+  };
+
   # searxng ships in the package but not as a bundled plugin
   home.file.".openclaw/extensions/searxng".source = "${pkgs.openclaw}/lib/openclaw/extensions/searxng";
 
