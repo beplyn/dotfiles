@@ -42,6 +42,9 @@ spec:
               value: "@uid@"
             - name: TZ
               value: "@tz@"
+            # first start only, saved to the bot's config after that
+            - name: PREFIX
+              value: "."
             - name: TOKEN
               valueFrom:
                 secretKeyRef:
