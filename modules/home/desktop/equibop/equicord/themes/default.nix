@@ -8,5 +8,5 @@ let
 in
 {
   # midnight-discord for every palette
-  programs.nixcord.quickCss = subst vars (builtins.readFile ./midnight.css);
+  equibop.quickCss = subst vars (builtins.readFile ./midnight.css);
 }

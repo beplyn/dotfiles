@@ -3,6 +3,7 @@
   [
     ./themes
     ./plugins.nix
+    ./quickcss.nix
   ];
   programs.nixcord.equibopConfig =
   {
