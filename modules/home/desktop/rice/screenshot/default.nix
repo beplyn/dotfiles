@@ -18,6 +18,7 @@ let
     [
       grim
       slurp
+      wayfreeze
       wl-clipboard
       libnotify
       satty
