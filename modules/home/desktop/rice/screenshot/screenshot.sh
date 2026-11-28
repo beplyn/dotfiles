@@ -16,6 +16,8 @@ case "$mode" in
       -B '@background@00' \
       -w 2)" || exit 0
     grim -g "$geometry" "$file"
+    # unfreeze now, the notification below blocks until dismissed
+    kill "$freeze"
     ;;
   output)
     output="$(hyprctl -j monitors | jq -r '.[] | select(.focused).name')" || exit 0
