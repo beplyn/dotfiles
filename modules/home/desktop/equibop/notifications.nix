@@ -1,5 +1,5 @@
 {
-  programs.equibop.settings =
+  programs.nixcord.equibop.settings =
   {
     notifications =
     {

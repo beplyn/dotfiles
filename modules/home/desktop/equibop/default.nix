@@ -1,17 +1,21 @@
+{ inputs, ... }:
 {
   imports =
   [
+    inputs.nixcord.homeModules.nixcord
     ./notifications.nix
     ./rpc.nix
     ./tray.nix
     ./equicord
   ];
 
-  programs.equibop =
+  programs.nixcord =
   {
     enable = true;
-
-    settings =
+    # Equibop only; Discord itself isn't installed
+    discord.enable = false;
+    equibop.enable = true;
+    equibop.settings =
     {
       checkUpdates = false;
       discordBranch = "stable";

@@ -6,7 +6,7 @@
 }:
 
 {
-  programs.equibop.settings =
+  programs.nixcord.equibop.settings =
   {
     arRPC = true;
     arRPCDisabled = false;

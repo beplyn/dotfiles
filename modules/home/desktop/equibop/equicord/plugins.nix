@@ -1,5 +1,5 @@
 {
-  programs.equibop.equicord.settings.plugins =
+  programs.nixcord.equibopConfig.plugins =
   {
     AudioPlayerAPI.enabled = true;
     BadgeAPI.enabled = true;

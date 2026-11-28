@@ -4,7 +4,7 @@
     ./themes
     ./plugins.nix
   ];
-  programs.equibop.equicord.settings =
+  programs.nixcord.equibopConfig =
   {
     autoUpdate = false;
     autoUpdateNotification = false;
