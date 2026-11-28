@@ -60,6 +60,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixcord =
+    {
+      url = "github:4evy/nixcord";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     glass-firefox =
     {
       url = "github:ChaosMx11/Glass-Firefox-Theme";
