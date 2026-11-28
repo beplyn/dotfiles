@@ -59,3 +59,12 @@ with manifests in `modules/nixos/services/k3s/manifests/`. Enable one by adding 
   `farm.json` has `SteamLogin`, `SteamPassword` and `GamesPlayedWhileIdle`. Control it with
   `k3s kubectl -n asf port-forward deploy/asf 1242:1242`. For Steam Guard, run
   `bash modules/nixos/services/k3s/asf-login.sh` from the checkout, then type the code or `Y`.
+- Red-DiscordBot (`red-discordbot`) has no URL either. It runs the community image
+  `phasecorex/red-discordbot`, since upstream publishes none. Give it its token and owner once:
+
+  ```sh
+  k3s kubectl -n red-discordbot create secret generic red-discordbot --from-literal=TOKEN=<token> --from-literal=OWNER=<discord user id>
+  ```
+
+  The bot saves both on first start, so the secret can be deleted after. Data lives in
+  `/srv/apps/red-discordbot`.
