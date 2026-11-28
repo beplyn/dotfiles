@@ -5,6 +5,10 @@ mkdir -p "$dir"
 
 case "$mode" in
   area)
+    # freeze the screen so the selection and capture see the same frame
+    wayfreeze & freeze=$!
+    trap 'kill "$freeze" 2>/dev/null' EXIT
+    sleep 0.1
     geometry="$(slurp -d \
       -b '@background@66' \
       -c '@accent@ff' \
